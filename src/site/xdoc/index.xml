@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+<document>
+  <properties>
+    <title>About</title>
+    <author email="trygvis2codehaus.org">Trygve Laugstol</author>
+  </properties>
+  <body>
+    <section name="About">
+      <p>
+        The unix-maven-plugin is a Maven plugin for producing installation packages for UNIX platforms.
+      </p>
+      <subsection name="Highlights">
+        <p>
+          The plugin currently support the following packaging formats and platforms:
+        </p>
+        <ul>
+          <li>
+            <code>DPKG</code> - Debian and Debian-based platforms like Ubuntu
+          </li>
+          <li>
+            <code>PKG</code> - Platforms with System V packaging tools like Solaris and HP-UX. Only Solaris is tested.
+          </li>
+          <li>
+            <code>RPM</code> - RedHat, Fedora and other platforms using RPM. Many platforms have RPM even if they use
+            another format as their primary format.
+          </li>
+        </ul>
+        <p>
+          Other features
+        </p>
+        <ul>
+          <li>Simplified assembly: the plugin supports assembling the package with correct file ownership and modes.
+          </li>
+          <li>Repository index generation: Goals for running dpkg-scanpackages and catalog generation for pkg-get (not
+            implemented)
+          </li>
+          <li>Optional compression of packages. Only applicable for the PKG format as DPKG and RPM automatically
+            compress the data files.
+          </li>
+        </ul>
+      </subsection>
+    </section>
+    <section name="Requirements">
+      <p>
+        When building packages for a specific format these the packaging tools need to be available on PATH.
+      </p>
+      <ul>
+        <li>
+          <code>DPKG</code> - dpkg-deb
+        </li>
+        <li>
+          <code>PKG</code> - pkgmk and pkgtrans
+        </li>
+        <li>
+          <code>RPM</code> - rpmbuild
+        </li>
+      </ul>
+    </section>
+    <section name="Getting Started">
+      <p>
+        To get started with the solaris-maven-plugin read the <a href="usage.html">usage</a> guide.
+      </p>
+    </section>
+  </body>
+</document>

@@ -1,0 +1,7 @@
+#!/bin/sh
+echo "Jetty Installed"
+
+common_post_install() {
+	  chown -R jetty:adm /var/opt/jetty/cache /var/opt/jetty/log /var/opt/jetty/lib
+	  chmod 750 /var/opt/jetty/log
+}

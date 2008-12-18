@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-set>
+  <components>
+
+    <!--
+     |
+     | Artifact handlers
+     |
+     |-->
+
+    <component>
+      <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+      <role-hint>dpkg</role-hint>
+      <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
+      <configuration>
+        <extension>deb</extension>
+        <type>dpkg</type>
+        <language>none</language>
+        <addedToClasspath>false</addedToClasspath>
+      </configuration>
+    </component>
+    <component>
+      <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+      <role-hint>rpm</role-hint>
+      <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
+      <configuration>
+        <extension>rpm</extension>
+        <type>rpm</type>
+        <language>none</language>
+        <addedToClasspath>false</addedToClasspath>
+      </configuration>
+    </component>
+    <component>
+      <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+      <role-hint>pkg</role-hint>
+      <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
+      <configuration>
+        <extension>pkg</extension>
+        <type>pkg</type>
+        <language>none</language>
+        <addedToClasspath>false</addedToClasspath>
+      </configuration>
+    </component>
+
+    <!--
+     |
+     | Life cycle mappings
+     |
+     |-->
+
+    <component>
+      <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+      <role-hint>dpkg</role-hint>
+      <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+      <configuration>
+        <phases>
+          <process-resources>
+            org.apache.maven.plugins:maven-resources-plugin:resources
+          </process-resources>
+          <package>
+            org.codehaus.mojo:unix-maven-plugin:package-dpkg
+          </package>
+          <install>
+            org.apache.maven.plugins:maven-install-plugin:install
+          </install>
+          <deploy>
+            org.apache.maven.plugins:maven-deploy-plugin:deploy
+          </deploy>
+        </phases>
+      </configuration>
+    </component>
+    <component>
+      <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+      <role-hint>pkg</role-hint>
+      <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+      <configuration>
+        <phases>
+          <process-resources>
+            org.apache.maven.plugins:maven-resources-plugin:resources
+          </process-resources>
+          <package>
+            org.codehaus.mojo:unix-maven-plugin:package-pkg
+          </package>
+          <install>
+            org.apache.maven.plugins:maven-install-plugin:install
+          </install>
+          <deploy>
+            org.apache.maven.plugins:maven-deploy-plugin:deploy
+          </deploy>
+        </phases>
+      </configuration>
+    </component>
+    <component>
+      <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+      <role-hint>rpm</role-hint>
+      <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+      <configuration>
+        <phases>
+          <process-resources>
+            org.apache.maven.plugins:maven-resources-plugin:resources
+          </process-resources>
+          <package>
+            org.codehaus.mojo:unix-maven-plugin:package-rpm
+          </package>
+          <install>
+            org.apache.maven.plugins:maven-install-plugin:install
+          </install>
+          <deploy>
+            org.apache.maven.plugins:maven-deploy-plugin:deploy
+          </deploy>
+        </phases>
+      </configuration>
+    </component>
+
+    <!--
+     |
+     | Other components
+     |
+     |-->
+
+    <component>
+      <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>
+      <role-hint>dpkg</role-hint>
+      <implementation>org.codehaus.mojo.unix.maven.dpkg.DpkgPackagingFormat</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>
+      <role-hint>pkg</role-hint>
+      <implementation>org.codehaus.mojo.unix.maven.pkg.PkgPackagingFormat</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>
+      <role-hint>rpm</role-hint>
+      <implementation>org.codehaus.mojo.unix.maven.rpm.RpmPackagingFormat</implementation>
+    </component>
+
+  </components>
+</component-set>

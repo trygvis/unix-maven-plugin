@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>bar</groupId>
+  <artifactId>project-pkg-2</artifactId>
+  <version>1.1-2</version>
+  <packaging>pkg</packaging>
+  <name>Hudson Slave</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.jvnet.hudson.main</groupId>
+      <artifactId>hudson-war</artifactId>
+      <version>1.255</version>
+      <type>war</type>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>java.net</id>
+      <url>http://download.java.net/maven/2</url>
+    </repository>
+  </repositories>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>unix-maven-plugin</artifactId>
+        <version>testing</version>
+        <extensions>true</extensions>
+        <configuration>
+          <contact>Trygve Laugstol</contact>
+          <contactEmail>trygvis@codehaus.org</contactEmail>
+          <assembly>
+            <extract>
+              <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+              <toDir>/usr/share/hudson/lib</toDir>
+              <pattern>WEB-INF/(slave.jar)</pattern>
+              <replacement>$1</replacement>
+            </extract>
+            <extract>
+              <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+              <toDir>/usr/share/hudson/license</toDir>
+              <pattern>.*/(.*license.*)</pattern>
+              <replacement>$1</replacement>
+            </extract>
+          </assembly>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

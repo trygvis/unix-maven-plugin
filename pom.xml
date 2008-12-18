@@ -1,0 +1,49 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>mojo-sandbox-parent</artifactId>
+    <groupId>org.codehaus.mojo</groupId>
+    <version>5-SNAPSHOT</version>
+    <relativePath>../mojo-sandbox-parent/pom.xml</relativePath>
+  </parent>
+  <groupId>org.codehaus.mojo.unix</groupId>
+  <artifactId>unix</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Maven Unix Support</name>
+  <inceptionYear>2008</inceptionYear>
+  <developers>
+    <developer>
+      <id>trygvis</id>
+      <name>Trygve Laugstol</name>
+      <email>trygvis@inamo.no</email>
+      <url>http://home.inamo.no/~trygvis</url>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>java.net</id>
+      <url>http://download.java.net/maven/2</url>
+    </repository>
+  </repositories>
+  <modules>
+    <module>unix-ar</module>
+    <module>unix-common</module>
+    <module>unix-dpkg</module>
+    <module>unix-maven-plugin</module>
+    <module>unix-pkg</module>
+    <module>unix-rpm</module>
+  </modules>
+</project>

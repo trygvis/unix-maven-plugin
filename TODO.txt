@@ -1,0 +1,101 @@
+= TODO =
+
+o Support group, user and modes on files and directories
+ - Default values for user, group and mode: part 1 done, need to be implemented in the mojo
+ - Dpkg: Won't be done until replaced with Java
+ - Pkg: ok
+ - RPM: files ok, need to check directories
+
+o Dependency generation
+
+o Signing support
+ - Dpkg:
+ - Pkg:
+ - Rpm:
+
+o Add repository index creation
+ - Dpkg: dpkg-scanpackages wrapper implemented. Should be re-implemented in Java..
+ - Pkg: pkgutil(?)
+ - Rpm: (?)
+
+o Package compression:
+ - Dpkg: Built-in (the data.tar.gz file is already gzipped).
+ - Pkg:
+ - Rpm: are there any tools that support this?
+
+o Replace the binaries with Java implementations
+ - Dpkg:
+ - Pkg:
+ - Rpm:
+
+o Support chmod assembly operation
+ - Has to support includes/excludes
+
+o Validate all (source) file paths before starting to copy.
+ - If the last of a whole bunch of files are to be extracted, it would be nice to be reminded that you've forgotten a
+   <dependency> on something that you're going to extract.
+
+o Scripts:
+ - Support per <package> scripts in addition to the common ones
+ - Filtering. Both of project.* elements and package.* elements
+
+o Split out the code that is in ..maven.util into a core module.
+  Might be a bit too much, but would make the core more clean. Would be good as the "UnixPackage" concepts would be
+  throughout the code. "MissingSettingExceptions" will always relate to the fields in the unix package.
+
+o Support Defaults per platform. The Defaults object should probably be in the common project
+
+o Implement includes/excludes for the assembly operations that move multiple files
+ - Add default exclude set for SCM files
+
+o Support depending on nested archives: tar.gz, tar.bz2, etc (only zip files are supported now)
+
+o Expand the "unix-from-jar-project" test to build multiple packages of the same type
+
+o Make sure all bugs for the plugins are implemented.
+
+== Pkg ==
+
+o Support custom files (like i.deamon, "request")
+
+o Support "i" and "e" files
+
+o Generate entries for parent directories.
+ - Need some way to say how far up to generte (you don't want to specify /usr, /opt, etc)
+
+== RPM ==
+
+o <description> => %description
+
+o <organization> => %vendor
+
+= Documentation =
+
+o Explain possible workflow and where the different Mojos fit in
+
+== Use cases supported ==
+
+o Building single packages as a standalone project.
+ - Use packaging={dpkg,rpm,pkg}
+
+o Building the same package with different format as a separate project.
+ - TODO: Figure out how to handle the "primary" artifact. Just create a JAR with the assembly?
+
+o Building packages as a part of a JAR project.
+ - Use package-{dpkg,rpm,pkg}-attached
+
+o Support building multiple packages as a standalone project
+ - This should be implemented
+
+o Support building multiple packages as a standalone project
+ - This might be implemented
+
+== Assembly Operation ==
+
+TODO: Define what an assembly operation is
+
+=== Order of execution ===
+
+When an assembly operation is executed this is the order of which the parts of the operation is executed:
+
+ - First the source file is located

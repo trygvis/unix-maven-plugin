@@ -1,0 +1,16 @@
+<providers>
+  <!--
+      <provider class-name="org.apache.commons.vfs.provider.zip.ZipFileProvider">
+          <scheme name="zip"/>
+      </provider>
+  -->
+  <extension-map extension="war" scheme="jar"/>
+  <!--
+      <mime-type-map mime-type="application/zip" scheme="zip"/>
+      <provider class-name="org.apache.commons.vfs.provider.ftp.FtpFileProvider">
+          <scheme name="ftp"/>
+          <if-available class-name="org.apache.commons.net.ftp.FTPFile"/>
+      </provider>
+      <default-provider class-name="org.apache.commons.vfs.provider.url.UrlFileProvider"/>
+  -->
+</providers>

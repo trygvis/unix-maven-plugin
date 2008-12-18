@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>bar</groupId>
+  <artifactId>project-pkg-3</artifactId>
+  <version>1.1-2</version>
+  <packaging>pkg</packaging>
+  <name>Hudson Solaris Packages</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.jvnet.hudson.main</groupId>
+      <artifactId>hudson-war</artifactId>
+      <version>1.255</version>
+      <type>war</type>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>java.net</id>
+      <url>http://download.java.net/maven/2</url>
+    </repository>
+  </repositories>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>unix-maven-plugin</artifactId>
+        <version>testing</version>
+        <extensions>true</extensions>
+        <configuration>
+          <contact>Trygve Laugstol</contact>
+          <contactEmail>trygvis@codehaus.org</contactEmail>
+          <!-- Include the license in both packages -->
+          <assembly>
+            <extract>
+              <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+              <toDir>/usr/share/hudson/license</toDir>
+              <pattern>.*/(.*license.*)</pattern>
+              <replacement>$1</replacement>
+              <fileUser>root</fileUser>
+              <fileGroup>bin</fileGroup>
+            </extract>
+          </assembly>
+          <packages>
+            <package>
+              <id>default</id>
+              <name>Hudson Master</name>
+              <assembly>
+                <copy>
+                  <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+                  <toFile>/usr/share/hudson/lib/hudson.war</toFile>
+                  <fileUser>hudson</fileUser>
+                  <fileGroup>hudson</fileGroup>
+                  <fileMode>0644</fileMode>
+                </copy>
+              </assembly>
+            </package>
+            <package>
+              <id>slave</id>
+              <name>Hudson Slave</name>
+              <description>Hudson slave node</description>
+              <assembly>
+                <extract>
+                  <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+                  <toDir>/usr/share/hudson/lib</toDir>
+                  <pattern>WEB-INF/(slave.jar)</pattern>
+                  <replacement>$1</replacement>
+                </extract>
+              </assembly>
+            </package>
+          </packages>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

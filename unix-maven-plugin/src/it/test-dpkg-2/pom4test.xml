@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>bar</groupId>
+  <artifactId>project-dpkg-2</artifactId>
+  <version>1.1-2</version>
+  <packaging>dpkg</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.jvnet.hudson.main</groupId>
+      <artifactId>hudson-war</artifactId>
+      <version>1.255</version>
+      <type>war</type>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>java.net</id>
+      <url>http://download.java.net/maven/2</url>
+    </repository>
+  </repositories>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>unix-maven-plugin</artifactId>
+        <version>testing</version>
+        <extensions>true</extensions>
+        <configuration>
+          <contact>Trygve Laugstol</contact>
+          <contactEmail>trygvis@codehaus.org</contactEmail>
+          <dpkg>
+            <section>devel</section>
+          </dpkg>
+          <assembly>
+            <!--
+            <copy path="" to=""/>
+            -->
+            <!-- As this want to copy only a single file, add a "extract-file" version -->
+            <extract>
+              <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+              <toDir>/usr/share/hudson/lib</toDir>
+              <!--
+              <includes>WEB-INF/slave.jar</includes>
+              -->
+              <pattern>WEB-INF/(slave.jar)</pattern>
+              <replacement>$1</replacement>
+            </extract>
+            <extract>
+              <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+              <toDir>/usr/share/hudson/license</toDir>
+              <pattern>.*/(.*license.*)</pattern>
+              <replacement>$1</replacement>
+            </extract>
+            <!--
+            <extract archive="" toDir=""/>
+            <extract artifact="" toDir=""/>
+            <extract artifact="" toDir="" includes="" excludes="" mappingPattern=""/>
+            -->
+          </assembly>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

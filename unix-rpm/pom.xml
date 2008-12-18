@@ -1,0 +1,17 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.codehaus.mojo.unix</groupId>
+    <artifactId>unix</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>unix-rpm</artifactId>
+  <name>Maven RPM Support</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.mojo.unix</groupId>
+      <artifactId>unix-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>

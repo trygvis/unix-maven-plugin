@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<faqs id="FAQ" title="Frequently Asked Questions">
+  <part id="General">
+    <faq id="talk_to_developers">
+      <question>How can I talk to the developers</question>
+      <answer>
+        See <a href="http://mojo.codehaus.org/">the Mojo</a> site.
+      </answer>
+    </faq>
+    <faq id="platform_independence">
+      <question>Does the pkg plugin work on a non-Solaris platform?</question>
+      <answer>
+        <p>
+          The short answer is: probably not (yet).
+        </p>
+        <p>
+          The a bit longer answer is that it will only run on platforms that have the <code>pkgmk</code> and
+          <code>pkgtrans</code> tools installed in PATH. If you're on a platform without these tools installed
+          natively you can try to install the tools from the
+          <a href="http://heirloom.sourceforge.net/">Heirloom</a>
+          project.
+        </p>
+        <p>
+          It wouldn't be very hard to implement a basic version of these tools in plain java, but it will take a bit
+          of effort and not least testing. See the <a href="developers.html">Developers</a> page for more information
+          about how to develop the plugin and specification of the package data stream format.
+        </p>
+      </answer>
+    </faq>
+  </part>
+</faqs>
