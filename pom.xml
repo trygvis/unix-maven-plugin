@@ -45,9 +45,9 @@
     </license>
   </licenses>
   <scm>
-    <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</developerConnection>
+    <url>https://svn.codehaus.org/mojo/trunk/mojo/unix</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/unix</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/unix</developerConnection>
   </scm>
   <dependencies>
     <dependency>
