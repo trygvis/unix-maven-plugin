@@ -92,10 +92,12 @@
         </li>
       </ul>
     </section>
+<!--
     <section name="Getting Started">
       <p>
         To get started with the solaris-maven-plugin read the <a href="usage.html">usage</a> guide.
       </p>
     </section>
+-->
   </body>
 </document>

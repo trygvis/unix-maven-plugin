@@ -23,8 +23,8 @@
   <body>
     <menu name="Overview">
       <item name="Overview" href="index.html"/>
-      <item name="Usage" href="usage.html"/>
 <!--
+      <item name="Usage" href="usage.html"/>
       <item name="Best Practices and Examples" href="best-practice-and-examples.html"/>
       <item name="Prototype Generation Reference" href="prototype-generation-reference.html"/>
       <item name="Developers" href="developers.html"/>
