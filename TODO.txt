@@ -73,6 +73,11 @@ o <organization> => %vendor
 
 o Explain possible workflow and where the different Mojos fit in
 
+== Integration Test ==
+
+Make sure that all the validate scripts are using the latest Dpkg/Pkg/Rpm tools to verify all the contents of the
+generated packages.
+
 == Use cases supported ==
 
 o Building single packages as a standalone project.

@@ -20,12 +20,23 @@
 <document>
   <properties>
     <title>About</title>
-    <author email="trygvis2codehaus.org">Trygve Laugstol</author>
+    <author email="trygvis@codehaus.org">Trygve Laugstol</author>
   </properties>
   <body>
     <section name="About">
       <p>
         The unix-maven-plugin is a Maven plugin for producing installation packages for UNIX platforms.
+      </p>
+      <p>
+        The current release is 1.0-alpha-1. This release is meant as a technology preview release. The plugin is useful
+        but work is in progress to make sure it support even more use cases. The documentation is currently lacking,
+        but the integration tests currently act as the documentation.
+      </p>
+      <p>
+        See the <a href="http://svn.codehaus.org/mojo/trunk/mojo/unix/TODO.txt">TODO.txt</a> for the latest status
+        on supported cases and planned features. See the
+        <a href="http://svn.codehaus.org/mojo/trunk/mojo/unix/unix-maven-plugin/src/it/README.txt">README.txt</a> in
+        the integration test directory for an explanation of the different integration tests.
       </p>
       <subsection name="Highlights">
         <p>
@@ -33,13 +44,13 @@
         </p>
         <ul>
           <li>
-            <code>DPKG</code> - Debian and Debian-based platforms like Ubuntu
+            <code>dpkg</code> - Debian and Debian-based platforms like Ubuntu
           </li>
           <li>
-            <code>PKG</code> - Platforms with System V packaging tools like Solaris and HP-UX. Only Solaris is tested.
+            <code>pkg</code> - Platforms with System V packaging tools like Solaris and HP-UX. Only Solaris is tested.
           </li>
           <li>
-            <code>RPM</code> - RedHat, Fedora and other platforms using RPM. Many platforms have RPM even if they use
+            <code>rpm</code> - RedHat, Fedora and other platforms using RPM. Many platforms have RPM even if they use
             another format as their primary format.
           </li>
         </ul>
@@ -47,14 +58,21 @@
           Other features
         </p>
         <ul>
-          <li>Simplified assembly: the plugin supports assembling the package with correct file ownership and modes.
+          <li>
+            <b>Simplified assembly</b>: the plugin supports assembling the package with correct file ownership and modes.
           </li>
-          <li>Repository index generation: Goals for running dpkg-scanpackages and catalog generation for pkg-get (not
-            implemented)
+          <li>
+            <b>Repository index generation</b>: Goals for running dpkg-scanpackages
+<!--
+            catalog generation for pkg-get
+-->
           </li>
-          <li>Optional compression of packages. Only applicable for the PKG format as DPKG and RPM automatically
+<!-- Not implemented yet
+          <li>
+            Optional compression of packages. Only applicable for the PKG format as DPKG and RPM automatically
             compress the data files.
           </li>
+-->
         </ul>
       </subsection>
     </section>
@@ -64,13 +82,13 @@
       </p>
       <ul>
         <li>
-          <code>DPKG</code> - dpkg-deb
+          <code>dpkg</code> - dpkg-deb and optionally fakeroot
         </li>
         <li>
-          <code>PKG</code> - pkgmk and pkgtrans
+          <code>pkg</code> - pkgmk and pkgtrans
         </li>
         <li>
-          <code>RPM</code> - rpmbuild
+          <code>rpm</code> - rpmbuild
         </li>
       </ul>
     </section>

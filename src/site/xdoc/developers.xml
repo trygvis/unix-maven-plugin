@@ -20,7 +20,7 @@
 <document>
   <properties>
     <title>Developers</title>
-    <author email="trygvis@codehaus.or">Trygve Laugstol</author>
+    <author email="trygvis@codehaus.org">Trygve Laugstol</author>
   </properties>
   <body>
     <section name="Developing the Solaris Maven Plugin">

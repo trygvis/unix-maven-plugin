@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,26 +16,17 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
  -->
-
-<project>
+<document>
+  <properties>
+    <title>About</title>
+    <author email="trygvis@codehaus.org">Trygve Laugstol</author>
+  </properties>
   <body>
-    <menu name="Overview">
-      <item name="Overview" href="index.html"/>
-      <item name="Usage" href="usage.html"/>
-<!--
-      <item name="Best Practices and Examples" href="best-practice-and-examples.html"/>
-      <item name="Prototype Generation Reference" href="prototype-generation-reference.html"/>
-      <item name="Developers" href="developers.html"/>
-      <item name="Goals" href="plugin-info.html"/>
--->
-      <item name="FAQ" href="faq.html"/>
-    </menu>
-    <!--
-    <menu name="Examples">
-      <item name="Myapp Example" href="examples/myapp.html"/>
-    </menu>
-    -->
+    <section name="Usage">
+      <p>
+        The unix-maven-plugin is a Maven plugin for producing installation packages for UNIX platforms.
+      </p>
+    </section>
   </body>
-</project>
+</document>
