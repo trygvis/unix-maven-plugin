@@ -1,4 +1,6 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>mojo-parent</artifactId>
@@ -12,6 +14,7 @@
   <packaging>pom</packaging>
   <name>Maven Unix Support</name>
   <inceptionYear>2008</inceptionYear>
+  <description>Supporting tools for writing software for the UNIX platform</description>
   <developers>
     <developer>
       <id>trygvis</id>
@@ -24,6 +27,28 @@
       <timezone>+1</timezone>
     </developer>
   </developers>
+  <contributors>
+    <contributor>
+      <name>Erik Drolshammer</name>
+      <email>erik-dev@fjas.no</email>
+    </contributor>
+  </contributors>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MUNIX</url>
+  </issueManagement>
+  <licenses>
+    <license>
+      <name>Apache License 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</developerConnection>
+  </scm>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
