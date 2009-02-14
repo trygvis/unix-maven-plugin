@@ -2,10 +2,10 @@ package org.codehaus.mojo.unix.maven;
 
 import org.codehaus.mojo.unix.UnixPackage;
 import org.codehaus.mojo.unix.maven.pkg.PkgUnixPackage;
-import org.codehaus.mojo.unix.maven.pkg.prototype.AbstractPrototypeEntry;
+import org.codehaus.mojo.unix.maven.pkg.prototype.PrototypeEntry;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 class PkgMojoHelper
@@ -13,14 +13,12 @@ class PkgMojoHelper
 {
     private PkgSpecificSettings pkg;
 
-    private AbstractPrototypeEntry[] extraPrototype;
-
     public PkgMojoHelper( PkgSpecificSettings pkg )
     {
         this.pkg = pkg;
     }
 
-    protected void validateSettings()
+    protected void validateMojoSettings()
     {
         if ( pkg == null )
         {
@@ -28,19 +26,14 @@ class PkgMojoHelper
         }
     }
 
-    protected void customizeMojoParameters( PackagingMojoParameters mojoParameters )
+    protected void applyFormatSpecificSettingsToPackage( UnixPackage unixPackage )
     {
-    }
-
-    protected void customizePackage( UnixPackage unixPackage )
-    {
-        extraPrototype = new AbstractPrototypeEntry[pkg.getExtraPrototype().length];
+        // TODO: add the extra prototype lines
+        PrototypeEntry[] extraPrototype = new PrototypeEntry[pkg.getExtraPrototype().length];
 
         for ( int i = 0; i < pkg.getExtraPrototype().length; i++ )
         {
-            extraPrototype[i] = AbstractPrototypeEntry.fromLine( pkg.getExtraPrototype()[i] );
-
-            System.out.println( "extraPrototype[i] = " + extraPrototype[i] );
+            extraPrototype[i] = PrototypeEntry.fromLine( pkg.getExtraPrototype()[i] );
         }
 
         PkgUnixPackage.cast( unixPackage ).

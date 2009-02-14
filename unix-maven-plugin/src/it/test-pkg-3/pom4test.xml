@@ -34,11 +34,17 @@
           <assembly>
             <extract>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+              <includes>
+                <!-- TODO: this should work without the leading stars -->
+                <include>**/*-license.txt</include>
+              </includes>
               <toDir>/usr/share/hudson/license</toDir>
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>
-              <fileUser>root</fileUser>
-              <fileGroup>bin</fileGroup>
+              <fileAttributes>
+                <user>root</user>
+                <group>bin</group>
+              </fileAttributes>
             </extract>
           </assembly>
           <packages>
@@ -49,9 +55,11 @@
                 <copy>
                   <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
                   <toFile>/usr/share/hudson/lib/hudson.war</toFile>
-                  <fileUser>hudson</fileUser>
-                  <fileGroup>hudson</fileGroup>
-                  <fileMode>0644</fileMode>
+                  <fileAttributes>
+                    <user>hudson</user>
+                    <group>hudson</group>
+                    <mode>0644</mode>
+                  </fileAttributes>
                 </copy>
               </assembly>
             </package>
@@ -60,9 +68,14 @@
               <name>Hudson Slave</name>
               <description>Hudson slave node</description>
               <assembly>
+                <!-- TODO: As this want to copy only a single file, add a "extract-file" version -->
                 <extract>
                   <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
                   <toDir>/usr/share/hudson/lib</toDir>
+                  <includes>
+                    <!-- TODO: this should work without the leading stars -->
+                    <include>**/WEB-INF/slave.jar</include>
+                  </includes>
                   <pattern>WEB-INF/(slave.jar)</pattern>
                   <replacement>$1</replacement>
                 </extract>

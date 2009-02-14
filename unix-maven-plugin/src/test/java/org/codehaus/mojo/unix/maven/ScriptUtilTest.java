@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class ScriptUtilTest
@@ -24,7 +24,7 @@ public class ScriptUtilTest
             setPreRemove( "preremove" ).
             setPostRemove( "postremove" ).
             addCustomScript( "i.daemon" ).
-            done();
+            build();
     }
 
     public void testWithoutAnyFiles()

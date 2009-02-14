@@ -1,7 +1,10 @@
 package org.codehaus.mojo.unix.rpm;
 
+import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.MissingSettingException;
 import org.codehaus.mojo.unix.PackageVersion;
+import org.codehaus.mojo.unix.util.line.LineWriterWriter;
+import org.codehaus.mojo.unix.util.RelativePath;
 import org.codehaus.mojo.unix.util.UnixUtil;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
@@ -16,7 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class SpecFile
@@ -72,24 +75,24 @@ public class SpecFile
 
     public File includePostun;
 
-    public void addFile( String path, String user, String group, String mode )
+    public void addFile( RelativePath path, FileAttributes attributes )
         throws IOException
     {
         files.add( new StringBuffer().
-            append( "%attr(" ).append( StringUtils.isNotEmpty( mode ) ? mode : "-" ).append( "," ).
-            append( StringUtils.isNotEmpty( user ) ? user : "-" ).append( "," ).
-            append( StringUtils.isNotEmpty( group ) ? group : "-" ).append( ") " ).
-            append( path ).toString() );
+            append( "%attr(" ).append( attributes.mode != null ? attributes.mode.toOctalString() : "-" ).append( "," ).
+            append( StringUtils.isNotEmpty( attributes.user ) ? attributes.user : "-" ).append( "," ).
+            append( StringUtils.isNotEmpty( attributes.group ) ? attributes.group : "-" ).append( ") " ).
+            append( path.asAbsolutePath() ).toString() );
     }
 
-    public void addDirectory( String path, String user, String group, String mode )
+    public void addDirectory( RelativePath path, FileAttributes attributes )
     {
         files.add( new StringBuffer().
             append( "%dir " ).
-            append( "%attr(" ).append( StringUtils.isNotEmpty( mode ) ? mode : "-" ).append( "," ).
-            append( StringUtils.isNotEmpty( user ) ? user : "-" ).append( "," ).
-            append( StringUtils.isNotEmpty( group ) ? group : "-" ).append( ") " ).
-            append( path ).toString() );
+            append( "%attr(" ).append( attributes.mode != null ? attributes.mode.toOctalString() : "-" ).append( "," ).
+            append( StringUtils.isNotEmpty( attributes.user ) ? attributes.user : "-" ).append( "," ).
+            append( StringUtils.isNotEmpty( attributes.group ) ? attributes.group : "-" ).append( ") " ).
+            append( path.asAbsolutePath() ).toString() );
     }
 
     public void writeToFile( File specFile )
@@ -109,9 +112,9 @@ public class SpecFile
     }
 
     public void writeTo( PrintWriter writer )
-        throws MissingSettingException
+        throws MissingSettingException, IOException
     {
-        SpecWriter spec = new SpecWriter( writer );
+        LineWriterWriter spec = new LineWriterWriter( writer );
 
         for ( Iterator it = defineStatements.iterator(); it.hasNext(); )
         {
@@ -119,111 +122,58 @@ public class SpecFile
         }
 
         UnixUtil.assertField( "version", version );
-        spec.add( "Name: " + UnixUtil.getField( "name", getName() ) );
-        spec.add( "Version: " + getRpmVersion( version ) );
-        spec.add( "Release: " + getRpmRelease( version ) );
-        spec.add( "Summary: " + UnixUtil.getField( "summary", summary ) );
-        spec.add( "License: " + UnixUtil.getField( "license", license ) );
-        spec.addIf( "Distribution: ", distribution );
-        spec.addIf( "Icon", icon );
-        spec.addIf( "Vendor", vendor );
-        spec.addIf( "URL", url );
-        spec.add( "Group: " + UnixUtil.getField( "group", group ) );
-        spec.addIf( "Packager", packager );
-        spec.addAll( "Provides", provides );
-        spec.addAll( "Requires", requires );
-        spec.addAll( "Conflicts", conflicts );
 
-        spec.add( "BuildRoot: " + UnixUtil.getField( "buildRoot", buildRoot ).getAbsolutePath() );
-        spec.add();
+        spec.
+            add( "Name: " + UnixUtil.getField( "name", getName() ) ).
+            add( "Version: " + getRpmVersion( version ) ).
+            add( "Release: " + getRpmRelease( version ) ).
+            add( "Summary: " + UnixUtil.getField( "summary", summary ) ).
+            add( "License: " + UnixUtil.getField( "license", license ) ).
+            addIfNotEmpty( "Distribution: ", distribution ).
+//            addIf(icon != null, "Icon").addIfNotNull( icon ).
+//            addIfNotEmpty( "Vendor", vendor ).
+//            addIfNotEmpty( "URL", url ).
+            add( "Group: " + UnixUtil.getField( "group", group ) ).
+            addIfNotEmpty( "Packager", packager ).
+            setPrefix( "Provides" ).addAllLines( provides ).clearPrefix().
+            setPrefix( "Requires" ).addAllLines( requires ).clearPrefix().
+            setPrefix( "Conflicts" ).addAllLines( conflicts ).clearPrefix().
+            add( "BuildRoot: " + UnixUtil.getField( "buildRoot", buildRoot ).getAbsolutePath() ).
+            add();
 
         // The %description tag is required even if it is empty.
-        spec.add( "%description" );
-        spec.addIf( StringUtils.isNotEmpty( description ), description );
-        spec.add();
+        spec.
+            add( "%description" ).
+            addIf( StringUtils.isNotEmpty( description ), description ).
+            add();
 
-        spec.add( "%files" );
-        for ( Iterator it = files.iterator(); it.hasNext(); )
-        {
-            spec.add( it.next().toString() );
-        }
+        spec.
+            add( "%files" ).
+            addAllLines( files );
 
         spec.addIf( includePre != null || includePost != null || includePreun != null || includePostun != null, "" );
-        spec.addIf( includePre != null, "%pre" );
-        spec.includeIf( includePre );
-        spec.addIf( includePost != null, "%post" );
-        spec.includeIf( includePost );
-        spec.addIf( includePreun != null, "%preun" );
-        spec.includeIf( includePreun );
-        spec.addIf( includePostun != null, "%postun" );
-        spec.includeIf( includePostun );
+        if ( includePre != null )
+        {
+            spec.add( "%pre" );
+            spec.add( "%include " + includePre.getAbsolutePath() );
+        }
+        if ( includePost != null )
+        {
+            spec.add( "%post" );
+            spec.add( "%include " + includePost.getAbsolutePath() );
+        }
+        if ( includePreun != null )
+        {
+            spec.add( "%preun" );
+            spec.add( "%include " + includePreun.getAbsolutePath() );
+        }
+        if ( includePostun != null )
+        {
+            spec.add( "%postun" );
+            spec.add( "%include " + includePostun.getAbsolutePath() );
+        }
 
         spec.addIf( dump, "%dump" );
-    }
-
-    private static class SpecWriter
-    {
-        private PrintWriter writer;
-
-        public SpecWriter( PrintWriter writer )
-        {
-            this.writer = writer;
-        }
-
-        public void add( String string )
-        {
-            writer.println( string );
-        }
-
-        public void addIf( String field, String value )
-        {
-            if ( StringUtils.isNotEmpty( value ) )
-            {
-                writer.println( field + ": " + value );
-            }
-        }
-
-        public void addIf( String field, File file )
-        {
-            if ( file != null )
-            {
-                writer.println( field + ": " + file.getAbsolutePath() );
-            }
-        }
-
-        public void add()
-        {
-            writer.println();
-        }
-
-        public void addIf( boolean flag, String line )
-        {
-            if ( flag )
-            {
-                writer.println( line );
-            }
-        }
-
-        public void addAll( String prefix, List provides )
-        {
-            if ( provides == null )
-            {
-                return;
-            }
-
-            for ( Iterator iterator = provides.iterator(); iterator.hasNext(); )
-            {
-                add( prefix + ": " + iterator.next() );
-            }
-        }
-
-        public void includeIf( File file )
-        {
-            if ( file != null )
-            {
-                writer.println( "%include " + file.getAbsolutePath() );
-            }
-        }
     }
 
     private String getName()

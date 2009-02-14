@@ -12,20 +12,6 @@
       <version>1.255</version>
       <type>war</type>
     </dependency>
-<!--
-    <dependency>
-      <groupId>bar</groupId>
-      <artifactId>project-uber-1</artifactId>
-      <version>1.1-2</version>
-      <type>dpkg</type>
-    </dependency>
-    <dependency>
-      <groupId>bar</groupId>
-      <artifactId>project-uber-1</artifactId>
-      <version>1.1-2</version>
-      <type>pkg</type>
-    </dependency>
--->
   </dependencies>
   <repositories>
     <repository>
@@ -35,29 +21,6 @@
   </repositories>
   <build>
     <plugins>
-      <!--
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-2</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>directory-inline</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <finalName>debian/assembled-pkg</finalName>
-          <ignoreDirFormatExtensions>true</ignoreDirFormatExtensions>
-          <tarlongfilemode>gnu</tarlongfilemode>
-          <descriptors>
-            <descriptor>src/main/assembly/dpkg.xml</descriptor>
-            <descriptor>src/main/assembly/dpkg-derivate.xml</descriptor>
-          </descriptors>
-        </configuration>
-      </plugin>
-      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>unix-maven-plugin</artifactId>
@@ -70,21 +33,15 @@
             <section>devel</section>
           </dpkg>
           <assembly>
-            <!--
-            <copy path="" to=""/>
-            -->
             <copy>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/usr/share/hudson/lib/hudson.war</toFile>
-              <fileUser>hudson</fileUser>
-              <fileGroup>hudson</fileGroup>
-              <fileMode>0644</fileMode>
+              <fileAttributes>
+                <user>hudson</user>
+                <group>hudson</group>
+                <mode>0644</mode>
+              </fileAttributes>
             </copy>
-            <!--
-            <extract archive="" dir=""/>
-            <extract artifact="" dir=""/>
-            <extract artifact="" dir="" includes="" excludes="" mappingPattern=""/>
-            -->
           </assembly>
         </configuration>
       </plugin>

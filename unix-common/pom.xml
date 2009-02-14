@@ -18,5 +18,15 @@
       <artifactId>commons-vfs</artifactId>
       <version>1.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.6</version>
+    </dependency>
   </dependencies>
 </project>

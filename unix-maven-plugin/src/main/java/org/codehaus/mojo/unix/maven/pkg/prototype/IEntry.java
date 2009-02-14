@@ -19,6 +19,9 @@ package org.codehaus.mojo.unix.maven.pkg.prototype;
  * under the License.
  */
 
+import org.codehaus.mojo.unix.UnixFileMode;
+import org.codehaus.mojo.unix.util.RelativePath;
+
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id: IEntry.java 7323 2008-07-26 14:58:37Z trygvis $
@@ -28,10 +31,10 @@ public class IEntry
 {
     public IEntry()
     {
-        setRelative( Boolean.TRUE );
+        this( null, null, null, null, null );
     }
 
-    public IEntry( String pkgClass, String mode, String user, String group, String path )
+    public IEntry( String pkgClass, UnixFileMode mode, String user, String group, RelativePath path )
     {
         super( pkgClass, mode, user, group, Boolean.TRUE, path, null );
     }

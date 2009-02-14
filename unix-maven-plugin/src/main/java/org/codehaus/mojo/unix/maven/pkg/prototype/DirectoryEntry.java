@@ -19,6 +19,9 @@ package org.codehaus.mojo.unix.maven.pkg.prototype;
  * under the License.
  */
 
+import org.codehaus.mojo.unix.UnixFileMode;
+import org.codehaus.mojo.unix.util.RelativePath;
+
 import java.io.File;
 
 /**
@@ -28,18 +31,37 @@ import java.io.File;
 public class DirectoryEntry
     extends SinglePrototypeEntry
 {
-    public DirectoryEntry()
+    /**
+     * The same as calling {@link #DirectoryEntry(String, org.codehaus.mojo.unix.UnixFileMode, String, String, RelativePath, Boolean, java.io.File)}
+     * with <code>relative=false</code> and <code>realPath=null</code>.
+     */
+    public DirectoryEntry( String pkgClass, UnixFileMode mode, String user, String group, RelativePath path )
     {
+        this( pkgClass, mode, user, group, path, Boolean.FALSE, null );
     }
 
-    public DirectoryEntry( String pkgClass, String mode, String user, String group, Boolean relative,
-                           String path, File realPath )
+    /**
+     * The same as calling {@link #DirectoryEntry(String, org.codehaus.mojo.unix.UnixFileMode, String, String, RelativePath, Boolean, java.io.File)}
+     * the real path.
+     */
+    public DirectoryEntry( String pkgClass, UnixFileMode mode, String user, String group, RelativePath path,
+                           Boolean relative )
+    {
+        this( pkgClass, mode, user, group, path, relative, null );
+    }
+
+    public DirectoryEntry( String pkgClass, UnixFileMode mode, String user, String group, RelativePath path,
+                           Boolean relative, File realPath )
     {
         super( pkgClass, mode, user, group, relative, path, realPath );
     }
 
     public String generatePrototypeLine()
     {
-        return "d " + getPkgClass() + " " + getPath() + " " + getMode() + " " + getUser() + " " + getGroup();
+        return "d " + getPkgClass() +
+            " " + getPath() +
+            " " + getModeString() +
+            " " + getUser() +
+            " " + getGroup();
     }
 }

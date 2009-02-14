@@ -8,11 +8,12 @@
   <artifactId>unix-dpkg</artifactId>
   <name>Maven DPKG Support</name>
   <dependencies>
+<!--
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-archiver</artifactId>
-      <version>1.0-alpha-10</version>
     </dependency>
+-->
     <dependency>
       <groupId>org.codehaus.mojo.unix</groupId>
       <artifactId>unix-common</artifactId>
@@ -22,6 +23,16 @@
       <groupId>org.codehaus.mojo.unix</groupId>
       <artifactId>unix-ar</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-compress</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>20050911</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

@@ -1,44 +1,71 @@
 package org.codehaus.mojo.unix.maven;
 
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.Selectors;
+import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.mojo.unix.util.RelativePath;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class FsFileCollector
     implements FileCollector
 {
-    private static class PackageFile
+    private interface Operation
+    {
+        public void process()
+            throws FileSystemException;
+    }
+
+    private class PackageFile
+        implements Operation
     {
         public final FileObject source;
 
-        public final String toFile;
+        public final RelativePath toPath;
 
-        public PackageFile( FileObject source, String toFile )
+        public PackageFile( FileObject source, RelativePath toPath )
         {
             this.source = source;
-            this.toFile = toFile;
+            this.toPath = toPath;
+        }
+
+        public void process()
+            throws FileSystemException
+        {
+            FileObject toFile = root.resolveFile( toPath.string );
+
+            System.out.println( "Copying from " + source.getName().getPath() + " to " + toFile.getName().getPath() );
+
+            toFile.getParent().createFolder();
+            toFile.copyFrom( source, Selectors.SELECT_SELF );
+            toFile.getContent().setLastModifiedTime( source.getContent().getLastModifiedTime() );
         }
     }
 
-    private static class PackageDirectory
+    private class PackageDirectory
+        implements Operation
     {
-        public final String path;
+        public final RelativePath toPath;
 
-        public PackageDirectory(String path)
+        public PackageDirectory( RelativePath toPath )
         {
-            this.path = path;
+            this.toPath = toPath;
+        }
+
+        public void process()
+            throws FileSystemException
+        {
+            root.resolveFile( toPath.string ).createFolder();
         }
     }
 
@@ -46,17 +73,40 @@ public class FsFileCollector
 
     private boolean debug;
 
-    public FileCollector addDirectory( String path, String user, String group, String mode )
-        throws IOException
+    private FileObject fsRoot;
+
+    private FileObject root;
+
+    public FsFileCollector( FileObject fsRoot )
+        throws FileSystemException
+    {
+        this.fsRoot = fsRoot;
+        FileSystemManager fileSystemManager = fsRoot.getFileSystem().getFileSystemManager();
+        FileObject root = fileSystemManager.createVirtualFileSystem( fsRoot );
+        root.createFolder();
+        this.root = root;
+    }
+
+    public FileObject getFsRoot()
+    {
+        return fsRoot;
+    }
+
+    public FileObject getRoot()
+    {
+        return root;
+    }
+
+    public FileCollector addDirectory( RelativePath path, FileAttributes attributes )
     {
         files.add( new PackageDirectory( path ) );
 
         return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, String toFile, String user, String group, String mode )
+    public FileCollector addFile( FileObject fromFile, RelativePath toPath, FileAttributes attributes )
     {
-        files.add( new PackageFile( fromFile, toFile ) );
+        files.add( new PackageFile( fromFile, toPath ) );
 
         return this;
     }
@@ -66,76 +116,12 @@ public class FsFileCollector
         this.debug = flag;
     }
 
-    public void collect( File basedir )
+    public void collect()
         throws IOException
     {
-        if ( basedir == null )
-        {
-            throw new IOException( "The package assembly directory is not set." );
-        }
-
         for ( Iterator it = files.iterator(); it.hasNext(); )
         {
-            Object o = it.next();
-
-            if ( o instanceof PackageFile)
-            {
-                processFile( basedir, (PackageFile) o );
-            }
-            else if ( o instanceof PackageDirectory )
-            {
-                processDirectory( basedir, ((PackageDirectory) o).path );
-            }
-        }
-    }
-
-    private void processFile( File basedir, PackageFile packageFile )
-        throws IOException
-    {
-        File to = new File( basedir, packageFile.toFile );
-
-        File parentFile = to.getParentFile();
-
-        if ( !parentFile.isDirectory() )
-        {
-            if ( !parentFile.mkdirs() )
-            {
-                throw new IOException( "Could not create directory: '" + parentFile.getAbsolutePath() + "'." );
-            }
-        }
-
-        // TODO: Figure out how to use VFS to do this
-        OutputStream output = null;
-
-        try
-        {
-            output = new FileOutputStream( to );
-            IOUtil.copy( packageFile.source.getContent().getInputStream(), output );
-        }
-        finally
-        {
-            IOUtil.close( output );
-        }
-
-        to.setLastModified( packageFile.source.getContent().getLastModifiedTime() );
-    }
-
-    private void processDirectory( File basedir, String path )
-        throws IOException
-    {
-        File to = new File( basedir, path );
-
-        if ( !to.exists() )
-        {
-            if ( debug )
-            {
-                System.out.println( "Creating directory: " + to );
-            }
-
-            if ( !to.mkdirs() )
-            {
-                throw new IOException( "Unable to create directory: " + to.getAbsolutePath() );
-            }
+            ((Operation) it.next()).process();
         }
     }
 }

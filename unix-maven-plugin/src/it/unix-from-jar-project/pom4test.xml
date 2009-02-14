@@ -17,6 +17,13 @@
       <version>1.255</version>
       <type>war</type>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.mojo.unix.it</groupId>
+      <artifactId>my-native</artifactId>
+      <version>1.0</version>
+      <type>so</type>
+      <classifier>${os.name}-${os.version}-${os.arch}</classifier>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
@@ -66,9 +73,11 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <defaults>
-            <fileUser>hudson</fileUser>
-            <fileGroup>hudson</fileGroup>
-            <fileMode>0644</fileMode>
+            <fileAttributes>
+              <user>hudson</user>
+              <group>hudson</group>
+              <mode>044</mode>
+            </fileAttributes>
           </defaults>
           <dpkg>
             <section>devel</section>
@@ -80,6 +89,10 @@
             <copy>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/usr/share/hudson/lib/hudson.war</toFile>
+            </copy>
+            <copy>
+              <artifact>org.codehaus.mojo.unix.it:my-native:so:${os.name}-${os.version}-${os.arch}</artifact>
+              <toFile>/usr/share/hudson/lib/my-native.so</toFile>
             </copy>
             <copy>
               <path>target/appassembler</path>

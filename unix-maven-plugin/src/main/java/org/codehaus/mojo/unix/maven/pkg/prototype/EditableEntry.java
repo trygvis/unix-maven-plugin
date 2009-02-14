@@ -19,6 +19,9 @@ package org.codehaus.mojo.unix.maven.pkg.prototype;
  * under the License.
  */
 
+import org.codehaus.mojo.unix.UnixFileMode;
+import org.codehaus.mojo.unix.util.RelativePath;
+
 import java.io.File;
 
 /**
@@ -28,18 +31,18 @@ import java.io.File;
 public class EditableEntry
     extends SinglePrototypeEntry
 {
-    public EditableEntry()
-    {
-    }
-
-    public EditableEntry( String pkgClass, String mode, String user, String group, Boolean relative,
-                          String path, File realPath )
+    public EditableEntry( String pkgClass, UnixFileMode mode, String user, String group, Boolean relative,
+                          RelativePath path, File realPath )
     {
         super( pkgClass, mode, user, group, relative, path, realPath );
     }
 
     public String generatePrototypeLine()
     {
-        return "e " + getPkgClass() + " " + getProcessedPath() + " " + getMode() + " " + getUser() + " " + getGroup();
+        return "e " + getPkgClass() +
+            " " + getProcessedPath() +
+            " " + getModeString() +
+            " " + getUser() +
+            " " + getGroup();
     }
 }

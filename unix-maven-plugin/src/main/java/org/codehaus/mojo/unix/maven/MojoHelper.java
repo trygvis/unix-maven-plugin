@@ -1,5 +1,9 @@
 package org.codehaus.mojo.unix.maven;
 
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs.FileSystemManager;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.transform.SnapshotTransformation;
 import org.apache.maven.model.License;
@@ -11,7 +15,6 @@ import org.codehaus.mojo.unix.MissingSettingException;
 import org.codehaus.mojo.unix.PackageVersion;
 import org.codehaus.mojo.unix.UnixPackage;
 import org.codehaus.mojo.unix.maven.util.PackageCreationUtil;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
@@ -23,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public abstract class MojoHelper
@@ -54,12 +57,10 @@ public abstract class MojoHelper
     // This can be overridden
     // -----------------------------------------------------------------------
 
-    protected abstract void validateSettings()
+    protected abstract void validateMojoSettings()
         throws MissingSettingException;
 
-    protected abstract void customizePackage( UnixPackage unixPackage );
-
-    protected abstract void customizeMojoParameters( PackagingMojoParameters mojoParameters );
+    protected abstract void applyFormatSpecificSettingsToPackage( UnixPackage unixPackage );
 
     // -----------------------------------------------------------------------
     // The shit
@@ -127,6 +128,20 @@ public abstract class MojoHelper
     public final void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        FileObject buildDirectory;
+        FileObject basedir;
+
+        try
+        {
+            FileSystemManager fileSystemManager = VFS.getManager();
+            basedir = fileSystemManager.resolveFile( this.project.getBasedir().getAbsolutePath() );
+            buildDirectory = fileSystemManager.resolveFile( this.buildDirectory.getAbsolutePath() );
+        }
+        catch ( FileSystemException e )
+        {
+            throw new MojoExecutionException( "Error while initializing Commons VFS", e);
+        }
+
         // -----------------------------------------------------------------------
         // Create each package
         // -----------------------------------------------------------------------
@@ -141,12 +156,8 @@ public abstract class MojoHelper
 
                 String name = "unix/root-" + formatType + ( classifier != null ? "-" + classifier : "" );
 
-                File packageRoot = new File( buildDirectory, name );
-
-                if ( !packageRoot.isDirectory() )
-                {
-                    FileUtils.forceMkdir( packageRoot );
-                }
+                FileObject packageRoot = buildDirectory.resolveFile( name );
+                packageRoot.createFolder();
 
                 UnixPackage unixPackage = format.start().
                     basedir( project.getBasedir() ).
@@ -159,25 +170,30 @@ public abstract class MojoHelper
                 // Let the implementation add its metadata
                 // -----------------------------------------------------------------------
 
-                validateSettings();
+                validateMojoSettings();
 
-                customizePackage( unixPackage );
+                applyFormatSpecificSettingsToPackage( unixPackage );
 
                 // -----------------------------------------------------------------------
                 // DO IT
                 // -----------------------------------------------------------------------
 
+                // TODO: here the logic should be different if many packages are to be created.
+                // Example: packageName should be taken from mojoParameters if there is only a single package, if not it should come from the Pakke object.
+                //          This should also be validated, at least for packageName
+
                 File packageFile = new PackageCreationUtil( pakke, classifier, project, unixPackage, artifactMap,
                     defaults ).
                     appendAssemblyOperations( mojoParameters.assembly ).
                     appendAssemblyOperations( pakke.getAssembly() ).
+                    name( pakke.getPackageName(), project.getArtifactId() + ( classifier == null ? "" : "-" + classifier ) ).
                     contact( mojoParameters.contact ).
                     contactEmail( mojoParameters.contactEmail ).
                     shortDescription( pakke.getName(), project.getName() ).
                     description( pakke.getDescription(), project.getDescription() ).
                     license( getLicense( format, project ) ).
                     architecture( mojoParameters.architecture, format.defaultArchitecture() ).
-                    createPackage();
+                    createPackage( basedir );
 
                 attach( classifier, unixPackage, packageFile );
             }

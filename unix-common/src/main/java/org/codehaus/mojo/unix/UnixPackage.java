@@ -1,11 +1,16 @@
 package org.codehaus.mojo.unix;
 
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * Represents a Unix package that has attributes and a set of files to be packaged.
+ *
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public abstract class UnixPackage
@@ -25,8 +30,7 @@ public abstract class UnixPackage
     // Maven Meta Data
     // -----------------------------------------------------------------------
 
-    public UnixPackage mavenCoordinates( String groupId, String artifactId, String classifier
-    )
+    public UnixPackage mavenCoordinates( String groupId, String artifactId, String classifier )
     {
         return this;
     }
@@ -47,16 +51,25 @@ public abstract class UnixPackage
         return this;
     }
 
+    /**
+     * A unique identifier of the package.
+     */
     public UnixPackage name( String name )
     {
         return this;
     }
 
+    /**
+     * A single-line description of the package.
+     */
     public UnixPackage shortDescription( String shortDescription )
     {
         return this;
     }
 
+    /**
+     * A multi-line description of the package.
+     */
     public UnixPackage description( String description )
     {
         return this;
@@ -86,7 +99,8 @@ public abstract class UnixPackage
     //
     // -----------------------------------------------------------------------
 
-    public UnixPackage workingDirectory( File file )
+    public UnixPackage workingDirectory( FileObject file )
+        throws FileSystemException
     {
         return this;
     }

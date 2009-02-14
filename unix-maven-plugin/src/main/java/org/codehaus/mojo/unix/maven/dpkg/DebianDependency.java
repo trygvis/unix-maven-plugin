@@ -5,7 +5,7 @@ import org.apache.maven.artifact.Artifact;
 import java.io.File;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 class DebianDependency

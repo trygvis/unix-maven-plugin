@@ -6,11 +6,10 @@ import org.codehaus.plexus.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class PkgmkCommand
@@ -154,11 +153,15 @@ public class PkgmkCommand
     public void execute()
         throws IOException
     {
+        // Seems like pkgmk doesn't like its stderr/stdout to be closed.
+        SystemCommand.ToStringLineConsumer out = new SystemCommand.ToStringLineConsumer();
+
         SystemCommand command = new SystemCommand().
             setCommand( "pkgmk" ).
             setBasedir( basedir ).
-            dumpOutputIf( debug ).
-            dumpCommandIf( debug );
+            dumpCommandIf( debug ).
+            withStderrConsumer( out ).
+            withStdoutConsumer( out );
 
         if ( StringUtils.isNotEmpty( arch ) )
         {
@@ -205,14 +208,18 @@ public class PkgmkCommand
             command.addArgument( "-v" ).addArgument( version );
         }
 
-        for ( Iterator it = variables.iterator(); it.hasNext(); )
+        SystemCommand.ExecutionResult result = command.
+                addArguments(variables).
+                execute();
+
+        if ( debug )
         {
-            String s = (String) it.next();
-            command.addArgument( s );
+            System.out.println( "------------------------------------------------------" );
+            System.out.println( "pkgmk output:" );
+            System.out.println( out );
         }
 
-        command.
-            execute().
-            assertSuccess();
+        result.
+                assertSuccess();
     }
 }

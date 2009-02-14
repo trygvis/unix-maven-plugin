@@ -1,7 +1,7 @@
 package org.codehaus.mojo.unix.dpkg;
 
 import org.codehaus.mojo.unix.util.SystemCommand;
-import org.codehaus.mojo.unix.HasRelaxedEquality;
+import org.codehaus.mojo.unix.EqualsIgnoreNull;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class DpkgDebUtil
@@ -17,7 +17,7 @@ public class DpkgDebUtil
     private static final String EOL = System.getProperty( "line.separator" );
 
     public static class ControlFile
-        implements HasRelaxedEquality
+        implements EqualsIgnoreNull
     {
         public final String section;
         public final String priority;
@@ -39,7 +39,7 @@ public class DpkgDebUtil
             this.description = description;
         }
 
-        public boolean equalsIgnoreNull( HasRelaxedEquality other )
+        public boolean equalsIgnoreNull( EqualsIgnoreNull other )
         {
             ControlFile that = (ControlFile) other;
 

@@ -15,6 +15,6 @@ success &= ShittyUtil.assertPkgEntries(pkg, [
         new PkgchkUtil.RegularFile("/usr/share/hudson/lib/slave.jar", "0644", "nobody", "nogroup", 158615, 48565, null),
         new PkgchkUtil.RegularFile("/usr/share/hudson/license/atom-license.txt", "0644", "nobody", "nogroup", 49, 4473, null),
         new PkgchkUtil.RegularFile("/usr/share/hudson/license/dc-license.txt", "0644", "nobody", "nogroup", 1544, 59072, null),
-        new PkgchkUtil.InstallationFile("pkginfo", 122, 0, null),
+        new PkgchkUtil.InstallationFile("pkginfo", 149, 0, null),
 ])
 return success

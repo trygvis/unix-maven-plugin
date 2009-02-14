@@ -14,7 +14,7 @@ success &= ShittyUtil.assertRelaxed(
 // Ignore dates for now
 success &= ShittyUtil.assertPkgEntries(pkg, [
         new PkgchkUtil.RegularFile("/usr/share/hudson/lib/hudson.war", "0644", "hudson", "hudson", 20623413, 3301, null),
-        new PkgchkUtil.InstallationFile("pkginfo", 116, 0, null),
+        new PkgchkUtil.InstallationFile("pkginfo", 143, 0, null),
 ])
 
 return success

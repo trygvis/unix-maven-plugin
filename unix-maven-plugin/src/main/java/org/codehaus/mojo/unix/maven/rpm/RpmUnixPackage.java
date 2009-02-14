@@ -1,6 +1,8 @@
 package org.codehaus.mojo.unix.maven.rpm;
 
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
 import org.codehaus.mojo.unix.MissingSettingException;
 import org.codehaus.mojo.unix.UnixPackage;
@@ -8,13 +10,15 @@ import org.codehaus.mojo.unix.maven.FsFileCollector;
 import org.codehaus.mojo.unix.maven.ScriptUtil;
 import org.codehaus.mojo.unix.rpm.Rpmbuild;
 import org.codehaus.mojo.unix.rpm.SpecFile;
+import org.codehaus.mojo.unix.util.RelativePath;
+import org.codehaus.mojo.unix.util.vfs.VfsUtil;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class RpmUnixPackage
@@ -24,9 +28,9 @@ public class RpmUnixPackage
 
     private RpmTool rpmTool = new RpmTool();
 
-    private FsFileCollector fileCollector = new FsFileCollector();
+    private FsFileCollector fileCollector;
 
-    private File workingDirectory;
+    private File workingDirectoryF;
 
     private String rpmbuildPath;
 
@@ -42,9 +46,9 @@ public class RpmUnixPackage
             setPostInstall( "post-install" ).
             setPreRemove( "pre-remove" ).
             setPostRemove( "post-remove" ).
-            done();
+            build();
     }
-    
+
     public RpmUnixPackage()
     {
         super( "rpm" );
@@ -90,9 +94,11 @@ public class RpmUnixPackage
         return this;
     }
 
-    public UnixPackage workingDirectory( File workingDirectory )
+    public UnixPackage workingDirectory( FileObject workingDirectory )
+        throws FileSystemException
     {
-        this.workingDirectory = workingDirectory;
+        workingDirectoryF = VfsUtil.asFile( workingDirectory );
+        fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
         return this;
     }
 
@@ -111,57 +117,60 @@ public class RpmUnixPackage
         return this;
     }
 
-    public FileCollector addDirectory( String path, String user, String group, String mode )
+    public FileObject getRoot()
+    {
+        return fileCollector.getRoot();
+    }
+
+    public FileCollector addDirectory( RelativePath path, FileAttributes attributes )
         throws IOException
     {
-        specFile.addDirectory( path, user, group, mode );
-        fileCollector.addDirectory( path, user, group, mode );
+        specFile.addDirectory( path, attributes );
+        fileCollector.addDirectory( path, attributes );
         return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, String toFile, String user, String group, String mode )
+    public FileCollector addFile( FileObject fromFile, RelativePath toPath, FileAttributes attributes )
         throws IOException
     {
-        specFile.addFile( toFile, user, group, mode );
-        fileCollector.addFile( fromFile, toFile, user, group, mode );
+        specFile.addFile( toPath, attributes );
+        fileCollector.addFile( fromFile, toPath, attributes );
         return this;
     }
 
     public void packageToFile( File packageFile )
         throws IOException, MissingSettingException
     {
-        File rpms = new File( workingDirectory, "RPMS" );
-        File specsDir = new File( workingDirectory, "SPECS" );
-        File packageRoot = new File( workingDirectory, "package-root" );
-        File tmp = new File( workingDirectory, "tmp" );
+        File rpms = new File( workingDirectoryF, "RPMS" );
+        File specsDir = new File( workingDirectoryF, "SPECS" );
+        File tmp = new File( workingDirectoryF, "tmp" );
 
         File specFilePath = new File( specsDir, rpmTool.getBaseName() + ".spec" );
 
-        FileUtils.forceMkdir( new File( workingDirectory, "BUILD" ) );
+        FileUtils.forceMkdir( new File( workingDirectoryF, "BUILD" ) );
         FileUtils.forceMkdir( rpms );
-        FileUtils.forceMkdir( new File( workingDirectory, "SOURCES" ) );
+        FileUtils.forceMkdir( new File( workingDirectoryF, "SOURCES" ) );
         FileUtils.forceMkdir( specsDir );
-        FileUtils.forceMkdir( new File( workingDirectory, "SRPMS" ) );
-        FileUtils.forceMkdir( packageRoot );
+        FileUtils.forceMkdir( new File( workingDirectoryF, "SRPMS" ) );
         FileUtils.forceMkdir( tmp );
 
-        fileCollector.collect( packageRoot );
+        fileCollector.collect();
 
-        ScriptUtil.Execution execution = scriptUtil.copyScripts( getBasedir(), new File( workingDirectory, "scripts" ) );
+        ScriptUtil.Execution execution = scriptUtil.copyScripts( getBasedir(), new File( workingDirectoryF, "scripts" ) );
 
         specFile.includePre = execution.getPreInstall();
         specFile.includePost = execution.getPostInstall();
         specFile.includePreun = execution.getPreRemove();
         specFile.includePostun = execution.getPostRemove();
         specFile.version = getVersion();
-        specFile.buildRoot = packageRoot;
+        specFile.buildRoot = VfsUtil.asFile( fileCollector.getFsRoot() );
         specFile.writeToFile( specFilePath );
 
         new Rpmbuild().
             setDebug( debug ).
-            setBuildroot( packageRoot ).
+            setBuildroot( VfsUtil.asFile( fileCollector.getFsRoot() ) ).
             define( "_tmppath " + tmp.getAbsolutePath() ).
-            define( "_topdir " + workingDirectory.getAbsolutePath() ).
+            define( "_topdir " + workingDirectoryF.getAbsolutePath() ).
             define( "_rpmdir " + packageFile.getParentFile().getAbsolutePath() ).
             define( "_rpmfilename " + packageFile.getName() ).
             setSpecFile( specFilePath ).

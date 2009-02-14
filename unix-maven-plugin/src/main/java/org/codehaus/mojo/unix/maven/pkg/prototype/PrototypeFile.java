@@ -3,29 +3,39 @@ package org.codehaus.mojo.unix.maven.pkg.prototype;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.provider.local.LocalFileSystem;
+import org.codehaus.mojo.unix.FileAttributes;
+import org.codehaus.mojo.unix.util.line.LineFile;
+import org.codehaus.mojo.unix.util.RelativePath;
+import org.codehaus.mojo.unix.util.vfs.VfsUtil;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class PrototypeFile
 {
-    private List includeFiles = new ArrayList();
+    private final List includeFiles = new ArrayList();
 
-    private PrototypeEntryList entryList = new PrototypeEntryList();
+    private final PrototypeEntryList entryList = new PrototypeEntryList();
+
+    private final List tmpFiles = new ArrayList();
+
+    private FileObject root;
+
+    public PrototypeFile( FileObject root )
+    {
+        this.root = root;
+    }
 
     public void includeFileIf( File file, String name )
     {
@@ -34,55 +44,58 @@ public class PrototypeFile
             return;
         }
 
-        includeFiles.add( "i " + name + "=" + file.getAbsolutePath());
+        includeFiles.add( "i " + name + "=" + file.getAbsolutePath() );
     }
 
-    public void addDirectory( String path, String user, String group, String mode )
+    public boolean hasPath( String path )
     {
-        DirectoryEntry entry = new DirectoryEntry();
-        entry.setPath( path );
-        entry.setUser( user );
-        entry.setGroup( group );
-        entry.setMode( mode );
-        entryList.add( entry );
+        return entryList.hasPath( path );
     }
 
-    public void addFile( FileObject fromFile, String toFile, String user, String group, String mode )
+    public void addDirectory( RelativePath path, FileAttributes attributes )
+        throws FileSystemException
+    {
+        entryList.add( new DirectoryEntry( null, attributes.mode, attributes.user, attributes.group, path ) );
+    }
+
+    public void addFile( FileObject fromFile, RelativePath toFile, FileAttributes attributes )
         throws IOException
     {
         try
         {
-            FileEntry entry = new FileEntry();
-            entry.setPath( toFile );
-            entry.setUser( user );
-            entry.setGroup( group );
-            entry.setMode( mode );
+            File realPath;
 
             // If it is a file on the local file system, just point the entry in the prototype file to it
             if ( fromFile.getFileSystem() instanceof LocalFileSystem )
             {
-                entry.setRealPath( new File( fromFile.getName().getPath() ).getCanonicalFile() );
+                realPath = VfsUtil.asFile( fromFile ).getCanonicalFile();
             }
             else
             {
                 // Extract the entry
-                File tmp = File.createTempFile( "unix-plugin-", null );
+                realPath = File.createTempFile( "unix-plugin-", null );
+                realPath.deleteOnExit();
+                tmpFiles.add( realPath );
                 OutputStream outputStream = null;
                 try
                 {
-                    outputStream = new FileOutputStream( tmp );
+                    outputStream = new FileOutputStream( realPath );
                     IOUtil.copy( fromFile.getContent().getInputStream(), outputStream );
+                    if ( !realPath.setLastModified( fromFile.getContent().getLastModifiedTime() ) )
+                    {
+                        throw new IOException( "Unable to set last modified on " + realPath.getAbsolutePath() );
+                    }
                 }
                 finally
                 {
                     IOUtil.close( outputStream );
                 }
-                entry.setRealPath( tmp );
             }
 
-            entryList.add( entry );
+            entryList.add( new FileEntry( null,
+                attributes.mode, attributes.user, attributes.group, toFile, Boolean.FALSE, realPath ) );
 
-            // TODO: add missing directory entries
+            // TODO: add missing parent directory entries
         }
         catch ( FileSystemException e )
         {
@@ -92,56 +105,52 @@ public class PrototypeFile
         }
     }
 
-    public void writeTo( File prototype )
+    public LineFile toLineFile()
         throws IOException
     {
-        FileWriter writer = null;
-        try
-        {
-            writer = new FileWriter( prototype );
-            PrintWriter printer = new PrintWriter( writer );
+        LineFile file = new LineFile();
 
-            for ( Iterator it = includeFiles.iterator(); it.hasNext(); )
-            {
-                printer.println( it.next().toString() );
-            }
-//            if ( pkginfoFile != null )
-//            {
-//                printer.println( "i pkginfo=" + pkginfoFile.getAbsolutePath() );
-//            }
+        file.addAllLines( includeFiles );
 
-            for ( Iterator it = entryList.iterator(); it.hasNext(); )
-            {
-                printer.println( ( (SinglePrototypeEntry) it.next() ).getPrototypeLine() );
-            }
-        }
-        finally
+        for ( Iterator it = entryList.iterator(); it.hasNext(); )
         {
-            IOUtil.close( writer );
+            file.add( ( (SinglePrototypeEntry) it.next() ).getPrototypeLine() );
         }
+
+        return file;
+    }
+
+    public void cleanUp()
+    {
+        for ( Iterator it = tmpFiles.iterator(); it.hasNext(); )
+        {
+            File file = (File) it.next();
+
+            // Ignore the return value as there is nothing we can do. The files are already marked as "delete on exit"
+            // so the JVM should try again too.
+            //noinspection ResultOfMethodCallIgnored
+            file.delete();
+        }
+    }
+
+    public FileObject getRoot()
+    {
+        return root;
     }
 
     private class PrototypeEntryList
     {
-        private TreeSet collectedPrototypeEntries;
+        private TreeMap collectedPrototypeEntries;
 
         private PrototypeEntryList()
         {
-            collectedPrototypeEntries = new TreeSet( new Comparator()
-            {
-                public int compare( Object o, Object o1 )
-                {
-                    SinglePrototypeEntry a = (SinglePrototypeEntry) o;
-                    SinglePrototypeEntry b = (SinglePrototypeEntry) o1;
-                    return a.getPath().compareTo( b.getPath() );
-                }
-            } );
+            collectedPrototypeEntries = new TreeMap();
         }
 
         public void add( SinglePrototypeEntry entry )
         {
-            collectedPrototypeEntries.remove( entry );
-            collectedPrototypeEntries.add( entry );
+            collectedPrototypeEntries.remove( entry.getPath() );
+            collectedPrototypeEntries.put( entry.getPath(), entry );
         }
 
         public void addAll( PrototypeEntryList list )
@@ -150,9 +159,14 @@ public class PrototypeFile
             {
                 SinglePrototypeEntry entry = (SinglePrototypeEntry) it.next();
 
-                collectedPrototypeEntries.remove( entry );
-                collectedPrototypeEntries.add( entry );
+                collectedPrototypeEntries.remove( entry.getPath() );
+                collectedPrototypeEntries.put( entry.getPath(), entry );
             }
+        }
+
+        public boolean hasPath( String path )
+        {
+            return collectedPrototypeEntries.containsKey( path );
         }
 
         public int size()
@@ -162,7 +176,7 @@ public class PrototypeFile
 
         public Iterator iterator()
         {
-            return collectedPrototypeEntries.iterator();
+            return collectedPrototypeEntries.values().iterator();
         }
     }
 }

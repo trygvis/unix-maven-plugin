@@ -88,7 +88,8 @@ public class Dpkg
         new SystemCommand().
             setCommand( useFakeroot ? "fakeroot" : dpkgDebPath ).
             dumpCommandIf( debug ).
-            dumpOutputIf( debug ).
+            withNoStderrConsumerUnless( debug ).
+            withNoStdoutConsumerUnless( debug ).
             addArgument( "-b" ).
             addArgumentIf( useFakeroot, dpkgDebPath ).
             addArgument( packageRoot.getAbsolutePath() ).

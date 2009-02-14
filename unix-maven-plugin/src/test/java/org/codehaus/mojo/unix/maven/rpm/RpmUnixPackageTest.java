@@ -3,8 +3,10 @@ package org.codehaus.mojo.unix.maven.rpm;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
+import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.PackageVersion;
 import org.codehaus.mojo.unix.UnixPackage;
+import org.codehaus.mojo.unix.util.RelativePath;
 import org.codehaus.mojo.unix.maven.PackagingFormat;
 import org.codehaus.mojo.unix.rpm.Rpmbuild;
 import org.codehaus.plexus.PlexusTestCase;
@@ -12,7 +14,7 @@ import org.codehaus.plexus.PlexusTestCase;
 import java.io.File;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class RpmUnixPackageTest
@@ -37,7 +39,8 @@ public class RpmUnixPackageTest
 
         RpmPackagingFormat packagingFormat = (RpmPackagingFormat) lookup( PackagingFormat.ROLE, "rpm" );
 
-        File packageRoot = getTestFile( "target/rpm-test/root" );
+        FileObject rpmTest = VFS.getManager().resolveFile( getTestPath("target/rpm-test") );
+        FileObject packageRoot = rpmTest.resolveFile( "root" );
         File packageFile = getTestFile( "target/rpm-test/file.rpm" );
 
         UnixPackage unixPackage = RpmPackagingFormat.cast( packagingFormat.start().
@@ -51,9 +54,9 @@ public class RpmUnixPackageTest
             group( "Fun" );
 
         unixPackage.
-            addFile( pomXml, "/pom.xml", null, null, null ).
-            addFile( fooLicense, "/foo-license.txt", null, null, null ).
-            addFile( barLicense, "/bar-license.txt", null, null, null );
+            addFile( pomXml, RelativePath.fromString( "/pom.xml" ), new FileAttributes() ).
+            addFile( fooLicense, RelativePath.fromString( "/foo-license.txt" ), new FileAttributes() ).
+            addFile( barLicense, RelativePath.fromString( "/bar-license.txt" ), new FileAttributes() );
 
         unixPackage.
             debug( true ).

@@ -31,14 +31,23 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <assembly>
+            <!-- TODO: As this want to copy only a single file, add a "extract-file" version -->
             <extract>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toDir>/usr/share/hudson/lib</toDir>
+              <includes>
+                <!-- TODO: this should work without the leading stars -->
+                <include>**/WEB-INF/slave.jar</include>
+              </includes>
               <pattern>WEB-INF/(slave.jar)</pattern>
               <replacement>$1</replacement>
             </extract>
             <extract>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+              <includes>
+                <!-- TODO: this should work without the leading stars -->
+                <include>**/*-license.txt</include>
+              </includes>
               <toDir>/usr/share/hudson/license</toDir>
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>

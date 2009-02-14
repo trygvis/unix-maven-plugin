@@ -1,23 +1,18 @@
 package org.codehaus.mojo.unix.maven;
 
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSelectInfo;
-import org.apache.commons.vfs.FileSelector;
-import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.FileType;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.util.RelativePath;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Extract
@@ -27,27 +22,23 @@ public class Extract
 
     private String artifact;
 
-    private String toDir;
+    private RelativePath toDir = RelativePath.BASE;
 
-    private String includes;
+    private List includes;
 
-    private String excludes;
+    private List excludes;
 
     private String pattern;
 
     private String replacement;
 
-    private String fileUser;
+    private FileAttributes fileAttributes = new FileAttributes();
 
-    private String fileGroup;
+//    private org.codehaus.mojo.unix.FileAttributes unixFileAttributes;
 
-    private String fileMode;
+    private FileAttributes directoryAttributes = new FileAttributes();
 
-    private String directoryUser;
-
-    private String directoryGroup;
-
-    private String directoryMode;
+//    private org.codehaus.mojo.unix.FileAttributes unixDirectoryAttributes;
 
     public Extract()
     {
@@ -66,17 +57,17 @@ public class Extract
 
     public void setToDir( String toDir )
     {
-        this.toDir = nullifEmpty( toDir );
+        this.toDir = RelativePath.fromString( toDir );
     }
 
-    public void setIncludes( String includes )
+    public void setIncludes( List includes )
     {
-        this.includes = nullifEmpty( includes );
+        this.includes = includes;
     }
 
-    public void setExcludes( String excludes )
+    public void setExcludes( List excludes )
     {
-        this.excludes = nullifEmpty( excludes );
+        this.excludes = excludes;
     }
 
     public void setPattern( String pattern )
@@ -89,49 +80,42 @@ public class Extract
         this.replacement = nullifEmpty( replacement );
     }
 
-    public void setFileUser( String fileUser )
+    public void setFileAttributes( FileAttributes fileAttributes )
     {
-        this.fileUser = fileUser;
+        this.fileAttributes = fileAttributes;
     }
 
-    public void setFileGroup( String fileGroup )
+    public void setDirectoryAttributes( FileAttributes directoryAttributes )
     {
-        this.fileGroup = fileGroup;
+        this.directoryAttributes = directoryAttributes;
     }
 
-    public void setFileMode( String fileMode )
-    {
-        this.fileMode = fileMode;
-    }
-
-    public void setDirectoryUser( String directoryUser )
-    {
-        this.directoryUser = directoryUser;
-    }
-
-    public void setDirectoryGroup( String directoryGroup )
-    {
-        this.directoryGroup = directoryGroup;
-    }
-
-    public void setDirectoryMode( String directoryMode )
-    {
-        this.directoryMode = directoryMode;
-    }
-
-    public void perform( Defaults defaults, FileCollector fileCollector )
+    public void perform( FileObject basedir, Defaults defaults, FileCollector fileCollector )
         throws MojoFailureException, IOException
     {
         validate();
 
-        fileUser = StringUtils.isNotEmpty( fileUser ) ? fileUser : defaults.getFileUser();
-        fileGroup = StringUtils.isNotEmpty( fileGroup ) ? fileGroup : defaults.getFileGroup();
-        fileMode = StringUtils.isNotEmpty( fileMode ) ? fileMode : defaults.getFileMode();
+        FileSystemManager fsManager = VFS.getManager();
+        FileObject archiveObject = fsManager.resolveFile( getTheFile().getAbsolutePath() );
+        FileObject archive = fsManager.createFileSystem( archiveObject );
 
-        directoryUser = StringUtils.isNotEmpty( directoryUser ) ? directoryUser : defaults.getDirectoryUser();
-        directoryGroup = StringUtils.isNotEmpty( directoryGroup ) ? directoryGroup : defaults.getDirectoryGroup();
-        directoryMode = StringUtils.isNotEmpty( directoryMode ) ? directoryMode : defaults.getDirectoryMode();
+        org.codehaus.mojo.unix.FileAttributes fileAttributes =
+            Defaults.DEFAULT_FILE_ATTRIBUTES.
+                useAsDefaultsFor( defaults.getFileAttributes() ).
+                    useAsDefaultsFor( this.fileAttributes.create() );
 
+        org.codehaus.mojo.unix.FileAttributes directoryAttributes =
+            Defaults.DEFAULT_DIRECTORY_ATTRIBUTES.
+                useAsDefaultsFor( defaults.getDirectoryAttributes() ).
+                    useAsDefaultsFor( this.directoryAttributes.create() );
+
+        copyFiles( fileCollector, archive, toDir, includes, excludes, pattern, replacement,
+            fileAttributes, directoryAttributes );
+    }
+
+    private File getTheFile()
+        throws MojoFailureException
+    {
         File file;
 
         if ( this.archive != null )
@@ -142,19 +126,7 @@ public class Extract
         {
             file = artifact( this.artifact ).getFile();
         }
-
-        FileSystemManager fsManager = VFS.getManager();
-        FileObject archiveObject = fsManager.resolveFile( file.getAbsolutePath() );
-        FileObject archive = fsManager.createFileSystem( archiveObject );
-
-        if ( pattern != null )
-        {
-            extractPatternBased( fileCollector, archive );
-        }
-        else
-        {
-            extract( fileCollector, archive );
-        }
+        return file;
     }
 
     private void validate()
@@ -166,83 +138,5 @@ public class Extract
         {
             throw new MojoFailureException( "A replacement expression has to be set if a pattern is given." );
         }
-    }
-
-    private void extractPatternBased( final FileCollector fileCollector, final FileObject archive )
-        throws FileSystemException
-    {
-        final Pattern pattern = Pattern.compile( this.pattern );
-
-        archive.findFiles( new FileSelector()
-        {
-            public boolean includeFile( FileSelectInfo fileSelectInfo )
-                throws Exception
-            {
-                String name = "/" + archive.getName().getRelativeName( fileSelectInfo.getFile().getName() );
-
-                Matcher matcher = pattern.matcher( name );
-
-                String transformed = matcher.replaceAll( replacement );
-
-                if ( transformed.equals( name ) )
-                {
-                    return false;
-                }
-
-                // TODO: Log this
-                FileObject fileObject = fileSelectInfo.getFile();
-
-                if ( fileObject.getType() == FileType.FILE )
-                {
-                    fileCollector.addFile( fileObject, toDir + "/" + transformed, fileUser, fileGroup, fileMode );
-                }
-                else if ( fileObject.getType() == FileType.FOLDER )
-                {
-                    fileCollector.addDirectory( toDir + "/" + transformed, directoryUser, directoryGroup, directoryMode );
-                }
-
-                return false;
-            }
-
-            public boolean traverseDescendents( FileSelectInfo fileSelectInfo )
-                throws Exception
-            {
-                return true;
-            }
-        } );
-    }
-
-    private void extract( final FileCollector fileCollector, final FileObject archive )
-        throws FileSystemException
-    {
-        // TODO: implement includes/excludes
-        archive.findFiles( new FileSelector()
-        {
-            public boolean includeFile( FileSelectInfo fileSelectInfo )
-                throws Exception
-            {
-                String name = "/" + archive.getName().getRelativeName( fileSelectInfo.getFile().getName() );
-
-                // TODO: Log this
-                FileObject fileObject = fileSelectInfo.getFile();
-
-                if ( fileObject.getType() == FileType.FILE )
-                {
-                    fileCollector.addFile( fileObject, toDir + "/" + name, fileUser, fileGroup, fileMode );
-                }
-                else if ( fileObject.getType() == FileType.FOLDER )
-                {
-                    fileCollector.addDirectory( toDir + "/" + name, directoryUser, directoryGroup, directoryMode );
-                }
-
-                return false;
-            }
-
-            public boolean traverseDescendents( FileSelectInfo fileSelectInfo )
-                throws Exception
-            {
-                return true;
-            }
-        } );
     }
 }

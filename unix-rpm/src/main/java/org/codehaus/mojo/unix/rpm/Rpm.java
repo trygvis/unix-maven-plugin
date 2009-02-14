@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Rpm
@@ -140,7 +140,8 @@ public class Rpm
         throws IOException
     {
         SystemCommand command = new SystemCommand().
-            dumpOutputIf( generalOptions.debug ).
+            withNoStderrConsumerUnless( generalOptions.debug ).
+            withNoStdoutConsumerUnless( generalOptions.debug ).
             setBasedir( generalOptions.basedir ).
             setCommand( "rpm" ).
             addArgument( "--" + operation );

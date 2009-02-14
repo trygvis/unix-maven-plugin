@@ -1,6 +1,6 @@
 = TODO =
 
-o Support group, user and modes on files and directories
+o Support group, user and modes on files and directories in all formats
  - Default values for user, group and mode: part 1 done, need to be implemented in the mojo
  - Dpkg: Won't be done until replaced with Java
  - Pkg: ok
@@ -15,8 +15,8 @@ o Signing support
 
 o Add repository index creation
  - Dpkg: dpkg-scanpackages wrapper implemented. Should be re-implemented in Java..
- - Pkg: pkgutil(?)
- - Rpm: (?)
+ - Pkg: buildcat from pkgutil (?)
+ - Rpm: (?) - sherriff had some notes on how to do this
 
 o Package compression:
  - Dpkg: Built-in (the data.tar.gz file is already gzipped).
@@ -25,11 +25,14 @@ o Package compression:
 
 o Replace the binaries with Java implementations
  - Dpkg:
+   DONE: dpkg -c
  - Pkg:
  - Rpm:
 
 o Support chmod assembly operation
  - Has to support includes/excludes
+
+o Support "ln -s" operations
 
 o Validate all (source) file paths before starting to copy.
  - If the last of a whole bunch of files are to be extracted, it would be nice to be reminded that you've forgotten a
@@ -47,12 +50,51 @@ o Support Defaults per platform. The Defaults object should probably be in the c
 
 o Implement includes/excludes for the assembly operations that move multiple files
  - Add default exclude set for SCM files
+ - This is mostly supported now, might be some bugs here and there
+
+o The includes/excludes algorithm is most likely wrong, it should first check for includes and then check for excludes.
+  Perhaps verify against an ant build.xml file.
 
 o Support depending on nested archives: tar.gz, tar.bz2, etc (only zip files are supported now)
 
 o Expand the "unix-from-jar-project" test to build multiple packages of the same type
 
 o Make sure all bugs for the plugins are implemented.
+ - Including new features
+
+o Add a "platform" concept.
+  - A platform is:
+    - A packaging format
+    - Defaults for file and directory security
+  - Current platforms (should be pre-defined):
+    - debian:
+      - dpkg
+  - Possible platforms
+    - ArchLinux
+    - OpenBDS packages
+
+o Make sure the result of setLastModified is asserted
+
+== For 1.0-alpha-2 ==
+
+o Get all ITs to pass
+
+== For 1.0-alpha-3 ==
+
+o It should be validated that the toDir doesn't go outside the package root
+  - Isn't this implicitly handled by RelativePath? If not, add validation there
+o toDir should default to "/"
+o New assembly operation structure:
+ - <copy>+<path> with path == file -> <copy-file>
+ - <copy>+<path> with path == directory -> <copy-directory>
+ - <extract>+<path> with path == file -> <extract-file>
+ - <extract>+<path> with path == directory -> <extract-directory>
+o Rename "pkg" to "solaris"
+o Default file sets to be copied
+ - src/main/unix/files/
+  - modulations for platforms and package instances
+o Support chmod assembly operation
+ - Has to support includes/excludes
 
 == Pkg ==
 
@@ -70,13 +112,18 @@ o <description> => %description
 o <organization> => %vendor
 
 = Documentation =
+(More notes and TODOs in the site/ directory)
 
 o Explain possible workflow and where the different Mojos fit in
 
+o Need *lots* of includes/excludes examples, with regexp rewriting
+
 == Integration Test ==
 
-Make sure that all the validate scripts are using the latest Dpkg/Pkg/Rpm tools to verify all the contents of the
+o Make sure that all the validate scripts are using the latest Dpkg/Pkg/Rpm tools to verify all the contents of the
 generated packages.
+
+o Test having a .bash_profile file in a <copy> task.
 
 == Use cases supported ==
 

@@ -1,6 +1,9 @@
 package org.codehaus.mojo.unix.maven.dpkg;
 
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.VFS;
 import org.codehaus.mojo.unix.PackageVersion;
+import org.codehaus.mojo.unix.util.vfs.VfsUtil;
 import org.codehaus.mojo.unix.dpkg.Dpkg;
 import org.codehaus.mojo.unix.maven.PackagingFormat;
 import org.codehaus.plexus.PlexusTestCase;
@@ -8,7 +11,7 @@ import org.codehaus.plexus.PlexusTestCase;
 import java.io.File;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class DpkgUnixPackageTest
@@ -24,8 +27,9 @@ public class DpkgUnixPackageTest
 
         DpkgPackagingFormat packagingFormat = (DpkgPackagingFormat) lookup( PackagingFormat.ROLE, "dpkg" );
 
-        File packageRoot = getTestFile( "target/dpkg-test/root" );
-        File packageFile = getTestFile( "target/dpkg-test/file.deb" );
+        FileObject dpkgTest = VFS.getManager().resolveFile( getTestPath("target/dpkg-test") );
+        FileObject packageRoot = dpkgTest.resolveFile( "root" );
+        File packageFile = VfsUtil.asFile( dpkgTest.resolveFile( "file.deb" ) );
 
         DpkgUnixPackage.cast( packagingFormat.start() ).
             section( "devel" ).

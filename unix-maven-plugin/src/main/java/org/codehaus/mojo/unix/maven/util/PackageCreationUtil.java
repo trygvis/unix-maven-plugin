@@ -1,10 +1,9 @@
 package org.codehaus.mojo.unix.maven.util;
 
-import org.apache.commons.vfs.FileObject;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mojo.unix.FileCollector;
+import org.apache.commons.vfs.FileObject;
 import org.codehaus.mojo.unix.MissingSettingException;
 import org.codehaus.mojo.unix.UnixPackage;
 import org.codehaus.mojo.unix.maven.AssemblyOperation;
@@ -22,13 +21,11 @@ import java.util.Map;
 
 /**
  * Utility to handle the creation of a single package.
- * <p/>
- * Handles
- * <ul>
- * <li>Merging of values from the project vs what is configured per package</li>
- * </ul>
  *
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * Handles selecting the correct value from either the POM, the configured plugin properties and per package
+ * configuration.
+ *
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class PackageCreationUtil
@@ -60,8 +57,15 @@ public class PackageCreationUtil
 
     // -----------------------------------------------------------------------
     // Setters that are similar to those un UnixPackage, but they select one
-    // of the two the values.
+    // specific value
     // -----------------------------------------------------------------------
+
+    public PackageCreationUtil name( String packageName, String artifactIdBasedName )
+        throws MissingSettingException
+    {
+        unixPackage.name( select( packageName, artifactIdBasedName ) );
+        return this;
+    }
 
     public PackageCreationUtil contact( String contact )
     {
@@ -117,14 +121,14 @@ public class PackageCreationUtil
         return this;
     }
 
-    public File createPackage()
+    public File createPackage( FileObject basedir )
         throws IOException, MissingSettingException, MojoExecutionException, MojoFailureException
     {
         // -----------------------------------------------------------------------
         // Assemble all the files
         // -----------------------------------------------------------------------
 
-        assemble( assemblyOperations );
+        assemble( basedir, assemblyOperations );
 
         // -----------------------------------------------------------------------
         // Package the stuff
@@ -136,38 +140,14 @@ public class PackageCreationUtil
                 "." + unixPackage.getPackageFileExtension() );
 
         unixPackage.
-            name( project.getArtifactId() + ( classifier == null ? "" : "-" + classifier ) ).
             packageToFile( packageFile );
 
         return packageFile;
     }
 
-    private void assemble( List assembly )
+    private void assemble( FileObject basedir, List assembly )
         throws MojoFailureException, MojoExecutionException
     {
-        // A small hack to make sure that the toFile path is canonical
-        FileCollector fileCollector = new FileCollector()
-        {
-            public FileCollector addDirectory( String path, String user, String group, String mode )
-                throws IOException
-            {
-                unixPackage.addDirectory( new File( path ).getCanonicalPath(), user, group, mode );
-                return this;
-            }
-
-            public FileCollector addFile( FileObject fromFile, String toFile, String user, String group, String mode )
-                throws IOException
-            {
-                if ( !fromFile.isReadable() )
-                {
-                    throw new RuntimeException( "File is not readable: " + fromFile.getName().getPath() );
-                }
-
-                unixPackage.addFile( fromFile, new File( toFile ).getCanonicalPath(), user, group, mode );
-                return this;
-            }
-        };
-
         try
         {
             for ( Iterator it = assembly.iterator(); it.hasNext(); )
@@ -175,7 +155,7 @@ public class PackageCreationUtil
                 AssemblyOperation assemblyOperation = (AssemblyOperation) it.next();
 
                 assemblyOperation.setArtifactMap( artifactMap );
-                assemblyOperation.perform( defaults, fileCollector );
+                assemblyOperation.perform( basedir, defaults, unixPackage );
             }
         }
         catch ( IOException e )
@@ -184,28 +164,23 @@ public class PackageCreationUtil
         }
     }
 
-    private String select( String packageName, String projectName )
+    private String select( String a, String b )
         throws MissingSettingException
     {
-        if ( StringUtils.isNotEmpty( packageName ) )
-        {
-            return packageName;
-        }
-
-        return projectName;
+        return StringUtils.isNotEmpty(a) ? a : b;
     }
 
-    private String select( String setting, String packageName, String projectName )
+    private String select( String setting, String a, String b )
         throws MissingSettingException
     {
-        if ( StringUtils.isNotEmpty( packageName ) )
+        if ( StringUtils.isNotEmpty( a ) )
         {
-            return packageName;
+            return a;
         }
 
-        if ( StringUtils.isNotEmpty( projectName ) )
+        if ( StringUtils.isNotEmpty( b ) )
         {
-            return projectName;
+            return b;
         }
 
         throw new MissingSettingException( setting );

@@ -1,13 +1,12 @@
 package org.codehaus.mojo.unix.pkg;
 
 import org.codehaus.mojo.unix.util.SystemCommand;
-import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class PkgtransCommand
@@ -147,67 +146,46 @@ public class PkgtransCommand
     public void execute( File device1, File device2, String pkginst )
         throws IOException
     {
+        if ( device1 == null || device2 == null )
+        {
+            throw new IOException( "Both device1 and device2 must be given." );
+        }
+
+        // Seems like pkgmk doesn't like its stderr/stdout to be closed.
+        SystemCommand.ToStringLineConsumer out = new SystemCommand.ToStringLineConsumer();
+
         SystemCommand command = new SystemCommand().
             setCommand( "pkgtrans" ).
             setBasedir( basedir ).
-            dumpOutputIf( debug );
-
-        if ( StringUtils.isNotEmpty( alias ) )
-        {
-            command.addArgument( "-a" ).addArgument( alias );
-        }
-
-        if ( signDatastream )
-        {
-            command.addArgument( "-g" );
-        }
-
-        if ( copyOnlyPkginfoAndPkgmap )
-        {
-            command.addArgument( "-i" );
-        }
+            dumpCommandIf( debug ).
+            withStderrConsumer( out ).
+            withStdoutConsumer( out ).
+            addArgumentIfNotEmpty( alias, "-a" ).addArgumentIfNotEmpty( alias ).
+            addArgumentIf( signDatastream, "-g" ).
+            addArgumentIf( copyOnlyPkginfoAndPkgmap, "-i" );
 
         if ( keystore != null )
         {
             command.addArgument( "-k" ).addArgument( keystore.getAbsolutePath() );
         }
 
-        if ( newInstance )
+        SystemCommand.ExecutionResult result = command.
+                addArgumentIf( newInstance, "-n" ).
+                addArgumentIf( overwrite, "-o" ).
+                addArgumentIfNotEmpty( password, "-P" ).addArgumentIfNotEmpty( password ).
+                addArgumentIf(  asDatastream, "-s" ).
+                addArgument(device1.getAbsolutePath() ).
+                addArgument( device2.getAbsolutePath() ).
+                addArgumentIfNotEmpty( pkginst ).
+                execute();
+
+        if ( debug )
         {
-            command.addArgument( "-n" );
+            System.out.println( "------------------------------------------------------" );
+            System.out.println( "pkgtrans output:" );
+            System.out.println( out );
         }
 
-        if ( overwrite )
-        {
-            command.addArgument( "-o" );
-        }
-
-        if ( StringUtils.isNotEmpty( password ) )
-        {
-            command.addArgument( "-P" ).addArgument( password );
-        }
-
-        if ( asDatastream )
-        {
-            command.addArgument( "-s" );
-        }
-
-        if ( device1 == null || device2 == null )
-        {
-            throw new IOException( "Both device1 and device2 must be given." );
-        }
-
-        command.
-            addArgument( device1.getAbsolutePath() ).
-            addArgument( device2.getAbsolutePath() );
-
-        if ( pkginst != null )
-        {
-            command.addArgument( pkginst );
-        }
-
-        command.
-            execute().
-            assertSuccess();
+        result.assertSuccess();
     }
 }

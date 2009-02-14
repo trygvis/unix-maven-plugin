@@ -2,16 +2,16 @@ package org.codehaus.mojo.unix.maven;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileType;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.util.RelativePath;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Copy
@@ -23,19 +23,15 @@ public class Copy
 
     private String toFile;
 
-    private String toDir;
+    private RelativePath toDir = RelativePath.BASE;
 
-    private String fileUser;
+    private List includes;
 
-    private String fileGroup;
+    private List excludes;
 
-    private String fileMode;
+    private FileAttributes fileAttributes = new FileAttributes();
 
-    private String directoryUser;
-
-    private String directoryGroup;
-
-    private String directoryMode;
+    private FileAttributes directoryAttributes = new FileAttributes();
 
     public Copy()
     {
@@ -59,96 +55,70 @@ public class Copy
 
     public void setToDir( String toDir )
     {
-        this.toDir = toDir;
+        this.toDir = RelativePath.fromString( toDir );
     }
 
-    public void setFileUser( String fileUser )
+    public void setIncludes( List includes )
     {
-        this.fileUser = fileUser;
+        this.includes = includes;
     }
 
-    public void setFileGroup( String fileGroup )
+    public void setExcludes( List excludes )
     {
-        this.fileGroup = fileGroup;
+        this.excludes = excludes;
     }
 
-    public void setFileMode( String fileMode )
+    public void setFileAttributes( FileAttributes fileAttributes )
     {
-        this.fileMode = fileMode;
+        this.fileAttributes = fileAttributes;
     }
 
-    public void setDirectoryUser( String directoryUser )
+    public void setDirectoryAttributes( FileAttributes directoryAttributes )
     {
-        this.directoryUser = directoryUser;
+        this.directoryAttributes = directoryAttributes;
     }
 
-    public void setDirectoryGroup( String directoryGroup )
-    {
-        this.directoryGroup = directoryGroup;
-    }
-
-    public void setDirectoryMode( String directoryMode )
-    {
-        this.directoryMode = directoryMode;
-    }
-
-    public void perform( Defaults defaults, FileCollector fileCollector )
+    public void perform( FileObject basedir, Defaults defaults, FileCollector fileCollector )
         throws MojoFailureException, IOException
     {
         validateEitherIsSet( path, artifact, "path", "artifact" );
 
-        fileUser = StringUtils.isNotEmpty( fileUser ) ? fileUser : defaults.getFileUser();
-        fileGroup = StringUtils.isNotEmpty( fileGroup ) ? fileGroup : defaults.getFileGroup();
-        fileMode = StringUtils.isNotEmpty( fileMode ) ? fileMode : defaults.getFileMode();
+        org.codehaus.mojo.unix.FileAttributes unixFileAttributes =
+            Defaults.DEFAULT_FILE_ATTRIBUTES.
+                useAsDefaultsFor( defaults.getFileAttributes() ).
+                    useAsDefaultsFor( fileAttributes.create() );
 
-        directoryUser = StringUtils.isNotEmpty( directoryUser ) ? directoryUser : defaults.getDirectoryUser();
-        directoryGroup = StringUtils.isNotEmpty( directoryGroup ) ? directoryGroup : defaults.getDirectoryGroup();
-        directoryMode = StringUtils.isNotEmpty( directoryMode ) ? directoryMode : defaults.getDirectoryMode();
+        org.codehaus.mojo.unix.FileAttributes unixDirectoryAttributes =
+            Defaults.DEFAULT_DIRECTORY_ATTRIBUTES.
+                useAsDefaultsFor( defaults.getDirectoryAttributes() ).
+                    useAsDefaultsFor( directoryAttributes.create() );
 
         if ( path != null )
         {
-            FileObject fromFile = getFsManager().resolveFile( path.getAbsolutePath() );
+            FileObject fromFile = basedir.resolveFile( path.getAbsolutePath() );
 
             if ( fromFile.getType() == FileType.FILE )
             {
-                addFile( fileCollector, fromFile, adjustToFile( toFile, toDir, path.getName() ) );
+                copyFile( fileCollector, fromFile, toFile, toDir, unixFileAttributes );
             }
             else if ( fromFile.getType() == FileType.FOLDER )
             {
-                if ( StringUtils.isEmpty( toDir ) )
-                {
-                    throw new IOException( "toDir has to be specified when copying a directory." );
-                }
-
-                copyDirectory( fileCollector, fromFile, toDir );
+                copyFiles( fileCollector, fromFile, toDir, includes, excludes, null, null,
+                    unixFileAttributes, unixDirectoryAttributes );
             }
         }
         else
         {
-            Artifact a = artifact( artifact );
+            File artifactFile = artifact( this.artifact ).getFile();
 
-            addFile( fileCollector, getFsManager().resolveFile( a.getFile().getAbsolutePath() ),
-                adjustToFile( toFile, toDir, a.getFile().getName() ));
+            FileObject artifact = basedir.resolveFile( artifactFile.getAbsolutePath() );
+
+            copyFile( fileCollector, artifact, toFile, toDir, unixFileAttributes );
         }
     }
 
-    private static String adjustToFile( String toFile, String toDir, String path )
-        throws IOException
-    {
-        if ( toFile != null )
-        {
-            return toFile;
-        }
-
-        if ( StringUtils.isEmpty( toDir ) )
-        {
-            throw new IOException( "toDir has to be set when toFile is empty" );
-        }
-
-        return toDir + "/" + path;
-    }
-
-    private void addFile( FileCollector fileCollector, FileObject fromFile, String toFile )
+    private void copyFile( FileCollector fileCollector, FileObject fromFile, String toFile, RelativePath toDir,
+                           org.codehaus.mojo.unix.FileAttributes unixFileAttributes )
         throws IOException
     {
         if ( !fromFile.isReadable() )
@@ -156,35 +126,17 @@ public class Copy
             throw new RuntimeException( "File is not readable: " + fromFile.getName().getPath() );
         }
 
-        fileCollector.addFile( fromFile, toFile, fileUser, fileGroup, fileMode );
-    }
+        String relativeName;
 
-    private void copyDirectory( FileCollector fileCollector, FileObject fromFile, String toFile )
-        throws IOException
-    {
-        System.out.println( "Copy.copyDirectory" );
-
-        System.out.println( "Directory = " + toFile );
-        fileCollector.addDirectory( toFile, directoryUser, directoryGroup, directoryMode );
-
-        FileObject[] children = fromFile.getChildren();
-
-        for ( int i = 0; i < children.length; i++ )
+        if ( toFile != null )
         {
-            FileObject child = children[i];
-
-            String toPath = toFile + "/" + child.getName().getBaseName();
-
-            if ( child.getType() == FileType.FOLDER )
-            {
-                System.out.println( "Directory = " + toPath );
-                copyDirectory( fileCollector, child, toPath );
-            }
-            else if ( child.getType() == FileType.FILE )
-            {
-                System.out.println( "File = " + toPath );
-                fileCollector.addFile( child, toPath, fileUser, fileGroup, fileMode );
-            }
+            relativeName = toFile;
         }
+        else
+        {
+            relativeName = fromFile.getName().getBaseName();
+        }
+
+        fileCollector.addFile( fromFile, toDir.add( relativeName ), unixFileAttributes );
     }
 }

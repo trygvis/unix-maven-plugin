@@ -1,20 +1,24 @@
 package org.codehaus.mojo.unix.maven.dpkg;
 
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
 import org.codehaus.mojo.unix.MissingSettingException;
 import org.codehaus.mojo.unix.UnixPackage;
 import org.codehaus.mojo.unix.dpkg.Dpkg;
 import org.codehaus.mojo.unix.maven.FsFileCollector;
 import org.codehaus.mojo.unix.maven.ScriptUtil;
+import org.codehaus.mojo.unix.util.RelativePath;
 import org.codehaus.mojo.unix.util.UnixUtil;
+import org.codehaus.mojo.unix.util.vfs.VfsUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class DpkgUnixPackage
@@ -22,9 +26,9 @@ public class DpkgUnixPackage
 {
     private ControlFile controlFile = new ControlFile();
 
-    private FsFileCollector fileCollector = new FsFileCollector();
+    private FsFileCollector fileCollector;
 
-    private File workingDirectory;
+    private FileObject workingDirectory;
 
     private String dpkgDebPath;
 
@@ -40,7 +44,7 @@ public class DpkgUnixPackage
             setPostInstall( "postinst" ).
             setPreRemove( "prerm" ).
             setPostRemove( "postrm" ).
-            done();
+            build();
     }
 
     public DpkgUnixPackage()
@@ -92,9 +96,11 @@ public class DpkgUnixPackage
         return this;
     }
 
-    public UnixPackage workingDirectory( File workingDirectory )
+    public UnixPackage workingDirectory( FileObject workingDirectory )
+        throws FileSystemException
     {
         this.workingDirectory = workingDirectory;
+        fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
         return this;
     }
 
@@ -104,17 +110,21 @@ public class DpkgUnixPackage
         return this;
     }
 
-    public FileCollector addDirectory( String path, String user, String group, String mode )
-        throws IOException
+    public FileObject getRoot()
     {
-        fileCollector.addDirectory( path, user, group, mode );
+        return fileCollector.getRoot();
+    }
+
+    public FileCollector addDirectory( RelativePath path, FileAttributes attributes )
+    {
+        fileCollector.addDirectory( path, attributes );
 
         return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, String toFile, String user, String group, String mode )
+    public FileCollector addFile( FileObject fromFile, RelativePath toPath, FileAttributes attributes )
     {
-        fileCollector.addFile( fromFile, toFile, user, group, mode );
+        fileCollector.addFile( fromFile, toPath, attributes );
 
         return this;
     }
@@ -148,12 +158,13 @@ public class DpkgUnixPackage
     public void packageToFile( File packageFile )
         throws IOException, MissingSettingException
     {
+        File assembly = VfsUtil.asFile( fileCollector.getFsRoot() );
         controlFile.version = getVersion();
-        controlFile.toFile( workingDirectory );
+        controlFile.toFile( assembly );
 
-        fileCollector.collect( workingDirectory );
+        fileCollector.collect();
 
-        ScriptUtil.Execution execution = scriptUtil.copyScripts( getBasedir(), new File( workingDirectory, "DEBIAN" ) );
+        ScriptUtil.Execution execution = scriptUtil.copyScripts( getBasedir(), new File( assembly, "DEBIAN" ) );
 
         UnixUtil.chmodIf( execution.hasPreInstall(), execution.getPreInstall(), "0755" );
         UnixUtil.chmodIf( execution.hasPostInstall(), execution.getPostInstall(), "0755" );
@@ -162,7 +173,7 @@ public class DpkgUnixPackage
 
         new Dpkg().
             setDebug( debug ).
-            setPackageRoot( workingDirectory ).
+            setPackageRoot( assembly ).
             setDebFile( packageFile ).
             setDpkgDebPath( dpkgDebPath ).
             execute();

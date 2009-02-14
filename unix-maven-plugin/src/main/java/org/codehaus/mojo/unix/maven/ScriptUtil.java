@@ -9,11 +9,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public final class ScriptUtil
@@ -57,8 +57,6 @@ public final class ScriptUtil
             {
                 if ( commonScript != null && commonScript.canRead() )
                 {
-                    System.out.println( "Including " + commonScript );
-
                     fis = new FileInputStream( commonScript );
                     IOUtil.copy( fis, content );
                     fis.close();
@@ -66,8 +64,6 @@ public final class ScriptUtil
 
                 if ( specificScript.canRead() )
                 {
-                    System.out.println( "Including " + specificScript );
-
                     fis = new FileInputStream( specificScript );
                     IOUtil.copy( fis, content );
                     fis.close();
@@ -116,7 +112,7 @@ public final class ScriptUtil
             return this;
         }
 
-        public ScriptUtil done()
+        public ScriptUtil build()
         {
             return scriptUtil;
         }

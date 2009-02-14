@@ -19,56 +19,71 @@ package org.codehaus.mojo.unix.maven.pkg.prototype;
  * under the License.
  */
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.codehaus.mojo.unix.UnixFileMode;
+import org.codehaus.mojo.unix.util.RelativePath;
+
 import java.io.File;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id: SinglePrototypeEntry.java 7323 2008-07-26 14:58:37Z trygvis $
  */
 public abstract class SinglePrototypeEntry
-    extends AbstractPrototypeEntry
+    extends PrototypeEntry
 {
-    private String path;
+    static final String EOL = System.getProperty( "line.separator" );
 
-    private File realPath;
+    private final String pkgClass;
 
-    protected SinglePrototypeEntry()
+    private final UnixFileMode mode;
+
+    private final String user;
+
+    private final String group;
+
+    private final Boolean relative;
+
+    private final RelativePath path;
+
+    private final File realPath;
+
+    protected SinglePrototypeEntry( String pkgClass, UnixFileMode mode, String user, String group, Boolean relative,
+                                    RelativePath path, File realPath )
     {
-    }
-
-    protected SinglePrototypeEntry( String pkgClass, String mode, String user, String group, Boolean relative,
-                                    String path, File realPath )
-    {
-        super( pkgClass, mode, user, group, relative );
+        this.pkgClass = pkgClass == null ? "none" : pkgClass;
+        this.mode = mode;
+        this.user = user;
+        this.group = group;
+        this.relative = relative;
         this.path = path;
         this.realPath = realPath;
     }
 
-    public String getPath()
+    public String getPkgClass()
     {
-        if ( isRelative() != null && isRelative().booleanValue() )
-        {
-            if ( path.charAt( 0 ) != '/' )
-            {
-                return path;
-            }
-
-            return path.substring( 1 );
-        }
-        else
-        {
-            if ( path.charAt( 0 ) == '/' )
-            {
-                return path;
-            }
-
-            return "/" + path;
-        }
+        return pkgClass;
     }
 
-    public void setPath( String path )
+    public UnixFileMode getMode()
     {
-        this.path = path;
+        return mode;
+    }
+
+    public String getUser()
+    {
+        return user;
+    }
+
+    public String getGroup()
+    {
+        return group;
+    }
+
+    public Boolean isRelative()
+    {
+        return relative;
     }
 
     public File getRealPath()
@@ -76,9 +91,28 @@ public abstract class SinglePrototypeEntry
         return realPath;
     }
 
-    public void setRealPath( File realPath )
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
+
+    public String toString()
     {
-        this.realPath = realPath;
+        return ToStringBuilder.reflectionToString( this, ToStringStyle.MULTI_LINE_STYLE );
+    }
+
+    public String getPath()
+    {
+        if ( isRelative() != null && isRelative().booleanValue() )
+        {
+            return path.string;
+        }
+
+        return path.asAbsolutePath();
+    }
+
+    public String getModeString()
+    {
+        return mode != null ? mode.toOctalString() : "?";
     }
 
     // -----------------------------------------------------------------------
@@ -126,16 +160,4 @@ public abstract class SinglePrototypeEntry
     {
         return generatePrototypeLine();
     }
-
-//    public void validate( Defaults defaults )
-//    {
-//        super.validate( defaults );
-//
-//        if ( path == null )
-//        {
-//            throw new RuntimeException( "Missing path in directory entry." );
-//        }
-//    }
-
-    public abstract String generatePrototypeLine();
 }

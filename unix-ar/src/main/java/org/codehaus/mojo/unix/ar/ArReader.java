@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 class ArReader
@@ -58,6 +58,11 @@ class ArReader
         arFile.groupId = Integer.parseInt( ArUtil.convertString( bytes, 34, 6 ) );
         arFile.mode = Integer.parseInt( ArUtil.convertString( bytes, 40, 8 ), 8 );
         arFile.size = Long.parseLong( ArUtil.convertString( bytes, 48, 10 ) );
+
+        if ( arFile.name.endsWith( "/" ) )
+        {
+            arFile.name = arFile.name.substring( 0, arFile.name.length() - 1 );
+        }
 
         String fileMagic = ArUtil.convertString( bytes, 58, 2 );
 

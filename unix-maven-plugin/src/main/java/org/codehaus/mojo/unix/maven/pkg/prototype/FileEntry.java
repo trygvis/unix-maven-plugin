@@ -19,6 +19,9 @@ package org.codehaus.mojo.unix.maven.pkg.prototype;
  * under the License.
  */
 
+import org.codehaus.mojo.unix.UnixFileMode;
+import org.codehaus.mojo.unix.util.RelativePath;
+
 import java.io.File;
 
 /**
@@ -28,18 +31,27 @@ import java.io.File;
 public class FileEntry
     extends SinglePrototypeEntry
 {
-    public FileEntry()
+    /**
+     * The same as calling {@link #FileEntry(String, org.codehaus.mojo.unix.UnixFileMode, String, String, RelativePath, Boolean, java.io.File)}
+     * with <code>relative=false</code> and <code>realPath=null</code>.
+     */
+    public FileEntry( String pkgClass, UnixFileMode mode, String user, String group, RelativePath path )
     {
+        this( pkgClass, mode, user, group, path, Boolean.FALSE, null );
     }
 
-    public FileEntry( String pkgClass, String mode, String user, String group, Boolean relative,
-                      String path, File realPath )
+    public FileEntry( String pkgClass, UnixFileMode mode, String user, String group, RelativePath path,
+                      Boolean relative, File realPath )
     {
         super( pkgClass, mode, user, group, relative, path, realPath );
     }
 
     public String generatePrototypeLine()
     {
-        return "f " + getPkgClass() + " " + getProcessedPath() + " " + getMode() + " " + getUser() + " " + getGroup();
+        return "f " + getPkgClass() +
+            " " + getProcessedPath() +
+            " " + getModeString() +
+            " " + getUser() +
+            " " + getGroup();
     }
 }

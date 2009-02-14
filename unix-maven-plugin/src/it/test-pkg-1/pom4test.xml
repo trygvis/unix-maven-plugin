@@ -34,9 +34,11 @@
             <copy>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/usr/share/hudson/lib/hudson.war</toFile>
-              <fileUser>hudson</fileUser>
-              <fileGroup>hudson</fileGroup>
-              <fileMode>0644</fileMode>
+              <fileAttributes>
+                <user>hudson</user>
+                <group>hudson</group>
+                <mode>0644</mode>
+              </fileAttributes>
             </copy>
           </assembly>
         </configuration>

@@ -1,7 +1,7 @@
 package org.codehaus.mojo.unix.maven;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Package
@@ -9,6 +9,8 @@ public class Package
     private String id = "default";
 
     private String name;
+
+    private String packageName;
 
     private String description;
 
@@ -32,6 +34,16 @@ public class Package
     public void setName( String name )
     {
         this.name = name;
+    }
+
+    public String getPackageName()
+    {
+        return packageName;
+    }
+
+    public void setPackageName( String packageName )
+    {
+        this.packageName = packageName;
     }
 
     public String getDescription()

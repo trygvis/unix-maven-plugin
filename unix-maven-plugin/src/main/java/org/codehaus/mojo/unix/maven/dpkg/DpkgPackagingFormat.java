@@ -4,7 +4,7 @@ import org.codehaus.mojo.unix.UnixPackage;
 import org.codehaus.mojo.unix.maven.PackagingFormat;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class DpkgPackagingFormat

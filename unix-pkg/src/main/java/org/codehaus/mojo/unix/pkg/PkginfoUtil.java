@@ -1,15 +1,14 @@
 package org.codehaus.mojo.unix.pkg;
 
-import org.codehaus.mojo.unix.HasRelaxedEquality;
+import org.codehaus.mojo.unix.EqualsIgnoreNull;
 import org.codehaus.mojo.unix.util.SystemCommand;
-import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class PkginfoUtil
@@ -17,7 +16,7 @@ public class PkginfoUtil
     private static final String EOL = System.getProperty( "line.separator" );
 
     public static class PackageInfo
-        implements HasRelaxedEquality
+        implements EqualsIgnoreNull
     {
         public final String instance;
 
@@ -57,7 +56,7 @@ public class PkginfoUtil
                 append( "  PSTAMP: " ).append( pstamp != null ? pstamp : "").append( EOL ).toString();
         }
 
-        public boolean equalsIgnoreNull( HasRelaxedEquality other )
+        public boolean equalsIgnoreNull( EqualsIgnoreNull other )
         {
             PackageInfo that = (PackageInfo) other;
 
@@ -87,14 +86,18 @@ public class PkginfoUtil
 
         PkginfoParser parser = new PkginfoParser();
         new SystemCommand().
+            dumpCommandIf( true ).
+            withStderrConsumer( parser ).
             withStdoutConsumer( parser ).
             setCommand( "pkginfo" ).
             addArgument( "-d" ).
             addArgument( device.getAbsolutePath() ).
             addArgument( "-l" ).
-            addArgumentIf( StringUtils.isNotEmpty( instance ), instance ).
+            addArgumentIfNotEmpty( instance ).
             execute().
             assertSuccess();
+
+        // ( StringUtils.isNotEmpty( instance ) ? this : addArgument(instance) )
 
         return parser.getPackageInfo();
     }

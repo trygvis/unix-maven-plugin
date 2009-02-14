@@ -6,7 +6,7 @@ import org.codehaus.mojo.unix.maven.rpm.RpmUnixPackage;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 class RpmMojoHelper
@@ -19,7 +19,7 @@ class RpmMojoHelper
         this.rpm = rpm;
     }
 
-    protected void validateSettings()
+    protected void validateMojoSettings()
         throws MissingSettingException
     {
         if ( rpm == null )
@@ -33,12 +33,7 @@ class RpmMojoHelper
         }
     }
 
-    protected void customizeMojoParameters( PackagingMojoParameters mojoParameters )
-    {
-
-    }
-
-    protected void customizePackage( UnixPackage unixPackage )
+    protected void applyFormatSpecificSettingsToPackage( UnixPackage unixPackage )
     {
         RpmUnixPackage.cast( unixPackage ).
             group( rpm.getSoftwareGroup() );

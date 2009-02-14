@@ -1,80 +1,40 @@
 package org.codehaus.mojo.unix.maven;
 
+import org.codehaus.mojo.unix.UnixFileMode;
+
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Defaults
 {
-    private String fileUser = "nobody";
+    public final static org.codehaus.mojo.unix.FileAttributes DEFAULT_FILE_ATTRIBUTES = 
+        new org.codehaus.mojo.unix.FileAttributes( "nobody", "nogroup", UnixFileMode._0644 );
 
-    private String fileGroup = "nogroup";
+    public final static org.codehaus.mojo.unix.FileAttributes DEFAULT_DIRECTORY_ATTRIBUTES =
+        new org.codehaus.mojo.unix.FileAttributes( "nobody", "nogroup", UnixFileMode._0755 );
 
-    private String fileMode = "0644";
+    private FileAttributes fileAttributes = new FileAttributes();
 
-    private String directoryUser = "nobody";
+    private FileAttributes directoryAttributes = new FileAttributes();
 
-    private String directoryGroup = "nogroup";
-
-    private String directoryMode = "0755";
-
-    public String getFileUser()
+    public org.codehaus.mojo.unix.FileAttributes getFileAttributes()
     {
-        return fileUser;
+        return fileAttributes.create();
     }
 
-    public void setFileUser( String fileUser )
+    public void setFile( FileAttributes fileAttributes )
     {
-        this.fileUser = fileUser;
+        this.fileAttributes = fileAttributes;
     }
 
-    public String getFileGroup()
+    public org.codehaus.mojo.unix.FileAttributes getDirectoryAttributes()
     {
-        return fileGroup;
+        return directoryAttributes.create();
     }
 
-    public void setFileGroup( String fileGroup )
+    public void setDirectoryAttributes( FileAttributes directoryAttributes )
     {
-        this.fileGroup = fileGroup;
-    }
-
-    public String getFileMode()
-    {
-        return fileMode;
-    }
-
-    public void setFileMode( String fileMode )
-    {
-        this.fileMode = fileMode;
-    }
-
-    public String getDirectoryUser()
-    {
-        return directoryUser;
-    }
-
-    public void setDirectoryUser( String directoryUser )
-    {
-        this.directoryUser = directoryUser;
-    }
-
-    public String getDirectoryGroup()
-    {
-        return directoryGroup;
-    }
-
-    public void setDirectoryGroup( String directoryGroup )
-    {
-        this.directoryGroup = directoryGroup;
-    }
-
-    public String getDirectoryMode()
-    {
-        return directoryMode;
-    }
-
-    public void setDirectoryMode( String directoryMode )
-    {
-        this.directoryMode = directoryMode;
+        this.directoryAttributes = directoryAttributes;
     }
 }

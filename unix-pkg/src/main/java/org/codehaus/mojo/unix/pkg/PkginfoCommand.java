@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class PkginfoCommand
@@ -181,7 +181,8 @@ public class PkginfoCommand
         SystemCommand command = new SystemCommand().
             setCommand( "pkginfo" ).
             setBasedir( basedir ).
-            dumpOutputIf( debug );
+            withNoStderrConsumerUnless( debug ).
+            withNoStdoutConsumerUnless( debug );
 
         if ( StringUtils.isNotEmpty( arch ) )
         {

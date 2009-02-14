@@ -17,6 +17,8 @@ package org.codehaus.mojo.unix.util;
  */
 
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.util.line.AbstractLineStreamWriter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,8 +31,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Executes a system command.
- * <p/>
+ * Executes a system command in a similar fasion to backtick (`) in sh and ruby.
+ * <p>
+ * Standard output and error will be send to System.out and System.err by default.
+ * </p>
+ * <p>
  * Typical usage:
  * <pre>
  * new SystemCommand().
@@ -41,8 +46,9 @@ import java.util.List;
  *     addArgument(debFileName).
  *     execute();
  * </pre>
+ * <p/>
  *
- * TODO: Support executing commands, asserting exit code and consuming stdout into a String.
+ * TODO: Create FileLineConsumer that puts all the output to a file.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id: SystemCommand.java 1483 2006-02-13 09:19:48Z trygvis $
@@ -73,7 +79,9 @@ public class SystemCommand
         public void onLine( String line )
             throws IOException
         {
-            buffer.append( line );
+            buffer.
+                append( line ).
+                append( AbstractLineStreamWriter.EOL );
         }
 
         public String toString()
@@ -116,6 +124,12 @@ public class SystemCommand
         }
     }
 
+    private static final CommandOutputHandler nullOutputHandler = new NullCommandOutputHandler();
+
+    private static final CommandOutputHandler DEFAULT_STDERR_OUTPUT_HANDLER = new OutputStreamCommandOutputHandler( System.err );
+
+    private static final CommandOutputHandler DEFAULT_STDOUT_OUTPUT_HANDLER = new OutputStreamCommandOutputHandler(System.out );
+
     // -----------------------------------------------------------------------
     // Setup
     // -----------------------------------------------------------------------
@@ -130,9 +144,9 @@ public class SystemCommand
 
     private boolean debug;
 
-    private InputStreamHandler stderrHandler;
+    private CommandOutputHandler stderrHandler;
 
-    private InputStreamHandler stdoutHandler;
+    private CommandOutputHandler stdoutHandler;
 
     public SystemCommand()
     {
@@ -157,6 +171,12 @@ public class SystemCommand
         return this;
     }
 
+    public SystemCommand addArguments(List strings)
+    {
+        arguments.addAll(strings);
+        return this;
+    }
+
     public SystemCommand addArgumentIf( boolean b, String argument )
     {
         if ( !b )
@@ -166,6 +186,11 @@ public class SystemCommand
 
         arguments.add( argument );
         return this;
+    }
+
+    public SystemCommand addArgumentIfNotEmpty(String stringToCheck, String argument)
+    {
+        return addArgumentIf( StringUtils.isEmpty( stringToCheck ), argument );
     }
 
     public SystemCommand addArgumentIfNotEmpty( String argument )
@@ -196,58 +221,103 @@ public class SystemCommand
         return this;
     }
 
-    public SystemCommand dumpOutputIf( boolean dump )
-    {
-        if ( !dump )
-        {
-            return this;
-        }
+    // -----------------------------------------------------------------------
+    // Stderr
+    // -----------------------------------------------------------------------
 
-        return withStderrConsumer( System.err ).
-            withStdoutConsumer( System.out );
+    public SystemCommand withNoStderrConsumer()
+    {
+        return setStderrCommandOutputHandler( nullOutputHandler );
+    }
+
+    public SystemCommand withNoStderrConsumerIf( boolean flag )
+    {
+        return flag ? setStderrCommandOutputHandler( nullOutputHandler ) : this;
+    }
+
+    public SystemCommand withNoStderrConsumerUnless( boolean flag )
+    {
+        return withNoStderrConsumerIf( !flag );
     }
 
     public SystemCommand withStderrConsumer( OutputStream consumer )
     {
-        if ( stderrHandler != null )
-        {
-            throw new RuntimeException( "There can only be one consumer." );
-        }
-
-        this.stderrHandler = new OutputStreamInputStreamHandler( consumer );
-        return this;
+        return setStderrCommandOutputHandler( new OutputStreamCommandOutputHandler( consumer ) );
     }
 
-    public SystemCommand withStderrConsumer( LineConsumer lineConsumer )
+    public SystemCommand withStderrConsumerUnless( OutputStream consumer, boolean flag )
     {
-        if ( stderrHandler != null )
-        {
-            throw new RuntimeException( "There can only be one consumer." );
-        }
+        return !flag ? withStderrConsumer( consumer ) : setStderrCommandOutputHandler( nullOutputHandler );
+    }
 
-        this.stderrHandler = new LineConsumerInputStreamHandler( lineConsumer );
-        return this;
+    public SystemCommand withStderrConsumer( LineConsumer consumer )
+    {
+        return setStderrCommandOutputHandler( new LineConsumerCommandOutputHandler( consumer ) );
+    }
+
+    public SystemCommand withStderrConsumerUnless( LineConsumer consumer, boolean flag )
+    {
+        return !flag ? withStderrConsumer( consumer ) : setStderrCommandOutputHandler( nullOutputHandler );
+    }
+
+    // -----------------------------------------------------------------------
+    // Stdout
+    // -----------------------------------------------------------------------
+
+    public SystemCommand withNoStdoutConsumer()
+    {
+        return setStdoutCommandOutputHandler( nullOutputHandler );
+    }
+
+    public SystemCommand withNoStdoutConsumerIf( boolean flag )
+    {
+        return flag ? setStdoutCommandOutputHandler( nullOutputHandler ) : this;
+    }
+
+    public SystemCommand withNoStdoutConsumerUnless( boolean flag )
+    {
+        return withNoStdoutConsumerIf( !flag );
     }
 
     public SystemCommand withStdoutConsumer( OutputStream consumer )
     {
-        if ( stdoutHandler != null )
+        return setStdoutCommandOutputHandler( new OutputStreamCommandOutputHandler( consumer ) );
+    }
+
+    public SystemCommand withStdoutConsumerUnless( OutputStream consumer, boolean flag )
+    {
+        return !flag ? withStdoutConsumer( consumer ) : setStdoutCommandOutputHandler( nullOutputHandler );
+    }
+
+    public SystemCommand withStdoutConsumer( LineConsumer consumer )
+    {
+        return setStdoutCommandOutputHandler( new LineConsumerCommandOutputHandler( consumer ) );
+    }
+
+    public SystemCommand withStdoutConsumerUnless( LineConsumer consumer, boolean flag )
+    {
+        return !flag ? withStdoutConsumer( consumer ) : setStdoutCommandOutputHandler( nullOutputHandler );
+    }
+
+    private SystemCommand setStderrCommandOutputHandler( CommandOutputHandler outputHandler )
+    {
+        if ( stderrHandler != null )
         {
             throw new RuntimeException( "There can only be one consumer." );
         }
 
-        this.stdoutHandler = new OutputStreamInputStreamHandler( consumer );
+        this.stderrHandler = outputHandler;
         return this;
     }
 
-    public SystemCommand withStdoutConsumer( LineConsumer consumer )
+    private SystemCommand setStdoutCommandOutputHandler( CommandOutputHandler outputHandler )
     {
         if ( stdoutHandler != null )
         {
             throw new RuntimeException( "There can only be one consumer." );
         }
 
-        this.stdoutHandler = new LineConsumerInputStreamHandler( consumer );
+        this.stdoutHandler = outputHandler;
         return this;
     }
 
@@ -276,19 +346,26 @@ public class SystemCommand
 
         if ( !basedir.isDirectory() )
         {
-            throw new IOException( "The basedir must be a directory: '" + basedir + "'." );
+            throw new IOException( "Basedir must be a directory: '" + basedir + "'." );
         }
 
         arguments.add( 0, command );
 
-        return new Execution( command, arguments, environment, basedir, stderrHandler, stdoutHandler ).run();
+        return new Execution( command, arguments, environment, basedir, debug,
+                stderrHandler != null ? stderrHandler : DEFAULT_STDERR_OUTPUT_HANDLER,
+                stdoutHandler != null ? stdoutHandler : DEFAULT_STDOUT_OUTPUT_HANDLER).run();
     }
 
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    public static boolean available(String command)
+    /**
+     * Utility method to check if a command is available.
+     *
+     * Executes "which" and asserts that the file exist. It does not check if the file is executable.
+     */
+    public static boolean available( String command )
     {
         try
         {
@@ -318,20 +395,20 @@ public class SystemCommand
         private final List arguments;
         private final List environment;
         private final File basedir;
-        private InputStreamHandler stderrHandler;
-        private InputStreamHandler stdoutHandler;
+        private final boolean debug;
+        private final CommandOutputHandler stderrHandler;
+        private final CommandOutputHandler stdoutHandler;
 
-        public Pumper stderrPumper;
-        public Pumper stdoutPumper;
         public Process process;
 
-        private Execution( String command, List arguments, List environment, File basedir,
-                           InputStreamHandler stderrHandler, InputStreamHandler stdoutHandler )
+        private Execution( String command, List arguments, List environment, File basedir, boolean debug,
+                           CommandOutputHandler stderrHandler, CommandOutputHandler stdoutHandler )
         {
             this.command = command;
             this.arguments = arguments;
             this.environment = environment;
             this.basedir = basedir;
+            this.debug = debug;
             this.stderrHandler = stderrHandler;
             this.stdoutHandler = stdoutHandler;
         }
@@ -349,11 +426,11 @@ public class SystemCommand
 
             process = Runtime.getRuntime().exec( args, env, basedir );
 
-            process.getOutputStream().close();
+            process.getOutputStream().close(); // Close stdin
 
-            setUpStdErrConsumer();
+            stderrHandler.setup( command + ": stderr", process.getErrorStream() );
 
-            setUpStdOutConsumer();
+            stdoutHandler.setup( command + ": stdout", process.getInputStream() );
 
             try
             {
@@ -366,74 +443,91 @@ public class SystemCommand
                 throw ex;
             }
 
-            if ( stderrPumper != null )
-            {
-                try
-                {
-                    stderrPumper.join();
-                }
-                catch ( InterruptedException e )
-                {
-                    // ignore
-                }
-            }
+            stderrHandler.join();
+            stdoutHandler.join();
 
-            if ( stdoutPumper != null )
+            if ( debug )
             {
-                try
-                {
-                    stdoutPumper.join();
-                }
-                catch ( InterruptedException e )
-                {
-                    // ignore
-                }
+                System.out.println( "Command completed: " + command );
             }
 
             return new ExecutionResult( process.exitValue(), command );
         }
-
-        private void setUpStdErrConsumer()
-            throws IOException
-        {
-            if ( stderrHandler == null )
-            {
-                // For some reason this seems to result in random failures of some tools like pkgmk
-                // process.getErrorStream().close();
-                return;
-            }
-
-            stderrPumper = new Pumper( command + ": stderr-pumper", process.getErrorStream(), stderrHandler );
-            stderrPumper.start();
-        }
-
-        private void setUpStdOutConsumer()
-            throws IOException
-        {
-            if ( stdoutHandler == null )
-            {
-                // For some reason this seems to result in random failures of some tools like pkgmk
-                // process.getInputStream().close();
-                return;
-            }
-
-            stdoutPumper = new Pumper( command + ": stdout-pumper", process.getInputStream(), stdoutHandler );
-            stdoutPumper.start();
-        }
     }
 
-    private static interface InputStreamHandler
+    private static abstract interface CommandOutputHandler
     {
-        void handle( InputStream inputStream )
-            throws IOException;
+        void setup(String threadName, InputStream inputStream );
+        void join();
     }
 
-    private static class OutputStreamInputStreamHandler
-        implements InputStreamHandler
+    private static abstract class ThreadCommandOutputHandler
+        implements CommandOutputHandler
+    {
+        private Thread thread;
+
+        abstract void handle( InputStream inputStream )
+            throws IOException;
+
+        public void setup(String threadName, final InputStream inputStream )
+        {
+            thread = new Thread(new Runnable() {
+                public void run()
+                {
+                    try
+                    {
+                        handle( inputStream );
+                    }
+                    catch ( IOException e )
+                    {
+                        // ignore and die
+                    }
+                    finally
+                    {
+                        IOUtil.close( inputStream );
+                    }
+                }
+            }, threadName);
+            thread.start();
+        }
+
+        public void join()
+        {
+            try
+            {
+                if(thread == null)
+                {
+                    return;
+                }
+
+                thread.join();
+            }
+            catch (InterruptedException e)
+            {
+                // ignore
+            }
+        }
+    }
+
+    private static class NullCommandOutputHandler
+        implements CommandOutputHandler
+    {
+        public void setup(String threadName, InputStream inputStream)
+        {
+            IOUtil.close( inputStream );
+        }
+
+        public void join()
+        {
+        }
+    }
+
+    private static class OutputStreamCommandOutputHandler
+        extends ThreadCommandOutputHandler
     {
         private OutputStream outputStream;
 
-        private OutputStreamInputStreamHandler( OutputStream outputStream )
+        private OutputStreamCommandOutputHandler( OutputStream outputStream )
         {
             this.outputStream = outputStream;
         }
@@ -446,12 +540,12 @@ public class SystemCommand
         }
     }
 
-    private static class LineConsumerInputStreamHandler
-        implements InputStreamHandler
+    private static class LineConsumerCommandOutputHandler
+        extends ThreadCommandOutputHandler
     {
         private LineConsumer lineConsumer;
 
-        public LineConsumerInputStreamHandler( LineConsumer lineConsumer )
+        public LineConsumerCommandOutputHandler( LineConsumer lineConsumer )
         {
             this.lineConsumer = lineConsumer;
         }
@@ -468,37 +562,6 @@ public class SystemCommand
                 lineConsumer.onLine( line );
 
                 line = reader.readLine();
-            }
-        }
-    }
-
-    private static class Pumper
-        extends Thread
-    {
-        private InputStream inputStream;
-
-        private InputStreamHandler handler;
-
-        public Pumper( String threadName, InputStream inputStream, InputStreamHandler handler )
-        {
-            super( threadName );
-            this.inputStream = inputStream;
-            this.handler = handler;
-        }
-
-        public void run()
-        {
-            try
-            {
-                handler.handle( inputStream );
-            }
-            catch ( IOException e )
-            {
-                // ignore and die
-            }
-            finally
-            {
-                IOUtil.close( inputStream );
             }
         }
     }

@@ -1,6 +1,6 @@
 package org.codehaus.mojo.unix.rpm;
 
-import org.codehaus.mojo.unix.HasRelaxedEquality;
+import org.codehaus.mojo.unix.EqualsIgnoreNull;
 import org.codehaus.mojo.unix.util.SystemCommand;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class RpmUtil
@@ -23,7 +23,7 @@ public class RpmUtil
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( "MMM dd HH:mm" );
 
     public static final class FileInfo
-        implements HasRelaxedEquality
+        implements EqualsIgnoreNull
     {
         public final String path;
 
@@ -47,7 +47,7 @@ public class RpmUtil
             this.date = date;
         }
 
-        public boolean equalsIgnoreNull( HasRelaxedEquality other )
+        public boolean equalsIgnoreNull( EqualsIgnoreNull other )
         {
             FileInfo that = (FileInfo) other;
 
@@ -93,7 +93,7 @@ public class RpmUtil
     }    
 
     public static final class SpecFile
-        implements HasRelaxedEquality
+        implements EqualsIgnoreNull
     {
         public String name;
         public String version;
@@ -115,7 +115,7 @@ public class RpmUtil
             this.description = description;
         }
 
-        public boolean equalsIgnoreNull( HasRelaxedEquality other )
+        public boolean equalsIgnoreNull( EqualsIgnoreNull other )
         {
             SpecFile that = (SpecFile) other;
 
