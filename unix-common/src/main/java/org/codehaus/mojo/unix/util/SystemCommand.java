@@ -16,9 +16,9 @@ package org.codehaus.mojo.unix.util;
  * limitations under the License.
  */
 
+import org.codehaus.mojo.unix.util.line.AbstractLineStreamWriter;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.mojo.unix.util.line.AbstractLineStreamWriter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,17 +61,17 @@ public class SystemCommand
             throws IOException;
     }
 
-    public static class ToStringLineConsumer
+    public static class StringBufferLineConsumer
         implements LineConsumer
     {
         private StringBuffer buffer;
 
-        public ToStringLineConsumer()
+        public StringBufferLineConsumer()
         {
             this( 1024 );
         }
 
-        public ToStringLineConsumer( int size )
+        public StringBufferLineConsumer( int size )
         {
             buffer = new StringBuffer( size );
         }
@@ -87,6 +87,28 @@ public class SystemCommand
         public String toString()
         {
             return buffer.toString();
+        }
+    }
+
+    public static class StringListLineConsumer
+        implements LineConsumer
+    {
+        private final List<String> strings;
+
+        public StringListLineConsumer( List<String> strings )
+        {
+            this.strings = strings;
+        }
+
+        public void onLine( String line )
+            throws IOException
+        {
+            strings.add( line );
+        }
+
+        public List<String> getStrings()
+        {
+            return strings;
         }
     }
 
@@ -369,7 +391,7 @@ public class SystemCommand
     {
         try
         {
-            SystemCommand.ToStringLineConsumer stdout = new SystemCommand.ToStringLineConsumer();
+            StringBufferLineConsumer stdout = new StringBufferLineConsumer();
 
             new SystemCommand().setCommand( "which" ).
                 addArgument( command ).

@@ -154,7 +154,7 @@ public class PkgmkCommand
         throws IOException
     {
         // Seems like pkgmk doesn't like its stderr/stdout to be closed.
-        SystemCommand.ToStringLineConsumer out = new SystemCommand.ToStringLineConsumer();
+        SystemCommand.StringBufferLineConsumer out = new SystemCommand.StringBufferLineConsumer();
 
         SystemCommand command = new SystemCommand().
             setCommand( "pkgmk" ).

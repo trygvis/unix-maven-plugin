@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -90,7 +91,7 @@ public class RpmUtil
                 append( date != null ? DATE_FORMAT.format( date ) : "not set" ).append( " " ).
                 append( path ).toString();
         }
-    }    
+    }
 
     public static final class SpecFile
         implements EqualsIgnoreNull
@@ -102,9 +103,10 @@ public class RpmUtil
         public String license;
         public String group;
         public String description;
+        public List configFiles;
 
         public SpecFile( String name, String version, int release, String summary, String license, String group,
-                         String description )
+                         String description, List configFiles )
         {
             this.name = name;
             this.version = version;
@@ -113,6 +115,7 @@ public class RpmUtil
             this.license = license;
             this.group = group;
             this.description = description;
+            this.configFiles = configFiles;
         }
 
         public boolean equalsIgnoreNull( EqualsIgnoreNull other )
@@ -195,8 +198,21 @@ public class RpmUtil
             execute().
             assertSuccess();
 
+        final List<String> configFiles = new LinkedList<String>();
+
+        new SystemCommand().
+            dumpCommandIf( true ).
+            withStdoutConsumer( new SystemCommand.StringListLineConsumer( configFiles ) ).
+            setCommand( "rpm" ).
+            addArgument( "--query" ).
+            addArgument( "--configfiles" ).
+            addArgument( "--package" ).
+            addArgument( rpm.getAbsolutePath() ).
+            execute().
+            assertSuccess();
+
         return new SpecFile( parser.name, parser.version, parser.release, parser.summary, parser.license, parser.group,
-            description.toString() );
+            description.toString(), configFiles );
     }
 
     private static class RpmQueryParser
