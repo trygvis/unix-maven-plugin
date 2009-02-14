@@ -23,7 +23,7 @@
     <author email="trygvis@codehaus.org">Trygve Laugstol</author>
   </properties>
   <body>
-    <section name="About">
+    <section name="Path Expressions">
       <p>
         Explain the difference between:
       </p>

@@ -25,14 +25,68 @@
   <body>
     <section name="Mappings">
       <p>
-pom.xml                                       | Unix Package     | Dpkg       | Pkg                | Rpm
-config.contact                                | contact          | Maintainer |                    |
-config.contactEmail                           | contactEmail     |            | EMAIL              |
-pakke.packageId || ${artifactId}-{classifier} | name             |            | PKG                |      # TODO: need better name than "packageId"
-pakke.name || pom.name                        | shortDescription |            | NAME               |
-pakke.description || pom.description          | description      |            | DESC               |
-                                              | architecture     |            | ARCH               |
+        This table describe the relationship between the fields in the pom.xml and the fields in the generated package.
       </p>
+      <table class="bodyTable">
+        <tbody>
+          <tr class="a">
+            <th>pom.xml</th>
+            <th>Unix Package</th>
+            <th>Dpkg</th>
+            <th>Pkg</th>
+            <th>Rpm</th>
+          </tr>
+          <tr class="b">
+            <td>config.contact</td>
+            <td>contact</td>
+            <td>Maintainer</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>config.contactEmail</td>
+            <td>contactEmail</td>
+            <td></td>
+            <td>EMAIL</td>
+            <td></td>
+          </tr>
+          <!-- need better name than "packageId" -->
+          <tr>
+            <td><code>package.packageId</code> or <code>${artifactId}-{classifier}</code></td>
+            <td>name</td>
+            <td></td>
+            <td>PKG</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><code>package.name</code> or <code>project.name</code></td>
+            <td>shortDescription</td>
+            <td></td>
+            <td>NAME</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><code>package.description</code> or <code>project.description</code></td>
+            <td>description</td>
+            <td></td>
+            <td>DESC</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>architecture</td>
+            <td></td>
+            <td>ARCH</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <section name="Legend">
+        <ul>
+          <li><code>package</code> refers to the configuration of the package being built.</li>
+          <li>The Unix Package is the internal field in the unified model.</li>
+        </ul>
+      </section>
     </section>
   </body>
 </document>

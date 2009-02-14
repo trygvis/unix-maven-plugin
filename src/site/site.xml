@@ -23,6 +23,7 @@
   <body>
     <menu name="Overview">
       <item name="Overview" href="index.html"/>
+      <item name="Field Mapping" href="mappings.html"/>
 <!--
       <item name="Usage" href="usage.html"/>
       <item name="Best Practices and Examples" href="best-practice-and-examples.html"/>
@@ -31,6 +32,10 @@
       <item name="Goals" href="plugin-info.html"/>
 -->
       <item name="FAQ" href="faq.html"/>
+    </menu>
+    <menu name="Technical">
+      <item name="Javadoc" href="apidocs/"/>
+      <item name="XRef" href="xref"/>
     </menu>
     <!--
     <menu name="Examples">

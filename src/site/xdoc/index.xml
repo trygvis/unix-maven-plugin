@@ -28,9 +28,9 @@
         The unix-maven-plugin is a Maven plugin for producing installation packages for UNIX platforms.
       </p>
       <p>
-        The current release is 1.0-alpha-1. This release is meant as a technology preview release. The plugin is useful
-        but work is in progress to make sure it support even more use cases. The documentation is currently lacking,
-        but the integration tests currently act as the documentation.
+        The current release is <b>1.0-alpha-2</b>. This release is meant as a technology preview release. The plugin
+        is useful but work is in progress to make sure it support even more use cases. The documentation is currently
+        lacking, but the integration tests currently act as the documentation.
       </p>
       <p>
         See the <a href="http://svn.codehaus.org/mojo/trunk/mojo/unix/TODO.txt">TODO.txt</a> for the latest status
@@ -92,12 +92,5 @@
         </li>
       </ul>
     </section>
-<!--
-    <section name="Getting Started">
-      <p>
-        To get started with the solaris-maven-plugin read the <a href="usage.html">usage</a> guide.
-      </p>
-    </section>
--->
   </body>
 </document>
