@@ -111,7 +111,9 @@ public class Copy
         {
             File artifactFile = artifact( this.artifact ).getFile();
 
-            FileObject artifact = basedir.resolveFile( artifactFile.getAbsolutePath() );
+            // This code fails on windows, seems like commons-vfs is unable to properly resolve the path.
+            // FileObject artifact = basedir.resolveFile( artifactFile.getAbsolutePath() );
+            FileObject artifact = basedir.getFileSystem().getRoot().resolveFile( artifactFile.getAbsolutePath() );
 
             copyFile( fileCollector, artifact, toFile, toDir, unixFileAttributes );
         }

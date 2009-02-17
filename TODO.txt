@@ -75,6 +75,8 @@ o Add a "platform" concept.
 
 o Make sure the result of setLastModified is asserted
 
+o Get commons-vfs to log to Maven or just ignore it
+
 == For 1.0-alpha-2 ==
 
 o Get all ITs to pass

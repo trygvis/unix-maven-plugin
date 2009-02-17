@@ -64,14 +64,14 @@ public class Rpmbuild
             throw new IOException( "Package specFile is not set." );
         }
 
-        SystemCommand command = new SystemCommand().setBasedir( new File( "/" ) );
+        // Seems like pkgmk doesn't like its stderr/stdout to be closed.
+        SystemCommand.ToStringLineConsumer out = new SystemCommand.ToStringLineConsumer();
 
-        // TODO: Only the _topdir defines should be there, the others should be in the spec file
-        // TODO: This should be configurable
-        command.
+        SystemCommand command = new SystemCommand().
+            setBasedir( new File( "/" ) ).
             dumpCommandIf( debug ).
-            withNoStderrConsumerUnless( debug ).
-            withNoStdoutConsumerUnless( debug ).
+            withStderrConsumer( out ).
+            withStdoutConsumer( out ).
             setCommand( rpmbuildPath ).
             addArgument( "-bb" ).
             addArgument( "--buildroot" ).
@@ -80,6 +80,8 @@ public class Rpmbuild
             addArgument( "noarch" ).
             addArgument( specFile.getAbsolutePath() );
 
+        // TODO: Only the _topdir defines should be there, the others should be in the spec file
+        // TODO: This should be configurable
         for ( Iterator it = defines.iterator(); it.hasNext(); )
         {
             command.
@@ -87,8 +89,17 @@ public class Rpmbuild
                 addArgument( it.next().toString() );
         }
 
-        command.
-            execute().
+        SystemCommand.ExecutionResult result = command.
+            execute();
+
+        if ( debug )
+        {
+            System.out.println( "------------------------------------------------------" );
+            System.out.println( result.command + " output:" );
+            System.out.println( out );
+        }
+
+        result.
             assertSuccess();
     }
 

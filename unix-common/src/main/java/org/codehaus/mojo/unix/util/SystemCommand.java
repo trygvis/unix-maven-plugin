@@ -115,7 +115,7 @@ public class SystemCommand
     public static class ExecutionResult
     {
         public final int exitCode;
-        private final String command;
+        public final String command;
 
         ExecutionResult( int exitCode, String command )
         {

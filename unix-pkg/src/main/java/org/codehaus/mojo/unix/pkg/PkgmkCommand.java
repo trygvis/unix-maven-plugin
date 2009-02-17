@@ -215,7 +215,7 @@ public class PkgmkCommand
         if ( debug )
         {
             System.out.println( "------------------------------------------------------" );
-            System.out.println( "pkgmk output:" );
+            System.out.println( result.command + " output:" );
             System.out.println( out );
         }
 
