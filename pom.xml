@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>mojo-parent</artifactId>
@@ -9,7 +8,7 @@
   </parent>
   <groupId>org.codehaus.mojo.unix</groupId>
   <artifactId>unix</artifactId>
-  <version>1.0-alpha-2-SNAPSHOT</version>
+  <version>1.0-alpha-2</version>
   <packaging>pom</packaging>
   <name>Maven Unix Support</name>
   <inceptionYear>2008</inceptionYear>
@@ -73,9 +72,9 @@
     </license>
   </licenses>
   <scm>
-    <url>https://svn.codehaus.org/mojo/trunk/mojo/unix</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/unix</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/unix</developerConnection>
+    <url>https://svn.codehaus.org/mojo/tags/unix-1.0-alpha-2</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/tags/unix-1.0-alpha-2</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/unix-1.0-alpha-2</developerConnection>
   </scm>
   <dependencies>
     <dependency>
