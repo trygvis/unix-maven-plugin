@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
 
 /**
  * Executes a system command in a similar fasion to backtick (`) in sh and ruby.
@@ -64,7 +65,7 @@ public class SystemCommand
     public static class StringBufferLineConsumer
         implements LineConsumer
     {
-        private StringBuffer buffer;
+        public final StringBuffer buffer;
 
         public StringBufferLineConsumer()
         {
@@ -93,7 +94,12 @@ public class SystemCommand
     public static class StringListLineConsumer
         implements LineConsumer
     {
-        private final List<String> strings;
+        public final List<String> strings;
+
+        public StringListLineConsumer()
+        {
+            this.strings = new LinkedList<String>();
+        }
 
         public StringListLineConsumer( List<String> strings )
         {
