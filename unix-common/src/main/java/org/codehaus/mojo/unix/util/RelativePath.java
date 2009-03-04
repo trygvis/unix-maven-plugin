@@ -1,5 +1,9 @@
 package org.codehaus.mojo.unix.util;
 
+import fj.pre.Ord;
+import fj.pre.Ordering;
+import fj.F;
+
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -26,7 +30,26 @@ public class RelativePath
         {
             return "/";
         }
+
+        public String asAbsolutePath( String basePath )
+        {
+            return basePath;
+        }
     };
+
+    public static final Ord<RelativePath> ord = Ord.ord( new F<RelativePath, F<RelativePath, Ordering>>()
+    {
+        public F<RelativePath, Ordering> f( final RelativePath a )
+        {
+            return new F<RelativePath, Ordering>()
+            {
+                public Ordering f( RelativePath b )
+                {
+                    return Ord.stringOrd.compare( a.string, b.string );
+                }
+            };
+        }
+    } );
 
     private RelativePath( String string )
     {
@@ -45,6 +68,40 @@ public class RelativePath
         return new RelativePath( this.string + "/" + string );
     }
 
+    /**
+     * @deprecated use asAbsolutePath(String)
+     */
+    public String asAbsolutePath()
+    {
+        return "/" + string;
+    }
+
+    public String asAbsolutePath( String basePath )
+    {
+        return basePath + ( basePath.endsWith( "/" ) ? "" : "/" ) + string;
+    }
+
+    public String name()
+    {
+        int i = string.lastIndexOf( '/' );
+
+        if ( i == -1 )
+        {
+            return string;
+        }
+
+        return string.substring( i + 1 );
+    }
+
+    public boolean startsWith( RelativePath other )
+    {
+        return string.startsWith( other.string );
+    }
+
+    // -----------------------------------------------------------------------
+    // Static
+    // -----------------------------------------------------------------------
+
     public static RelativePath fromString( String string )
     {
         string = string == null ? "/" : string.trim();
@@ -57,11 +114,6 @@ public class RelativePath
         }
 
         return new RelativePath( s );
-    }
-
-    public String asAbsolutePath()
-    {
-        return "/" + string;
     }
 
     static String clean( final String string )
@@ -90,8 +142,6 @@ public class RelativePath
         {
             s = s.substring( 0, s.length() - 1 );
         }
-
-//        System.out.println( StringUtils.rightPad( string, 30 )+ " => " + StringUtils.rightPad( s, 30 )+ " => " + s );
 
         if ( isRoot( s ) )
         {

@@ -1,8 +1,19 @@
 package org.codehaus.mojo.unix;
 
+import fj.F;
+import fj.F2;
+import static fj.Function.curry;
+import static fj.P.p;
+import fj.data.Option;
+import static fj.data.Option.some;
 import org.codehaus.mojo.unix.util.RelativePath;
+import org.codehaus.mojo.unix.util.UnixUtil;
+import org.codehaus.mojo.unix.util.Validate;
+import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
+import org.codehaus.mojo.unix.util.line.LineProducer;
+import org.codehaus.mojo.unix.util.line.LineStreamWriter;
 import org.codehaus.plexus.util.StringUtils;
-import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 
@@ -10,40 +21,99 @@ import org.joda.time.format.DateTimeFormatterBuilder;
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public abstract class UnixFsObject
+public abstract class UnixFsObject<A extends UnixFsObject>
+    implements LineProducer
 {
     public final RelativePath path;
-    public final LocalDate lastModified;
+    public final LocalDateTime lastModified;
     public final long size;
-    public final FileAttributes attributes;
+    public final Option<FileAttributes> attributes;
 
-    public static final DateTimeFormatter formatter;
+    private static final DateTimeFormatter FORMAT = new DateTimeFormatterBuilder().
+        appendMonthOfYearShortText().
+        appendLiteral( ' ' ).
+        appendHourOfDay( 2 ).
+        appendLiteral( ':' ).
+        appendMinuteOfHour( 2 ).toFormatter();
 
-    static {
-        formatter = new DateTimeFormatterBuilder().
-            appendMonthOfYearShortText().
-            appendLiteral( ' ' ).
-            appendHourOfDay( 2 ).
-            appendLiteral( ':' ).
-            appendMinuteOfHour( 2 ).toFormatter();
-    }
+    public static final F<LocalDateTime, String> formatter = curry( UnixUtil.formatLocalDateTime, FORMAT );
 
-    protected UnixFsObject( RelativePath path, LocalDate lastModified, long size, FileAttributes attributes )
+    private char prefixChar;
+
+    protected UnixFsObject( char prefixChar, RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
     {
-        if ( attributes == null )
-        {
-            throw new NullPointerException( "attributes" );
-        }
-        
+        validateNotNull( path, lastModified, attributes );
+
+        this.prefixChar = prefixChar;
         this.path = path;
         this.lastModified = lastModified;
         this.size = size;
         this.attributes = attributes;
     }
 
-    public abstract boolean isDirectory();
+    public final A setPath( RelativePath path )
+    {
+        return copy( path, lastModified, size, attributes );
+    }
 
-    public abstract boolean isFile();
+    public final A setLastModified( LocalDateTime lastModified )
+    {
+        return copy( path, lastModified, size, attributes );
+    }
+
+    protected abstract A copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes );
+
+    public UnixFsObject cast()
+    {
+        return this;
+    }
+
+    // -----------------------------------------------------------------------
+    // Static
+    // -----------------------------------------------------------------------
+
+    public static RegularFile regularFile( RelativePath path, LocalDateTime lastModified, long size,
+                                           Option<FileAttributes> attributes )
+    {
+        return new RegularFile( path, lastModified, size, attributes );
+    }
+
+    public static Directory directory( RelativePath path, LocalDateTime lastModified )
+    {
+        return new Directory( path, lastModified, Option.<FileAttributes>none() );
+    }
+
+    public static Directory directory( RelativePath path, LocalDateTime lastModified, FileAttributes attributes )
+    {
+        return new Directory( path, lastModified, some( attributes ) );
+    }
+
+    public static Symlink symlink( RelativePath from, LocalDateTime lastModified, Option<FileAttributes> attributes,
+                                   String to )
+    {
+        return new Symlink( from, lastModified, attributes, to );
+    }
+
+    public A setAttributes( FileAttributes attributes )
+    {
+        Validate.validateNotNull( attributes );
+        return copy( path, lastModified, size, some( attributes ) );
+    }
+
+    public static F2<UnixFsObject, FileAttributes, UnixFsObject> setAttributes()
+    {
+        return new F2<UnixFsObject, FileAttributes, UnixFsObject>()
+        {
+            public UnixFsObject f( UnixFsObject unixFsObject, FileAttributes fileAttributes )
+            {
+                return unixFsObject.setAttributes( fileAttributes );
+            }
+        };
+    }
+
+    // -----------------------------------------------------------------------
+    // Object Overrides
+    // -----------------------------------------------------------------------
 
     public boolean equals( Object o )
     {
@@ -58,7 +128,7 @@ public abstract class UnixFsObject
 
         UnixFsObject that = (UnixFsObject) o;
 
-        return !( path != null ? !path.equals( that.path ) : that.path != null );
+        return path.equals( that.path );
     }
 
     public int hashCode()
@@ -66,61 +136,100 @@ public abstract class UnixFsObject
         return path.hashCode();
     }
 
-    public static class FileUnixOFsbject
-        extends UnixFsObject
+    public void streamTo( LineStreamWriter stream )
     {
-        public FileUnixOFsbject( RelativePath path, LocalDate lastModified, long size, FileAttributes attributes )
+        stream.add( toString() );
+    }
+
+    public String toString()
+    {
+        F<String,String> leftPad10 = curry( UnixFsObject.leftPad, 10 );
+        F<String,String> rightPad10 = curry( UnixFsObject.rightPad, 10 );
+
+        System.out.println( "this.path = " + this.path );
+        // I wonder how long this will hold. Perhaps it should only be possible to call toString() on valid
+        // objects - trygve
+        FileAttributes attributes = this.attributes.some();
+
+        return prefixChar + attributes.mode.map( UnixFileMode.showLong ).orSome( "<unknown>" ) +
+            " " + attributes.user.map( leftPad10 ).orSome( " <unknown>" ) +
+            " " + attributes.group.map( leftPad10 ).orSome( " <unknown>" ) +
+            " " + p( String.valueOf( size ) ).map( rightPad10 )._1() +
+            " " + p( lastModified ).map( formatter )._1() +
+            " " + path.string;
+    }
+
+    // -----------------------------------------------------------------------
+    // Sub classes
+    // -----------------------------------------------------------------------
+
+    public static class RegularFile
+        extends UnixFsObject<RegularFile>
+    {
+        private RegularFile( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
         {
-            super( path, lastModified, size, attributes );
+            super( '-', path, lastModified, size, attributes );
         }
 
-        public boolean isDirectory()
+        protected RegularFile copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
         {
-            return false;
-        }
-
-        public boolean isFile()
-        {
-            return true;
-        }
-
-        public String toString()
-        {
-            return "-" + (attributes.mode != null ? attributes.mode.toString() : "<unknown>") +
-                " " + (attributes.user != null ? StringUtils.leftPad( attributes.user, 10 ) : " <unknown>") +
-                " " + (attributes.group != null ? StringUtils.leftPad( attributes.group, 10 ) : " <unknown>") +
-                " " + StringUtils.rightPad( String.valueOf( size ), 10 ) +
-                " " + ( lastModified != null ? formatter.print( lastModified ) : "            " ) +
-                path.string;
+            return new RegularFile( path, lastModified, size, attributes );
         }
     }
 
-    public static class DirectoryUnixOFsbject
-        extends UnixFsObject
+    public static class Directory
+        extends UnixFsObject<Directory>
     {
-        public DirectoryUnixOFsbject( RelativePath path, LocalDate lastModified, FileAttributes attributes )
+        private Directory( RelativePath path, LocalDateTime lastModified, Option<FileAttributes> attributes )
         {
-            super( path, lastModified, 0, attributes );
+            super( 'd', path, lastModified, 0, attributes );
         }
 
-        public boolean isDirectory()
+        protected Directory copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
         {
-            return true;
-        }
-
-        public boolean isFile()
-        {
-            return false;
-        }
-
-        public String toString()
-        {
-            return "-" + (attributes.mode != null ? attributes.mode.toString() : "<unknown>") +
-                " " + (attributes.user != null ? StringUtils.leftPad( attributes.user, 10 ) : " <unknown>") +
-                " " + (attributes.group != null ? StringUtils.leftPad( attributes.group, 10 ) : " <unknown>") +
-                " " + "          " +
-                " " + ( lastModified != null ? formatter.print( lastModified ) : "            " ) +
-                path.string;
+            return new Directory( path, lastModified, attributes );
         }
     }
+
+    public static class Symlink
+        extends UnixFsObject<Symlink>
+    {
+        public final String target;
+
+        private Symlink( RelativePath from, LocalDateTime lastModified, Option<FileAttributes> attributes, String target )
+        {
+            super( 'l', from, lastModified, sizeOfSymlink( target ), attributes );
+
+            this.target = target;
+        }
+
+        private static long sizeOfSymlink( String to )
+        {
+            // This might not be good enough validation
+            int i = to.lastIndexOf( '/' );
+
+            return (i == -1 ) ? to.length() : to.length() - i - 1;
+        }
+
+        protected Symlink copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
+        {
+            return new Symlink( path, lastModified, attributes, target );
+        }
+    }
+
+    private static final F2<Integer, String, String> leftPad = new F2<Integer, String, String>()
+    {
+        public String f( Integer size, String s )
+        {
+            return StringUtils.leftPad( s, size );
+        }
+    };
+
+    private static final F2<Integer, String, String> rightPad = new F2<Integer, String, String>()
+    {
+        public String f( Integer size, String s )
+        {
+            return StringUtils.leftPad( s, size );
+        }
+    };
 }

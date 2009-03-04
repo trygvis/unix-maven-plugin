@@ -21,7 +21,6 @@ public class ArTest
     private File file1 = new File( System.getProperty( "basedir" ), "target/file1" );
     private String file1Contents = "Hello World";
     private File file2 = new File( System.getProperty( "basedir" ), "target/file2" );
-    private String file2Contents = "I'm going to be skipped!";
     private File file3 = new File( System.getProperty( "basedir" ), "target/file3" );
     private String file3Contents = "Hello World, weee!"; // odd number of characters
     private File myAr = new File( System.getProperty( "basedir" ), "target/my.ar" );
@@ -34,7 +33,7 @@ public class ArTest
         writer.close();
 
         writer = new OutputStreamWriter( new FileOutputStream( file2 ), "UTF-16" );
-        writer.write( file2Contents );
+        writer.write("I'm going to be skipped!");
         writer.close();
 
         writer = new OutputStreamWriter( new FileOutputStream( file3 ), "UTF-16" );

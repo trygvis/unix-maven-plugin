@@ -19,7 +19,7 @@ class ArWriter
 {
     private OutputStream output;
 
-    static Charset charset;
+    static final Charset charset;
 
     public static final String BLANKS = "               ";
 

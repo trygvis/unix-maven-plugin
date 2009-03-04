@@ -24,14 +24,14 @@ public class PackageVersionTest
     public void testReleaseVersionWithConfiguredRevison()
     {
         assertVersion( "1.0-alpha-2", "20080703.084400", 3, "1.0-alpha-2-3",
-        PackageVersion.create( "1.0-alpha-2", "20080703.084400", false, null, new Integer( 3 ) ) );
+        PackageVersion.create( "1.0-alpha-2", "20080703.084400", false, null, 3 ) );
     }
 
     public void testSnapshotVersionWithoutEmbeddedRevison()
     {
         // When your project uses versions on the form "1.0-alpha-2" you have to specify the revision
         assertVersion( "1.0-alpha-2", "20080703.084400", 3, "1.0-alpha-2-3-SNAPSHOT",
-            PackageVersion.create( "1.0-alpha-2-SNAPSHOT", "20080703.084400", true, null, new Integer( 3 ) ) );
+            PackageVersion.create( "1.0-alpha-2-SNAPSHOT", "20080703.084400", true, null, 3 ) );
     }
 
     public void testRevision()

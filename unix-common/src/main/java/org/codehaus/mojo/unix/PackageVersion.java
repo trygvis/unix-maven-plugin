@@ -35,7 +35,6 @@ public final class PackageVersion
             {
                 throw new RuntimeException( "The timestamp can't be null when creating a snapshot version" );
             }
-
         }
 
         version = stripSnapshot( snapshot, version );
@@ -95,7 +94,7 @@ public final class PackageVersion
         if ( configuredRevision != null )
         {
             return new PackageVersion( stripSnapshot( snapshot, version ), timestamp, snapshot,
-                configuredRevision.intValue() );
+                configuredRevision );
         }
 
         PackageVersion v = fromMavenProject( version, timestamp, snapshot );

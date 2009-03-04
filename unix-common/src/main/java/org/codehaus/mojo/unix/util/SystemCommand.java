@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -120,21 +119,21 @@ public class SystemCommand
 
     public static class ExecutionResult
     {
-        public final int exitCode;
+        public final int exitValue;
         public final String command;
 
-        ExecutionResult( int exitCode, String command )
+        ExecutionResult( int exitValue, String command )
         {
-            this.exitCode = exitCode;
+            this.exitValue = exitValue;
             this.command = command;
         }
 
         public ExecutionResult assertSuccess()
             throws IOException
         {
-            if ( exitCode != 0 )
+            if ( exitValue != 0 )
             {
-                throw new IOException( "Command '" + command + "' returned a non-null exit code: " + exitCode );
+                throw new IOException( "Command '" + command + "' returned a non-null exit code: " + exitValue );
             }
 
             return this;
@@ -143,7 +142,7 @@ public class SystemCommand
         public ExecutionResult assertSuccess( String exceptionMessage )
             throws IOException
         {
-            if ( exitCode != 0 )
+            if ( exitValue != 0 )
             {
                 throw new IOException( exceptionMessage );
             }
@@ -166,9 +165,9 @@ public class SystemCommand
 
     private String command;
 
-    private List arguments;
+    private List<String> arguments;
 
-    private List environment;
+    private List<String> environment;
 
     private boolean debug;
 
@@ -178,7 +177,7 @@ public class SystemCommand
 
     public SystemCommand()
     {
-        arguments = new ArrayList();
+        arguments = new ArrayList<String>();
     }
 
     public SystemCommand setCommand( String command )
@@ -199,7 +198,7 @@ public class SystemCommand
         return this;
     }
 
-    public SystemCommand addArguments(List strings)
+    public SystemCommand addArguments( List<String> strings )
     {
         arguments.addAll(strings);
         return this;
@@ -236,7 +235,7 @@ public class SystemCommand
     {
         if ( environment == null )
         {
-            environment = new ArrayList();
+            environment = new ArrayList<String>();
         }
 
         environment.add( variable );
@@ -365,9 +364,8 @@ public class SystemCommand
         if ( debug )
         {
             System.err.println( "Executing '" + command + "' with arguments (one argument per line):" );
-            for ( Iterator it = arguments.iterator(); it.hasNext(); )
-            {
-                System.err.println( it.next().toString() );
+            for ( String argument : arguments ) {
+                System.err.println( argument );
             }
             System.err.println( "Executing command in directory: " + basedir );
         }
@@ -400,12 +398,17 @@ public class SystemCommand
             StringBufferLineConsumer stdout = new StringBufferLineConsumer();
 
             new SystemCommand().setCommand( "which" ).
+//                dumpCommandIf( true ).
                 addArgument( command ).
                 withStdoutConsumer( stdout ).
                 execute().
                 assertSuccess();
 
-            return new File( stdout.toString() ).canRead();
+//            System.out.println( "stdout = " + stdout );
+//            System.out.println( "new File( stdout.toString() ).canRead() = " + new File( stdout.toString() ).canRead() );
+//            System.out.println( "new File( stdout.toString() ).getCanonicalFile().canRead() = " + new File( stdout.toString() ).getCanonicalFile().canRead() );
+
+            return new File( stdout.toString() ).getCanonicalFile().canRead();
         }
         catch ( IOException e )
         {
@@ -420,8 +423,8 @@ public class SystemCommand
     private static class Execution
     {
         private final String command;
-        private final List arguments;
-        private final List environment;
+        private final List<String> arguments;
+        private final List<String> environment;
         private final File basedir;
         private final boolean debug;
         private final CommandOutputHandler stderrHandler;
@@ -429,8 +432,8 @@ public class SystemCommand
 
         public Process process;
 
-        private Execution( String command, List arguments, List environment, File basedir, boolean debug,
-                           CommandOutputHandler stderrHandler, CommandOutputHandler stdoutHandler )
+        private Execution( String command, List<String> arguments, List<String> environment, File basedir,
+                           boolean debug, CommandOutputHandler stderrHandler, CommandOutputHandler stdoutHandler )
         {
             this.command = command;
             this.arguments = arguments;
@@ -444,12 +447,12 @@ public class SystemCommand
         public ExecutionResult run()
             throws IOException
         {
-            String[] args = (String[]) arguments.toArray( new String[arguments.size()] );
+            String[] args = arguments.toArray( new String[arguments.size()] );
             String[] env = null;
 
             if ( environment != null )
             {
-                env = (String[]) environment.toArray( new String[environment.size()] );
+                env = environment.toArray( new String[environment.size()] );
             }
 
             process = Runtime.getRuntime().exec( args, env, basedir );
@@ -474,12 +477,14 @@ public class SystemCommand
             stderrHandler.join();
             stdoutHandler.join();
 
+            int exitValue = process.exitValue();
+
             if ( debug )
             {
-                System.out.println( "Command completed: " + command );
+                System.out.println( "Command completed: " + command + ", exit value: " + exitValue );
             }
 
-            return new ExecutionResult( process.exitValue(), command );
+            return new ExecutionResult( exitValue, command );
         }
     }
 

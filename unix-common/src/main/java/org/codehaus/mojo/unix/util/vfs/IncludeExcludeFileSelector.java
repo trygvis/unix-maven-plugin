@@ -38,9 +38,9 @@ public class IncludeExcludeFileSelector
     };
 
     private final FileName root;
-    private FileType fileType;
-    private List<PathExpression> includes;
-    private List<PathExpression> excludes;
+    private final FileType fileType;
+    private final List<PathExpression> includes;
+    private final List<PathExpression> excludes;
 
     IncludeExcludeFileSelector( FileName root, FileType fileType, List<PathExpression> includes, List<PathExpression> excludes )
     {
@@ -63,6 +63,11 @@ public class IncludeExcludeFileSelector
 
         String relativePath = root.getRelativeName( name );
 
+        return matches( relativePath );
+    }
+
+    public boolean matches( String relativePath )
+    {
         // -----------------------------------------------------------------------
         // Make sure that the relative path always starts with a leading slash as
         // people want to match against "**/.svn**" which would not match the

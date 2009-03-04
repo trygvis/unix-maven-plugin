@@ -3,7 +3,6 @@ package org.codehaus.mojo.unix.ar;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -12,7 +11,6 @@ import java.util.List;
  */
 public class Ar
 {
-
     public static NewAr create()
     {
         return new NewAr();
@@ -26,7 +24,7 @@ public class Ar
 
     public static class NewAr
     {
-        private List files = new ArrayList();
+        private final List<ArFile> files = new ArrayList<ArFile>();
 
         public class NewArFile
         {
@@ -75,10 +73,9 @@ public class Ar
             {
                 writer = new ArWriter( file );
 
-                for ( Iterator it = files.iterator(); it.hasNext(); )
+                for ( ArFile arFile : files )
                 {
-                    ArFile arFile = (ArFile) it.next();
-                    writer.add( arFile );
+                    writer.add(arFile);
                 }
             }
             finally
@@ -87,22 +84,4 @@ public class Ar
             }
         }
     }
-
-    /*
-    public static InputStream openFile(File arFile, String fileName) throws IOException {
-        ArReader reader = null;
-        try {
-            reader = new ArReader(arFile);
-            for (ArFile file : reader) {
-                if (file.getName().equals(fileName)) {
-                    return loadFile(file);
-                }
-            }
-
-            throw new NoSuchFileInArchiveException();
-        } finally {
-            close(reader);
-        }
-    }
-    */
 }

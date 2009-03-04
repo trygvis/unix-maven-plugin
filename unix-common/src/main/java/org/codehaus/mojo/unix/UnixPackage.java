@@ -4,8 +4,6 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Set;
 
 /**
  * Represents a Unix package that has attributes and a set of files to be packaged.
@@ -35,10 +33,10 @@ public abstract class UnixPackage
         return this;
     }
 
-    public UnixPackage dependencies( Set dependencies )
-    {
-        return this;
-    }
+//    public UnixPackage dependencies( Set dependencies )
+//    {
+//        return this;
+//    }
 
     // -----------------------------------------------------------------------
     // Generic Meta Data
@@ -122,7 +120,7 @@ public abstract class UnixPackage
     }
 
     public abstract void packageToFile( File packageFile )
-        throws IOException, MissingSettingException;
+        throws Exception;
 
     public final PackageVersion getVersion()
     {

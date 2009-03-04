@@ -19,18 +19,11 @@ public class LineFile
     extends AbstractLineStreamWriter
     implements Iterable<String>
 {
-    private List<String> lines = new ArrayList<String>( 1000 );
+    private final List<String> lines = new ArrayList<String>( 1000 );
 
-    protected void onLine( String prefix, String line )
+    protected void onLine( String line )
     {
-        if ( prefix != null )
-        {
-            lines.add( prefix + line );
-        }
-        else
-        {
-            lines.add( line != null ? line : "" );
-        }
+        lines.add( line != null ? line : "" );
     }
 
     public List<String> getLines()

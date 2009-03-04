@@ -5,9 +5,9 @@ package org.codehaus.mojo.unix;
  * @version $Id$
  */
 public class MissingSettingException
-    extends Exception
+    extends RuntimeException
 {
-    private String setting;
+    private final String setting;
 
     public MissingSettingException( String setting )
     {

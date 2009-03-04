@@ -1,5 +1,8 @@
 package org.codehaus.mojo.unix;
 
+import fj.F;
+import fj.data.Option;
+
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -9,12 +12,44 @@ public class UnixFileMode
     /**
      * Mode equal to <code>-rw-r--r--</code>.
      */
+    @SuppressWarnings({"OctalInteger"})
     public static final UnixFileMode _0644 = UnixFileMode.fromInt( 0644 );
 
     /**
      * Mode equal to <code>-rwxr-xr-x</code>.
      */
+    @SuppressWarnings({"OctalInteger"})
     public static final UnixFileMode _0755 = UnixFileMode.fromInt( 0755 );
+
+    /**
+     * Mode equal to <code>-rwxrwxrwx</code>.
+     */
+    @SuppressWarnings({"OctalInteger"})
+    public static final UnixFileMode _0777 = UnixFileMode.fromInt( 0777 );
+
+    /**
+     * Special file modes used for symbolic links (lrwxrwxrwx)
+     */
+    @SuppressWarnings({"OctalInteger"})
+    public static final UnixFileMode _SYMLINK = UnixFileMode.fromInt( 0777 );
+
+    public static final Option<UnixFileMode> none = Option.none();
+
+    public static final F<UnixFileMode, String> showLong = new F<UnixFileMode, String>()
+    {
+        public String f( UnixFileMode unixFileMode )
+        {
+            return unixFileMode.toString();
+        }
+    };
+
+    public static final F<UnixFileMode, String> showOcalString = new F<UnixFileMode, String>()
+    {
+        public String f( UnixFileMode unixFileMode )
+        {
+            return unixFileMode.toOctalString();
+        }
+    };
 
     private final int mode;
 

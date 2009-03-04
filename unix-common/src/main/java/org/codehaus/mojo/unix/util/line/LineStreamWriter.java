@@ -1,7 +1,7 @@
 package org.codehaus.mojo.unix.util.line;
 
 import java.io.File;
-import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -19,9 +19,7 @@ public interface LineStreamWriter
 
     LineStreamWriter addIf( boolean flag, String value );
 
-    LineStreamWriter addAllLines( Collection lines );
+    LineStreamWriter addAllLines( Iterator<String> lines );
 
-    LineStreamWriter setPrefix( String prefix );
-
-    LineStreamWriter clearPrefix();
+    LineStreamWriter addAllLines( Iterable<String> lines );
 }

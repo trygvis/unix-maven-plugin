@@ -3,7 +3,6 @@ package org.codehaus.mojo.unix.util.line;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Iterator;
 
 public abstract class AbstractLineStreamWriter
@@ -11,13 +10,11 @@ public abstract class AbstractLineStreamWriter
 {
     public static final String EOL = System.getProperty( "line.separator" );
 
-    private String prefix;
-
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    protected abstract void onLine( String prefix, String line );
+    protected abstract void onLine( String line );
 
     // -----------------------------------------------------------------------
     //
@@ -25,13 +22,19 @@ public abstract class AbstractLineStreamWriter
 
     public LineStreamWriter add()
     {
-        onLine( null, null );
+        onLine( null );
         return this;
     }
 
     public LineStreamWriter add( String line )
     {
-        onLine( prefix, line );
+        onLine( line );
+        return this;
+    }
+
+    public LineStreamWriter add( LineProducer lineProducer )
+    {
+        lineProducer.streamTo( this );
         return this;
     }
 
@@ -39,7 +42,7 @@ public abstract class AbstractLineStreamWriter
     {
         if ( StringUtils.isNotEmpty( value ) )
         {
-            onLine( prefix, value );
+            onLine( value );
         }
         return this;
     }
@@ -48,7 +51,7 @@ public abstract class AbstractLineStreamWriter
     {
         if ( file != null )
         {
-            onLine( prefix, file.getName() );
+            onLine( file.getName() );
         }
         return this;
     }
@@ -57,32 +60,29 @@ public abstract class AbstractLineStreamWriter
     {
         if ( flag )
         {
-            onLine( prefix, value );
+            onLine( value );
         }
         return this;
     }
 
-    public LineStreamWriter addAllLines( Collection lines )
+    public LineStreamWriter addAllLines( Iterator<String> lines )
     {
         if ( lines != null )
         {
-            for ( Iterator it = lines.iterator(); it.hasNext(); )
+            while ( lines.hasNext() )
             {
-                add( (String) it.next() );
+                add( (String) ((Iterator) lines).next() );
             }
         }
         return this;
     }
 
-    public LineStreamWriter setPrefix( String prefix )
+    public LineStreamWriter addAllLines( Iterable<String> lines )
     {
-        this.prefix = prefix;
-        return this;
-    }
-
-    public LineStreamWriter clearPrefix()
-    {
-        this.prefix = null;
+        if ( lines != null )
+        {
+            return addAllLines( lines.iterator() );
+        }
         return this;
     }
 }
