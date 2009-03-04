@@ -1,16 +1,19 @@
 package org.codehaus.mojo.unix.maven.rpm;
 
+import fj.F;
+import fj.data.Option;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.MissingSettingException;
+import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.UnixPackage;
 import org.codehaus.mojo.unix.maven.FsFileCollector;
 import org.codehaus.mojo.unix.maven.ScriptUtil;
 import org.codehaus.mojo.unix.rpm.Rpmbuild;
 import org.codehaus.mojo.unix.rpm.SpecFile;
 import org.codehaus.mojo.unix.util.RelativePath;
+import org.codehaus.mojo.unix.util.line.LineStreamUtil;
 import org.codehaus.mojo.unix.util.vfs.VfsUtil;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -105,7 +108,6 @@ public class RpmUnixPackage
     public UnixPackage debug( boolean debug )
     {
         this.specFile.dump = debug;
-        this.fileCollector.debug( debug );
         this.debug = debug;
         return this;
     }
@@ -122,24 +124,43 @@ public class RpmUnixPackage
         return fileCollector.getRoot();
     }
 
-    public FileCollector addDirectory( RelativePath path, FileAttributes attributes )
+    public FileCollector addDirectory( UnixFsObject.Directory directory )
         throws IOException
     {
-        specFile.addDirectory( path, attributes );
-        fileCollector.addDirectory( path, attributes );
+        specFile.addDirectory( directory );
+        fileCollector.addDirectory( directory );
         return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, RelativePath toPath, FileAttributes attributes )
+    public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
         throws IOException
     {
-        specFile.addFile( toPath, attributes );
-        fileCollector.addFile( fromFile, toPath, attributes );
+        specFile.addFile( file );
+        fileCollector.addFile( fromFile, file );
         return this;
+    }
+
+    public FileCollector addSymlink( UnixFsObject.Symlink symlink )
+        throws IOException
+    {
+        specFile.addSymlink( symlink );
+        fileCollector.addSymlink( symlink );
+
+        return this;
+    }
+
+    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
+    {
+        specFile.applyOnFiles( f );
+    }
+
+    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
+    {
+        specFile.applyOnDirectories( f );
     }
 
     public void packageToFile( File packageFile )
-        throws IOException, MissingSettingException
+        throws Exception
     {
         File rpms = new File( workingDirectoryF, "RPMS" );
         File specsDir = new File( workingDirectoryF, "SPECS" );
@@ -164,7 +185,8 @@ public class RpmUnixPackage
         specFile.includePostun = execution.getPostRemove();
         specFile.version = getVersion();
         specFile.buildRoot = VfsUtil.asFile( fileCollector.getFsRoot() );
-        specFile.writeToFile( specFilePath );
+
+        LineStreamUtil.toFile( specFile, specFilePath );
 
         new Rpmbuild().
             setDebug( debug ).

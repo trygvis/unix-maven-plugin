@@ -77,7 +77,7 @@ public class PkgmkCommand
      * Places the indicated variable in the packaging environment. (See prototype(4) for definitions of variable
      * specifications.)
      */
-    private List variables = new ArrayList();
+    private final List<String> variables = new ArrayList<String>();
 
     public void setBasedir( File basedir )
     {

@@ -14,7 +14,7 @@ public class Package
 
     private String description;
 
-    private AssemblyOperation[] assembly = new AssemblyOperation[0];
+    private AssemblyOp[] assembly = new AssemblyOp[0];
 
     public String getId()
     {
@@ -56,13 +56,13 @@ public class Package
         this.description = description;
     }
 
-    public AssemblyOperation[] getAssembly()
+    public AssemblyOp[] getAssembly()
     {
         return assembly;
     }
 
-    public void setAssembly( AssemblyOperation[] assembly )
+    public void setAssembly( AssemblyOp[] assembly )
     {
-        this.assembly = assembly != null ? assembly : new AssemblyOperation[0];
+        this.assembly = assembly != null ? assembly : new AssemblyOp[0];
     }
 }

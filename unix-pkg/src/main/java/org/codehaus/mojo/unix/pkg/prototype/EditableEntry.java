@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven.pkg.prototype;
+package org.codehaus.mojo.unix.pkg.prototype;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,28 +19,36 @@ package org.codehaus.mojo.unix.maven.pkg.prototype;
  * under the License.
  */
 
-import org.codehaus.mojo.unix.UnixFileMode;
+import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.util.RelativePath;
+
+import java.io.File;
+
+import fj.data.Option;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id: IEntry.java 7323 2008-07-26 14:58:37Z trygvis $
+ * @version $Id: EditableEntry.java 7323 2008-07-26 14:58:37Z trygvis $
  */
-public class IEntry
-    extends SinglePrototypeEntry
+public class EditableEntry
+    extends PrototypeEntry
 {
-    public IEntry()
-    {
-        this( null, null, null, null, null );
-    }
+    private final Option<File> realPath;
 
-    public IEntry( String pkgClass, UnixFileMode mode, String user, String group, RelativePath path )
+    private final FileAttributes attributes;
+
+    public EditableEntry( Option<String> pkgClass, Option<Boolean> relative, RelativePath path, Option<File> realPath,
+                          FileAttributes attributes )
     {
-        super( pkgClass, mode, user, group, Boolean.TRUE, path, null );
+        super( pkgClass, relative, path );
+        this.realPath = realPath;
+        this.attributes = attributes;
     }
 
     public String generatePrototypeLine()
     {
-        return "i " + getProcessedPath();
+        return "e " + pkgClass +
+            " " + getProcessedPath( realPath ) +
+            " " + toString( attributes );
     }
 }

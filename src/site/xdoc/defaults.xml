@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+<document>
+  <properties>
+    <title>Default Values</title>
+    <author email="trygvis@codehaus.org">Trygve Laugstol</author>
+  </properties>
+  <body>
+    <section name="Assembly Operations">
+      Case Packaing=rpm: goal=package-rpm, packages=default (count=0) =>
+        src/main/unix/files
+
+      Case: Packaging=dpkg, goal=package-dpkg, packages=default+slave (count > 0) =>
+        src/main/unix/files/all
+        src/main/unix/files/default
+        src/main/unix/files/slave
+
+      Case: Packaging=jar, goal=attached-dpkg, packages=default+slave =>
+        src/main/unix/files/all-all
+        src/main/unix/files/dpkg-all
+        src/main/unix/files/dpkg-default
+        src/main/unix/files/dpkg-slave
+
+      Case: Packaging=jar, goal=attached-dpkg+attached-pkg, packages=default+slave =>
+        src/main/unix/files/all-all
+        src/main/unix/files/all-default
+        src/main/unix/files/all-slave
+        src/main/unix/files/dpkg-default
+        src/main/unix/files/dpkg-slave
+        src/main/unix/files/pkg-default
+        src/main/unix/files/pkg-slave
+    </section>
+  </body>
+</document>

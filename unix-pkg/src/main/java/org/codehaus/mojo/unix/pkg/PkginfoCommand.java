@@ -231,7 +231,7 @@ public class PkginfoCommand
 
         command.addArgument( mode );
 
-        return command.execute().exitCode;
+        return command.execute().exitValue;
     }
 
     public static boolean available()

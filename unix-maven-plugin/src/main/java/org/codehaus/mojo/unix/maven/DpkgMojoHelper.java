@@ -12,7 +12,7 @@ import org.codehaus.plexus.util.StringUtils;
 class DpkgMojoHelper
     extends MojoHelper
 {
-    private DpkgSpecificSettings dpkg;
+    private final DpkgSpecificSettings dpkg;
 
     public DpkgMojoHelper( DpkgSpecificSettings dpkg )
     {

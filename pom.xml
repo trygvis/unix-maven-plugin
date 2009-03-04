@@ -120,16 +120,15 @@
   <modules>
     <module>unix-ar</module>
     <module>unix-common</module>
+    <module>unix-core</module>
     <module>unix-dpkg</module>
     <module>unix-maven-plugin</module>
     <module>unix-pkg</module>
     <module>unix-rpm</module>
   </modules>
   <profiles>
-
     <profile>
       <id>reporting-aggregate</id>
-      <modules />
       <!-- To generate aggregate reports -->
       <!-- To deploy both aggregate reports for top-level project and standalone reports for modules, call
            mvn site -Preporting

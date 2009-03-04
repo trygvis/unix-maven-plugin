@@ -1,22 +1,27 @@
 package org.codehaus.mojo.unix.pkg;
 
+import fj.data.Option;
+import static fj.data.Option.none;
+import static fj.data.Option.some;
 import org.codehaus.mojo.unix.EqualsIgnoreNull;
 import org.codehaus.mojo.unix.util.SystemCommand;
+import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
+import org.codehaus.mojo.unix.util.line.LineProducer;
+import org.codehaus.mojo.unix.util.line.LineStreamWriter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a h
+ * ref="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class PkginfoUtil
 {
-    private static final String EOL = System.getProperty( "line.separator" );
-
     public static class PackageInfo
-        implements EqualsIgnoreNull
+        implements EqualsIgnoreNull<PackageInfo>, LineProducer
     {
         public final String instance;
 
@@ -28,13 +33,14 @@ public class PkginfoUtil
 
         public final String version;
 
-        public final String desc;
+        public final Option<String> desc;
 
-        public final String pstamp;
+        public final Option<String> pstamp;
 
-        public PackageInfo( String instance, String name, String category, String arch, String version, String desc,
-                            String pstamp )
+        public PackageInfo( String instance, String name, String category, String arch, String version,
+                            Option<String> desc, Option<String> pstamp )
         {
+            validateNotNull( instance, name, category, arch, version, desc, pstamp );
             this.instance = instance;
             this.name = name;
             this.category = category;
@@ -44,39 +50,37 @@ public class PkginfoUtil
             this.pstamp = pstamp;
         }
 
-        public String toString()
+        public void streamTo( LineStreamWriter stream )
         {
-            return new StringBuffer().
-                append( " PKGINST: " ).append( instance ).append( EOL ).
-                append( "    NAME: " ).append( name ).append( EOL ).
-                append( "    ARCH: " ).append( arch ).append( EOL ).
-                append( " VERSION: " ).append( version ).append( EOL ).
-                append( "CATEGORY: " ).append( category ).append( EOL ).
-                append( "    DESC: " ).append( desc != null ? desc : "" ).append( EOL ).
-                append( "  PSTAMP: " ).append( pstamp != null ? pstamp : "").append( EOL ).toString();
+            stream.
+                add( " PKGINST: " + instance ).
+                add( "    NAME: " + name ).
+                add( "    ARCH: " + arch ).
+                add( " VERSION: " + version ).
+                add( "CATEGORY: " + category ).
+                add( "    DESC: " + desc.orSome( "" ) ).
+                add( "  PSTAMP: " + pstamp.orSome( "" ) );
         }
 
-        public boolean equalsIgnoreNull( EqualsIgnoreNull other )
+        public boolean equalsIgnoreNull( PackageInfo that )
         {
-            PackageInfo that = (PackageInfo) other;
-
             return instance.equals( that.instance ) &&
                 name.equals( that.name ) &&
                 category.equals( that.category ) &&
                 arch.equals( that.arch ) &&
                 version.equals( that.version ) &&
-                ( desc == null || desc.equals( that.desc ) ) &&
-                ( pstamp == null || pstamp.equals( that.pstamp ) );
+                ( desc.isNone() || desc.some().equals( that.desc.some() ) ) &&
+                ( pstamp.isNone() || pstamp.some().equals( that.pstamp.some() ) );
         }
     }
 
-    public static PackageInfo getPackageInforForDevice( File device )
+    public static Option<PackageInfo> getPackageInforForDevice( File device )
         throws IOException
     {
         return getPackageInforForDevice( device, null );
     }
 
-    public static PackageInfo getPackageInforForDevice( File device, String instance )
+    public static Option<PackageInfo> getPackageInforForDevice( File device, String instance )
         throws IOException
     {
         if ( !device.canRead() )
@@ -105,19 +109,19 @@ public class PkginfoUtil
     private static class PkginfoParser
         implements SystemCommand.LineConsumer
     {
-        private String instance;
+        private Option<String> instance = none();
 
-        private String name;
+        private Option<String> name = none();
 
-        private String category;
+        private Option<String> category = none();
 
-        private String arch;
+        private Option<String> arch = none();
 
-        private String version;
+        private Option<String> version = none();
 
-        private String desc;
+        private Option<String> desc = none();
 
-        private String pstamp;
+        private Option<String> pstamp = none();
 
         public void onLine( String line )
         {
@@ -133,37 +137,42 @@ public class PkginfoUtil
 
             if ( "PKGINST".equals( field ) )
             {
-                instance = value;
+                instance = some( value );
             }
             else if ( "NAME".equals( field ) )
             {
-                name = value;
+                name = some( value );
             }
             else if ( "CATEGORY".equals( field ) )
             {
-                category = value;
+                category = some( value );
             }
             else if ( "ARCH".equals( field ) )
             {
-                arch = value;
+                arch = some( value );
             }
             else if ( "VERSION".equals( field ) )
             {
-                version = value;
+                version = some( value );
             }
             else if ( "DESC".equals( field ) )
             {
-                desc = value;
+                desc = some( value );
             }
             else if ( "PSTAMP".equals( field ) )
             {
-                pstamp = value;
+                pstamp = some( value );
             }
         }
 
-        public PackageInfo getPackageInfo()
+        public Option<PackageInfo> getPackageInfo()
         {
-            return new PackageInfo( instance, name, category, arch, version, desc, pstamp );
+            if ( instance.isNone() || name.isNone() || category.isNone() || arch.isNone() || version.isNone() )
+            {
+                return none();
+            }
+
+            return some( new PackageInfo( instance.some(), name.some(), category.some(), arch.some(), version.some(), desc, pstamp ) );
         }
     }
 }

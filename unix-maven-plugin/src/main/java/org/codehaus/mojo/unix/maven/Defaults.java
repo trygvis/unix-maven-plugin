@@ -1,6 +1,8 @@
 package org.codehaus.mojo.unix.maven;
 
-import org.codehaus.mojo.unix.UnixFileMode;
+import static fj.data.Option.some;
+import static org.codehaus.mojo.unix.UnixFileMode._0644;
+import static org.codehaus.mojo.unix.UnixFileMode._0755;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -8,11 +10,11 @@ import org.codehaus.mojo.unix.UnixFileMode;
  */
 public class Defaults
 {
-    public final static org.codehaus.mojo.unix.FileAttributes DEFAULT_FILE_ATTRIBUTES = 
-        new org.codehaus.mojo.unix.FileAttributes( "nobody", "nogroup", UnixFileMode._0644 );
+    public final static org.codehaus.mojo.unix.FileAttributes DEFAULT_FILE_ATTRIBUTES =
+        new org.codehaus.mojo.unix.FileAttributes( some( "nobody" ), some( "nogroup" ), some( _0644 ) );
 
     public final static org.codehaus.mojo.unix.FileAttributes DEFAULT_DIRECTORY_ATTRIBUTES =
-        new org.codehaus.mojo.unix.FileAttributes( "nobody", "nogroup", UnixFileMode._0755 );
+        new org.codehaus.mojo.unix.FileAttributes( some( "nobody" ), some( "nogroup" ), some( _0755 ) );
 
     private FileAttributes fileAttributes = new FileAttributes();
 

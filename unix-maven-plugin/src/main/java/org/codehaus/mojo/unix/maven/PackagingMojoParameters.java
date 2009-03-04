@@ -15,7 +15,7 @@ public class PackagingMojoParameters
     public final String contact;
     public final String contactEmail;
     public final String architecture;
-    public AssemblyOperation[] assembly;
+    public final AssemblyOp[] assembly;
     public Package[] packages;
 
     public PackagingMojoParameters( String name,
@@ -25,7 +25,7 @@ public class PackagingMojoParameters
                                     String contact,
                                     String contactEmail,
                                     String architecture,
-                                    AssemblyOperation[] assembly,
+                                    AssemblyOp[] assembly,
                                     Package[] packages )
     {
         this.name = name;

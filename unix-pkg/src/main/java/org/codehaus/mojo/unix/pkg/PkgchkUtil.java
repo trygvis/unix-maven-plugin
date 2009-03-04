@@ -1,14 +1,24 @@
 package org.codehaus.mojo.unix.pkg;
 
+import fj.F;
+import static fj.Function.curry;
+import fj.data.List;
+import fj.data.Option;
+import static fj.data.Option.none;
+import org.codehaus.mojo.unix.EqualsIgnoreNull;
 import org.codehaus.mojo.unix.util.SystemCommand;
+import org.codehaus.mojo.unix.util.UnixUtil;
+import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
+import org.codehaus.mojo.unix.util.line.LineProducer;
+import org.codehaus.mojo.unix.util.line.LineStreamWriter;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -16,10 +26,28 @@ import java.util.List;
  */
 public class PkgchkUtil
 {
-    private static final String EOL = System.getProperty( "line.separator" );
+    private static final DateTimeFormatter FORMAT = new DateTimeFormatterBuilder().
+        appendMonthOfYearShortText().
+        appendLiteral( ' ' ).
+        appendDayOfMonth( 2 ).
+        appendLiteral( ' ' ).
+        appendHourOfDay( 2 ).
+        appendLiteral( ':' ).
+        appendMinuteOfHour( 2 ).
+        appendLiteral( ':' ).
+        appendSecondOfMinute( 2 ).
+        appendLiteral( ' ' ).
+        appendYear( 4, 4 ).
+        toFormatter();
+
+    public static final F<LocalDateTime, String> formatter = curry( UnixUtil.formatLocalDateTime, FORMAT );
+
+    public static final F<String, Option<DateTime>> parser = curry( UnixUtil.parseDateTime, FORMAT );
+
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( "MMM dd HH:mm:ss yyyy" );
 
     public static abstract class FileInfo
+        implements EqualsIgnoreNull<FileInfo>, LineProducer
     {
         public final String pathname;
 
@@ -29,11 +57,11 @@ public class PkgchkUtil
 
         public final int sum;
 
-        public final Date lastModification;
+        public final Option<LocalDateTime> lastModification;
 
-        public FileInfo( String pathname, String type, int fileSize, int sum,
-                         Date lastModification )
+        private FileInfo( String pathname, String type, int fileSize, int sum, Option<LocalDateTime> lastModification )
         {
+            validateNotNull( pathname, type );
             this.pathname = pathname;
             this.type = type;
             this.fileSize = fileSize;
@@ -43,11 +71,12 @@ public class PkgchkUtil
 
         public boolean equalsIgnoreNull( FileInfo that )
         {
-            return pathname.equals( that.pathname ) &&
-                ( type == null || type.equals( that.type ) ) &&
+            return this.getClass().isAssignableFrom( that.getClass() ) &&
+                pathname.equals( that.pathname ) &&
+                type.equals( that.type ) &&
                 ( fileSize == 0 || fileSize == that.fileSize ) &&
                 ( sum == 0 || sum == that.sum ) &&
-                ( lastModification == null || lastModification.equals( that.lastModification ) );
+                ( lastModification.isNone() || lastModification.some().equals( that.lastModification.some() ) );
         }
 
         public final boolean equals( Object o )
@@ -70,29 +99,9 @@ public class PkgchkUtil
         {
             return pathname.hashCode();
         }
-
-        public String toString()
-        {
-            return new StringBuffer().
-                append( "Pathname: " ).append( pathname ).append( EOL ).
-                append( "Type: " ).append( type ).append( EOL ).
-                append( "Expected file size (bytes): " ).append( fileSize ).append( EOL ).
-                append( "Expected sum(1) of contents: " ).append( sum ).append( EOL ).
-                append( "Expected last modification: " ).append( lastModification != null ? DATE_FORMAT.format( lastModification ) : "not set" ).append( EOL ).
-                toString();
-        }
     }
 
-    public static class InstallationFile
-        extends FileInfo
-    {
-        public InstallationFile( String pathname, int fileSize, int sum, Date lastModification )
-        {
-            super( pathname, "installation file", fileSize, sum, lastModification );
-        }
-    }
-
-    private abstract static class AbstractFile
+    private static class AbstractFile
         extends FileInfo
     {
         public final String mode;
@@ -102,10 +111,10 @@ public class PkgchkUtil
         public final String group;
 
         public AbstractFile( String pathname, String type, String mode, String owner, String group, int fileSize,
-                             int sum, Date lastModification )
+                             int sum, Option<LocalDateTime> lastModification )
         {
             super( pathname, type, fileSize, sum, lastModification );
-
+            validateNotNull( mode, owner, group );
             this.mode = mode;
             this.owner = owner;
             this.group = group;
@@ -114,53 +123,77 @@ public class PkgchkUtil
         public boolean equalsIgnoreNull( FileInfo t )
         {
             AbstractFile that = (AbstractFile) t;
+
             return super.equalsIgnoreNull( that ) &&
                 mode.equals( that.mode ) &&
                 owner.equals( that.owner ) &&
                 group.equals( that.group );
         }
 
-        public String toString()
+        public void streamTo( LineStreamWriter stream )
         {
-            return new StringBuffer().
-                append( "Pathname: " ).append( pathname ).append( EOL ).
-                append( "Type: " ).append( type ).append( EOL ).
-                append( "Expected mode: " ).append( mode ).append( EOL ).
-                append( "Expected owner: " ).append( owner ).append( EOL ).
-                append( "Expected group: " ).append( group ).append( EOL ).
-                append( "Expected file size (bytes): " ).append( fileSize ).append( EOL ).
-                append( "Expected sum(1) of contents: " ).append( sum ).append( EOL ).
-                append( "Expected last modification: " ).append( lastModification != null ? DATE_FORMAT.format( lastModification ) : "not set" ).append( EOL ).
-                toString();
+            stream.
+                add( "Pathname: " + pathname ).
+                add( "Type: " + type ).
+                add( "Expected mode: " + mode ).
+                add( "Expected owner: " + owner ).
+                add( "Expected group: " + group ).
+                add( "Expected file size (bytes): " + fileSize ).
+                add( "Expected sum(1) of contents: " + sum ).
+                add( "Expected last modification: " + lastModification.map( formatter ).orSome( "not set" ) );
         }
     }
 
-    public static class Directory
-        extends AbstractFile
+    public static FileInfo directory( String pathname, String mode, String owner, String group,
+                                      Option<LocalDateTime> lastModification )
     {
-        public Directory( String pathname, String mode, String owner, String group, Date lastModification )
-        {
-            super( pathname, "directory", mode, owner, group, 0, 0, lastModification );
-        }
+        return new AbstractFile( pathname, "directory", mode, owner, group, 0, 0, lastModification );
     }
 
-    public static class RegularFile
-        extends AbstractFile
+    public static FileInfo regularFile( String pathname, String mode, String owner, String group, int fileSize, int sum,
+                                        Option<LocalDateTime> lastModification )
     {
-        public RegularFile( String pathname, String mode, String owner, String group, int fileSize, int sum,
-                            Date lastModification )
-        {
-            super( pathname, "regular file", mode, owner, group, fileSize, sum, lastModification );
-        }
+        return new AbstractFile( pathname, "regular file", mode, owner, group, fileSize, sum, lastModification );
     }
 
-    public static List getPackageInforForDevice( File device )
+    public static FileInfo installationFile( String pathname, int fileSize, int sum,
+                                             Option<LocalDateTime> lastModification )
+    {
+        return new FileInfo( pathname, "installation file", fileSize, sum, lastModification )
+        {
+            public void streamTo( LineStreamWriter stream )
+            {
+                stream.
+                    add( "Pathname: " + pathname ).
+                    add( "Type: " + type ).
+                    add( "Expected file size (bytes): " + fileSize ).
+                    add( "Expected sum(1) of contents: " + sum ).
+                    add( "Expected last modification: " + lastModification.map( formatter ).orSome( "not set" ) );
+            }
+        };
+    }
+
+    public static FileInfo symlink( String pathname, final String source )
+    {
+        return new FileInfo( pathname, "symbolic link", 0, 0, Option.<LocalDateTime>none() )
+        {
+            public void streamTo( LineStreamWriter stream )
+            {
+                stream.
+                    add( "Pathname: " + pathname ).
+                    add( "Type: " + type ).
+                    add( "Source of link:" + source );
+            }
+        };
+    }
+
+    public static List<FileInfo> getPackageInforForDevice( File device )
         throws IOException
     {
         return getPackageInforForDevice( device, "all" );
     }
 
-    public static List getPackageInforForDevice( File device, String instance )
+    public static List<FileInfo> getPackageInforForDevice( File device, String instance )
         throws IOException
     {
         PkgchkParser parser = new PkgchkParser();
@@ -182,7 +215,7 @@ public class PkgchkUtil
         return SystemCommand.available( "pkgchk" );
     }
 
-    private static class PkgchkParser
+    public static class PkgchkParser
         implements SystemCommand.LineConsumer
     {
         public String pathname;
@@ -199,12 +232,13 @@ public class PkgchkUtil
 
         public int sum;
 
-        public Date lastModification;
+        public Option<LocalDateTime> lastModification = none();
 
-        private List list = new ArrayList();
+        public String source;
+
+        private List<FileInfo> list = List.nil();
 
         public void onLine( String line )
-            throws IOException
         {
             if ( line.startsWith( "Pathname: " ) )
             {
@@ -237,35 +271,40 @@ public class PkgchkUtil
             else if ( line.startsWith( "Expected last modification: " ) )
             {
                 line = line.substring( line.indexOf( ':' ) + 1 ).trim();
-                try
-                {
-                    lastModification = DATE_FORMAT.parse( line );
-                }
-                catch ( ParseException e )
-                {
-                    throw new IOException( "Unable to parse last modification: '" + line + "'." );
-                }
+                lastModification = parser.f( line ).map( UnixUtil.toLocalDateTime );
+            }
+            else if ( line.startsWith( "Expected sum(1) of contents: " ) )
+            {
+                source = line.substring( line.indexOf( ':' ) + 1 ).trim();
             }
             else if ( line.trim().length() == 0 )
             {
                 if ( type.equals( "regular file" ) )
                 {
-                    list.add( new RegularFile( pathname, mode, owner, group, fileSize, sum, lastModification ) );
+                    list = list.cons( regularFile( pathname, mode, owner, group, fileSize, sum, lastModification ) );
                 }
                 else if ( type.equals( "installation file" ) )
                 {
-                    list.add( new InstallationFile( pathname, fileSize, sum, lastModification ) );
+                    list = list.cons( installationFile( pathname, fileSize, sum, lastModification ) );
                 }
                 else if ( type.equals( "directory" ) )
                 {
-                    list.add( new Directory( pathname, mode, owner, group, lastModification ) );
+                    list = list.cons( directory( pathname, mode, owner, group, lastModification ) );
+                }
+                else if ( type.equals( "symbolic link" ) )
+                {
+                    list = list.cons( symlink( pathname, source ) );
+                }
+                else
+                {
+                    throw new RuntimeException( "Unknown type: " + type );
                 }
             }
         }
 
-        public List getList()
+        public List<FileInfo> getList()
         {
-            return list;
+            return list.reverse();
         }
     }
 }

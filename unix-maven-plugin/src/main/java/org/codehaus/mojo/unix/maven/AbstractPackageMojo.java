@@ -13,7 +13,7 @@ public abstract class AbstractPackageMojo
     /**
      * @parameter
      */
-    protected Package[] packages;
+    private Package[] packages;
 
     private final String formatType;
 

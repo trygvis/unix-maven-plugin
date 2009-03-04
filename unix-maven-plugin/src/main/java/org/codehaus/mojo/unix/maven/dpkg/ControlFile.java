@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -29,7 +28,7 @@ class ControlFile
 
     public PackageVersion version;
 
-    public Set dependencies;
+    public Set<DebianDependency> dependencies;
 
     // Generic
 
@@ -61,10 +60,8 @@ class ControlFile
 
         String depends = "";
 
-        for ( Iterator it = dependencies.iterator(); it.hasNext(); )
+        for ( DebianDependency debianDependency : dependencies )
         {
-            DebianDependency debianDependency = (DebianDependency) it.next();
-
             if ( depends.length() > 0 )
             {
                 depends += ", ";

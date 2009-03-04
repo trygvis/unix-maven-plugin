@@ -17,7 +17,7 @@ public abstract class AbstractUnixMojo
     /**
      * @parameter
      */
-    protected AssemblyOperation[] assembly;
+    protected AssemblyOp[] assembly;
 
     /**
      * @parameter

@@ -1,21 +1,22 @@
 package org.codehaus.mojo.unix.maven.dpkg;
 
+import fj.F;
+import fj.data.Option;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.MissingSettingException;
+import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.UnixPackage;
 import org.codehaus.mojo.unix.dpkg.Dpkg;
 import org.codehaus.mojo.unix.maven.FsFileCollector;
 import org.codehaus.mojo.unix.maven.ScriptUtil;
 import org.codehaus.mojo.unix.util.RelativePath;
 import org.codehaus.mojo.unix.util.UnixUtil;
-import org.codehaus.mojo.unix.util.vfs.VfsUtil;
+import static org.codehaus.mojo.unix.util.vfs.VfsUtil.asFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -24,11 +25,9 @@ import java.util.Set;
 public class DpkgUnixPackage
     extends UnixPackage
 {
-    private ControlFile controlFile = new ControlFile();
+    private final ControlFile controlFile = new ControlFile();
 
     private FsFileCollector fileCollector;
-
-    private FileObject workingDirectory;
 
     private String dpkgDebPath;
 
@@ -60,11 +59,11 @@ public class DpkgUnixPackage
         return this;
     }
 
-    public UnixPackage dependencies( Set dependencies )
-    {
-        controlFile.dependencies = dependencies;
-        return this;
-    }
+//    public UnixPackage dependencies( Set<DebianDependency> dependencies )
+//    {
+//        controlFile.dependencies = dependencies;
+//        return this;
+//    }
 
     public UnixPackage name( String name )
     {
@@ -99,7 +98,6 @@ public class DpkgUnixPackage
     public UnixPackage workingDirectory( FileObject workingDirectory )
         throws FileSystemException
     {
-        this.workingDirectory = workingDirectory;
         fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
         return this;
     }
@@ -115,18 +113,36 @@ public class DpkgUnixPackage
         return fileCollector.getRoot();
     }
 
-    public FileCollector addDirectory( RelativePath path, FileAttributes attributes )
+    public FileCollector addDirectory( UnixFsObject.Directory directory )
     {
-        fileCollector.addDirectory( path, attributes );
+        fileCollector.addDirectory( directory );
 
         return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, RelativePath toPath, FileAttributes attributes )
+    public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
     {
-        fileCollector.addFile( fromFile, toPath, attributes );
+        fileCollector.addFile( fromFile, file );
 
         return this;
+    }
+
+    public FileCollector addSymlink( UnixFsObject.Symlink symlink )
+        throws IOException
+    {
+        fileCollector.addSymlink( symlink );
+
+        return this;
+    }
+
+    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
+    {
+        fileCollector.applyOnFiles( f );
+    }
+
+    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
+    {
+        fileCollector.applyOnDirectories( f );
     }
 
     // -----------------------------------------------------------------------
@@ -156,9 +172,9 @@ public class DpkgUnixPackage
     // -----------------------------------------------------------------------
 
     public void packageToFile( File packageFile )
-        throws IOException, MissingSettingException
+        throws Exception
     {
-        File assembly = VfsUtil.asFile( fileCollector.getFsRoot() );
+        File assembly = asFile( fileCollector.getFsRoot() );
         controlFile.version = getVersion();
         controlFile.toFile( assembly );
 

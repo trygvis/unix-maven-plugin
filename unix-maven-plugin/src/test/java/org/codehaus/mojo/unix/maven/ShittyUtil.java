@@ -7,10 +7,15 @@ import org.codehaus.mojo.unix.dpkg.DpkgDebTool;
 import org.codehaus.mojo.unix.pkg.PkgchkUtil;
 import org.codehaus.mojo.unix.rpm.RpmUtil;
 import org.codehaus.mojo.unix.util.RelativePath;
+import static org.codehaus.mojo.unix.util.UnixUtil.flush;
+import org.codehaus.mojo.unix.util.line.LineProducer;
+import org.codehaus.mojo.unix.util.line.LineWriterWriter;
+import org.joda.time.LocalDateTime;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +24,10 @@ import java.util.List;
  */
 public class ShittyUtil
 {
+    public static final LocalDateTime START_OF_TIME = new LocalDateTime( 1970, 1, 1, 0, 0 );
+    public static final OutputStreamWriter out = new OutputStreamWriter( System.out );
+    public static final LineWriterWriter stream = new LineWriterWriter( out );
+
     public static RelativePath r( String path )
     {
         return RelativePath.fromString( path );
@@ -26,27 +35,31 @@ public class ShittyUtil
 
     public static boolean assertFormat( String type, String tool, boolean available, Closure closure )
     {
+        boolean result;
+
         if ( available )
         {
-            System.out.println( "*********************************************************************" );
-            System.out.println( "* Running asserts for '" + type + "'" );
-            System.out.println( "*********************************************************************" );
-            boolean result = (Boolean) closure.call();
-            System.out.println( "*********************************************************************" );
-            System.out.println( "* Asserts completed for '" + type + "', success: " + result );
-            System.out.println( "*********************************************************************" );
-            return result;
+            stream.add( "*********************************************************************" );
+            stream.add( "* Running asserts for '" + type + "'" );
+            stream.add( "*********************************************************************" );
+            result = (Boolean) closure.call();
+            stream.add( "*********************************************************************" );
+            stream.add( "* Asserts completed for '" + type + "', success: " + result );
+            stream.add( "*********************************************************************" );
         }
         else
         {
-            System.out.println( "*********************************************************************" );
-            System.out.println( "* Skipping asserts for '" + type + "', " + tool + " is not available" );
-            System.out.println( "*********************************************************************" );
-            return true;
+            stream.add( "*********************************************************************" );
+            stream.add( "* Skipping asserts for '" + type + "', " + tool + " is not available" );
+            stream.add( "*********************************************************************" );
+            result = true;
         }
+
+        flush( stream );
+        return result;
     }
 
-    public static boolean assertRelaxed( EqualsIgnoreNull expected, EqualsIgnoreNull actual )
+    public static <T extends LineProducer & EqualsIgnoreNull<T>> boolean assertRelaxed( T expected, T actual )
     {
         boolean ok = expected.equalsIgnoreNull( actual );
 
@@ -55,127 +68,127 @@ public class ShittyUtil
             return true;
         }
 
-        System.out.println( "*********************************************************************" );
-        System.out.println( "*                              Failure                              *" );
-        System.out.println( "*********************************************************************" );
-        System.out.println( "Expected:" );
-        System.out.println( System.getProperty( "line.separator" ) + expected );
+        stream.add( "*********************************************************************" );
+        stream.add( "*                              Failure                              *" );
+        stream.add( "*********************************************************************" );
+        stream.add( "Expected:" );
+        stream.add();
+        expected.streamTo( stream );
 
-        System.out.println();
-        System.out.println( "Actual:" );
-        System.out.println( System.getProperty( "line.separator" ) + actual );
+        stream.add();
+        stream.add( "Actual:" );
+        stream.add();
+        actual.streamTo( stream );
+        flush( out );
 
         return false;
     }
 
-    public static boolean assertDpkgEntries( File pkg, List expectedFiles )
+    public static boolean assertDpkgEntries( File pkg, List<UnixFsObject> expectedFiles )
         throws IOException
     {
-        return assertEntries( expectedFiles, DpkgDebTool.contents( pkg ), new Checker()
+        return assertEntries( expectedFiles, DpkgDebTool.contents( pkg ), new Checker<UnixFsObject>()
         {
-            public boolean equalsIgnoreNull( Object e, Object a )
+            public boolean equalsIgnoreNull( UnixFsObject expected, UnixFsObject actual )
             {
-                UnixFsObject expected = (UnixFsObject) e;
-                UnixFsObject actual = (UnixFsObject) a;
                 return expected.path.equals( actual.path ) &&
                     ( expected.size == 0 || expected.size == actual.size ) &&
-                    ( expected.lastModified == null || expected.lastModified.equals( actual.lastModified ) );
+                    ( expected.lastModified == null || expected.lastModified.equals( START_OF_TIME ) || expected.lastModified.equals( actual.lastModified ) );
             }
 
-            public String getPath( Object o )
+            public String getPath( UnixFsObject o )
             {
-                return ((UnixFsObject)o).path.string;
+                return o.path.string;
             }
         } );
     }
 
-    public static boolean assertPkgEntries( File pkg, List expectedFiles )
+    public static boolean assertPkgEntries( File pkg, List<PkgchkUtil.FileInfo> expectedFiles )
         throws IOException
     {
-        return assertEntries( expectedFiles, PkgchkUtil.getPackageInforForDevice( pkg ), new Checker()
+        return assertEntries( expectedFiles, new ArrayList<PkgchkUtil.FileInfo>( PkgchkUtil.getPackageInforForDevice( pkg ).toCollection() ), new Checker<PkgchkUtil.FileInfo>()
         {
-            public boolean equalsIgnoreNull( Object expected, Object actual )
+            public boolean equalsIgnoreNull( PkgchkUtil.FileInfo expected, PkgchkUtil.FileInfo actual )
             {
-                return ((PkgchkUtil.FileInfo)expected).equalsIgnoreNull( (PkgchkUtil.FileInfo) actual );
+                return expected.equalsIgnoreNull( actual );
             }
 
-            public String getPath( Object o )
+            public String getPath( PkgchkUtil.FileInfo o )
             {
-                return ((PkgchkUtil.FileInfo)o).pathname;
+                return o.pathname;
             }
         } );
     }
 
-    public static boolean assertRpmEntries( File pkg, List expectedFiles )
+    public static boolean assertRpmEntries( File pkg, List<RpmUtil.FileInfo> expectedFiles )
         throws IOException
     {
-        return assertEntries( expectedFiles, RpmUtil.queryPackageForFileInfo( pkg ), new Checker()
+        return assertEntries( expectedFiles, RpmUtil.queryPackageForFileInfo( pkg ), new Checker<RpmUtil.FileInfo>()
         {
-            public boolean equalsIgnoreNull( Object expected, Object actual )
+            public boolean equalsIgnoreNull( RpmUtil.FileInfo expected, RpmUtil.FileInfo actual )
             {
-                return ((RpmUtil.FileInfo)expected).equalsIgnoreNull( (EqualsIgnoreNull) actual );
+                return expected.equalsIgnoreNull( actual );
             }
 
-            public String getPath( Object o )
+            public String getPath( RpmUtil.FileInfo o )
             {
-                return ((RpmUtil.FileInfo)o).path;
+                return o.path;
             }
         } );
     }
 
-    public static boolean assertEntries( List expectedFiles, List actualFiles, Checker checker )
+    public static <T extends LineProducer>  boolean assertEntries( List<T> expectedFiles, List<T> actualFiles, Checker<T> checker )
         throws IOException
     {
         boolean success = true;
 
-        for ( Iterator it = expectedFiles.iterator(); it.hasNext(); )
+        for (T expected : expectedFiles)
         {
-            Object expected = it.next();
-
             int i = actualFiles.indexOf( expected );
             if ( i != -1 )
             {
-                Object actual = actualFiles.remove( i );
+                T actual = actualFiles.remove( i );
                 if ( !checker.equalsIgnoreNull( expected, actual ) )
                 {
-                    System.out.println( "Found invalid entry: " + checker.getPath( expected ) );
-                    System.out.println( "Expected" );
-                    System.out.println( expected.toString() );
-                    System.out.println( "Actual" );
-                    System.out.println( actual.toString() );
+                    stream.add( "Found invalid entry: " + checker.getPath( expected ) );
+                    stream.add( "Expected" );
+                    expected.streamTo( stream );
+                    stream.add( "Actual" );
+                    actual.streamTo( stream );
                     success = false;
                 }
                 else
                 {
                     // This output is a bit too noisy
-                    // System.out.println( "Found entry: " + expected.pathname );
+                    // stream.add( "Found entry: " + expected.pathname );
                 }
             }
             else
             {
                 success = false;
-                System.out.println( "Missing entry: " + checker.getPath( expected ) );
+                stream.add( "Missing entry: " + checker.getPath( expected ) );
             }
         }
 
         if ( actualFiles.size() > 0 )
         {
             success = false;
-            System.out.println( "Extra files in package:" );
+            stream.add( "Extra files in package:" );
 
-            for ( Iterator it = actualFiles.iterator(); it.hasNext(); )
+            for ( T actualFile : actualFiles )
             {
-                System.out.println( "Extra entry: " + checker.getPath( it.next() ) );
+                stream.add( "Extra entry: " + checker.getPath( actualFile ) );
             }
         }
 
+        stream.flush();
         return success;
     }
 
-    private interface Checker
+    private interface Checker<T>
     {
-        boolean equalsIgnoreNull( Object expected, Object actual );
+        boolean equalsIgnoreNull( T expected, T actual );
 
-        String getPath( Object o);
+        String getPath( T o);
     }
 }

@@ -10,7 +10,7 @@ import org.apache.maven.plugin.MojoFailureException;
 public abstract class AbstractPackageAttachedMojo
     extends AbstractUnixMojo
 {
-    protected final String formatType;
+    private final String formatType;
 
     protected AbstractPackageAttachedMojo( String formatType )
     {

@@ -86,18 +86,26 @@
             <softwareGroup>Application/Collectors</softwareGroup>
           </rpm>
           <assembly>
-            <copy>
+            <copy-artifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/usr/share/hudson/lib/hudson.war</toFile>
-            </copy>
-            <copy>
+            </copy-artifact>
+            <copy-artifact>
               <artifact>org.codehaus.mojo.unix.it:my-native:so:${os.name}-${os.version}-${os.arch}</artifact>
               <toFile>/usr/share/hudson/lib/my-native.so</toFile>
-            </copy>
-            <copy>
-              <path>target/appassembler</path>
-              <toDir>/usr/share/hello</toDir>
-            </copy>
+            </copy-artifact>
+            <copy-directory>
+              <from>target/appassembler</from>
+              <to>/usr/share/hello</to>
+            </copy-directory>
+            <set-attributes>
+              <basedir>/usr/share/hello/bin</basedir>
+              <fileAttributes>
+                <user>bah</user>
+                <group>bah</group>
+                <mode>0755</mode>
+              </fileAttributes>
+            </set-attributes>
           </assembly>
         </configuration>
       </plugin>

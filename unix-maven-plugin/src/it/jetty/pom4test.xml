@@ -70,18 +70,19 @@
             </extract>
             -->
             <!-- This will exclude all the main licenses, but not the ones in the contrib/ directory -->
-            <extract>
+            <extract-artifact>
               <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-              <toDir>/opt/jetty</toDir>
+              <to>/opt/jetty</to>
               <excludes>
                 <exclude>**/LICENSES/*</exclude>
               </excludes>
               <pattern>/jetty-7.0.0pre3(.*)</pattern>
               <replacement>$1</replacement>
-            </extract>
-            <extract>
+            </extract-artifact>
+            <!-- TODO: This can be optimized with a set-attributes -->
+            <extract-artifact>
               <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-              <toDir>/opt/jetty</toDir>
+              <to>/opt/jetty</to>
               <includes>
                 <include>**/bin/*</include>
               </includes>
@@ -90,17 +91,17 @@
               <fileAttributes>
                 <mode>0755</mode>
               </fileAttributes>
-            </extract>
+            </extract-artifact>
             <!-- This will copy *all* licenses into the share/licenses/* directory -->
-            <extract>
+            <extract-artifact>
               <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-              <toDir>/opt/jetty</toDir>
+              <to>/opt/jetty</to>
               <includes>
                 <include>**/LICENSES/**</include>
               </includes>
               <pattern>/jetty-7.0.0pre3/LICENSES/(.*)</pattern>
               <replacement>share/licenses/$1</replacement>
-            </extract>
+            </extract-artifact>
             <!-- Case: Automatically strip out the prefix if the include pattern.
                  This is probably not very useful and very hard to implement.
                  An alternative might be to set a basedir for patterns within the archive
@@ -112,10 +113,12 @@
               </includes>
             </extract>
             -->
+<!--
             <copy>
               <path>src/main/unix/files</path>
               <toDir>/</toDir>
             </copy>
+-->
 
             <!-- THE example
                  Includes/excludes is implemented now.
@@ -155,9 +158,9 @@
                 <path>/var/opt/jetty/log</path>
               </paths>
             </mkdirs>
-            <mkdir>
+            <mkdirs>
               <path>/var/opt/jetty/test-directory</path>
-            </mkdir>
+            </mkdirs>
             <!--
              Useful when is is too much xml to write directly on the copy/extract operations.
              Should take includes/excludes too.

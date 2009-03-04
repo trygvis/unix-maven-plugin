@@ -32,35 +32,35 @@
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <!-- Include the license in both packages -->
           <assembly>
-            <extract>
+            <extract-artifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <includes>
                 <!-- TODO: this should work without the leading stars -->
                 <include>**/*-license.txt</include>
               </includes>
-              <toDir>/usr/share/hudson/license</toDir>
+              <to>/usr/share/hudson/license</to>
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>
               <fileAttributes>
                 <user>root</user>
                 <group>bin</group>
               </fileAttributes>
-            </extract>
+            </extract-artifact>
           </assembly>
           <packages>
             <package>
               <id>default</id>
               <name>Hudson Master</name>
               <assembly>
-                <copy>
+                <copy-artifact>
                   <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
                   <toFile>/usr/share/hudson/lib/hudson.war</toFile>
-                  <fileAttributes>
+                  <attributes>
                     <user>hudson</user>
                     <group>hudson</group>
                     <mode>0644</mode>
-                  </fileAttributes>
-                </copy>
+                  </attributes>
+                </copy-artifact>
               </assembly>
             </package>
             <package>
@@ -69,16 +69,16 @@
               <description>Hudson slave node</description>
               <assembly>
                 <!-- TODO: As this want to copy only a single file, add a "extract-file" version -->
-                <extract>
+                <extract-artifact>
                   <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
-                  <toDir>/usr/share/hudson/lib</toDir>
+                  <to>/usr/share/hudson/lib</to>
                   <includes>
                     <!-- TODO: this should work without the leading stars -->
                     <include>**/WEB-INF/slave.jar</include>
                   </includes>
                   <pattern>WEB-INF/(slave.jar)</pattern>
                   <replacement>$1</replacement>
-                </extract>
+                </extract-artifact>
               </assembly>
             </package>
           </packages>

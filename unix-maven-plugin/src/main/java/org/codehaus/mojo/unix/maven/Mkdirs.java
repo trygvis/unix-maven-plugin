@@ -1,19 +1,20 @@
 package org.codehaus.mojo.unix.maven;
 
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.commons.vfs.FileObject;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.util.RelativePath;
-
-import java.io.IOException;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.mojo.unix.core.AssemblyOperation;
+import org.codehaus.mojo.unix.core.CreateDirectoriesOperation;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Mkdirs
-    extends AssemblyOperation
+    extends AssemblyOp
 {
+    private String path;
+
     private String[] paths;
 
     private FileAttributes attributes = new FileAttributes();
@@ -21,6 +22,11 @@ public class Mkdirs
     public Mkdirs()
     {
         super( "mkdirs" );
+    }
+
+    public void setPath( String path )
+    {
+        this.path = path;
     }
 
     public void setPaths( String[] paths )
@@ -33,19 +39,20 @@ public class Mkdirs
         this.attributes = attributes;
     }
 
-    public void perform( FileObject basedir, Defaults defaults, FileCollector fileCollector )
-        throws MojoFailureException, IOException
+    public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+        throws MojoFailureException, FileSystemException
     {
-        validateIsSet( paths, "paths" );
-
-        org.codehaus.mojo.unix.FileAttributes attributes =
-            Defaults.DEFAULT_DIRECTORY_ATTRIBUTES.
-                useAsDefaultsFor( defaults.getDirectoryAttributes() ).
-                    useAsDefaultsFor( this.attributes.create() );
-
-        for ( int i = 0; i < paths.length; i++ )
+        if ( path != null )
         {
-            fileCollector.addDirectory( RelativePath.fromString( paths[i] ), attributes );
+            if ( paths != null )
+            {
+                throw new MojoFailureException(
+                    "Only either 'path' or 'paths' can be set on a " + operationType + " operation." );
+            }
+
+            paths = new String[]{path};
         }
+
+        return new CreateDirectoriesOperation( paths, applyDirectoryDefaults( defaults, attributes.create() ) );
     }
 }

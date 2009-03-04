@@ -54,18 +54,10 @@
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
-          <process-resources>
-            org.apache.maven.plugins:maven-resources-plugin:resources
-          </process-resources>
-          <package>
-            org.codehaus.mojo:unix-maven-plugin:package-dpkg
-          </package>
-          <install>
-            org.apache.maven.plugins:maven-install-plugin:install
-          </install>
-          <deploy>
-            org.apache.maven.plugins:maven-deploy-plugin:deploy
-          </deploy>
+          <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
+          <package>org.codehaus.mojo:unix-maven-plugin:package-dpkg</package>
+          <install>org.apache.maven.plugins:maven-install-plugin:install</install>
+          <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
         </phases>
       </configuration>
     </component>
@@ -75,18 +67,10 @@
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
-          <process-resources>
-            org.apache.maven.plugins:maven-resources-plugin:resources
-          </process-resources>
-          <package>
-            org.codehaus.mojo:unix-maven-plugin:package-pkg
-          </package>
-          <install>
-            org.apache.maven.plugins:maven-install-plugin:install
-          </install>
-          <deploy>
-            org.apache.maven.plugins:maven-deploy-plugin:deploy
-          </deploy>
+          <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
+          <package>org.codehaus.mojo:unix-maven-plugin:package-pkg</package>
+          <install>org.apache.maven.plugins:maven-install-plugin:install</install>
+          <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
         </phases>
       </configuration>
     </component>
@@ -96,18 +80,10 @@
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
-          <process-resources>
-            org.apache.maven.plugins:maven-resources-plugin:resources
-          </process-resources>
-          <package>
-            org.codehaus.mojo:unix-maven-plugin:package-rpm
-          </package>
-          <install>
-            org.apache.maven.plugins:maven-install-plugin:install
-          </install>
-          <deploy>
-            org.apache.maven.plugins:maven-deploy-plugin:deploy
-          </deploy>
+          <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
+          <package>org.codehaus.mojo:unix-maven-plugin:package-rpm</package>
+          <install>org.apache.maven.plugins:maven-install-plugin:install</install>
+          <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
         </phases>
       </configuration>
     </component>

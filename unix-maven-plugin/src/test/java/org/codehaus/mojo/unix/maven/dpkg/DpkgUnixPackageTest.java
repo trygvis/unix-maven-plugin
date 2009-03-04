@@ -35,7 +35,7 @@ public class DpkgUnixPackageTest
             section( "devel" ).
             debug( true ).
             mavenCoordinates( "mygroup", "myartifact", null ).
-            version( PackageVersion.create( "1.0", "123", false, null, new Integer( 1 ) ) ).
+            version( PackageVersion.create( "1.0", "123", false, null, 1 ) ).
             contact( "Kurt Cobain" ).
             architecture( "all" ).
             workingDirectory( packageRoot ).

@@ -38,15 +38,24 @@
             <softwareGroup>Application/Collectors</softwareGroup>
           </rpm>
           <assembly>
-            <copy>
+            <mkdirs>
+              <paths>
+                <path>/opt/hudson</path>
+              </paths>
+            </mkdirs>
+            <copy-artifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
-              <toFile>/usr/share/hudson/lib/hudson.war</toFile>
-              <fileAttributes>
+              <toFile>/opt/hudson/hudson.war</toFile>
+              <attributes>
                 <user>hudson</user>
                 <group>hudson</group>
-                <mode>044</mode>
-              </fileAttributes>
-            </copy>
+                <mode>0644</mode>
+              </attributes>
+            </copy-artifact>
+            <symlink>
+              <source>/var/log/hudson</source>
+              <target>/var/opt/hudson/log</target>
+            </symlink>
           </assembly>
         </configuration>
       </plugin>

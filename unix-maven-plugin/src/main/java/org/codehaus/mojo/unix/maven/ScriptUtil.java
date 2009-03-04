@@ -1,5 +1,6 @@
 package org.codehaus.mojo.unix.maven;
 
+import fj.data.List;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.ByteArrayInputStream;
@@ -8,9 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -24,7 +22,7 @@ public final class ScriptUtil
     private ScriptFile postInstall;
     private ScriptFile preRemove;
     private ScriptFile postRemove;
-    private List customScripts = new ArrayList();
+    private List<ScriptFile> customScripts = List.nil();
 
     private final static class ScriptFile
     {
@@ -143,7 +141,7 @@ public final class ScriptUtil
 
         public ScriptUtilBuilder addCustomScript( String specificName )
         {
-            scriptUtil.customScripts.add( new ScriptFile( null, specificName ) );
+            scriptUtil.customScripts = scriptUtil.customScripts.cons( new ScriptFile( null, specificName ) );
             return this;
         }
     }
@@ -154,6 +152,7 @@ public final class ScriptUtil
         File postInstall;
         File preRemove;
         File postRemove;
+        private List<File> customScripts = List.nil();
 
         public File getPreInstall()
         {
@@ -194,13 +193,18 @@ public final class ScriptUtil
         {
             return postRemove != null && postRemove.canRead();
         }
+
+        public List<File> getCustomScripts()
+        {
+            return customScripts;
+        }
     }
 
-    public Execution copyScripts( File basedir, File toDir )
+    public Execution copyScripts( File basedir, final File toDir )
         throws IOException
     {
-        File common = new File( basedir, "src/main/unix/scripts/common" );
-        File specific = new File( basedir, "src/main/unix/scripts/" + format );
+        final File common = new File( basedir, "src/main/unix/scripts/common" );
+        final File specific = new File( basedir, "src/main/unix/scripts/" + format );
 
         Execution execution = new Execution();
 
@@ -209,10 +213,11 @@ public final class ScriptUtil
         execution.preRemove = preRemove.copyScript( common, specific, toDir );
         execution.postRemove = postRemove.copyScript( common, specific, toDir );
 
-        for ( Iterator it = customScripts.iterator(); it.hasNext(); )
+        for (ScriptFile customScript : customScripts )
         {
-            ( (ScriptFile) it.next() ).copyScript( common, specific, toDir );
+            execution.customScripts = execution.customScripts.cons( customScript.copyScript( common, specific, toDir ) );
         }
+        execution.customScripts = execution.customScripts.reverse();
 
         return execution;
     }

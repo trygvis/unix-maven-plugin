@@ -2,7 +2,6 @@ package org.codehaus.mojo.unix.maven;
 
 import org.codehaus.mojo.unix.UnixPackage;
 import org.codehaus.mojo.unix.maven.pkg.PkgUnixPackage;
-import org.codehaus.mojo.unix.maven.pkg.prototype.PrototypeEntry;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -28,13 +27,13 @@ class PkgMojoHelper
 
     protected void applyFormatSpecificSettingsToPackage( UnixPackage unixPackage )
     {
-        // TODO: add the extra prototype lines
-        PrototypeEntry[] extraPrototype = new PrototypeEntry[pkg.getExtraPrototype().length];
-
-        for ( int i = 0; i < pkg.getExtraPrototype().length; i++ )
-        {
-            extraPrototype[i] = PrototypeEntry.fromLine( pkg.getExtraPrototype()[i] );
-        }
+//        // TODO: add the extra prototype lines
+//        PrototypeEntry[] extraPrototype = new PrototypeEntry[pkg.getExtraPrototype().length];
+//
+//        for ( int i = 0; i < pkg.getExtraPrototype().length; i++ )
+//        {
+//            extraPrototype[i] = PrototypeEntry.fromLine( pkg.getExtraPrototype()[i] );
+//        }
 
         PkgUnixPackage.cast( unixPackage ).
             classes( pkg.getClasses() );

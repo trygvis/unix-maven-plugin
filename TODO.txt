@@ -48,10 +48,6 @@ o Split out the code that is in ..maven.util into a core module.
 
 o Support Defaults per platform. The Defaults object should probably be in the common project
 
-o Implement includes/excludes for the assembly operations that move multiple files
- - Add default exclude set for SCM files
- - This is mostly supported now, might be some bugs here and there
-
 o The includes/excludes algorithm is most likely wrong, it should first check for includes and then check for excludes.
   Perhaps verify against an ant build.xml file.
 
@@ -73,39 +69,62 @@ o Add a "platform" concept.
     - ArchLinux
     - OpenBDS packages
 
+o Add a "modulation" contept.
+  Much like 'classifiers' in Maven, might be smart to use the same concept.
+  - Support src/main/files per classifier
+
 o Make sure the result of setLastModified is asserted
 
 o Get commons-vfs to log to Maven or just ignore it
 
-== For 1.0-alpha-2 ==
+o Make sure that timestamps are preserved for all assembly operations
 
-o Get all ITs to pass
+== Refactorings ==
+
+o Move all common objects to unix-common or unix-core
+ - Move stuff to core unless it has dependencies
+
+== Functional Java ==
+
+o Add Option.someE(String msg) like Either.XProjection.valueE();
+o Add Hash.keySet() that return a Set
 
 == For 1.0-alpha-3 ==
 
+o Make sure all files has copyright statement.
 o It should be validated that the toDir doesn't go outside the package root
   - Isn't this implicitly handled by RelativePath? If not, add validation there
-o toDir should default to "/"
-o New assembly operation structure:
+o DONE: toDir should default to "/"
+o DONE: New assembly operation structure:
  - <copy>+<path> with path == file -> <copy-file>
  - <copy>+<path> with path == directory -> <copy-directory>
  - <extract>+<path> with path == file -> <extract-file>
  - <extract>+<path> with path == directory -> <extract-directory>
 o Rename "pkg" to "solaris"
-o Default file sets to be copied
- - src/main/unix/files/
-  - modulations for platforms and package instances
+o DONE: Pkg: support all installation file types
+  Suppored files: depend, checkinstall, compver, copyright, request, space
+o DONE: Implement symlinks
 o Support chmod assembly operation
  - Has to support includes/excludes
+o Assembly Operation documentation
+ - Document each assembly operation separately
+o Scripts documentation
+ - src/main/unix/scripts, common vs package specific directories
+
+== For 1.0-alpha-4 ==
+
+o Support 'tar' and 'zip' formats
+  Create integration tests similar to the existing tests
 
 == Pkg ==
 
-o Support custom files (like i.deamon, "request")
+o Support custom class installation files (like i.deamon, r.daemon)
 
 o Support "i" and "e" files
 
 o Generate entries for parent directories.
  - Need some way to say how far up to generte (you don't want to specify /usr, /opt, etc)
+ - Set permission modes on parent directories.
 
 == RPM ==
 

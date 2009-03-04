@@ -1,17 +1,25 @@
 package org.codehaus.mojo.unix.maven;
 
+import fj.F;
+import fj.Unit;
+import fj.data.Option;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.Selectors;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
+import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.util.RelativePath;
+import org.codehaus.mojo.unix.util.UnixUtil;
+import static org.codehaus.mojo.unix.util.RelativePath.fromString;
+import static org.codehaus.mojo.unix.util.vfs.VfsUtil.asFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -20,62 +28,11 @@ import java.util.List;
 public class FsFileCollector
     implements FileCollector
 {
-    private interface Operation
-    {
-        public void process()
-            throws FileSystemException;
-    }
+    private final List<Callable> operations = new ArrayList<Callable>();
 
-    private class PackageFile
-        implements Operation
-    {
-        public final FileObject source;
+    private final FileObject fsRoot;
 
-        public final RelativePath toPath;
-
-        public PackageFile( FileObject source, RelativePath toPath )
-        {
-            this.source = source;
-            this.toPath = toPath;
-        }
-
-        public void process()
-            throws FileSystemException
-        {
-            FileObject toFile = root.resolveFile( toPath.string );
-
-            System.out.println( "Copying from " + source.getName().getPath() + " to " + toFile.getName().getPath() );
-
-            toFile.getParent().createFolder();
-            toFile.copyFrom( source, Selectors.SELECT_SELF );
-            toFile.getContent().setLastModifiedTime( source.getContent().getLastModifiedTime() );
-        }
-    }
-
-    private class PackageDirectory
-        implements Operation
-    {
-        public final RelativePath toPath;
-
-        public PackageDirectory( RelativePath toPath )
-        {
-            this.toPath = toPath;
-        }
-
-        public void process()
-            throws FileSystemException
-        {
-            root.resolveFile( toPath.string ).createFolder();
-        }
-    }
-
-    private List files = new ArrayList();
-
-    private boolean debug;
-
-    private FileObject fsRoot;
-
-    private FileObject root;
+    private final FileObject root;
 
     public FsFileCollector( FileObject fsRoot )
         throws FileSystemException
@@ -97,31 +54,96 @@ public class FsFileCollector
         return root;
     }
 
-    public FileCollector addDirectory( RelativePath path, FileAttributes attributes )
+    public FileCollector addDirectory( UnixFsObject.Directory directory )
     {
-        files.add( new PackageDirectory( path ) );
+        operations.add( packageDirectory( directory.path ) );
 
         return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, RelativePath toPath, FileAttributes attributes )
+    public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
     {
-        files.add( new PackageFile( fromFile, toPath ) );
+        operations.add( packageFile( fromFile, file ) );
 
         return this;
     }
 
-    public void debug( boolean flag )
+    public FileCollector addSymlink( UnixFsObject.Symlink symlink )
+        throws IOException
     {
-        this.debug = flag;
+        operations.add( packageSymlink( symlink.path.string, fromString( symlink.target ) ) );
+
+        return this;
+    }
+
+    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
+    {
+        // Not implemented
+    }
+
+    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
+    {
+        // Not implemented
     }
 
     public void collect()
-        throws IOException
+        throws Exception
     {
-        for ( Iterator it = files.iterator(); it.hasNext(); )
+        for ( Callable operation : operations )
         {
-            ((Operation) it.next()).process();
+            operation.call();
         }
+    }
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
+
+    private Callable packageFile( final FileObject from, final UnixFsObject.RegularFile to )
+    {
+        return new Callable()
+        {
+            public Object call()
+                throws Exception
+            {
+                FileObject toFile = root.resolveFile( to.path.string );
+
+                toFile.getParent().createFolder();
+                toFile.copyFrom( from, Selectors.SELECT_SELF );
+                toFile.getContent().setLastModifiedTime( to.lastModified.toDateTime().toDate().getTime() );
+                return Unit.unit();
+            }
+        };
+    }
+
+    private Callable packageDirectory( final RelativePath path )
+    {
+        return new Callable()
+        {
+            public Object call()
+                throws Exception
+            {
+                root.resolveFile( path.string ).createFolder();
+                return Unit.unit();
+            }
+        };
+    }
+
+    private Callable packageSymlink( final String source, final RelativePath target )
+    {
+        return new Callable()
+        {
+            public Object call()
+                throws Exception
+            {
+                root.resolveFile( target.string ).getParent().createFolder();
+
+                File file = asFile( fsRoot );
+
+                UnixUtil.symlink( file, source, target );
+
+                return Unit.unit();
+            }
+        };
     }
 }

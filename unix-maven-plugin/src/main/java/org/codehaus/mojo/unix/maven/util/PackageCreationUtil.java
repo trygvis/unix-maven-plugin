@@ -1,21 +1,22 @@
 package org.codehaus.mojo.unix.maven.util;
 
+import org.apache.commons.vfs.FileObject;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.apache.commons.vfs.FileObject;
 import org.codehaus.mojo.unix.MissingSettingException;
 import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.maven.AssemblyOperation;
+import org.codehaus.mojo.unix.core.AssemblyOperation;
+import org.codehaus.mojo.unix.maven.AssemblyOp;
 import org.codehaus.mojo.unix.maven.Defaults;
 import org.codehaus.mojo.unix.maven.Package;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,14 +39,14 @@ public class PackageCreationUtil
 
     private final UnixPackage unixPackage;
 
-    private final Map artifactMap;
+    private final Map<String, Artifact> artifactMap;
 
     private final Defaults defaults;
 
-    private List assemblyOperations = new ArrayList();
+    private final List<AssemblyOp> assemblyOperations = new LinkedList<AssemblyOp>();
 
     public PackageCreationUtil( Package pakke, String classifier, MavenProject project, UnixPackage unixPackage,
-                                Map artifactMap, Defaults defaults )
+                                Map<String, Artifact> artifactMap, Defaults defaults )
     {
         this.pakke = pakke;
         this.classifier = classifier;
@@ -110,7 +111,7 @@ public class PackageCreationUtil
     //
     // -----------------------------------------------------------------------
 
-    public PackageCreationUtil appendAssemblyOperations( AssemblyOperation[] assemblyOperations )
+    public PackageCreationUtil appendAssemblyOperations( AssemblyOp[] assemblyOperations )
     {
         if ( assemblyOperations == null )
         {
@@ -122,7 +123,7 @@ public class PackageCreationUtil
     }
 
     public File createPackage( FileObject basedir )
-        throws IOException, MissingSettingException, MojoExecutionException, MojoFailureException
+        throws Exception
     {
         // -----------------------------------------------------------------------
         // Assemble all the files
@@ -134,10 +135,12 @@ public class PackageCreationUtil
         // Package the stuff
         // -----------------------------------------------------------------------
 
-        File packageFile = new File( project.getBuild().getDirectory(),
-            project.getArtifactId() + ( classifier == null ? "" : "-" + pakke.getId() ) +
-                "-" + unixPackage.getVersion().getMavenVersion() +
-                "." + unixPackage.getPackageFileExtension() );
+        String name = project.getArtifactId() +
+            ( classifier == null ? "" : "-" + pakke.getId() ) +
+            "-" + unixPackage.getVersion().getMavenVersion() +
+            "." + unixPackage.getPackageFileExtension();
+
+        File packageFile = new File( project.getBuild().getDirectory(), name );
 
         unixPackage.
             packageToFile( packageFile );
@@ -145,17 +148,17 @@ public class PackageCreationUtil
         return packageFile;
     }
 
-    private void assemble( FileObject basedir, List assembly )
+    private void assemble( FileObject basedir, List<AssemblyOp> assembly )
         throws MojoFailureException, MojoExecutionException
     {
         try
         {
-            for ( Iterator it = assembly.iterator(); it.hasNext(); )
+            for ( AssemblyOp assemblyOperation : assembly )
             {
-                AssemblyOperation assemblyOperation = (AssemblyOperation) it.next();
-
                 assemblyOperation.setArtifactMap( artifactMap );
-                assemblyOperation.perform( basedir, defaults, unixPackage );
+                AssemblyOperation operation = assemblyOperation.createOperation( basedir, defaults );
+
+                operation.perform( unixPackage );
             }
         }
         catch ( IOException e )
@@ -165,7 +168,6 @@ public class PackageCreationUtil
     }
 
     private String select( String a, String b )
-        throws MissingSettingException
     {
         return StringUtils.isNotEmpty(a) ? a : b;
     }
