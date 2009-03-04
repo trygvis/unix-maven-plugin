@@ -1,16 +1,20 @@
 package org.codehaus.mojo.unix.dpkg;
 
+import static fj.data.Option.some;
+import fj.data.Option;
 import org.apache.commons.compress.tar.TarEntry;
 import org.apache.commons.compress.tar.TarInputStream;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.UnixFileMode;
 import org.codehaus.mojo.unix.UnixFsObject;
+import static org.codehaus.mojo.unix.UnixFsObject.directory;
+import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
 import org.codehaus.mojo.unix.ar.Ar;
 import org.codehaus.mojo.unix.ar.ArUtil;
 import org.codehaus.mojo.unix.ar.CloseableIterable;
 import org.codehaus.mojo.unix.ar.ReadableArFile;
 import org.codehaus.mojo.unix.util.RelativePath;
-import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +30,7 @@ import java.util.zip.GZIPInputStream;
  */
 public class DpkgDebTool
 {
-    public static List contents( File file )
+    public static List<UnixFsObject> contents( File file )
         throws IOException
     {
         CloseableIterable archive = null;
@@ -53,7 +57,7 @@ public class DpkgDebTool
         }
     }
 
-    private static List processCompressedTar( ReadableArFile arFile )
+    private static List<UnixFsObject> processCompressedTar( ReadableArFile arFile )
         throws IOException
     {
         if ( arFile.getName().endsWith( ".tar.gz" ) )
@@ -68,25 +72,25 @@ public class DpkgDebTool
         }
     }
 
-    private static List process( InputStream is )
+    private static List<UnixFsObject> process( InputStream is )
         throws IOException
     {
         TarInputStream tarInputStream = new TarInputStream( is );
 
         TarEntry entry = tarInputStream.getNextEntry();
 
-        List objects = new ArrayList();
+        List<UnixFsObject> objects = new ArrayList<UnixFsObject>();
 
         while ( entry != null )
         {
-            UnixFileMode mode = UnixFileMode.fromInt( entry.getMode() );
-            FileAttributes attributes = new FileAttributes( entry.getUserName(), entry.getGroupName(), mode );
+            Option<UnixFileMode> mode = some( UnixFileMode.fromInt( entry.getMode() ) );
+            FileAttributes attributes = new FileAttributes( some( entry.getUserName() ), some( entry.getGroupName() ), mode );
             RelativePath path = RelativePath.fromString( entry.getName() );
-            LocalDate lastModified = LocalDate.fromDateFields( entry.getModTime() );
+            LocalDateTime lastModified = LocalDateTime.fromDateFields( entry.getModTime() );
 
             objects.add( entry.isDirectory() ?
-                (UnixFsObject) new UnixFsObject.DirectoryUnixOFsbject( path, lastModified, attributes ) :
-                (UnixFsObject) new UnixFsObject.FileUnixOFsbject( path, lastModified, entry.getSize(), attributes ) );
+                directory( path, lastModified, attributes ) :
+                regularFile( path, lastModified, entry.getSize(), some( attributes ) ));
 
             entry = tarInputStream.getNextEntry();
         }

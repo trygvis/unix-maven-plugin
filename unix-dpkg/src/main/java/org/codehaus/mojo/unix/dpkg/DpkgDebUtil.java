@@ -17,7 +17,7 @@ public class DpkgDebUtil
     private static final String EOL = System.getProperty( "line.separator" );
 
     public static class ControlFile
-        implements EqualsIgnoreNull
+        implements EqualsIgnoreNull<ControlFile>
     {
         public final String section;
         public final String priority;
@@ -39,10 +39,8 @@ public class DpkgDebUtil
             this.description = description;
         }
 
-        public boolean equalsIgnoreNull( EqualsIgnoreNull other )
+        public boolean equalsIgnoreNull( ControlFile that )
         {
-            ControlFile that = (ControlFile) other;
-
             return section.equals( that.section ) &&
                 priority.equals( that.priority ) &&
                 maintainer.equals( that.maintainer ) &&

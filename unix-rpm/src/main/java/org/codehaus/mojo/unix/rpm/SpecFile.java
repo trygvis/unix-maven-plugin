@@ -1,28 +1,29 @@
 package org.codehaus.mojo.unix.rpm;
 
+import static fj.Bottom.error;
+import fj.F;
+import fj.data.List;
+import fj.data.Option;
+import static fj.data.Option.join;
 import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.MissingSettingException;
 import org.codehaus.mojo.unix.PackageVersion;
-import org.codehaus.mojo.unix.util.line.LineWriterWriter;
-import org.codehaus.mojo.unix.util.RelativePath;
+import org.codehaus.mojo.unix.UnixFileMode;
+import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.util.UnixUtil;
-import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.mojo.unix.util.RelativePath;
+import org.codehaus.mojo.unix.util.line.LineProducer;
+import static org.codehaus.mojo.unix.util.line.LineStreamUtil.prefix;
+import org.codehaus.mojo.unix.util.line.LineStreamWriter;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class SpecFile
+    implements LineProducer
 {
     public String groupId;
 
@@ -49,13 +50,13 @@ public class SpecFile
 
     public String packager;
 
-    public List defineStatements = new ArrayList();
+    public List<String> defineStatements = List.nil();
 
-    public List provides = new ArrayList();
+    public List<String> provides = List.nil();
 
-    public List requires = new ArrayList();
+    public List<String> requires = List.nil();
 
-    public List conflicts = new ArrayList();
+    public List<String> conflicts = List.nil();
 
     public String prefix;
 
@@ -65,7 +66,7 @@ public class SpecFile
 
     public boolean dump;
 
-    private LinkedHashSet files = new LinkedHashSet();
+    private List<UnixFsObject<?>> files = List.nil();
 
     public File includePre;
 
@@ -75,50 +76,38 @@ public class SpecFile
 
     public File includePostun;
 
-    public void addFile( RelativePath path, FileAttributes attributes )
-        throws IOException
+    public void addFile( UnixFsObject.RegularFile file )
     {
-        files.add( new StringBuffer().
-            append( "%attr(" ).append( attributes.mode != null ? attributes.mode.toOctalString() : "-" ).append( "," ).
-            append( StringUtils.isNotEmpty( attributes.user ) ? attributes.user : "-" ).append( "," ).
-            append( StringUtils.isNotEmpty( attributes.group ) ? attributes.group : "-" ).append( ") " ).
-            append( path.asAbsolutePath() ).toString() );
+        files = files.cons( file.cast() );
     }
 
-    public void addDirectory( RelativePath path, FileAttributes attributes )
+    public void addDirectory( UnixFsObject.Directory directory )
     {
-        files.add( new StringBuffer().
-            append( "%dir " ).
-            append( "%attr(" ).append( attributes.mode != null ? attributes.mode.toOctalString() : "-" ).append( "," ).
-            append( StringUtils.isNotEmpty( attributes.user ) ? attributes.user : "-" ).append( "," ).
-            append( StringUtils.isNotEmpty( attributes.group ) ? attributes.group : "-" ).append( ") " ).
-            append( path.asAbsolutePath() ).toString() );
+        files = files.cons( directory );
     }
 
-    public void writeToFile( File specFile )
-        throws IOException, MissingSettingException
+    public void addSymlink( UnixFsObject.Symlink symlink )
     {
-        PrintWriter spec = null;
-
-        try
-        {
-            spec = new PrintWriter( new FileWriter( specFile ) );
-            writeTo( spec );
-        }
-        finally
-        {
-            IOUtil.close( spec );
-        }
+        files = files.cons( symlink );
     }
 
-    public void writeTo( PrintWriter writer )
-        throws MissingSettingException, IOException
+    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
     {
-        LineWriterWriter spec = new LineWriterWriter( writer );
+        throw new RuntimeException( "Not implemented" );
+    }
 
-        for ( Iterator it = defineStatements.iterator(); it.hasNext(); )
+    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
+    {
+        throw new RuntimeException( "Not implemented" );
+    }
+
+    public void streamTo( LineStreamWriter spec )
+    {
+        List<UnixFsObject<?>> files = this.files.reverse();
+
+        for ( String defineStatement : defineStatements )
         {
-            spec.add( "%define " + it.next() );
+            spec.add( "%define " + defineStatement );
         }
 
         UnixUtil.assertField( "version", version );
@@ -135,9 +124,9 @@ public class SpecFile
 //            addIfNotEmpty( "URL", url ).
             add( "Group: " + UnixUtil.getField( "group", group ) ).
             addIfNotEmpty( "Packager", packager ).
-            setPrefix( "Provides" ).addAllLines( provides ).clearPrefix().
-            setPrefix( "Requires" ).addAllLines( requires ).clearPrefix().
-            setPrefix( "Conflicts" ).addAllLines( conflicts ).clearPrefix().
+            addAllLines( prefix( provides, "Provides" ) ).
+            addAllLines( prefix( requires, "Requires" ) ).
+            addAllLines( prefix( conflicts, "Conflicts" ) ).
             add( "BuildRoot: " + UnixUtil.getField( "buildRoot", buildRoot ).getAbsolutePath() ).
             add();
 
@@ -149,7 +138,7 @@ public class SpecFile
 
         spec.
             add( "%files" ).
-            addAllLines( files );
+            addAllLines( files.map( SpecFile.showUnixFsObject() ).iterator() );
 
         spec.addIf( includePre != null || includePost != null || includePreun != null || includePostun != null, "" );
         if ( includePre != null )
@@ -210,5 +199,38 @@ public class SpecFile
     private static int getRpmRelease( PackageVersion version )
     {
         return version.revision;
+    }
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
+
+    private static F<UnixFsObject<?>, String> showUnixFsObject()
+    {
+        return new F<UnixFsObject<?>, String>()
+        {
+            public String f( UnixFsObject<?> unixFsObject )
+            {
+                Option<FileAttributes> attributes = unixFsObject.attributes;
+
+                String s =
+                    "%attr(" +
+                        join( attributes.map( FileAttributes.modeF ) ).map( UnixFileMode.showOcalString ).orSome( "-" ) + "," +
+                        join( attributes.map( FileAttributes.userF ) ).orSome( "-" ) + "," +
+                        join( attributes.map( FileAttributes.groupF ) ).orSome( "-" ) + ") " +
+                        unixFsObject.path.asAbsolutePath();
+
+                if ( unixFsObject instanceof UnixFsObject.RegularFile )
+                {
+                    return s;
+                }
+                else if ( unixFsObject instanceof UnixFsObject.Directory )
+                {
+                    return "%dir " + s;
+                }
+
+                throw error( "Unknown type UnixFsObject type: " + unixFsObject );
+            }
+        };
     }
 }

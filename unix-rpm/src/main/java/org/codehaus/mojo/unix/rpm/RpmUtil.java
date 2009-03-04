@@ -2,6 +2,8 @@ package org.codehaus.mojo.unix.rpm;
 
 import org.codehaus.mojo.unix.EqualsIgnoreNull;
 import org.codehaus.mojo.unix.util.SystemCommand;
+import org.codehaus.mojo.unix.util.line.LineProducer;
+import org.codehaus.mojo.unix.util.line.LineStreamWriter;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -24,7 +26,7 @@ public class RpmUtil
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( "MMM dd HH:mm" );
 
     public static final class FileInfo
-        implements EqualsIgnoreNull
+        implements EqualsIgnoreNull<FileInfo>, LineProducer
     {
         public final String path;
 
@@ -48,10 +50,8 @@ public class RpmUtil
             this.date = date;
         }
 
-        public boolean equalsIgnoreNull( EqualsIgnoreNull other )
+        public boolean equalsIgnoreNull( FileInfo that )
         {
-            FileInfo that = (FileInfo) other;
-
             return size == that.size &&
                 ( date == null || date.equals( that.date ) ) &&
                 group.equals( that.group ) &&
@@ -81,20 +81,20 @@ public class RpmUtil
             return path.hashCode();
         }
 
-        public String toString()
+        public void streamTo( LineStreamWriter stream )
         {
-            return new StringBuffer().
+            stream.add( new StringBuffer().
                 append( mode ).append( " " ).
                 append( user ).append( " " ).
                 append( group ).append( " " ).
                 append( size ).append( " " ).
                 append( date != null ? DATE_FORMAT.format( date ) : "not set" ).append( " " ).
-                append( path ).toString();
+                append( path ).toString() );
         }
     }
 
     public static final class SpecFile
-        implements EqualsIgnoreNull
+        implements EqualsIgnoreNull<SpecFile>
     {
         public String name;
         public String version;
@@ -118,10 +118,8 @@ public class RpmUtil
             this.configFiles = configFiles;
         }
 
-        public boolean equalsIgnoreNull( EqualsIgnoreNull other )
+        public boolean equalsIgnoreNull( SpecFile that )
         {
-            SpecFile that = (SpecFile) other;
-
             return name.equals( that.name ) &&
                 version.equals( that.version ) &&
                 release == that.release &&
@@ -146,7 +144,7 @@ public class RpmUtil
         }
     }
 
-    public static List queryPackageForFileInfo( File rpm )
+    public static List<FileInfo> queryPackageForFileInfo( File rpm )
         throws IOException
     {
         RpmQueryParser parser = new RpmQueryParser();
@@ -218,7 +216,7 @@ public class RpmUtil
     private static class RpmQueryParser
         implements SystemCommand.LineConsumer
     {
-        private List list = new ArrayList();
+        private List<FileInfo> list = new ArrayList<FileInfo>();
 
         public void onLine( String line )
             throws IOException
@@ -242,7 +240,7 @@ public class RpmUtil
             }
         }
 
-        public List getList()
+        public List<FileInfo> getList()
         {
             return list;
         }

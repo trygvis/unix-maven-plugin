@@ -5,8 +5,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -23,7 +22,7 @@ public class Rpmbuild
 
     private String rpmbuildPath = "rpmbuild";
 
-    private List defines = new ArrayList();
+    private List<String> defines = new LinkedList<String>();
 
     public Rpmbuild setDebug( boolean debug )
     {
@@ -82,11 +81,11 @@ public class Rpmbuild
 
         // TODO: Only the _topdir defines should be there, the others should be in the spec file
         // TODO: This should be configurable
-        for ( Iterator it = defines.iterator(); it.hasNext(); )
+        for ( String define : defines )
         {
             command.
                 addArgument( "--define" ).
-                addArgument( it.next().toString() );
+                addArgument( define );
         }
 
         SystemCommand.ExecutionResult result = command.

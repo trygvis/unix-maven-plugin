@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.codehaus.mojo.unix</groupId>
+    <artifactId>unix</artifactId>
+    <version>1.0-alpha-3-SNAPSHOT</version>
+  </parent>
+  <artifactId>unix-core</artifactId>
+  <name>Maven Unix Plugin Core</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.mojo.unix</groupId>
+      <artifactId>unix-dpkg</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.mojo.unix</groupId>
+      <artifactId>unix-pkg</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.mojo.unix</groupId>
+      <artifactId>unix-rpm</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>1.2_Java1.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.0-alpha-9-stable-1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

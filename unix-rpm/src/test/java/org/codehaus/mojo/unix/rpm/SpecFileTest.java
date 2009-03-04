@@ -1,16 +1,22 @@
 package org.codehaus.mojo.unix.rpm;
 
+import fj.data.Option;
+import static fj.data.Option.some;
 import junit.framework.TestCase;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.PackageVersion;
 import org.codehaus.mojo.unix.UnixFileMode;
+import static org.codehaus.mojo.unix.UnixFileMode._0644;
+import static org.codehaus.mojo.unix.UnixFileMode._0755;
+import org.codehaus.mojo.unix.UnixFsObject;
+import static org.codehaus.mojo.unix.UnixFsObject.directory;
+import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
+import static org.codehaus.mojo.unix.util.RelativePath.fromString;
 import org.codehaus.mojo.unix.util.line.LineFile;
-import org.codehaus.mojo.unix.util.RelativePath;
+import org.joda.time.LocalDateTime;
 
-import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -19,7 +25,9 @@ import java.io.PrintWriter;
 public class SpecFileTest
     extends TestCase
 {
-    public final LineFile header;
+    final LineFile header;
+
+    final LocalDateTime lastModified = new LocalDateTime( 2009, 2, 24, 9, 42 );
 
     public SpecFileTest()
         throws IOException
@@ -40,9 +48,20 @@ public class SpecFileTest
     {
         SpecFile specFile = testSpecFile();
 
-        specFile.addDirectory( RelativePath.fromString( "/usr/bin" ), new FileAttributes( "myuser", "mygroup", UnixFileMode._0755 ) );
-        specFile.addDirectory( RelativePath.fromString( "/bin" ), new FileAttributes( "myuser", "mygroup", null ) );
-        specFile.addFile( RelativePath.fromString( "/extract.jar" ), new FileAttributes( "myuser", "mygroup", UnixFileMode._0644 ) );
+        Option<String> mygroup = some( "mygroup" );
+        Option<String> myuser = Option.some( "myuser" );
+
+        FileAttributes usrbinAttributes = new FileAttributes( myuser, mygroup, some( _0755 ) );
+        FileAttributes binAttributes = new FileAttributes( myuser, mygroup, UnixFileMode.none );
+
+        UnixFsObject.Directory usrbin = directory( fromString( "/usr/bin" ), lastModified, usrbinAttributes );
+        UnixFsObject.Directory bin = directory( fromString( "/bin" ), lastModified, binAttributes );
+
+        FileAttributes fileAttributes = new FileAttributes( myuser, mygroup, some( _0644 ) );
+
+        specFile.addDirectory( usrbin );
+        specFile.addDirectory( bin );
+        specFile.addFile( regularFile( fromString( "/extract.jar" ), lastModified, 10, some( fileAttributes ) ) );
 
         assertEquals( header.
             add().
@@ -90,10 +109,9 @@ public class SpecFileTest
     private String toString( SpecFile specFile )
         throws Exception
     {
-        CharArrayWriter actual = new CharArrayWriter();
-        PrintWriter writer = new PrintWriter( actual );
-        specFile.writeTo( writer );
-        return actual.toString();
+        LineFile spec = new LineFile();
+        specFile.streamTo( spec );
+        return spec.toString();
     }
 
     private SpecFile testSpecFile()
