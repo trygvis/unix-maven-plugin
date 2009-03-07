@@ -125,7 +125,10 @@ o Building single packages as a standalone project.
  - Use packaging={dpkg,rpm,pkg}
 
 o Building the same package with different format as a separate project.
- - TODO: Figure out how to handle the "primary" artifact. Just create a JAR with the assembly?
+ - Figure out how to handle the "primary" artifact.
+  - Just create a JAR with the assembly?
+  - Does it matter? Will Maven really see the difference as long as it is only the type that is different?
+  - Would it be possible to use "tar.gz" as a form of "generic package"
 
 o Building packages as a part of a JAR project.
  - Use package-{dpkg,rpm,pkg}-attached
@@ -135,10 +138,6 @@ o Support building multiple packages as a standalone project
 
 o Support building multiple packages as a standalone project
  - This might be implemented
-
-== Assembly Operation ==
-
-TODO: Define what an assembly operation is
 
 === Order of execution ===
 
@@ -150,6 +149,8 @@ When an assembly operation is executed this is the order of which the parts of t
 
 o Update Change Log.
  - Scan through changes in svn and hg since last tag
+o Update front page with status.
+o Update change log on site from this file.
 
 = Change Log =
 
@@ -157,10 +158,22 @@ o Update Change Log.
 
 o Support 'tar' and 'zip' formats
   Create integration tests similar to the existing tests
+o Rename "pkg" to "sysv-pkg"
+o Implement support for "%config" and "%doc" in RPM, file classes in solaris.
+ - Check how this work in debian
+o Improve the error message is an artifact can't be found.
+ - Create special exception that is caught in the mojo.
+o Run the plugin through a profiler
+o Document how to use the u-m-p in a development process. Explain the goals for creating index files, and how to
+  run these tools automatically on commit hooks etc.
 
 === Nits ===
 
 o Write proper integation test of FsFileCollector as a replacement of the old SetAttributesOperationTest.
+o Consider creating a class that represent a complete set of attributes on a file.
+  There has been a few surprises ("some() on None" exceptions) where the attribute was missing. Might be possible to
+  require that FileAttributes in unix-core require all fields to be set, and that any null fields must be set by a
+  default before given to the core.
 
 == For 1.0-alpha-3 ==
 
@@ -174,7 +187,6 @@ o DONE: New assembly operation structure:
  - <copy>+<path> with path == directory -> <copy-directory>
  - <extract>+<path> with path == file -> <extract-file>
  - <extract>+<path> with path == directory -> <extract-directory>
-o Rename "pkg" to "solaris"
 o DONE: Pkg: support all installation file types
   Suppored files: depend, checkinstall, compver, copyright, request, space
 o DONE: Implement symlinks
@@ -187,4 +199,6 @@ o Scripts documentation
 
 === Nits ===
 
-o Get SetAttributesOperationTest to work
+o Make sure the site looks good.
+ - Check internal links
+o Remove RelativePath.asAbsolute()

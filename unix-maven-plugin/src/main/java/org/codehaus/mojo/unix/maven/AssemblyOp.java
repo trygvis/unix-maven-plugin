@@ -115,12 +115,12 @@ public abstract class AssemblyOp
     {
         if ( valueA != null && valueB != null )
         {
-            throw new MojoFailureException( "Only one of '" + fieldA + "' or '" + fieldB + "' can be specified on a " + operationType + " operation." );
+            throw new MojoFailureException( "Only one of '" + fieldA + "' and '" + fieldB + "' can be specified on a " + operationType + " operation." );
         }
 
         if ( valueA == null && valueB == null )
         {
-            throw new MojoFailureException( "Either '" + fieldA + "' or '" + fieldB + "' has to be specified on a " + operationType + " operation." );
+            throw new MojoFailureException( "One of '" + fieldA + "' and '" + fieldB + "' has to be specified on a " + operationType + " operation." );
         }
     }
 

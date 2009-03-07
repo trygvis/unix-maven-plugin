@@ -66,14 +66,10 @@ public class Mkdirs
     public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
         throws MojoFailureException, FileSystemException
     {
+        validateEitherIsSet(path, paths, "path", "paths");
+
         if ( path != null )
         {
-            if ( paths != null )
-            {
-                throw new MojoFailureException(
-                    "Only either 'path' or 'paths' can be set on a " + operationType + " operation." );
-            }
-
             paths = new String[]{path};
         }
 

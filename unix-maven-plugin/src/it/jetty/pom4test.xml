@@ -78,21 +78,6 @@
             <softwareGroup>Application/Collectors</softwareGroup>
           </rpm>
           <assembly>
-            <!-- Old style
-            <extract>
-              <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-              <toDir>/opt/jetty</toDir>
-              <pattern>/jetty-7.0.0pre3(.*)</pattern>
-              <replacement>$1</replacement>
-            </extract>
-            <extract>
-              <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-              <toDir>/opt/jetty</toDir>
-              <pattern>/jetty-7.0.0pre3/bin/(.*)</pattern>
-              <replacement>bin/$1</replacement>
-              <fileMode>0755</fileMode>
-            </extract>
-            -->
             <!-- This will exclude all the main licenses, but not the ones in the contrib/ directory -->
             <extract-artifact>
               <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
@@ -126,55 +111,6 @@
               <pattern>/jetty-7.0.0pre3/LICENSES/(.*)</pattern>
               <replacement>share/licenses/$1</replacement>
             </extract-artifact>
-            <!-- Case: Automatically strip out the prefix if the include pattern.
-                 This is probably not very useful and very hard to implement.
-                 An alternative might be to set a basedir for patterns within the archive
-            <extract>
-              <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-              <toBasedir>/opt/jetty/share/licenses</toBasedir>
-              <includes>
-                <include>/jetty-7.0.0pre3/LICENSES/*</include>
-              </includes>
-            </extract>
-            -->
-<!--
-            <copy>
-              <path>src/main/unix/files</path>
-              <toDir>/</toDir>
-            </copy>
--->
-
-            <!-- THE example
-                 Includes/excludes is implemented now.
-                 I've forgotten what the renames was supposed to do, probably related to rewriting stuff with regexps
-            <extract>
-              <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-              <toBasedir>/opt/jetty</toBasedir>
-              <includes>
-                <include>**/bin/*</include>
-              </includes>
-              <excludes>
-                <exclude>**/junk/*</exclude>
-              </excludes>
-              <renames>
-                <rename>
-                  <from>
-                  <to>
-                </rename>
-                <rename>
-                  <from>
-                  <to>
-                </rename>
-              </renames>
-            </extract>
-            <extract>
-              <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-              <toBasedir>/opt/jetty/share/licenses</toBasedir>
-              <includes>
-                <include>/jetty-7.0.0pre3/LICENSES/*</include>
-              </includes>
-            </extract>
-            -->
             <mkdirs>
               <paths>
                 <path>/var/opt/jetty</path>
@@ -185,14 +121,6 @@
             <mkdirs>
               <path>/var/opt/jetty/test-directory</path>
             </mkdirs>
-            <!--
-             Useful when is is too much xml to write directly on the copy/extract operations.
-             Should take includes/excludes too.
-             What about chown? Should it be a common operation?
-            <chmod>
-              <mode>0755</mode>
-            </chmod>
-            -->
           </assembly>
         </configuration>
       </plugin>

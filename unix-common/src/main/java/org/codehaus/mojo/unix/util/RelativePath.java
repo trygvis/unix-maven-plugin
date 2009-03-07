@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.util;
  */
 
 import fj.F;
+import fj.F2;
 import fj.pre.Ord;
 import fj.pre.Ordering;
 
@@ -61,6 +62,10 @@ public class RelativePath
         }
     };
 
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
+
     public static final Ord<RelativePath> ord = Ord.ord( new F<RelativePath, F<RelativePath, Ordering>>()
     {
         public F<RelativePath, Ordering> f( final RelativePath a )
@@ -74,6 +79,10 @@ public class RelativePath
             };
         }
     } );
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
 
     private RelativePath( String string )
     {

@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.java;
  */
 
 import fj.F;
+import fj.F2;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -37,6 +38,14 @@ public class StringF
         public Boolean f( final String s )
         {
             return s.length() == 0;
+        }
+    };
+
+    public static final F2<String, String, Boolean> startsWith = new F2<String, String, Boolean>()
+    {
+        public Boolean f( final String s, final String startsWith )
+        {
+            return s.startsWith( startsWith );
         }
     };
 }

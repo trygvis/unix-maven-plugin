@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <!--
   ~ The MIT License
   ~
@@ -42,47 +43,47 @@
             <th>Rpm</th>
           </tr>
           <tr class="b">
-            <td>config.contact</td>
+            <td><code>config.contact</code></td>
             <td>contact</td>
             <td>Maintainer</td>
-            <td></td>
-            <td></td>
+            <td/>
+            <td/>
           </tr>
           <tr>
-            <td>config.contactEmail</td>
+            <td><code>config.contactEmail</code></td>
             <td>contactEmail</td>
-            <td></td>
+            <td/>
             <td>EMAIL</td>
-            <td></td>
+            <td/>
           </tr>
           <!-- need better name than "packageId" -->
           <tr>
             <td><code>package.packageId</code> or <code>${artifactId}-{classifier}</code></td>
             <td>name</td>
-            <td></td>
+            <td/>
             <td>PKG</td>
-            <td></td>
+            <td/>
           </tr>
           <tr>
             <td><code>package.name</code> or <code>project.name</code></td>
             <td>shortDescription</td>
-            <td></td>
+            <td/>
             <td>NAME</td>
-            <td></td>
+            <td/>
           </tr>
           <tr>
             <td><code>package.description</code> or <code>project.description</code></td>
             <td>description</td>
-            <td></td>
+            <td/>
             <td>DESC</td>
-            <td></td>
+            <td/>
           </tr>
           <tr>
-            <td></td>
+            <td/>
             <td>architecture</td>
-            <td></td>
+            <td/>
             <td>ARCH</td>
-            <td></td>
+            <td/>
           </tr>
         </tbody>
       </table>

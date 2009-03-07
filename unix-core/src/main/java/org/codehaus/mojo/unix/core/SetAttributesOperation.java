@@ -44,7 +44,7 @@ import java.util.List;
 public class SetAttributesOperation
     extends AssemblyOperation
 {
-    private final RelativePath to;
+    private final RelativePath basedir;
 
     private final Option<FileAttributes> fileAttributes;
 
@@ -52,11 +52,11 @@ public class SetAttributesOperation
 
     private final IncludeExcludeFileSelector selector;
 
-    public SetAttributesOperation( RelativePath to, List<String> includes, List<String> excludes,
+    public SetAttributesOperation( RelativePath basedir, List<String> includes, List<String> excludes,
                                    Option<FileAttributes> fileAttributes, Option<FileAttributes> directoryAttributes )
     {
-        validateNotNull( to, includes, excludes, fileAttributes, directoryAttributes );
-        this.to = to;
+        validateNotNull( basedir, includes, excludes, fileAttributes, directoryAttributes );
+        this.basedir = basedir;
         this.fileAttributes = fileAttributes;
         this.directoryAttributes = directoryAttributes;
 
@@ -71,26 +71,27 @@ public class SetAttributesOperation
     {
         if ( fileAttributes.isSome() )
         {
-            fileCollector.applyOnFiles( curry( setAttributes, fileAttributes ) );
+            fileCollector.applyOnFiles( curry( applyAttributes, fileAttributes ) );
         }
 
         if ( directoryAttributes.isSome() )
         {
-            fileCollector.applyOnDirectories( curry( setAttributes, directoryAttributes ) );
+            fileCollector.applyOnDirectories( curry( applyAttributes, directoryAttributes ) );
         }
     }
 
-    F2<Option<FileAttributes>, RelativePath, Option<FileAttributes>> setAttributes =
+    F2<Option<FileAttributes>, RelativePath, Option<FileAttributes>> applyAttributes =
         new F2<Option<FileAttributes>, RelativePath, Option<FileAttributes>>()
         {
             public Option<FileAttributes> f( Option<FileAttributes> fileAttributes, RelativePath path )
             {
-                if ( !path.startsWith( to ) || !selector.matches( path.string ) )
+                if ( path.startsWith( basedir ) &&
+                    selector.matches( path.string.substring( basedir.string.length() ) ) )
                 {
-                    return none();
+                    return fileAttributes;
                 }
 
-                return fileAttributes;
+                return none();
             }
         };
 }
