@@ -89,6 +89,13 @@ o Move all common objects to unix-common or unix-core
 o Add Option.someE(String msg) like Either.XProjection.valueE();
 o Add Hash.keySet() that return a Set
 
+= Change Log =
+
+== For 1.0-alpha-4 ==
+
+o Support 'tar' and 'zip' formats
+  Create integration tests similar to the existing tests
+
 == For 1.0-alpha-3 ==
 
 o DONE: Make sure all files has copyright statement.
@@ -105,17 +112,12 @@ o Rename "pkg" to "solaris"
 o DONE: Pkg: support all installation file types
   Suppored files: depend, checkinstall, compver, copyright, request, space
 o DONE: Implement symlinks
-o Support chmod assembly operation
+o DONE: Support chmod assembly operation
  - Has to support includes/excludes
 o Assembly Operation documentation
  - Document each assembly operation separately
 o Scripts documentation
  - src/main/unix/scripts, common vs package specific directories
-
-== For 1.0-alpha-4 ==
-
-o Support 'tar' and 'zip' formats
-  Create integration tests similar to the existing tests
 
 == Pkg ==
 
