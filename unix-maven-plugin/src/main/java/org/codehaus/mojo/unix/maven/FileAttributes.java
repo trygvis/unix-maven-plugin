@@ -1,8 +1,8 @@
 package org.codehaus.mojo.unix.maven;
 
-import org.codehaus.mojo.unix.UnixFileMode;
-import static fj.data.Option.fromNull;
 import fj.F;
+import static fj.data.Option.fromNull;
+import org.codehaus.mojo.unix.UnixFileMode;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

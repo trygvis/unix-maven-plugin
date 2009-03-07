@@ -2,10 +2,10 @@ package org.codehaus.mojo.unix.util.line;
 
 import org.codehaus.plexus.util.IOUtil;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.io.Closeable;
 import java.io.Flushable;
+import java.io.IOException;
+import java.io.Writer;
 
 /**
  * A lazy writer that won't throw any exceptions until close() is called. If there is an exception while writing,

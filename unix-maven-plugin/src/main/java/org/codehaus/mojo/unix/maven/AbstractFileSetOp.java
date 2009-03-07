@@ -8,8 +8,8 @@ import org.codehaus.mojo.unix.core.CopyDirectoryOperation;
 import org.codehaus.mojo.unix.util.RelativePath;
 
 import static java.util.Arrays.asList;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

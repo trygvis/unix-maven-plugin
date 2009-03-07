@@ -19,9 +19,9 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * under the License.
  */
 
+import fj.F;
 import fj.data.Option;
 import static fj.data.Option.some;
-import fj.F;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.UnixFileMode;
 import org.codehaus.mojo.unix.util.RelativePath;

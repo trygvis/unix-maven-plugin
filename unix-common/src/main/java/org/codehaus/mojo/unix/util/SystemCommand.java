@@ -27,8 +27,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Executes a system command in a similar fasion to backtick (`) in sh and ruby.
@@ -50,7 +50,7 @@ import java.util.LinkedList;
  *
  * TODO: Create FileLineConsumer that puts all the output to a file.
  *
- * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id: SystemCommand.java 1483 2006-02-13 09:19:48Z trygvis $
  */
 public class SystemCommand

@@ -1,8 +1,8 @@
 package org.codehaus.mojo.unix.maven;
 
 import fj.data.Option;
-import static fj.data.Option.none;
 import static fj.data.Option.fromNull;
+import static fj.data.Option.none;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.maven.plugin.MojoFailureException;

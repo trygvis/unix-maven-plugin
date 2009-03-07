@@ -19,12 +19,11 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * under the License.
  */
 
+import fj.data.Option;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.util.RelativePath;
 
 import java.io.File;
-
-import fj.data.Option;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

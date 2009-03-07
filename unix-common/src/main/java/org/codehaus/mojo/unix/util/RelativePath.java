@@ -1,8 +1,8 @@
 package org.codehaus.mojo.unix.util;
 
+import fj.F;
 import fj.pre.Ord;
 import fj.pre.Ordering;
-import fj.F;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

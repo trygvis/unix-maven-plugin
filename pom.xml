@@ -46,8 +46,8 @@
     <developer>
       <id>trygvis</id>
       <name>Trygve Laugstol</name>
-      <email>trygvis@inamo.no</email>
-      <url>http://home.inamo.no/~trygvis</url>
+      <email>trygvis@codehaus.org</email>
+      <url>http://blogs.codehaus.org/people/trygvis</url>
       <roles>
         <role>Java Developer</role>
       </roles>

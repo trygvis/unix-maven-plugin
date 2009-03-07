@@ -1,7 +1,7 @@
 package org.codehaus.mojo.unix.dpkg;
 
-import static fj.data.Option.some;
 import fj.data.Option;
+import static fj.data.Option.some;
 import org.apache.commons.compress.tar.TarEntry;
 import org.apache.commons.compress.tar.TarInputStream;
 import org.codehaus.mojo.unix.FileAttributes;

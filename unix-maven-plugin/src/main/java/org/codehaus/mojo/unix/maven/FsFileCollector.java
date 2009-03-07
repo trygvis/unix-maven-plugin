@@ -11,8 +11,8 @@ import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
 import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.util.RelativePath;
-import org.codehaus.mojo.unix.util.UnixUtil;
 import static org.codehaus.mojo.unix.util.RelativePath.fromString;
+import org.codehaus.mojo.unix.util.UnixUtil;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.asFile;
 
 import java.io.File;

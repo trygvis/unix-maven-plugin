@@ -3,9 +3,9 @@ package org.codehaus.mojo.unix.maven.dpkg;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.VFS;
 import org.codehaus.mojo.unix.PackageVersion;
-import org.codehaus.mojo.unix.util.vfs.VfsUtil;
 import org.codehaus.mojo.unix.dpkg.Dpkg;
 import org.codehaus.mojo.unix.maven.PackagingFormat;
+import org.codehaus.mojo.unix.util.vfs.VfsUtil;
 import org.codehaus.plexus.PlexusTestCase;
 
 import java.io.File;

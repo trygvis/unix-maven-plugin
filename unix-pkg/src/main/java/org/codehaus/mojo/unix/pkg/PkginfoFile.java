@@ -1,9 +1,9 @@
 package org.codehaus.mojo.unix.pkg;
 
 import org.codehaus.mojo.unix.util.line.LineConsumer;
+import org.codehaus.mojo.unix.util.line.LineFile;
 import org.codehaus.mojo.unix.util.line.LineProducer;
 import org.codehaus.mojo.unix.util.line.LineStreamWriter;
-import org.codehaus.mojo.unix.util.line.LineFile;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 

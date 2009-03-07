@@ -10,7 +10,6 @@ import org.codehaus.mojo.unix.UnixFsObject;
 import static org.codehaus.mojo.unix.UnixFsObject.directory;
 import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
 import org.codehaus.mojo.unix.util.RelativePath;
-import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import java.io.IOException;

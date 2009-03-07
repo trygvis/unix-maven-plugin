@@ -27,7 +27,7 @@ import java.io.IOException;
  * package in buildDir using the contents of stageDir.  This classes
  * assumes that stageDir is going to be a direct descendent of buildDir.
  *
- * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id: Dpkg.java 7127 2008-06-05 08:51:58Z trygvis $
  */
 public class Dpkg

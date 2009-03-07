@@ -1,11 +1,11 @@
 package org.codehaus.mojo.unix.dpkg;
 
-import org.codehaus.mojo.unix.util.SystemCommand;
 import org.codehaus.mojo.unix.EqualsIgnoreNull;
+import org.codehaus.mojo.unix.util.SystemCommand;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.File;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 /**
