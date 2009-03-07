@@ -158,6 +158,10 @@ o Update Change Log.
 o Support 'tar' and 'zip' formats
   Create integration tests similar to the existing tests
 
+=== Nits ===
+
+o Write proper integation test of FsFileCollector as a replacement of the old SetAttributesOperationTest.
+
 == For 1.0-alpha-3 ==
 
 o DONE: Make sure all files has copyright statement.

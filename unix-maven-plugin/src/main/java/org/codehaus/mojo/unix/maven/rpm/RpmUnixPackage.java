@@ -32,7 +32,7 @@ import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
 import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.maven.FsFileCollector;
+import org.codehaus.mojo.unix.core.FsFileCollector;
 import org.codehaus.mojo.unix.maven.ScriptUtil;
 import org.codehaus.mojo.unix.rpm.Rpmbuild;
 import org.codehaus.mojo.unix.rpm.SpecFile;
