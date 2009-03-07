@@ -141,6 +141,10 @@
       <id>java.net</id>
       <url>http://download.java.net/maven/2</url>
     </repository>
+    <repository>
+      <id>functionaljava</id>
+      <url>http://functionaljava.googlecode.com/svn/maven/</url>
+    </repository>
   </repositories>
   <modules>
     <module>unix-ar</module>
