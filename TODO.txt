@@ -92,7 +92,7 @@ o Add Hash.keySet() that return a Set
 == For 1.0-alpha-3 ==
 
 o DONE: Make sure all files has copyright statement.
-o unix-ar: Remove CloseableIterable
+o DONE: unix-ar: Remove CloseableIterable
 o It should be validated that the toDir doesn't go outside the package root
   - Isn't this implicitly handled by RelativePath? If not, add validation there
 o DONE: toDir should default to "/"

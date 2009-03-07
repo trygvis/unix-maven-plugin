@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix.ar;
  * SOFTWARE.
  */
 
+import java.io.Closeable;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -125,11 +126,15 @@ public class ArUtil
         }
     }
 
-    public static void close( CloseableIterable reader )
+    public static void close( Closeable reader )
     {
         if ( reader != null )
         {
-            reader.close();
+            try {
+                reader.close();
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 }

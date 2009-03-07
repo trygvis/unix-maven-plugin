@@ -26,7 +26,6 @@ package org.codehaus.mojo.unix.ar;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -40,19 +39,17 @@ public class ArCli
 
         File file = new File( "/Users/trygvis/dev/org.codehaus.mojo/trunk/sandbox/deb-maven-plugin/bash_3.1dfsg-8_i386.deb" );
 
-        CloseableIterable reader = null;
+        ArReader reader = null;
         try
         {
-            reader = Ar.read( file );
-            for ( Iterator it = reader.iterator(); it.hasNext(); )
-            {
-                ArFile arFile = (ArFile) it.next();
-                System.out.println( "arFile.getName() = " + arFile.getName() );
-                System.out.println( "arFile.getLastModified() = " + arFile.getLastModified() );
-                System.out.println( "arFile.getOwnerId() = " + arFile.getOwnerId() );
-                System.out.println( "arFile.getGroupId() = " + arFile.getGroupId() );
-                System.out.println( "arFile.getMode() = " + arFile.getMode() );
-                System.out.println( "arFile.getSize() = " + arFile.getSize() );
+            reader = Ar.read( file ) ;
+            for (ArFile arFile : reader) {
+                System.out.println("arFile.getName() = " + arFile.getName());
+                System.out.println("arFile.getLastModified() = " + arFile.getLastModified());
+                System.out.println("arFile.getOwnerId() = " + arFile.getOwnerId());
+                System.out.println("arFile.getGroupId() = " + arFile.getGroupId());
+                System.out.println("arFile.getMode() = " + arFile.getMode());
+                System.out.println("arFile.getSize() = " + arFile.getSize());
             }
         }
         finally

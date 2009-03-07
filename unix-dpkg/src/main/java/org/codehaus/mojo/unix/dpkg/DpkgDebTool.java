@@ -34,8 +34,8 @@ import org.codehaus.mojo.unix.UnixFsObject;
 import static org.codehaus.mojo.unix.UnixFsObject.directory;
 import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
 import org.codehaus.mojo.unix.ar.Ar;
+import org.codehaus.mojo.unix.ar.ArReader;
 import org.codehaus.mojo.unix.ar.ArUtil;
-import org.codehaus.mojo.unix.ar.CloseableIterable;
 import org.codehaus.mojo.unix.ar.ReadableArFile;
 import org.codehaus.mojo.unix.util.RelativePath;
 import org.joda.time.LocalDateTime;
@@ -44,7 +44,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -57,16 +56,12 @@ public class DpkgDebTool
     public static List<UnixFsObject> contents( File file )
         throws IOException
     {
-        CloseableIterable archive = null;
+        ArReader archive = null;
         try
         {
             archive = Ar.read( file );
 
-            Iterator iterator = archive.iterator();
-
-            while ( iterator.hasNext() )
-            {
-                ReadableArFile arFile = (ReadableArFile) iterator.next();
+            for (ReadableArFile arFile : archive) {
                 if ( arFile.getName().startsWith( "data." ) )
                 {
                     return processCompressedTar( arFile );

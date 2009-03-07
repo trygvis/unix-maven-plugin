@@ -40,7 +40,7 @@ public class Ar
         return new NewAr();
     }
 
-    public static CloseableIterable read( File file )
+    public static ArReader read( File file )
         throws IOException
     {
         return new ArReader( file );

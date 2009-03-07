@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.ar;
 
 import org.codehaus.plexus.util.IOUtil;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,8 +38,8 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-class ArReader
-    implements CloseableIterable
+public class ArReader
+    implements Closeable, Iterable<ReadableArFile>
 {
     private InputStream is;
 
@@ -55,7 +56,7 @@ class ArReader
         }
     }
 
-    public Iterator iterator()
+    public Iterator<ReadableArFile> iterator()
     {
         return new ArFileIterator();
     }
@@ -99,7 +100,7 @@ class ArReader
     }
 
     public class ArFileIterator
-        implements Iterator
+        implements Iterator<ReadableArFile>
     {
 
         private boolean used;
@@ -112,7 +113,7 @@ class ArReader
             return file != null;
         }
 
-        public Object next()
+        public ReadableArFile next()
         {
             updateNext();
 

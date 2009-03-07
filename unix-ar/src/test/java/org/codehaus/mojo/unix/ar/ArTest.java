@@ -83,7 +83,7 @@ public class ArTest
             60 + file3.length(),
             myAr.length() );
 
-        CloseableIterable reader = Ar.read( myAr );
+        ArReader reader = Ar.read( myAr );
         Iterator it = reader.iterator();
 
         ReadableArFile arFile;
