@@ -26,7 +26,7 @@ package org.codehaus.mojo.unix.maven;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id: PackageBinaryMojo.java 7201 2008-07-02 11:53:19Z trygvis $
+ * @version $Id$
  * @goal package-pkg
  * @phase package
  * @requiresDependencyResolution runtime

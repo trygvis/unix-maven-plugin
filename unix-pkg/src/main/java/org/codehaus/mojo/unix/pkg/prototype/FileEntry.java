@@ -35,7 +35,7 @@ import static java.lang.Boolean.FALSE;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id: FileEntry.java 7323 2008-07-26 14:58:37Z trygvis $
+ * @version $Id$
  */
 public class FileEntry
     extends PrototypeEntry

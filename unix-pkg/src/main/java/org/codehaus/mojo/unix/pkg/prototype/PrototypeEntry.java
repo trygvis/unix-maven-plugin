@@ -41,7 +41,7 @@ import static java.lang.Boolean.TRUE;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractPrototypeEntry.java 7323 2008-07-26 14:58:37Z trygvis $
+ * @version $Id$
  */
 public abstract class PrototypeEntry
     implements LineProducer, HasFileAttributes<PrototypeEntry>

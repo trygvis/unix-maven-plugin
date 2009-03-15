@@ -59,7 +59,7 @@ import java.util.List;
  * TODO: Create FileLineConsumer that puts all the output to a file.
  *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id: SystemCommand.java 1483 2006-02-13 09:19:48Z trygvis $
+ * @version $Id$
  */
 public class SystemCommand
 {

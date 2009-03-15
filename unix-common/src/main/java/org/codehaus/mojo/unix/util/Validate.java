@@ -26,7 +26,7 @@ package org.codehaus.mojo.unix.util;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id: IEntry.java 7323 2008-07-26 14:58:37Z trygvis $
+ * @version $Id$
  */
 public class Validate
 {
