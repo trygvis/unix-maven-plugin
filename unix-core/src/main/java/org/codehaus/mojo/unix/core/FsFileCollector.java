@@ -24,9 +24,8 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import fj.F;
+import fj.F2;
 import fj.Unit;
-import fj.data.Option;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
@@ -35,7 +34,6 @@ import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
 import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
 import org.codehaus.mojo.unix.util.UnixUtil;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.asFile;
 
@@ -95,17 +93,12 @@ public class FsFileCollector
     public FileCollector addSymlink( UnixFsObject.Symlink symlink )
         throws IOException
     {
-        operations.add( packageSymlink( symlink.path.string, fromString( symlink.target ) ) );
+        operations.add( packageSymlink( symlink ) );
 
         return this;
     }
 
-    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
-    {
-        // Not implemented
-    }
-
-    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
+    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
     {
         // Not implemented
     }
@@ -153,18 +146,18 @@ public class FsFileCollector
         };
     }
 
-    private Callable packageSymlink( final String source, final RelativePath target )
+    private Callable packageSymlink( final UnixFsObject.Symlink symlink )
     {
         return new Callable()
         {
             public Object call()
                 throws Exception
             {
-                root.resolveFile( target.string ).getParent().createFolder();
+                root.resolveFile( symlink.path.string ).getParent().createFolder();
 
                 File file = asFile( fsRoot );
 
-                UnixUtil.symlink( file, source, target );
+                UnixUtil.symlink( file, symlink.value, symlink.path );
 
                 return Unit.unit();
             }

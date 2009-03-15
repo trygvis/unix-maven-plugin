@@ -41,16 +41,16 @@ import java.io.IOException;
 public class SymlinkOperation
     extends AssemblyOperation
 {
-    private final RelativePath source;
+    private final RelativePath path;
 
     private final String target;
 
     private final FileAttributes attributes;
 
-    public SymlinkOperation( RelativePath source, String target, FileAttributes attributes )
+    public SymlinkOperation( RelativePath path, String target, FileAttributes attributes )
     {
-        validateNotNull( source, target, attributes );
-        this.source = source;
+        validateNotNull( path, target, attributes );
+        this.path = path;
         this.target = target;
         this.attributes = attributes;
     }
@@ -58,6 +58,6 @@ public class SymlinkOperation
     public void perform( FileCollector fileCollector )
         throws IOException
     {
-        fileCollector.addSymlink( symlink( source, new LocalDateTime(), some( attributes ), target ) );
+        fileCollector.addSymlink( symlink( path, new LocalDateTime(), some( attributes ), target ) );
     }
 }

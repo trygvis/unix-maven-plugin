@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix.rpm;
 import org.codehaus.mojo.unix.EqualsIgnoreNull;
 import org.codehaus.mojo.unix.util.SystemCommand;
 import org.codehaus.mojo.unix.util.line.LineProducer;
+import org.codehaus.mojo.unix.util.line.LineStreamUtil;
 import org.codehaus.mojo.unix.util.line.LineStreamWriter;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -46,7 +47,6 @@ import java.util.List;
  */
 public class RpmUtil
 {
-    private static final String EOL = System.getProperty( "line.separator" );
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( "MMM dd HH:mm" );
 
     public static final class FileInfo
@@ -118,7 +118,7 @@ public class RpmUtil
     }
 
     public static final class SpecFile
-        implements EqualsIgnoreNull<SpecFile>
+        implements EqualsIgnoreNull<SpecFile>, LineProducer
     {
         public String name;
         public String version;
@@ -155,16 +155,20 @@ public class RpmUtil
 
         public String toString()
         {
-            return new StringBuffer().
-                append( "Name: " ).append( name ).append( EOL ).
-                append( "Version: " ).append( version ).append( EOL ).
-                append( "Release: " ).append( release ).append( EOL ).
-                append( "Summary: " ).append( summary ).append( EOL ).
-                append( "License: " ).append( license ).append( EOL ).
-                append( "Group: " ).append( group ).append( EOL ).
-                append( EOL ).
-                append( "%description " ).append( EOL ).
-                append( StringUtils.clean( description ) ).toString();
+            return LineStreamUtil.toString( this );
+        }
+
+        public void streamTo( LineStreamWriter stream )
+        {
+            stream.add( "Name: " + name ).
+                add( "Version: " + version ).
+                add( "Release: " + release ).
+                add( "Summary: " + summary ).
+                add( "License: " + license ).
+                add( "Group: " + group ).
+                add().
+                add( "%description " ).
+                add( StringUtils.clean( description ) );
         }
     }
 

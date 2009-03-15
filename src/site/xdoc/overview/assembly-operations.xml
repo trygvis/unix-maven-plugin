@@ -53,6 +53,9 @@
         <p>
           The order of includes vs excludes
         </p>
+        <p>
+          TODO: Explain the effect of having a basedir-like parameter set when calculating matches. (the include/exclude expressions can't contain the basedir part). Applies only to set attributes for now.
+        </p>
       </subsection>
       <subsection name="File Attributes">
         <p>
@@ -224,6 +227,23 @@
 </set-attributes>
 ]]></source>
         </p>
+      </subsection>
+      <subsection name="Symlink">
+        <p>
+          Creates a symbolic link.
+        </p>
+        <p>
+          Supported parameters:
+        </p>
+        <ul>
+          <li>
+            <b>path</b> - the file to create in the package.
+          </li>
+          <li>
+            <b>value</b> - where the symbolic link points to.
+          </li>
+        </ul>
+        <!-- TODO: Create an example -->
       </subsection>
       <subsection name="Copy Directory, Extract Artifact and Extract File">
         <p>

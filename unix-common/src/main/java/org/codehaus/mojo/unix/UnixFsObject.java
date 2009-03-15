@@ -33,6 +33,7 @@ import static fj.data.Option.some;
 import org.codehaus.mojo.unix.util.RelativePath;
 import org.codehaus.mojo.unix.util.UnixUtil;
 import org.codehaus.mojo.unix.util.Validate;
+import static org.codehaus.mojo.unix.util.UnixUtil.optionEquals;
 import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
 import org.codehaus.mojo.unix.util.line.LineProducer;
 import org.codehaus.mojo.unix.util.line.LineStreamWriter;
@@ -46,7 +47,7 @@ import org.joda.time.format.DateTimeFormatterBuilder;
  * @version $Id$
  */
 public abstract class UnixFsObject<A extends UnixFsObject>
-    implements LineProducer
+    implements Comparable<UnixFsObject>, LineProducer, HasFileAttributes<UnixFsObject>
 {
     public final RelativePath path;
     public final LocalDateTime lastModified;
@@ -85,9 +86,20 @@ public abstract class UnixFsObject<A extends UnixFsObject>
         return copy( path, lastModified, size, attributes );
     }
 
+    public FileAttributes getFileAttributes()
+    {
+        return attributes.some();
+    }
+
+    public UnixFsObject setFileAttributes( FileAttributes attributes )
+    {
+        Validate.validateNotNull( attributes );
+        return copy( path, lastModified, size, some( attributes ) );
+    }
+
     protected abstract A copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes );
 
-    public UnixFsObject cast()
+    public UnixFsObject asUnixFsObject()
     {
         return this;
     }
@@ -102,37 +114,15 @@ public abstract class UnixFsObject<A extends UnixFsObject>
         return new RegularFile( path, lastModified, size, attributes );
     }
 
-    public static Directory directory( RelativePath path, LocalDateTime lastModified )
-    {
-        return new Directory( path, lastModified, Option.<FileAttributes>none() );
-    }
-
     public static Directory directory( RelativePath path, LocalDateTime lastModified, FileAttributes attributes )
     {
         return new Directory( path, lastModified, some( attributes ) );
     }
 
-    public static Symlink symlink( RelativePath from, LocalDateTime lastModified, Option<FileAttributes> attributes,
-                                   String to )
+    public static Symlink symlink( RelativePath path, LocalDateTime lastModified, Option<FileAttributes> attributes,
+                                   String target )
     {
-        return new Symlink( from, lastModified, attributes, to );
-    }
-
-    public A setAttributes( FileAttributes attributes )
-    {
-        Validate.validateNotNull( attributes );
-        return copy( path, lastModified, size, some( attributes ) );
-    }
-
-    public static F2<UnixFsObject, FileAttributes, UnixFsObject> setAttributes()
-    {
-        return new F2<UnixFsObject, FileAttributes, UnixFsObject>()
-        {
-            public UnixFsObject f( UnixFsObject unixFsObject, FileAttributes fileAttributes )
-            {
-                return unixFsObject.setAttributes( fileAttributes );
-            }
-        };
+        return new Symlink( path, lastModified, attributes, target );
     }
 
     // -----------------------------------------------------------------------
@@ -152,7 +142,8 @@ public abstract class UnixFsObject<A extends UnixFsObject>
 
         UnixFsObject that = (UnixFsObject) o;
 
-        return path.equals( that.path );
+        return path.equals( that.path ) && lastModified.equals( that.lastModified ) && size == that.size &&
+            optionEquals( attributes, that.attributes );
     }
 
     public int hashCode()
@@ -165,12 +156,16 @@ public abstract class UnixFsObject<A extends UnixFsObject>
         stream.add( toString() );
     }
 
+    public int compareTo( UnixFsObject other )
+    {
+        return path.compareTo( other.path );
+    }
+
     public String toString()
     {
         F<String,String> leftPad10 = curry( UnixFsObject.leftPad, 10 );
         F<String,String> rightPad10 = curry( UnixFsObject.rightPad, 10 );
 
-        System.out.println( "this.path = " + this.path );
         // I wonder how long this will hold. Perhaps it should only be possible to call toString() on valid
         // objects - trygve
         FileAttributes attributes = this.attributes.some();
@@ -218,26 +213,27 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     public static class Symlink
         extends UnixFsObject<Symlink>
     {
-        public final String target;
+        public final String value;
 
-        private Symlink( RelativePath from, LocalDateTime lastModified, Option<FileAttributes> attributes, String target )
+        private Symlink( RelativePath path, LocalDateTime lastModified, Option<FileAttributes> attributes, String value )
         {
-            super( 'l', from, lastModified, sizeOfSymlink( target ), attributes );
+            super( 'l', path, lastModified, sizeOfSymlink( value ), attributes );
+            validateNotNull( value );
 
-            this.target = target;
+            this.value = value;
         }
 
-        private static long sizeOfSymlink( String to )
+        private static long sizeOfSymlink( String s )
         {
             // This might not be good enough validation
-            int i = to.lastIndexOf( '/' );
+            int i = s.lastIndexOf( '/' );
 
-            return (i == -1 ) ? to.length() : to.length() - i - 1;
+            return (i == -1 ) ? s.length() : s.length() - i - 1;
         }
 
         protected Symlink copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
         {
-            return new Symlink( path, lastModified, attributes, target );
+            return new Symlink( path, lastModified, attributes, value );
         }
     }
 

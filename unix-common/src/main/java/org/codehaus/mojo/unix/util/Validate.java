@@ -36,7 +36,7 @@ public class Validate
         {
             if ( o == null )
             {
-                throw new NullPointerException();
+                throw new NullPointerException( "An argument was null." );
             }
         }
     }
@@ -45,7 +45,7 @@ public class Validate
     {
         if ( o == null )
         {
-            throw new NullPointerException();
+            throw new NullPointerException( "An argument was null." );
         }
     }
 

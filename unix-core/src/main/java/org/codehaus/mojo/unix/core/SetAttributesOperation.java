@@ -24,12 +24,15 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
+import fj.Effect;
 import fj.F2;
-import static fj.Function.curry;
 import fj.data.Option;
+import static fj.data.Option.fromNull;
 import static fj.data.Option.none;
+import static fj.data.Option.some;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
+import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.util.RelativePath;
 import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
 import org.codehaus.mojo.unix.util.vfs.IncludeExcludeFileSelector;
@@ -44,54 +47,101 @@ import java.util.List;
 public class SetAttributesOperation
     extends AssemblyOperation
 {
-    private final RelativePath basedir;
-
-    private final Option<FileAttributes> fileAttributes;
-
-    private final Option<FileAttributes> directoryAttributes;
-
     private final IncludeExcludeFileSelector selector;
+
+    public final Option<F2<UnixFsObject, FileAttributes, FileAttributes>> applyFileAttributes;
+    public final Option<F2<UnixFsObject, FileAttributes, FileAttributes>> applyDirectoryAttributes;
 
     public SetAttributesOperation( RelativePath basedir, List<String> includes, List<String> excludes,
                                    Option<FileAttributes> fileAttributes, Option<FileAttributes> directoryAttributes )
     {
         validateNotNull( basedir, includes, excludes, fileAttributes, directoryAttributes );
-        this.basedir = basedir;
-        this.fileAttributes = fileAttributes;
-        this.directoryAttributes = directoryAttributes;
 
         selector = IncludeExcludeFileSelector.build( null ).
             addStringIncludes( includes ).
             addStringExcludes( excludes ).
             create();
-    }
 
-    public void perform( FileCollector fileCollector )
-        throws IOException
-    {
         if ( fileAttributes.isSome() )
         {
-            fileCollector.applyOnFiles( curry( applyAttributes, fileAttributes ) );
+            F2<UnixFsObject, FileAttributes, FileAttributes> f = new ApplyAttributes( UnixFsObject.RegularFile.class, basedir, fileAttributes.some() );
+            applyFileAttributes = fromNull( f );
+        }
+        else
+        {
+            applyFileAttributes = none();
         }
 
         if ( directoryAttributes.isSome() )
         {
-            fileCollector.applyOnDirectories( curry( applyAttributes, directoryAttributes ) );
+            F2<UnixFsObject, FileAttributes, FileAttributes> f = new ApplyAttributes( UnixFsObject.Directory.class, basedir, directoryAttributes.some() );
+            applyDirectoryAttributes = some( f );
+        }
+        else
+        {
+            applyDirectoryAttributes = none();
         }
     }
 
-    F2<Option<FileAttributes>, RelativePath, Option<FileAttributes>> applyAttributes =
-        new F2<Option<FileAttributes>, RelativePath, Option<FileAttributes>>()
+    public void perform( final FileCollector fileCollector )
+        throws IOException
+    {
+        Effect<F2<UnixFsObject, FileAttributes, FileAttributes>> apply = new Effect<F2<UnixFsObject, FileAttributes, FileAttributes>>()
         {
-            public Option<FileAttributes> f( Option<FileAttributes> fileAttributes, RelativePath path )
+            public void e( F2<UnixFsObject, FileAttributes, FileAttributes> applyAttributes )
             {
-                if ( path.startsWith( basedir ) &&
-                    selector.matches( path.string.substring( basedir.string.length() ) ) )
-                {
-                    return fileAttributes;
-                }
-
-                return none();
+                fileCollector.apply( applyAttributes );
             }
         };
+
+        applyFileAttributes.foreach( apply );
+        applyDirectoryAttributes.foreach( apply );
+    }
+
+    private final class ApplyAttributes
+        implements F2<UnixFsObject, FileAttributes, FileAttributes>
+    {
+        private final Class<? extends UnixFsObject> klass;
+        private final RelativePath basedir;
+        private final FileAttributes attributes;
+
+        private ApplyAttributes( Class<? extends UnixFsObject> klass, RelativePath basedir, FileAttributes attributes )
+        {
+            this.klass = klass;
+            this.basedir = basedir;
+            this.attributes = attributes;
+        }
+
+        public FileAttributes f( UnixFsObject fsObject, FileAttributes currentAttributes )
+        {
+            if ( !klass.isAssignableFrom( fsObject.getClass() ) )
+            {
+                return currentAttributes;
+            }
+
+            // Remove the basedir part of the path before matching
+            String massagedPath;
+
+            if ( basedir == RelativePath.BASE )
+            {
+                massagedPath = fsObject.path.string;
+            }
+            else
+            {
+                if ( !fsObject.path.startsWith( basedir ) )
+                {
+                    return currentAttributes;
+                }
+
+                massagedPath = fsObject.path.string.substring( basedir.string.length() );
+            }
+
+            if ( !selector.matches( massagedPath ) )
+            {
+                return currentAttributes;
+            }
+
+            return currentAttributes.useAsDefaultsFor( attributes );
+        }
+    }
 }

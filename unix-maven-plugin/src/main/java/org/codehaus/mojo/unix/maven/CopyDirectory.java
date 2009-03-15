@@ -54,6 +54,8 @@ public class CopyDirectory
     public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
         throws MojoFailureException, FileSystemException
     {
+        validateIsSet( from, "from" );
+
         File file = validateFileIsDirectory( from, "from" );
 
         return createOperationInternal( getManager().resolveFile( file.getAbsolutePath() ), defaults );

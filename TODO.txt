@@ -6,6 +6,11 @@ o Support group, user and modes on files and directories in all formats
  - Pkg: ok
  - RPM: files ok, need to check directories
 
+o Defaults
+ - Add and document default directories for scripts
+   - src/main/unix/scripts/<modulation>
+   - target/unix/scripts/<modulation>
+
 o Dependency generation
 
 o Signing support
@@ -63,8 +68,16 @@ o Add a "platform" concept.
     - A packaging format
     - Defaults for file and directory security
   - Current platforms (should be pre-defined):
-    - debian:
-      - dpkg
+    - platform=debian
+      - format=dpkg
+    - platform=ubuntu
+      - format=dpkg
+    - platform=solaris
+      - format=pkg
+    - platform=fedora
+      - format=rpm
+    - platform=redhat
+      - format=rpm
   - Possible platforms
     - ArchLinux
     - OpenBSD packages
@@ -151,6 +164,9 @@ o Update Change Log.
  - Scan through changes in svn and hg since last tag
 o Update front page with status.
 o Update change log on site from this file.
+o Subversion properties
+ - Expand keywords
+ - eol-style
 
 = Change Log =
 
@@ -166,6 +182,14 @@ o Improve the error message is an artifact can't be found.
 o Run the plugin through a profiler
 o Document how to use the u-m-p in a development process. Explain the goals for creating index files, and how to
   run these tools automatically on commit hooks etc.
+o Re-implement the FsFileCollector to use a tree internally representing a file system
+  - Makes it easier to debug, should be possible to write out the entire tree as a part of the building process
+  - Makes it easier to implement proper mkdirs
+o Document the flow of the assembly operations. Like:
+  1) Find files
+  2) Match against include and exclude
+  3) Rewrite with pattern
+  4) Set attributes
 
 === Nits ===
 
@@ -174,6 +198,8 @@ o Consider creating a class that represent a complete set of attributes on a fil
   There has been a few surprises ("some() on None" exceptions) where the attribute was missing. Might be possible to
   require that FileAttributes in unix-core require all fields to be set, and that any null fields must be set by a
   default before given to the core.
+o Make the pkg stuff die when the source files has a space in the path names. pkgmk dies on prototypes like this:
+  f none /foo/bar.war=/var/opt/hudson/workspace/Myapp - Integration tests/bar.war 0644 root sys
 
 == For 1.0-alpha-3 ==
 

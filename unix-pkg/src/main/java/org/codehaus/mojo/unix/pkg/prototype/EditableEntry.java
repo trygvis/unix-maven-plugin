@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.pkg.prototype;
  */
 
 import fj.data.Option;
+import static fj.data.Option.some;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.util.RelativePath;
 
@@ -54,5 +55,15 @@ public class EditableEntry
         return "e " + pkgClass +
             " " + getProcessedPath( realPath ) +
             " " + toString( attributes );
+    }
+
+    public FileAttributes getFileAttributes()
+    {
+        throw new RuntimeException( "Not implemented" );
+    }
+
+    public PrototypeEntry setFileAttributes( FileAttributes attributes )
+    {
+        return new EditableEntry( some( pkgClass ), relative, path, realPath, attributes );
     }
 }

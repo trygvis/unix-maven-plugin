@@ -27,7 +27,6 @@ package org.codehaus.mojo.unix.pkg.prototype;
 import fj.data.Option;
 import static fj.data.Option.some;
 import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.HasFileAttributes;
 import org.codehaus.mojo.unix.util.RelativePath;
 
 /**
@@ -36,7 +35,6 @@ import org.codehaus.mojo.unix.util.RelativePath;
  */
 public class DirectoryEntry
     extends PrototypeEntry
-    implements HasFileAttributes<DirectoryEntry>
 {
     private final FileAttributes attributes;
 
@@ -60,11 +58,6 @@ public class DirectoryEntry
         return "d " + pkgClass +
             " " + getPath() +
             " " + toString( attributes );
-    }
-
-    public DirectoryEntry getAggregator()
-    {
-        return this;
     }
 
     public FileAttributes getFileAttributes()

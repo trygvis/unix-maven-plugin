@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix.pkg.prototype;
 import fj.data.Option;
 import static fj.data.Option.some;
 import org.codehaus.mojo.unix.util.RelativePath;
+import org.codehaus.mojo.unix.FileAttributes;
 
 import java.io.File;
 
@@ -48,5 +49,15 @@ public class IEntry
     public String generatePrototypeLine()
     {
         return "i " + getProcessedPath( some( realPath ) ) ;
+    }
+
+    public FileAttributes getFileAttributes()
+    {
+        throw new RuntimeException( "Not implemented" );
+    }
+
+    public PrototypeEntry setFileAttributes( FileAttributes attributes )
+    {
+        throw new RuntimeException( "Not implemented" );
     }
 }

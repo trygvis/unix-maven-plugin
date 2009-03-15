@@ -24,10 +24,8 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.data.Option;
+import fj.F2;
 import org.apache.commons.vfs.FileObject;
-import org.codehaus.mojo.unix.util.RelativePath;
 
 import java.io.IOException;
 
@@ -49,7 +47,5 @@ public interface FileCollector
     FileCollector addSymlink( UnixFsObject.Symlink symlink )
         throws IOException;
 
-    void applyOnFiles( F<RelativePath, Option<FileAttributes>> f );
-
-    void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f );
+    void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f );
 }

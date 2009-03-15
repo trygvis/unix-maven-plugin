@@ -137,4 +137,11 @@ public class LineStreamUtil
             IOUtil.close( fileWriter );
         }
     }
+
+    public static String toString( LineProducer lineProducer )
+    {
+        LineFile lines = new LineFile();
+        lineProducer.streamTo( lines );
+        return lines.toString();
+    }
 }

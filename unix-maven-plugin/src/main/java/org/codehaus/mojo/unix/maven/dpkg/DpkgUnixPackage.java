@@ -24,8 +24,7 @@ package org.codehaus.mojo.unix.maven.dpkg;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.data.Option;
+import fj.F2;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.codehaus.mojo.unix.FileAttributes;
@@ -35,7 +34,6 @@ import org.codehaus.mojo.unix.UnixPackage;
 import org.codehaus.mojo.unix.core.FsFileCollector;
 import org.codehaus.mojo.unix.dpkg.Dpkg;
 import org.codehaus.mojo.unix.maven.ScriptUtil;
-import org.codehaus.mojo.unix.util.RelativePath;
 import org.codehaus.mojo.unix.util.UnixUtil;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.asFile;
 
@@ -159,14 +157,9 @@ public class DpkgUnixPackage
         return this;
     }
 
-    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
+    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
     {
-        fileCollector.applyOnFiles( f );
-    }
-
-    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
-    {
-        fileCollector.applyOnDirectories( f );
+        fileCollector.apply( f );
     }
 
     // -----------------------------------------------------------------------

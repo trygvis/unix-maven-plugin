@@ -87,14 +87,14 @@ public class RelativePathTest
 
     public void testAsAbsolutePath()
     {
-        assertEquals( "/", fromString( "." ).asAbsolutePath() );
-        assertEquals( "/", fromString( "/" ).asAbsolutePath() );
-        assertEquals( "/a", fromString( "a" ).asAbsolutePath() );
-        assertEquals( "/a", fromString( "a/" ).asAbsolutePath() );
-        assertEquals( "/a", fromString( "/a" ).asAbsolutePath() );
-        assertEquals( "/a", fromString( "/a/" ).asAbsolutePath() );
-        assertEquals( "/a/b", fromString( "a/b" ).asAbsolutePath() );
-        assertEquals( "/opt/jb/.bash_profile", fromString( "/opt/jb/.bash_profile" ).asAbsolutePath() );
+        assertEquals( "/", fromString( "." ).asAbsolutePath( "/" ) );
+        assertEquals( "/", fromString( "/" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a", fromString( "a" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a", fromString( "a/" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a", fromString( "/a" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a", fromString( "/a/" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a/b", fromString( "a/b" ).asAbsolutePath( "/" ) );
+        assertEquals( "/opt/jb/.bash_profile", fromString( "/opt/jb/.bash_profile" ).asAbsolutePath( "/" ) );
     }
 
     public void testClean()

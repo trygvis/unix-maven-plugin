@@ -28,6 +28,7 @@ import static fj.data.Option.fromNull;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.FileType;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.FileCollector;
 import org.codehaus.mojo.unix.UnixFsObject;
@@ -53,17 +54,21 @@ public abstract class AssemblyOperation
     {
         FileContent content = fromFile.getContent();
 
-        return regularFile( toFile,
-                            new LocalDateTime( content.getLastModifiedTime() ),
-                            content.getSize(),
+        return regularFile( toFile, new LocalDateTime( content.getLastModifiedTime() ), content.getSize(),
                             fromNull( attributes ) );
 
     }
 
-    public static  UnixFsObject.Directory dirFromFileObject( RelativePath toFile, FileObject fromFile,
-                                                             FileAttributes attributes )
+    public static UnixFsObject.Directory dirFromFileObject( RelativePath toFile, FileObject fromFile,
+                                                            FileAttributes attributes )
         throws FileSystemException
     {
+        if ( !fromFile.getType().equals( FileType.FOLDER ) )
+        {
+            throw new FileSystemException(
+                "Not a directory: " + fromFile.getName().getPath() + ", was: " + fromFile.getType() + "" );
+        }
+
         FileContent content = fromFile.getContent();
 
         return directory( toFile, new LocalDateTime( content.getLastModifiedTime() ), attributes );

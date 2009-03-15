@@ -26,14 +26,15 @@ package org.codehaus.mojo.unix.rpm;
 
 import static fj.Bottom.error;
 import fj.F;
+import fj.F2;
 import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.join;
 import org.codehaus.mojo.unix.FileAttributes;
+import org.codehaus.mojo.unix.PackageFileSystem;
 import org.codehaus.mojo.unix.PackageVersion;
 import org.codehaus.mojo.unix.UnixFileMode;
 import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.util.RelativePath;
 import org.codehaus.mojo.unix.util.UnixUtil;
 import org.codehaus.mojo.unix.util.line.LineProducer;
 import static org.codehaus.mojo.unix.util.line.LineStreamUtil.prefix;
@@ -41,6 +42,7 @@ import org.codehaus.mojo.unix.util.line.LineStreamWriter;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
+import java.util.Comparator;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -90,7 +92,15 @@ public class SpecFile
 
     public boolean dump;
 
-    private List<UnixFsObject<?>> files = List.nil();
+//    private List<UnixFsObject<?>> files = List.nil();
+
+    private final PackageFileSystem fileSystem = new PackageFileSystem( new Comparator<UnixFsObject>()
+    {
+        public int compare( UnixFsObject a, UnixFsObject b )
+        {
+            return a.compareTo( b );
+        }
+    } );
 
     public File includePre;
 
@@ -102,33 +112,26 @@ public class SpecFile
 
     public void addFile( UnixFsObject.RegularFile file )
     {
-        files = files.cons( file.cast() );
+        fileSystem.addFile( file, file );
     }
 
     public void addDirectory( UnixFsObject.Directory directory )
     {
-        files = files.cons( directory );
+        fileSystem.addDirectory( directory, directory );
     }
 
     public void addSymlink( UnixFsObject.Symlink symlink )
     {
-        files = files.cons( symlink );
+        fileSystem.addSymlink( symlink, symlink );
     }
 
-    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
+    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
     {
-        throw new RuntimeException( "Not implemented" );
-    }
-
-    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
-    {
-        throw new RuntimeException( "Not implemented" );
+        fileSystem.apply( f );
     }
 
     public void streamTo( LineStreamWriter spec )
     {
-        List<UnixFsObject<?>> files = this.files.reverse();
-
         for ( String defineStatement : defineStatements )
         {
             spec.add( "%define " + defineStatement );
@@ -162,7 +165,7 @@ public class SpecFile
 
         spec.
             add( "%files" ).
-            addAllLines( files.map( SpecFile.showUnixFsObject() ).iterator() );
+            addAllLines( UnixUtil.iteratorMap( SpecFile.showUnixFsObject(), fileSystem.iterator() ) );
 
         spec.addIf( includePre != null || includePost != null || includePreun != null || includePostun != null, "" );
         if ( includePre != null )
@@ -229,11 +232,11 @@ public class SpecFile
     //
     // -----------------------------------------------------------------------
 
-    private static F<UnixFsObject<?>, String> showUnixFsObject()
+    private static F<UnixFsObject, String> showUnixFsObject()
     {
-        return new F<UnixFsObject<?>, String>()
+        return new F<UnixFsObject, String>()
         {
-            public String f( UnixFsObject<?> unixFsObject )
+            public String f( UnixFsObject unixFsObject )
             {
                 Option<FileAttributes> attributes = unixFsObject.attributes;
 
@@ -242,9 +245,9 @@ public class SpecFile
                         join( attributes.map( FileAttributes.modeF ) ).map( UnixFileMode.showOcalString ).orSome( "-" ) + "," +
                         join( attributes.map( FileAttributes.userF ) ).orSome( "-" ) + "," +
                         join( attributes.map( FileAttributes.groupF ) ).orSome( "-" ) + ") " +
-                        unixFsObject.path.asAbsolutePath();
+                        unixFsObject.path.asAbsolutePath( "/" );
 
-                if ( unixFsObject instanceof UnixFsObject.RegularFile )
+                if ( unixFsObject instanceof UnixFsObject.RegularFile || unixFsObject instanceof UnixFsObject.Symlink )
                 {
                     return s;
                 }

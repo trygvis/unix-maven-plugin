@@ -24,8 +24,7 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.data.Option;
+import fj.F2;
 import static fj.data.Option.some;
 import junit.framework.TestCase;
 import org.apache.commons.vfs.FileObject;
@@ -78,28 +77,28 @@ public class PrototypeFileTest
         prototypeFile.addFile( extractJarObject, extractJar );
         prototypeFile.addDirectory( UnixFsObject.directory( BASE, dateTime, dirAttributes ) );
         prototypeFile.addDirectory( UnixFsObject.directory( specialPath, dateTime, dirAttributes ) );
-        prototypeFile.applyOnFiles( filter( extractJarPath, fileAttributes.user( "funnyuser" ) ) );
-        prototypeFile.applyOnDirectories( filter( specialPath, dirAttributes.group( "funnygroup" ) ) );
+        prototypeFile.apply( filter( extractJarPath, fileAttributes.user( "funnyuser" ) ) );
+        prototypeFile.apply( filter( specialPath, dirAttributes.group( "funnygroup" ) ) );
 
         LineFile stream = new LineFile();
 
         prototypeFile.streamTo( stream );
 
         assertEquals( new LineFile().
-            add( "f none /opt/jetty/.bash_profile=" + bashProfileObject.getName().getPath() + " 0644 nouser nogroup" ).
-            add( "d none /special 0755 nouser funnygroup" ).
             add( "d none / 0755 nouser nogroup" ).
             add( "f none /extract.jar=" + extractJarObject.getName().getPath() + " 0644 funnyuser nogroup" ).
+            add( "f none /opt/jetty/.bash_profile=" + bashProfileObject.getName().getPath() + " 0644 nouser nogroup" ).
+            add( "d none /special 0755 nouser funnygroup" ).
             toString(), stream.toString() );
     }
 
-    private F<RelativePath, Option<FileAttributes>> filter( final RelativePath filteredPath, final FileAttributes newAttributes )
+    private F2<UnixFsObject, FileAttributes, FileAttributes> filter( final RelativePath s, final FileAttributes newAttributes )
     {
-        return new F<RelativePath, Option<FileAttributes>>()
+        return new F2<UnixFsObject, FileAttributes, FileAttributes>()
         {
-            public Option<FileAttributes> f( RelativePath path )
+            public FileAttributes f( UnixFsObject fsObject, FileAttributes attributes )
             {
-                return !path.equals( filteredPath ) ? Option.<FileAttributes>none() : some( newAttributes );
+                return !fsObject.path.string.startsWith( s.string ) ? attributes : attributes.useAsDefaultsFor( newAttributes );
             }
         };
     }

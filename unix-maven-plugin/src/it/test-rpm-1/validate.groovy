@@ -6,7 +6,9 @@ boolean success = true
 
 File rpm = new File((File) basedir, "target/project-rpm-1-1.1-2.rpm")
 success &= assertRpmEntries(rpm, [
-        new RpmUtil.FileInfo("/usr/share/hudson/lib/hudson.war", "hudson", "hudson", "----r--r--", 20623413, null),
+        new RpmUtil.FileInfo("/opt/hudson", "nobody", "nogroup", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/opt/hudson/hudson.war", "hudson", "hudson", "-rw-r--r--", 20623413, null),
+        new RpmUtil.FileInfo("/var/log/hudson", "nobody", "nogroup", "lrwxrwxrwx", 19, null),
 ])
 
 success &= assertRelaxed(

@@ -46,7 +46,7 @@ import java.util.List;
 public class SetAttributes
     extends AssemblyOp
 {
-    private RelativePath basedir;
+    private RelativePath basedir = RelativePath.BASE;
 
     private List<String> includes = Collections.emptyList();
 
@@ -90,7 +90,7 @@ public class SetAttributes
         throws MojoFailureException, FileSystemException
     {
         return new SetAttributesOperation( this.basedir, includes, excludes,
-                                           fileAttributes.map( FileAttributes.create_ ),
-                                           directoryAttributes.map( FileAttributes.create_ ) );
+            fileAttributes.map( FileAttributes.create_ ),
+            directoryAttributes.map( FileAttributes.create_ ) );
     }
 }

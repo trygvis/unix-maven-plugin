@@ -72,8 +72,8 @@
               </attributes>
             </copy-artifact>
             <symlink>
-              <source>/var/opt/hudson/log</source>
-              <target>/var/log/hudson</target>
+              <path>/var/log/hudson</path>
+              <value>/var/opt/hudson/log</value>
             </symlink>
           </assembly>
         </configuration>

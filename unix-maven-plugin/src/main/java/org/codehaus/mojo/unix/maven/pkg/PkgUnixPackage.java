@@ -24,15 +24,15 @@ package org.codehaus.mojo.unix.maven.pkg;
  * SOFTWARE.
  */
 
-import fj.F;
+import fj.F2;
 import fj.Unit;
 import fj.data.List;
-import fj.data.Option;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.Selectors;
 import org.apache.commons.vfs.provider.local.LocalFileSystem;
 import org.codehaus.mojo.unix.FileAttributes;
+import static org.codehaus.mojo.unix.FileAttributes.EMPTY;
 import org.codehaus.mojo.unix.FileCollector;
 import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.UnixPackage;
@@ -170,13 +170,14 @@ public class PkgUnixPackage
             fromString( "/var" ),
             fromString( "/var/opt" ),
         };
+
         // TODO: This should use setDirectoryAttributes
         for ( RelativePath specialPath : specialPaths )
         {
             if ( prototypeFile.hasPath( specialPath ) )
             {
                 // TODO: this should come from a common time object so that all "now" timestamps are the same
-                prototypeFile.addDirectory( UnixFsObject.directory( specialPath, new LocalDateTime() ) );
+                prototypeFile.addDirectory( UnixFsObject.directory( specialPath, new LocalDateTime(), EMPTY ) );
             }
         }
 
@@ -258,14 +259,9 @@ public class PkgUnixPackage
         return this;
     }
 
-    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
+    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
     {
-        prototypeFile.applyOnFiles( f );
-    }
-
-    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
-    {
-        prototypeFile.applyOnDirectories( f );
+        prototypeFile.apply( f );
     }
 
     public static PkgUnixPackage cast( UnixPackage unixPackage )

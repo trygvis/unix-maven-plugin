@@ -40,23 +40,23 @@ import static org.codehaus.mojo.unix.util.RelativePath.fromString;
 public class Symlink
     extends AssemblyOp
 {
-    private RelativePath source;
+    private RelativePath path;
 
-    private String target;
+    private String value;
 
     public Symlink()
     {
         super( "symlink" );
     }
 
-    public void setSource( String source )
+    public void setPath( String path )
     {
-        this.source = fromString( source );
+        this.path = fromString( path );
     }
 
-    public void setTarget( String target )
+    public void setValue( String value )
     {
-        this.target = target;
+        this.value = value;
     }
 
     public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
@@ -64,6 +64,6 @@ public class Symlink
     {
         FileAttributes attributes = new FileAttributes( null, null, UnixFileMode._0777 );
 
-        return new SymlinkOperation( source, target, applyFileDefaults( defaults, attributes.create() ) );
+        return new SymlinkOperation( path, value, applyFileDefaults( defaults, attributes.create() ) );
     }
 }

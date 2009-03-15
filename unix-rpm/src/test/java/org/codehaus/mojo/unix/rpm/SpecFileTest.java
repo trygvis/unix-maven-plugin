@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix.rpm;
  * SOFTWARE.
  */
 
+import fj.F2;
 import fj.data.Option;
 import static fj.data.Option.some;
 import junit.framework.TestCase;
@@ -35,6 +36,7 @@ import static org.codehaus.mojo.unix.UnixFileMode._0755;
 import org.codehaus.mojo.unix.UnixFsObject;
 import static org.codehaus.mojo.unix.UnixFsObject.directory;
 import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
+import org.codehaus.mojo.unix.util.RelativePath;
 import static org.codehaus.mojo.unix.util.RelativePath.fromString;
 import org.codehaus.mojo.unix.util.line.LineFile;
 import org.joda.time.LocalDateTime;
@@ -82,19 +84,24 @@ public class SpecFileTest
         UnixFsObject.Directory bin = directory( fromString( "/bin" ), lastModified, binAttributes );
 
         FileAttributes fileAttributes = new FileAttributes( myuser, mygroup, some( _0644 ) );
+        RelativePath extract2Jar = fromString( "/extract2.jar" );
+        FileAttributes extract2JarAttributes = fileAttributes.user( "extract" );
 
         specFile.addDirectory( usrbin );
         specFile.addDirectory( bin );
         specFile.addFile( regularFile( fromString( "/extract.jar" ), lastModified, 10, some( fileAttributes ) ) );
+        specFile.addFile( regularFile( extract2Jar, lastModified, 10, some( fileAttributes ) ) );
+        specFile.apply( filter( extract2Jar, extract2JarAttributes ) );
 
         assertEquals( header.
             add().
             add( "%description" ).
             add().
             add( "%files" ).
-            add( "%dir %attr(0755,myuser,mygroup) /usr/bin" ).
             add( "%dir %attr(-,myuser,mygroup) /bin" ).
             add( "%attr(0644,myuser,mygroup) /extract.jar" ).
+            add( "%attr(0644,extract,mygroup) /extract2.jar" ).
+            add( "%dir %attr(0755,myuser,mygroup) /usr/bin" ).
             toString(), toString( specFile ) );
     }
 
@@ -149,5 +156,16 @@ public class SpecFileTest
         specFile.group = "My Group";
         specFile.buildRoot = new File( "build-root" );
         return specFile;
+    }
+
+    private F2<UnixFsObject, FileAttributes, FileAttributes> filter( final RelativePath s, final FileAttributes newAttributes )
+    {
+        return new F2<UnixFsObject, FileAttributes, FileAttributes>()
+        {
+            public FileAttributes f( UnixFsObject fsObject, FileAttributes attributes )
+            {
+                return !fsObject.path.startsWith( s ) ? attributes : attributes.useAsDefaultsFor( newAttributes );
+            }
+        };
     }
 }

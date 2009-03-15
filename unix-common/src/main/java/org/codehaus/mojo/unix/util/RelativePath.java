@@ -25,7 +25,6 @@ package org.codehaus.mojo.unix.util;
  */
 
 import fj.F;
-import fj.F2;
 import fj.pre.Ord;
 import fj.pre.Ordering;
 
@@ -34,6 +33,7 @@ import fj.pre.Ordering;
  * @version $Id$
  */
 public class RelativePath
+    implements Comparable<RelativePath>
 {
     public final String string;
 
@@ -51,9 +51,9 @@ public class RelativePath
             return new RelativePath( cleaned );
         }
 
-        public String asAbsolutePath()
+        public boolean startsWith( RelativePath other )
         {
-            return "/";
+            return true;
         }
 
         public String asAbsolutePath( String basePath )
@@ -99,14 +99,6 @@ public class RelativePath
         }
 
         return new RelativePath( this.string + "/" + string );
-    }
-
-    /**
-     * @deprecated use asAbsolutePath(String)
-     */
-    public String asAbsolutePath()
-    {
-        return "/" + string;
     }
 
     public String asAbsolutePath( String basePath )
@@ -245,5 +237,14 @@ public class RelativePath
     public String toString()
     {
         return string;
+    }
+
+    // -----------------------------------------------------------------------
+    // Comparable
+    // -----------------------------------------------------------------------
+    
+    public int compareTo( RelativePath other )
+    {
+        return string.compareTo( other.string );
     }
 }

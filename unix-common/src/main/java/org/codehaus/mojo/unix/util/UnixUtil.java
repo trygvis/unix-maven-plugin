@@ -44,6 +44,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.Flushable;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -138,6 +139,26 @@ public class UnixUtil
     // Functional Java
     // -----------------------------------------------------------------------
 
+    public static <A, B> Iterator<B> iteratorMap( final F<A, B> f, final Iterator<A> iterator ) {
+        return new Iterator<B>()
+        {
+            public boolean hasNext()
+            {
+                return iterator.hasNext();
+            }
+
+            public B next()
+            {
+                return f.f(iterator.next());
+            }
+
+            public void remove()
+            {
+                iterator.remove();
+            }
+        };
+    }
+
     public static <A> boolean optionEquals( Option<A> tis, java.lang.Object o )
     {
         if ( o == null || !( o instanceof Option ) )
@@ -145,26 +166,24 @@ public class UnixUtil
             return false;
         }
 
-        if ( o == tis )
-        {
-            return true;
-        }
+        return o == tis || optionEquals( tis, (Option) o );
+    }
 
-        Option op = (Option) o;
-
+    public static <A> boolean optionEquals( Option<A> tis, Option that )
+    {
         // This logic would be in None
         if ( tis.isNone() )
         {
-            return op.isNone();
+            return that.isNone();
         }
 
-        if ( op.isNone() )
+        if ( that.isNone() )
         {
             return false;
         }
 
         // This logic would be in Some
-        return tis.some().equals( op.some() );
+        return tis.some().equals( that.some() );
     }
 
     public static <A> F<Option<A>, Boolean> isSome_() {

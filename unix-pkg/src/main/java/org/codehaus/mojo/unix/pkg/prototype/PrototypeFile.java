@@ -26,10 +26,7 @@ package org.codehaus.mojo.unix.pkg.prototype;
 
 import fj.F;
 import fj.F2;
-import fj.P;
-import static fj.P.p;
 import fj.P2;
-import fj.data.HashMap;
 import fj.data.List;
 import static fj.data.List.nil;
 import fj.data.Option;
@@ -38,9 +35,9 @@ import fj.pre.Ord;
 import fj.pre.Ordering;
 import org.apache.commons.vfs.FileObject;
 import org.codehaus.mojo.unix.FileAttributes;
+import org.codehaus.mojo.unix.PackageFileSystem;
 import org.codehaus.mojo.unix.UnixFsObject;
 import org.codehaus.mojo.unix.util.RelativePath;
-import org.codehaus.mojo.unix.util.UnixUtil;
 import static org.codehaus.mojo.unix.util.UnixUtil.noneString;
 import static org.codehaus.mojo.unix.util.UnixUtil.someE;
 import org.codehaus.mojo.unix.util.line.LineProducer;
@@ -48,6 +45,7 @@ import org.codehaus.mojo.unix.util.line.LineStreamWriter;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.asFile;
 
 import java.io.File;
+import java.util.Comparator;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -58,11 +56,13 @@ public class PrototypeFile
 {
     private List<String> iFiles = nil();
 
-    private HashMap<RelativePath, P2<? extends UnixFsObject, ? extends PrototypeEntry>> entries = HashMap.hashMap();
-
-    private List<F<RelativePath, Option<FileAttributes>>> fileAttributeF = nil();
-
-    private List<F<RelativePath, Option<FileAttributes>>> directoryAttributeF = nil();
+    private final PackageFileSystem<PrototypeEntry> fileSystem = new PackageFileSystem<PrototypeEntry>( new Comparator<PrototypeEntry>()
+    {
+        public int compare( PrototypeEntry o1, PrototypeEntry o2 )
+        {
+            return o1.getPath().compareTo( o2.getPath() );
+        }
+    } );
 
     public void addIFileIf( File file, String name )
     {
@@ -86,14 +86,14 @@ public class PrototypeFile
 
     public boolean hasPath( RelativePath path )
     {
-        return entries.contains( path );
+        return fileSystem.hasPath( path );
     }
 
     public void addDirectory( UnixFsObject.Directory directory )
     {
         DirectoryEntry entry = new DirectoryEntry( Option.<String>none(), directory.path, someE(directory.attributes, "Attributes is not set." ) );
 
-        entries.set( directory.path, p( (UnixFsObject)directory, (PrototypeEntry) entry ) );
+        fileSystem.addDirectory( directory, entry );
     }
 
     public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
@@ -102,67 +102,27 @@ public class PrototypeFile
 
         Option<File> from = some( asFile( fromFile ) );
         FileEntry entry = new FileEntry( noneString, file.path, some( false ), from, someE( file.attributes, "Attributes is not set." ) );
-        entries.set( file.path, p( (UnixFsObject)file, (PrototypeEntry) entry ) );
+        fileSystem.addFile( file, entry );
     }
 
     public void addSymlink( UnixFsObject.Symlink symlink )
     {
-        entries.set( symlink.path, p( symlink, new SymlinkEntry( noneString, symlink.path, symlink.target ) ));
+        fileSystem.addSymlink( symlink, new SymlinkEntry( noneString, symlink.path, symlink.value ) );
     }
 
-    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
+    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
     {
-        fileAttributeF = fileAttributeF.cons( f );
+        fileSystem.apply( f );
     }
 
-    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
-    {
-        directoryAttributeF = directoryAttributeF.cons( f );
-    }
-
-    public void streamTo( LineStreamWriter stream )
+    public void streamTo( final LineStreamWriter stream )
     {
         stream.
             addAllLines( iFiles.reverse() );
 
-        for ( P2<? extends UnixFsObject, ? extends PrototypeEntry> p2 : entries.values() )
+        for ( PrototypeEntry entry : fileSystem )
         {
-            PrototypeEntry entry = p2._2();
-
-            Option<UnixFsObject> fileOption = some( p2._1() ).
-                filter( UnixUtil.Filter.<UnixFsObject>instanceOfFilter( UnixFsObject.RegularFile.class ) );
-
-            if ( fileOption.isSome() )
-            {
-                UnixFsObject regularFile = fileOption.some();
-
-                // I have no idea why I'm getting a warning here -- trygve
-                Option<FileAttributes> q = regularFile.attributes;
-                P2<RelativePath, FileAttributes> result = fileAttributeF.
-                    reverse().
-                    foldLeft( fileAttributeFolder, P.p( regularFile.path, q.some() ) );
-
-                entry = ((FileEntry)entry).setFileAttributes( result._2() );
-            }
-
-            Option<UnixFsObject> directoryOption = some( p2._1() ).
-                filter( UnixUtil.Filter.<UnixFsObject>instanceOfFilter( UnixFsObject.Directory.class ) );
-
-            if ( directoryOption.isSome() )
-            {
-                UnixFsObject directory = directoryOption.some();
-
-                // I have no idea why I'm getting a warning here -- trygve
-                Option<FileAttributes> q = directory.attributes;
-                P2<RelativePath, FileAttributes> result = directoryAttributeF.
-                    reverse().
-                    foldLeft( fileAttributeFolder, P.p( directory.path, q.some() ) );
-
-                entry = ((DirectoryEntry)entry).setFileAttributes( result._2() );
-            }
-
-            entry
-                .streamTo( stream );
+            entry.streamTo( stream );
         }
     }
 

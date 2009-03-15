@@ -28,6 +28,7 @@ import fj.data.Option;
 import org.codehaus.mojo.unix.util.RelativePath;
 import static org.codehaus.mojo.unix.util.UnixUtil.noneBoolean;
 import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
+import org.codehaus.mojo.unix.FileAttributes;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -36,18 +37,28 @@ import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
 public class SymlinkEntry
     extends PrototypeEntry
 {
-    private String to;
+    private String source;
 
-    protected SymlinkEntry( Option<String> pkgClass, RelativePath path, String to )
+    protected SymlinkEntry( Option<String> pkgClass, RelativePath path, String source )
     {
         super( pkgClass, noneBoolean, path );
-        validateNotNull( to );
+        validateNotNull( source );
 
-        this.to = to;
+        this.source = source;
     }
 
     public String generatePrototypeLine()
     {
-        return "s " + pkgClass + " " + getPath() + "=" + to;
+        return "s " + pkgClass + " " + getPath() + "=" + source;
+    }
+
+    public FileAttributes getFileAttributes()
+    {
+        throw new RuntimeException( "Not implemented" );
+    }
+
+    public PrototypeEntry setFileAttributes( FileAttributes attributes )
+    {
+        return this;
     }
 }

@@ -46,10 +46,11 @@ public class FileAttributes
 
     public final static Option<FileAttributes> none = Option.none();
 
-    public FileAttributes()
-    {
-        this( Option.<String>none(), Option.<String>none(), Option.<UnixFileMode>none() );
-    }
+    /**
+     * A file object with all none fields. Use this when creating template objects.
+     */
+    public final static FileAttributes EMPTY = new FileAttributes( Option.<String>none(), Option.<String>none(),
+        Option.<UnixFileMode>none() );
 
     public FileAttributes( Option<String> user, Option<String> group, Option<UnixFileMode> mode )
     {
@@ -93,14 +94,19 @@ public class FileAttributes
     //
     // -----------------------------------------------------------------------
 
+    public FileAttributes useAsDefaultsFor( FileAttributes other )
+    {
+        return new FileAttributes(
+            other.user.orElse( user ),
+            other.group.orElse( group ),
+            other.mode.orElse( mode ) );
+    }
+
     public final static F2<FileAttributes, FileAttributes, FileAttributes> useAsDefaultsFor = new F2<FileAttributes, FileAttributes, FileAttributes>()
     {
         public FileAttributes f( FileAttributes defaults, FileAttributes other )
         {
-            return new FileAttributes(
-                other.user.orElse( defaults.user ),
-                other.group.orElse( defaults.group ),
-                other.mode.orElse( defaults.mode ) );
+            return defaults.useAsDefaultsFor( other );
         }
     };
 

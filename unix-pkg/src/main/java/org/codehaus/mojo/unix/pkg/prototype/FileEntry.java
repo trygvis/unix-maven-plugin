@@ -27,7 +27,6 @@ package org.codehaus.mojo.unix.pkg.prototype;
 import fj.data.Option;
 import static fj.data.Option.some;
 import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.HasFileAttributes;
 import static org.codehaus.mojo.unix.UnixFileMode.showOcalString;
 import org.codehaus.mojo.unix.util.RelativePath;
 
@@ -40,7 +39,6 @@ import static java.lang.Boolean.FALSE;
  */
 public class FileEntry
     extends PrototypeEntry
-    implements HasFileAttributes<FileEntry>
 {
     private final Option<File> realPath;
 
@@ -60,11 +58,6 @@ public class FileEntry
         super( pkgClass, relative, path );
         this.realPath = realPath;
         this.attributes = attributes;
-    }
-
-    public FileEntry getAggregator()
-    {
-        return this;
     }
 
     public FileAttributes getFileAttributes()

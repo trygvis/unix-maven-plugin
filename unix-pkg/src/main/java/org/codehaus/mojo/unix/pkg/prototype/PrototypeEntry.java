@@ -29,6 +29,7 @@ import fj.data.Option;
 import static fj.data.Option.some;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.UnixFileMode;
+import org.codehaus.mojo.unix.HasFileAttributes;
 import org.codehaus.mojo.unix.util.RelativePath;
 import static org.codehaus.mojo.unix.util.RelativePath.fromString;
 import org.codehaus.mojo.unix.util.Validate;
@@ -43,7 +44,7 @@ import static java.lang.Boolean.TRUE;
  * @version $Id: AbstractPrototypeEntry.java 7323 2008-07-26 14:58:37Z trygvis $
  */
 public abstract class PrototypeEntry
-    implements LineProducer
+    implements LineProducer, HasFileAttributes<PrototypeEntry>
 {
     static final String EOL = System.getProperty( "line.separator" );
 

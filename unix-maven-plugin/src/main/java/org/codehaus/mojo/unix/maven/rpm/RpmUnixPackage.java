@@ -24,8 +24,7 @@ package org.codehaus.mojo.unix.maven.rpm;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.data.Option;
+import fj.F2;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.codehaus.mojo.unix.FileAttributes;
@@ -36,7 +35,6 @@ import org.codehaus.mojo.unix.core.FsFileCollector;
 import org.codehaus.mojo.unix.maven.ScriptUtil;
 import org.codehaus.mojo.unix.rpm.Rpmbuild;
 import org.codehaus.mojo.unix.rpm.SpecFile;
-import org.codehaus.mojo.unix.util.RelativePath;
 import org.codehaus.mojo.unix.util.line.LineStreamUtil;
 import org.codehaus.mojo.unix.util.vfs.VfsUtil;
 import org.codehaus.plexus.util.FileUtils;
@@ -173,14 +171,9 @@ public class RpmUnixPackage
         return this;
     }
 
-    public void applyOnFiles( F<RelativePath, Option<FileAttributes>> f )
+    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
     {
-        specFile.applyOnFiles( f );
-    }
-
-    public void applyOnDirectories( F<RelativePath, Option<FileAttributes>> f )
-    {
-        specFile.applyOnDirectories( f );
+        specFile.apply( f );
     }
 
     public void packageToFile( File packageFile )
