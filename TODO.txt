@@ -165,8 +165,8 @@ o Update Change Log.
 o Update front page with status.
 o Update change log on site from this file.
 o Subversion properties
- - Expand keywords
- - eol-style
+ - Expand keywords: find . -name \*.java|grep -v target|xargs svn propset svn:keywords "Id"
+ - Set svn:eol-style: find . -name \*.java|grep -v target|xargs svn ps svn:eol-style native
 
 = Change Log =
 
