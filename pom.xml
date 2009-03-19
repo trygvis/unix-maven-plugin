@@ -165,6 +165,8 @@
            mvn site:deploy
            mvn site -Preporting-aggregate
            mvn -N site:deploy
+
+time mvn site -Preporting && time mvn site:deploy && time mvn site -Preporting-aggregate && time mvn -N site:deploy
       -->
       <reporting>
         <plugins>
