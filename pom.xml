@@ -31,7 +31,7 @@
   </parent>
   <groupId>org.codehaus.mojo.unix</groupId>
   <artifactId>unix</artifactId>
-  <version>1.0-alpha-3</version>
+  <version>1.0-alpha-4-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Maven Unix Support</name>
   <inceptionYear>2008</inceptionYear>
@@ -95,9 +95,9 @@
     </license>
   </licenses>
   <scm>
-    <url>https://svn.codehaus.org/mojo/tags/unix-1.0-alpha-3</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/tags/unix-1.0-alpha-3</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/unix-1.0-alpha-3</developerConnection>
+    <url>https://svn.codehaus.org/mojo/trunk/mojo/unix</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/unix</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/unix</developerConnection>
   </scm>
   <dependencies>
     <dependency>
