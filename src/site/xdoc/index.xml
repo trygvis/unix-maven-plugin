@@ -33,15 +33,19 @@
         The unix-maven-plugin is a Maven plugin for producing installation packages for UNIX platforms.
       </p>
       <p>
-        The current release is <b>1.0-alpha-2</b>. This release is meant as a technology preview release. The plugin
+        The current release is <b>1.0-alpha-3</b>. This release is meant as a technology preview release. The plugin
         is useful but work is in progress to make sure it support even more use cases. The documentation is currently
-        lacking, but the integration tests currently act as the documentation.
+        a bit slim but more is coming. The integration tests act as example projects for now.
       </p>
       <p>
         See the <a href="http://svn.codehaus.org/mojo/trunk/mojo/unix/TODO.txt">TODO.txt</a> for the latest status
         on supported cases and planned features. See the
         <a href="http://svn.codehaus.org/mojo/trunk/mojo/unix/unix-maven-plugin/src/it/README.txt">README.txt</a> in
         the integration test directory for an explanation of the different integration tests.
+      </p>
+      <p>
+        If you find bugs please file them in the <a href="issue-tracking.html">issue tracker</a> and/or write an email
+        to the <a href="mail-lists.html">users list</a>.
       </p>
       <subsection name="Highlights">
         <p>
