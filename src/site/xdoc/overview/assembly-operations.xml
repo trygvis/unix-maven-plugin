@@ -30,10 +30,56 @@
   </properties>
   <body>
     <section name="Assembly Operations">
-      All <b>to</b> elements refer to a path <it>within</it> the package.
+      <p>
+        <table>
+          <thead>
+            <th>
+              <td>Operation</td>
+              <td>&nbsp;</td>
+            </th>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="#Copy_File">Copy file</a></td>
+              <td>Copies a single file.</td>
+            </tr>
+            <tr>
+              <td><a href="#Copy_Directory">Copy directory</a></td>
+              <td>Copies a directory structure.</td>
+            </tr>
+            <tr>
+              <td><a href="#Copy_Artifact">Copy artifact</a></td>
+              <td>Copies an artifact from the repository.</td>
+            </tr>
+            <tr>
+              <td><a href="#Exctract_File">Extract file</a></td>
+              <td>Extracts a single file.</td>
+            </tr>
+            <tr>
+              <td><a href="#Extract_Artifact">Extract artifact</a></td>
+              <td>Extracts an artifact from the repository.</td>
+            </tr>
+            <tr>
+              <td><a href="#Mkdirs">Make directories</a></td>
+              <td>Creates a directory.</td>
+            </tr>
+            <tr>
+              <td><a href="#Set_Attributes">Set attributes</a></td>
+              <td>Sets the attributes on files.</td>
+            </tr>
+            <tr>
+              <td><a href="#Symlink">Symlink</a></td>
+              <td>Creates a symlink.</td>
+            </tr>
+          </tbody>
+        </table>
+      </p>
     </section>
 
     <section name="Common Settings and Behaviour">
+      <p>
+        All <b>to</b> elements refer to a path <it>within</it> the package.
+      </p>
       <subsection name="Artifact Naming and Identification">
         Explain how the artifacts are looked up, groupId:artifactId[:classifier][:type] etc.
 

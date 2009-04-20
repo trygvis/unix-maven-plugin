@@ -56,12 +56,11 @@
             <td>EMAIL</td>
             <td/>
           </tr>
-          <!-- need better name than "packageId" -->
           <tr>
-            <td><code>package.packageId</code> or <code>${artifactId}-{classifier}</code></td>
+            <td><code>package.packageName</code> or <code>${artifactId}-${classifier}</code></td>
             <td>name</td>
             <td/>
-            <td>PKG</td>
+            <td>PKG / PKGINST</td>
             <td/>
           </tr>
           <tr>
