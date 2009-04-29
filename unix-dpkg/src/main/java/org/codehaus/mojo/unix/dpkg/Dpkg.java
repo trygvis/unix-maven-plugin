@@ -24,11 +24,10 @@ package org.codehaus.mojo.unix.dpkg;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.util.SystemCommand;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Builds a DEB package using fakeroot dpkg-deb.  This command creates a DEB

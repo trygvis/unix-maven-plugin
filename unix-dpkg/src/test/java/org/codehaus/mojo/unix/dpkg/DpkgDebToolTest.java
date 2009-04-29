@@ -24,11 +24,11 @@ package org.codehaus.mojo.unix.dpkg;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.util.RelativePath;
-import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.plexus.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

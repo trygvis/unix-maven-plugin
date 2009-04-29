@@ -24,28 +24,19 @@ package org.codehaus.mojo.unix.dpkg;
  * SOFTWARE.
  */
 
-import fj.data.Option;
-import static fj.data.Option.some;
-import org.apache.commons.compress.tar.TarEntry;
-import org.apache.commons.compress.tar.TarInputStream;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.UnixFileMode;
-import org.codehaus.mojo.unix.UnixFsObject;
-import static org.codehaus.mojo.unix.UnixFsObject.directory;
-import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
-import org.codehaus.mojo.unix.ar.Ar;
-import org.codehaus.mojo.unix.ar.ArReader;
-import org.codehaus.mojo.unix.ar.ArUtil;
-import org.codehaus.mojo.unix.ar.ReadableArFile;
-import org.codehaus.mojo.unix.util.RelativePath;
-import org.joda.time.LocalDateTime;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.apache.commons.compress.tar.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.ar.*;
+import org.codehaus.mojo.unix.util.*;
+import org.joda.time.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
+import java.util.zip.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
