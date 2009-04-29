@@ -24,24 +24,15 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import fj.F2;
-import fj.Unit;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.Selectors;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.util.RelativePath;
-import org.codehaus.mojo.unix.util.UnixUtil;
-import static org.codehaus.mojo.unix.util.vfs.VfsUtil.asFile;
+import fj.*;
+import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

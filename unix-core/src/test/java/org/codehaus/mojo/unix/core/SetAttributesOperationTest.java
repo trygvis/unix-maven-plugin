@@ -1,21 +1,18 @@
 package org.codehaus.mojo.unix.core;
 
-import fj.data.Option;
-import static fj.data.Option.some;
-import junit.framework.TestCase;
-import org.apache.commons.vfs.FileType;
-import org.codehaus.mojo.unix.FileAttributes;
-import static org.codehaus.mojo.unix.FileAttributes.EMPTY;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.UnixFileMode;
-import static org.codehaus.mojo.unix.UnixFileMode._0755;
-import static org.codehaus.mojo.unix.core.OperationTest.files;
-import static org.codehaus.mojo.unix.core.OperationTest.objects;
-import org.codehaus.mojo.unix.util.RelativePath;
-import org.easymock.MockControl;
-import org.easymock.internal.AlwaysMatcher;
+import fj.data.*;
+import static fj.data.Option.*;
+import junit.framework.*;
+import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
+import static org.codehaus.mojo.unix.UnixFileMode.*;
+import static org.codehaus.mojo.unix.core.OperationTest.*;
+import org.codehaus.mojo.unix.util.*;
+import org.easymock.*;
+import org.easymock.internal.*;
 
-import java.util.Collections;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>

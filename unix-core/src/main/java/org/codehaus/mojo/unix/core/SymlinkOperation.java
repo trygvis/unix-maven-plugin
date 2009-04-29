@@ -24,15 +24,14 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.FileCollector;
-import static org.codehaus.mojo.unix.UnixFsObject.symlink;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
-import org.joda.time.LocalDateTime;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.Validate.*;
+import org.joda.time.*;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

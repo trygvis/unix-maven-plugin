@@ -24,18 +24,15 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileType;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
-import org.codehaus.mojo.unix.util.vfs.IncludeExcludeFileSelector;
+import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.mojo.unix.util.vfs.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

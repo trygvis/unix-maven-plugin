@@ -26,18 +26,14 @@ package org.codehaus.mojo.unix.core;
 
 import fj.Effect;
 import fj.F2;
-import fj.data.Option;
-import static fj.data.Option.fromNull;
-import static fj.data.Option.none;
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
-import org.codehaus.mojo.unix.util.vfs.IncludeExcludeFileSelector;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.Validate.*;
+import org.codehaus.mojo.unix.util.vfs.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 /**

@@ -24,13 +24,11 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.UnixFsObject;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
-import org.joda.time.LocalDateTime;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.joda.time.*;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

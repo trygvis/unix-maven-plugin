@@ -24,24 +24,16 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import static fj.data.Option.some;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.FileType;
-import org.apache.commons.vfs.VFS;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.UnixFileMode;
-import org.codehaus.mojo.unix.UnixFsObject;
-import static org.codehaus.mojo.unix.core.AssemblyOperation.dirFromFileObject;
-import org.codehaus.mojo.unix.util.RelativePath;
+import static fj.data.Option.*;
+import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.core.AssemblyOperation.*;
+import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.fromString;
-import org.codehaus.plexus.PlexusTestCase;
-import org.easymock.AbstractMatcher;
-import org.easymock.MockControl;
+import org.codehaus.plexus.*;
+import org.easymock.*;
 
-import static java.util.Arrays.asList;
+import static java.util.Arrays.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
