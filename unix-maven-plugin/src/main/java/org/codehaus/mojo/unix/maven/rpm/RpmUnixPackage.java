@@ -57,8 +57,7 @@ public class RpmUnixPackage
 
     private boolean debug;
 
-    private final static ScriptUtil scriptUtil = new ScriptUtil( "pre-install", "post-install",
-                                                                 "pre-remove", "post-remove" );
+    private final static ScriptUtil scriptUtil = new ScriptUtil( "pre", "post", "preun", "postun" );
 
     public RpmUnixPackage()
     {

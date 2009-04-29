@@ -135,8 +135,6 @@ o Explain possible workflow and where the different Mojos fit in
 
 o Need *lots* of includes/excludes examples, with regexp rewriting
 
-o Document concept "attached mode" vs "primary package mode"
-
 == Integration Test ==
 
 o Make sure that all the validate scripts are using the latest Dpkg/Pkg/Rpm tools to verify all the contents of the
@@ -188,7 +186,8 @@ o DONE: MUNIX-12: Support 'zip' format
 o MUNIX-13: Support 'tar' format
   Create integration tests similar to the existing tests
 o MUNIX-14: Rename "pkg" to "sysv-pkg"
-o MUNIX-6: set-attributes doesn't pick up paths that aren't explicitly created with mkdirs
+o DONE: MUNIX-6: set-attributes doesn't pick up paths that aren't explicitly created with mkdirs
+  set-attributes now work on any directory that is created before the operation is run.
 o DONE: MUNIX-3, MUNIX-4: Implement support for "%config" and "%doc" in RPM, file classes in solaris.
  - Check how this work in debian
 o DONE: MUNIX-15: Improve the error message is an artifact can't be found.
@@ -206,12 +205,15 @@ o Document the flow of the assembly operations. Like:
   2) Match against include and exclude
   3) Rewrite with pattern
   4) Set attributes
+  - Explain that the operations is supposed to work just like a normal file systems. The order of the operations is
+    significant.
 o MUNIX-17: Go over how versions and revisions are handles.
  - DONE: In pkginfo a SNAPSHOT is not resolved to a specific timestamp.
  - Document how version, revision etc are calculated. For both releases and snapshots
 o DONE: MUNIX-18: Simplify the script mechanism
 o DONE: MUNIX-20: Support per-package defaults too
 o Update mapping.xml, it is outdated now
+o Check scripts.xml
 
 === Nits ===
 

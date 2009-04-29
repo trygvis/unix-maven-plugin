@@ -30,9 +30,8 @@ import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
 import fj.pre.*;
-import static org.codehaus.mojo.unix.java.FileF.*;
 import org.codehaus.mojo.unix.java.*;
-import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.java.FileF.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;

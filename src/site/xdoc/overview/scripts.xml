@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<!--
+  ~ The MIT License
+  ~
+  ~ Copyright 2009 The Codehaus.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of
+  ~ this software and associated documentation files (the "Software"), to deal in
+  ~ the Software without restriction, including without limitation the rights to
+  ~ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+  ~ of the Software, and to permit persons to whom the Software is furnished to do
+  ~ so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+<document>
+  <properties>
+    <title>Scripts</title>
+    <author email="trygvis@codehaus.org">Trygve Laugstol</author>
+  </properties>
+  <body>
+    <section name="Scripts">
+      <p>
+        Most of the packaging formats support one form or another of executing scripts when installing or removing a
+        package.
+      </p>
+      <p>
+        The plugin will automatically pick up certain files and use them as scripts. The exact path varies depending
+        on the <a href="concepts.html">mode</a> the plugin is running in.
+      </p>
+      <p>
+        Currently there is no support for sharing scripts across builds, but there is an issue for the feature request.
+        <i>If this is important for you, please vote for <a href="http://jira.codehaus.org/browse/MUNIX-9">MUNIX-9</a>.
+        </i>
+      </p>
+    </section>
+    <section name="Script Paths in &amp;Primary Artifact Mode&amp;">
+      <p>
+        When the plugin is running in the primary mode, only one kind of package formats are supported so the native
+        name of the script files is used.
+      </p>
+      <p>
+        If a build create more than one package, each script is used in both packages. If you want a script to appear
+        in only one package, append the package id to the filename; <code>postinstall-slave</code>.
+      </p>
+      <p>
+        If there is both a shared and a package-specific script, the specific script will be <i>appended</i> to the
+        shared script.
+      </p>
+      <p>
+        Example file layout that uses the <code>pkg</code> format:
+      </p>
+      <code>hudson
+|-- pom.xml
+|-- src
+    `-- main
+        `-- unix
+            `-- scripts
+                |-- preinstall
+                |-- preinstall-master
+                |-- postinstall
+                |-- preremove
+                `-- postremove-slave</code>
+      <p>
+        The <code>default</code> package will have these scripts:
+      </p>
+      <ul>
+        <li>
+          <code>preinstall</code> = <code>src/main/unix/scripts/preinstall</code> +
+          <code>src/main/unix/scripts/preinstall</code>
+        </li>
+        <li>
+          <code>postinstall</code> = <code>src/main/unix/scripts/postinstall</code>
+        </li>
+        <li>
+          <code>preremove</code> = <code>src/main/unix/scripts/preremove</code>
+        </li>
+      </ul>
+      <p>
+        The <code>slave</code> package will have these scripts:
+      </p>
+      <ul>
+        <li>
+          <code>preinstall</code> = <code>src/main/unix/scripts/preinstall</code>
+        </li>
+        <li>
+          <code>postinstall</code> = <code>src/main/unix/scripts/postinstall</code>
+        </li>
+        <li>
+          <code>preremove</code> = <code>src/main/unix/scripts/preremove</code>
+        </li>
+        <li>
+          <code>postremove</code> = <code>src/main/unix/scripts/postremove</code> +
+          <code>src/main/unix/scripts/postremove-slave</code>
+        </li>
+      </ul>
+    </section>
+    <section name="Script Paths in &amp;Attached Artifact Mode&amp;">
+
+    </section>
+    <section name="File Naming">
+      <table class="bodyTable">
+        <tbody>
+          <tr>
+            <th>Action</th>
+            <th>common</th>
+            <th><code>dpkg</code></th>
+            <th><code>pkg</code></th>
+            <th><code>rpm</code></th>
+          </tr>
+          <tr>
+            <td>Before installation</td>
+            <td>After installation</td>
+            <td>Before removal</td>
+            <td>After removal</td>
+          </tr>
+          <tr>
+            <td>pre-install</td>
+            <td>post-install</td>
+            <td>pre-remove</td>
+            <td>post-remove</td>
+          </tr>
+          <tr>
+            <td>preinst</td>
+            <td>postinst</td>
+            <td>prerm</td>
+            <td>postrm</td>
+          </tr>
+          <tr>
+            <td>preinstall</td>
+            <td>postinst</td>
+            <td>preremove</td>
+            <td>postremove</td>
+          </tr>
+          <tr>
+            <td>pre</td>
+            <td>post</td>
+            <td>preun</td>
+            <td>postun</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </body>
+</document>
