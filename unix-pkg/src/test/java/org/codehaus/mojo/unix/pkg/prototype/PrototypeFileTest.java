@@ -90,7 +90,6 @@ public class PrototypeFileTest
         prototypeFile.streamTo( stream );
 
         assertEquals( new LineFile().
-            add( "d none / 0755 nouser nogroup" ).
             add( "f none /extract.jar=" + extractJarObject.getName().getPath() + " 0644 funnyuser nogroup" ).
             add( "d none /opt ? default default" ).
             add( "d none /opt/jetty ? default default" ).

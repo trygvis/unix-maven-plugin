@@ -64,6 +64,14 @@
                 <group>bin</group>
               </fileAttributes>
             </extract-artifact>
+            <set-attributes>
+              <basedir>/usr/share/hudson</basedir>
+              <directoryAttributes>
+                <user>root</user>
+                <group>bin</group>
+                <mode>755</mode>
+              </directoryAttributes>
+            </set-attributes>
           </assembly>
           <packages>
             <package>

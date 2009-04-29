@@ -49,11 +49,6 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <assembly>
-            <mkdirs>
-              <paths>
-                <path>/opt/hudson</path>
-              </paths>
-            </mkdirs>
             <copy-artifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/opt/hudson/hudson.war</toFile>

@@ -132,7 +132,7 @@ public class SpecFileTest
     {
         SpecFile specFile = testSpecFile();
 
-        specFile.includePost = new File( "pom.xml" );
+        specFile.includePost = some( new File( "pom.xml" ) );
 
         assertEquals( header.
             add().
@@ -141,7 +141,7 @@ public class SpecFileTest
             add( "%files" ).
             add().
             add( "%post" ).
-            add( "%include " + specFile.includePost.getAbsolutePath() ).toString(), toString( specFile ) );
+            add( "%include " + specFile.includePost.some().getAbsolutePath() ).toString(), toString( specFile ) );
     }
 
     private String toString( SpecFile specFile )
@@ -167,13 +167,13 @@ public class SpecFileTest
         return specFile;
     }
 
-    private F2<UnixFsObject, FileAttributes, FileAttributes> filter( final RelativePath s, final FileAttributes newAttributes )
+    private F2<UnixFsObject, FileAttributes, FileAttributes> filter( final RelativePath path, final FileAttributes newAttributes )
     {
         return new F2<UnixFsObject, FileAttributes, FileAttributes>()
         {
             public FileAttributes f( UnixFsObject fsObject, FileAttributes attributes )
             {
-                return !fsObject.path.startsWith( s ) ? attributes : attributes.useAsDefaultsFor( newAttributes );
+                return !fsObject.path.isBelowOrSame( path ) ? attributes : attributes.useAsDefaultsFor( newAttributes );
             }
         };
     }

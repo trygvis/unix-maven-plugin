@@ -27,11 +27,9 @@ package org.codehaus.mojo.unix.maven.dpkg;
 import fj.*;
 import fj.data.*;
 import org.apache.commons.vfs.*;
-import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.dpkg.*;
-import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
@@ -54,18 +52,9 @@ public class DpkgUnixPackage
 
     private boolean debug;
 
-    private final static ScriptUtil scriptUtil;
+    private String id;
 
-    static
-    {
-        scriptUtil = new ScriptUtil.ScriptUtilBuilder().
-            format( "dpkg" ).
-            setPreInstall( "preinst" ).
-            setPostInstall( "postinst" ).
-            setPreRemove( "prerm" ).
-            setPostRemove( "postrm" ).
-            build();
-    }
+    private final static ScriptUtil scriptUtil = new ScriptUtil( "preinst", "postinst", "prerm", "postrm" );
 
     public DpkgUnixPackage()
     {
@@ -80,11 +69,11 @@ public class DpkgUnixPackage
         return this;
     }
 
-//    public UnixPackage dependencies( Set<DebianDependency> dependencies )
-//    {
-//        controlFile.dependencies = dependencies;
-//        return this;
-//    }
+    public UnixPackage id( String id )
+    {
+        this.id = id;
+        return this;
+    }
 
     public UnixPackage name( Option<String> name )
     {
@@ -191,7 +180,7 @@ public class DpkgUnixPackage
     //
     // -----------------------------------------------------------------------
 
-    public void packageToFile( File packageFile )
+    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception
     {
         File assembly = asFile( fileCollector.getFsRoot() );
@@ -200,12 +189,14 @@ public class DpkgUnixPackage
 
         fileCollector.collect();
 
-        ScriptUtil.Execution execution = scriptUtil.copyScripts( getBasedir(), new File( assembly, "DEBIAN" ) );
+        ScriptUtil.Result result = scriptUtil.
+            createExecution( id, "dpkg", getScripts(), new File( assembly, "DEBIAN" ), strategy ).
+            execute();
 
-        UnixUtil.chmodIf( execution.hasPreInstall(), execution.getPreInstall(), "0755" );
-        UnixUtil.chmodIf( execution.hasPostInstall(), execution.getPostInstall(), "0755" );
-        UnixUtil.chmodIf( execution.hasPreRemove(), execution.getPreRemove(), "0755" );
-        UnixUtil.chmodIf( execution.hasPostRemove(), execution.getPostRemove(), "0755" );
+        UnixUtil.chmodIf( result.preInstall, "0755" );
+        UnixUtil.chmodIf( result.postInstall, "0755" );
+        UnixUtil.chmodIf( result.preRemove, "0755" );
+        UnixUtil.chmodIf( result.postRemove, "0755" );
 
         new Dpkg().
             setDebug( debug ).

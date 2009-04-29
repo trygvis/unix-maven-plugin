@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix.maven;
 import fj.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -64,6 +65,6 @@ public abstract class AbstractPackageAttachedMojo
                                                         assembly,
                                                         null ),
                            getLog() ).
-            execute( project, mavenProjectHelper );
+            execute( project, mavenProjectHelper, MULTIPLE );
     }
 }

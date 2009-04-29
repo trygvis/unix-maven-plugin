@@ -30,9 +30,9 @@ import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
-import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.rpm.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.mojo.unix.util.vfs.*;
 import org.codehaus.plexus.util.*;
@@ -57,13 +57,8 @@ public class RpmUnixPackage
 
     private boolean debug;
 
-    private final static ScriptUtil scriptUtil = new ScriptUtil.ScriptUtilBuilder().
-        format( "rpm" ).
-        setPreInstall( "pre-install" ).
-        setPostInstall( "post-install" ).
-        setPreRemove( "pre-remove" ).
-        setPostRemove( "post-remove" ).
-        build();
+    private final static ScriptUtil scriptUtil = new ScriptUtil( "pre-install", "post-install",
+                                                                 "pre-remove", "post-remove" );
 
     public RpmUnixPackage()
     {
@@ -165,7 +160,7 @@ public class RpmUnixPackage
         specFile.apply( f );
     }
 
-    public void packageToFile( File packageFile )
+    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception
     {
         File workingDirectoryF = VfsUtil.asFile( workingDirectory );
@@ -184,12 +179,14 @@ public class RpmUnixPackage
 
         fileCollector.collect();
 
-        ScriptUtil.Execution execution = scriptUtil.copyScripts( getBasedir(), new File( workingDirectoryF, "scripts" ) );
+        ScriptUtil.Result result = scriptUtil.
+            createExecution( specFile.name, "rpm", getScripts(), workingDirectoryF, strategy ).
+            execute();
 
-        specFile.includePre = execution.getPreInstall();
-        specFile.includePost = execution.getPostInstall();
-        specFile.includePreun = execution.getPreRemove();
-        specFile.includePostun = execution.getPostRemove();
+        specFile.includePre = result.preInstall;
+        specFile.includePost = result.postInstall;
+        specFile.includePreun = result.preRemove;
+        specFile.includePostun = result.postRemove;
         specFile.version = getVersion();
         specFile.buildRoot = VfsUtil.asFile( fileCollector.getFsRoot() );
 

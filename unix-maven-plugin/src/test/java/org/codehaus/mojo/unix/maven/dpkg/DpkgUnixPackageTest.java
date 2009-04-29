@@ -30,6 +30,7 @@ import static org.codehaus.mojo.unix.PackageVersion.*;
 import org.codehaus.mojo.unix.dpkg.*;
 import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.util.vfs.*;
+import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.*;
 
 import java.io.*;
@@ -63,7 +64,7 @@ public class DpkgUnixPackageTest
             contact( some( "Kurt Cobain" ) ).
             architecture( "all" ).
             workingDirectory( packageRoot ).
-            packageToFile( packageFile );
+            packageToFile( packageFile, ScriptUtil.Strategy.SINGLE );
 
         assertTrue( packageFile.canRead() );
     }

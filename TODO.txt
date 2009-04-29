@@ -7,9 +7,7 @@ o Support group, user and modes on files and directories in all formats
  - RPM: files ok, need to check directories
 
 o Defaults
- - Add and document default directories for scripts
-   - src/main/unix/scripts/<modulation>
-   - target/unix/scripts/<modulation>
+ - target/unix/scripts/<modulation>
 
 o Dependency generation
 
@@ -211,6 +209,7 @@ o Document the flow of the assembly operations. Like:
 o MUNIX-17: Go over how versions and revisions are handles.
  - DONE: In pkginfo a SNAPSHOT is not resolved to a specific timestamp.
  - Document how version, revision etc are calculated. For both releases and snapshots
+o DONE: MUNIX-18: Simplify the script mechanism
 o DONE: MUNIX-20: Support per-package defaults too
 o Update mapping.xml, it is outdated now
 
@@ -224,6 +223,7 @@ o Consider creating a class that represent a complete set of attributes on a fil
   default before given to the core.
 o Make the pkg stuff die when the source files has a space in the path names. pkgmk dies on prototypes like this:
   f none /foo/bar.war=/var/opt/hudson/workspace/Myapp - Integration tests/bar.war 0644 root sys
+o Rename RelativePath.isBelowOrSame to RelativePath.isSameOrBelow
 
 == For 1.0-alpha-3 ==
 

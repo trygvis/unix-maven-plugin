@@ -94,13 +94,13 @@ public class SpecFile
 
     private PackageFileSystem<Object> fileSystem;
 
-    public File includePre;
+    public Option<File> includePre = none();
 
-    public File includePost;
+    public Option<File> includePost = none();
 
-    public File includePreun;
+    public Option<File> includePreun = none();
 
-    public File includePostun;
+    public Option<File> includePostun = none();
 
     public void beforeAssembly( Directory defaultDirectory )
     {
@@ -166,26 +166,26 @@ public class SpecFile
             add( "%files" ).
             addAllLines( fileSystem.prettify().toList().filter( excludePaths ).map( SpecFile.showUnixFsObject() ) );
 
-        spec.addIf( includePre != null || includePost != null || includePreun != null || includePostun != null, "" );
-        if ( includePre != null )
+        spec.addIf( includePre.isSome() || includePost.isSome() || includePreun.isSome() || includePostun.isSome(), "" );
+        if ( includePre.isSome() )
         {
             spec.add( "%pre" );
-            spec.add( "%include " + includePre.getAbsolutePath() );
+            spec.add( "%include " + includePre.map( FileF.getAbsolutePath ).some() );
         }
-        if ( includePost != null )
+        if ( includePost.isSome() )
         {
             spec.add( "%post" );
-            spec.add( "%include " + includePost.getAbsolutePath() );
+            spec.add( "%include " + includePost.map( FileF.getAbsolutePath ).some() );
         }
-        if ( includePreun != null )
+        if ( includePreun.isSome() )
         {
             spec.add( "%preun" );
-            spec.add( "%include " + includePreun.getAbsolutePath() );
+            spec.add( "%include " + includePreun.map( FileF.getAbsolutePath ).some() );
         }
-        if ( includePostun != null )
+        if ( includePostun.isSome() )
         {
             spec.add( "%postun" );
-            spec.add( "%include " + includePostun.getAbsolutePath() );
+            spec.add( "%include " + includePostun.map( FileF.getAbsolutePath ).some() );
         }
 
         spec.addIf( dump, "%dump" );

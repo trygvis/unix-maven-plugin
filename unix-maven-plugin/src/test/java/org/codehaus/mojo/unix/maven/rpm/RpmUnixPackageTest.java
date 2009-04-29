@@ -34,6 +34,7 @@ import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.rpm.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.*;
 import org.joda.time.*;
 
@@ -89,7 +90,7 @@ public class RpmUnixPackageTest
 
         unixPackage.
             debug( true ).
-            packageToFile( packageFile );
+            packageToFile( packageFile, ScriptUtil.Strategy.SINGLE );
 
         assertTrue( packageFile.canRead() );
     }

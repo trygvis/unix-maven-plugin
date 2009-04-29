@@ -69,6 +69,14 @@
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>
             </extract-artifact>
+            <set-attributes>
+              <basedir>/usr/share/hudson</basedir>
+              <directoryAttributes>
+                <user>nobody</user>
+                <group>nogroup</group>
+                <mode>0755</mode>
+              </directoryAttributes>
+            </set-attributes>
           </assembly>
         </configuration>
       </plugin>

@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix.util;
 import fj.*;
 import fj.data.*;
 import static fj.data.List.*;
+import static fj.data.Option.*;
 import fj.pre.*;
 
 /**
@@ -52,9 +53,19 @@ public class RelativePath
             return new RelativePath( cleaned );
         }
 
-        public boolean startsWith( RelativePath other )
+        public boolean isBelowOrSame( RelativePath other )
         {
-            return true;
+            return other.isBase();
+        }
+
+        public Option<RelativePath> subtract( RelativePath parent )
+        {
+            if ( parent.isBase() )
+            {
+                return some( BASE );
+            }
+
+            return none();
         }
 
         public List<String> toList()
@@ -104,7 +115,7 @@ public class RelativePath
     {
         string = clean( string );
 
-        if( string == null )
+        if ( string == null )
         {
             return this;
         }
@@ -134,9 +145,39 @@ public class RelativePath
         return string.substring( i + 1 );
     }
 
-    public boolean startsWith( RelativePath other )
+    /**
+     * Returns true if <code>other</code> is further down the path than this path.
+     * <p/>
+     * <ul>
+     * <li>".".isBelowOrSame(..) -> true. Everything is below the base path</li>
+     * <li>"..".isBelowOrSame(".") -> true. Everything is below the base path</li>
+     * <li>"/foo".isBelowOrSame( "/foo") -> true</li>
+     * <li>"/foo/bar".isBelowOrSame( "/foo") -> true</li>
+     * <li>"/foo".isBelowOrSame( "/foo/bar") -> false</li>
+     * </ul>
+     *
+     * @param parent
+     * @return
+     */
+    public boolean isBelowOrSame( RelativePath parent )
     {
-        return string.startsWith( other.string );
+        return parent.isBase() || // Everything is below or equal to the base path
+            string.startsWith( parent.string );
+    }
+
+    public Option<RelativePath> subtract( RelativePath parent )
+    {
+        if ( isBelowOrSame( parent ) )
+        {
+            if ( parent.isBase() || this.string.equals( parent.string ) )
+            {
+                return some( this );
+            }
+
+            return some( new RelativePath( this.string.substring( parent.string.length() + 1 ) ) );
+        }
+
+        return none();
     }
 
     public List<String> toList()
@@ -217,7 +258,7 @@ public class RelativePath
         {
             return null;
         }
-        
+
         return s;
     }
 
@@ -287,7 +328,7 @@ public class RelativePath
     // -----------------------------------------------------------------------
     // Comparable
     // -----------------------------------------------------------------------
-    
+
     public int compareTo( RelativePath other )
     {
         return string.compareTo( other.string );

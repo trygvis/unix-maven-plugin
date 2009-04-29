@@ -14,7 +14,6 @@ success &= ShittyUtil.assertRelaxed(
         PkginfoUtil.getPackageInforForDevice(pkg).some());
 
 success &= ShittyUtil.assertPkgEntries(pkg, [
-        directory("/", "17777777777", "?", "?", none()),
         directory("/usr", "17777777777", "?", "?", none()),
         directory("/usr/share", "0755", "nobody", "nogroup", none()),
         directory("/usr/share/hudson", "0755", "nobody", "nogroup", none()),

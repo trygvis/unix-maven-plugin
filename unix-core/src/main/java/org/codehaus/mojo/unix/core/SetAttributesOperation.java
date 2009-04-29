@@ -124,12 +124,13 @@ public class SetAttributesOperation
             }
             else
             {
-                if ( !fsObject.path.startsWith( basedir ) )
+                Option<RelativePath> option = fsObject.path.subtract( basedir );
+                if ( option.isNone() )
                 {
                     return currentAttributes;
                 }
 
-                massagedPath = fsObject.path.string.substring( basedir.string.length() );
+                massagedPath = option.some().string;
             }
 
             if ( !selector.matches( massagedPath ) )

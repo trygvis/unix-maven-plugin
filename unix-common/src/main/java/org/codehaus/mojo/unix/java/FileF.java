@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.pkg.prototype;
+package org.codehaus.mojo.unix.java;
 
 /*
  * The MIT License
@@ -24,42 +24,37 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.data.*;
-import static fj.data.Option.*;
-import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.UnixFsObject.*;
-import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.UnixUtil.*;
+import fj.*;
+
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
+ * @version $Id: ClassF.java 9221 2009-03-15 22:52:14Z trygvis $
  */
-public class SymlinkEntry
-    extends PrototypeEntry<Symlink>
+public class FileF
 {
-    protected SymlinkEntry( Option<String> pkgClass, Symlink symlink )
+    public static final F<File, String> getAbsolutePath = new F<File, String>()
     {
-        super( pkgClass, Option.<Boolean>none(), symlink );
-    }
+        public String f( File file )
+        {
+            return file.getAbsolutePath();
+        }
+    };
 
-    public String generatePrototypeLine()
+    public static final F2<File, String, File> newFile = new F2<File, String, File>()
     {
-        return "s " + pkgClass + " " + getPath() + "=" + object;
-    }
+        public File f( File file, String s )
+        {
+            return new File( file, s );
+        }
+    };
 
-    public FileAttributes getFileAttributes()
+    public static final F<File, Boolean> canRead = new F<File, Boolean>()
     {
-        return object.getFileAttributes();
-    }
-
-    public SymlinkEntry setFileAttributes( FileAttributes attributes )
-    {
-        return new SymlinkEntry( some( pkgClass ), object.setFileAttributes( attributes ) );
-    }
-
-    public PackageFileSystemObject<PrototypeEntry> setPath( RelativePath path )
-    {
-        return new SymlinkEntry( Option.some( pkgClass ), object.setPath( path ) );
-    }
+        public Boolean f( File file )
+        {
+            return file.canRead();
+        }
+    };
 }

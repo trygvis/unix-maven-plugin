@@ -29,12 +29,10 @@ import fj.data.List;
 import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.provider.local.*;
-import org.codehaus.mojo.unix.FileAttributes;
-import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
-import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.pkg.*;
 import org.codehaus.mojo.unix.pkg.prototype.*;
 import org.codehaus.mojo.unix.util.*;
@@ -61,19 +59,13 @@ public class PkgUnixPackage
     private FileObject pkginfo;
     private boolean debug;
 
-    private static final ScriptUtil scriptUtil = new ScriptUtil.ScriptUtilBuilder().
-        format( "pkg" ).
-        setPreInstall( "preinstall" ).
-        setPostInstall( "postinstall" ).
-        setPreRemove( "preremove" ).
-        setPostRemove( "postremove" ).
-        addCustomScript( "depend" ).
-        addCustomScript( "checkinstall" ).
-        addCustomScript( "compver" ).
-        addCustomScript( "copyright" ).
-        addCustomScript( "request" ).
-        addCustomScript( "space" ).
-        build();
+    private static final ScriptUtil scriptUtil = new ScriptUtil( "preinstall" , "postinstall" , "preremove" , "postremove" ).
+        customScript( "depend" ).
+        customScript( "checkinstall" ).
+        customScript( "compver" ).
+        customScript( "copyright" ).
+        customScript( "request" ).
+        customScript( "space" );
 
     private PrototypeFile prototypeFile;
 
@@ -158,7 +150,7 @@ public class PkgUnixPackage
         return this;
     }
 
-    public void packageToFile( File packageFile )
+    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception
     {
         // -----------------------------------------------------------------------
@@ -167,7 +159,7 @@ public class PkgUnixPackage
 
         // TODO: This should be more configurable
         RelativePath[] specialPaths = new RelativePath[]{
-            relativePath( "/" ),
+            BASE,
             relativePath( "/etc" ),
             relativePath( "/etc/opt" ),
             relativePath( "/opt" ),
@@ -194,7 +186,10 @@ public class PkgUnixPackage
         File pkginfoF = VfsUtil.asFile( pkginfo );
         File prototypeF = VfsUtil.asFile( prototype );
 
-        ScriptUtil.Execution execution = scriptUtil.copyScripts( getBasedir(), workingDirectoryF );
+        ScriptUtil.Result result = scriptUtil.
+            createExecution( pkginfoFile.packageName, "pkg", getScripts(), workingDirectoryF, strategy ).
+            execute();
+
         pkginfoFile.version = getPkgVersion( getVersion() );
         pkginfoFile.pstamp = getVersion().timestamp;
         LineStreamUtil.toFile( pkginfoFile, pkginfoF );
@@ -202,11 +197,11 @@ public class PkgUnixPackage
         String pkg = pkginfoFile.getPkgName( pkginfoF );
 
         prototypeFile.addIFileIf( pkginfoF, "pkginfo" );
-        prototypeFile.addIFileIf( execution.getPreInstall(), "preinstall" );
-        prototypeFile.addIFileIf( execution.getPostInstall(), "postinstall" );
-        prototypeFile.addIFileIf( execution.getPreRemove(), "preremove" );
-        prototypeFile.addIFileIf( execution.getPostRemove(), "postremove" );
-        for ( File file : execution.getCustomScripts() )
+        prototypeFile.addIFileIf( result.preInstall, "preinstall" );
+        prototypeFile.addIFileIf( result.postInstall, "postinstall" );
+        prototypeFile.addIFileIf( result.preRemove, "preremove" );
+        prototypeFile.addIFileIf( result.postRemove, "postremove" );
+        for ( File file : result.customScripts )
         {
             prototypeFile.addIFileIf( file );
         }

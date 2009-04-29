@@ -15,7 +15,6 @@ success &= ShittyUtil.assertRelaxed(
 
 // Ignore dates for now
 success &= ShittyUtil.assertPkgEntries(pkg, [
-        directory("/", "17777777777", "?", "?", none()),
         directory("/opt", "17777777777", "?", "?", none()),
         directory("/opt/hudson", "0755", "nobody", "nogroup", none()),
         regularFile("/opt/hudson/hudson.war", "0666", "hudson", "hudson", 20623413, 3301, none()),

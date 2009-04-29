@@ -35,6 +35,7 @@ import org.joda.time.*;
 import org.joda.time.format.*;
 
 import java.io.*;
+import java.security.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -42,9 +43,51 @@ import java.io.*;
  */
 public class UnixUtil
 {
-    public static final Option<String> noneString = Option.none();
+    public static String md5String( File file )
+        throws Exception
+    {
+        MessageDigest digest = MessageDigest.getInstance( "MD5" );
 
-    public static final Option<Boolean> noneBoolean = Option.none();
+        InputStream is = null;
+        try
+        {
+            is = new FileInputStream( file );
+
+            byte[] buffer = new byte[128 * 1024];
+            while ( true )
+            {
+                int read = is.read( buffer, 0, buffer.length );
+
+                if ( read == -1 )
+                {
+                    break;
+                }
+
+                digest.update( buffer, 0, read );
+            }
+
+            StringBuffer string = new StringBuffer( digest.getDigestLength() * 2 );
+            for ( byte b : digest.digest() )
+            {
+                int x = b & 0xff;
+                if ( x < 16 )
+                {
+                    string.append( "0" );
+                }
+                string.append( Integer.toHexString( x ) );
+            }
+
+            return string.toString();
+        }
+        finally
+        {
+            IOUtil.close( is );
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
 
     public static void assertField( String field, Object value )
         throws MissingSettingException
@@ -100,6 +143,15 @@ public class UnixUtil
         }
     }
 
+    public static void chmodIf( Option<File> file, String mode )
+        throws IOException
+    {
+        if ( file.isSome() )
+        {
+            chmod( file.some(), mode );
+        }
+    }
+
     public static void chmod( File file, String mode )
         throws IOException
     {
@@ -115,8 +167,7 @@ public class UnixUtil
         throws IOException
     {
         new SystemCommand().
-//            dumpCommandIf( true ).
-    setBasedir( basedir ).
+            setBasedir( basedir ).
             setCommand( "ln" ).
             addArgument( "-s" ).
             addArgument( source ).
@@ -131,12 +182,17 @@ public class UnixUtil
 
     public static <A> boolean optionEquals( Option<A> tis, java.lang.Object o )
     {
-        if ( o == null || !( o instanceof Option ) )
-        {
-            return false;
-        }
+        return !( o == null || !( o instanceof Option ) ) && ( o == tis || optionEquals( tis, (Option) o ) );
+    }
 
-        return o == tis || optionEquals( tis, (Option) o );
+    public static <A, B> F2<Option<A>, F<A, B>, Option<B>> optionMap() {
+        return new F2<Option<A>, F<A, B>, Option<B>>()
+        {
+            public Option<B> f( Option<A> option, F<A, B> f )
+            {
+                return option.map( f );
+            }
+        };
     }
 
     public static <A> boolean optionEquals( Option<A> tis, Option that )
@@ -154,17 +210,6 @@ public class UnixUtil
 
         // This logic would be in Some
         return tis.some().equals( that.some() );
-    }
-
-    public static <A> F<Option<A>, Boolean> isSome_()
-    {
-        return new F<Option<A>, Boolean>()
-        {
-            public Boolean f( Option<A> option )
-            {
-                return option.isSome();
-            }
-        };
     }
 
     public static <A> A someE( Option<A> option, String msg )

@@ -29,18 +29,19 @@ import fj.data.List;
 import static fj.data.List.*;
 import static fj.data.List.single;
 import fj.data.*;
-import fj.data.Set;
 import static fj.data.Option.*;
+import fj.data.Set;
 import static fj.data.Set.*;
 import static fj.pre.Ord.*;
 import org.apache.commons.vfs.*;
-import org.apache.maven.artifact.transform.*;
 import org.apache.maven.artifact.*;
+import org.apache.maven.artifact.transform.*;
 import org.apache.maven.plugin.*;
 import org.apache.maven.plugin.logging.*;
 import org.apache.maven.project.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
@@ -188,7 +189,7 @@ public abstract class MojoHelper
             this.attachedMode = attachedMode;
         }
 
-        public void execute( MavenProject mavenProject, MavenProjectHelper mavenProjectHelper )
+        public void execute( MavenProject mavenProject, MavenProjectHelper mavenProjectHelper, ScriptUtil.Strategy strategy )
             throws MojoExecutionException, MojoFailureException
         {
             for ( P3<UnixPackage, Package, List<AssemblyOperation>> p : packages )
@@ -219,7 +220,7 @@ public abstract class MojoHelper
                     File packageFile = new File( project.buildDirectory, name );
 
                     unixPackage.
-                        packageToFile( packageFile );
+                        packageToFile( packageFile, strategy );
 
                     attach( pakke, unixPackage, packageFile, mavenProject, mavenProjectHelper, attachedMode );
                 }

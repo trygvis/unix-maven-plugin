@@ -86,6 +86,26 @@ public class RelativePathTest
         assertEquals( ".", relativePath( "." ).name() );
     }
 
+    public void testIsBelowOrSame()
+    {
+        assertTrue( relativePath( "." ).isBelowOrSame( relativePath( "." ) ) );
+        assertFalse( relativePath( "." ).isBelowOrSame( relativePath( "a" ) ) );
+        assertTrue( relativePath( "a" ).isBelowOrSame( relativePath( "." ) ) );
+        assertTrue( relativePath( "a" ).isBelowOrSame( relativePath( "a" ) ) );
+        assertTrue( relativePath( "a/b" ).isBelowOrSame( relativePath( "a" ) ) );
+        assertFalse( relativePath( "a" ).isBelowOrSame( relativePath( "a/b" ) ) );
+    }
+
+    public void testSubtract()
+    {
+        assertEquals( relativePath( "." ), relativePath( "." ).subtract( relativePath( "." ) ).some());
+        assertTrue( relativePath( "." ).subtract( relativePath( "a" ) ).isNone() );
+        assertEquals( relativePath( "a" ), relativePath( "a" ).subtract( relativePath( "." ) ).some() );
+        assertEquals( relativePath( "a" ), relativePath( "a" ).subtract( relativePath( "a" ) ).some() );
+        assertEquals( relativePath( "b" ), relativePath( "a/b" ).subtract( relativePath( "a" ) ).some() );
+        assertTrue( relativePath( "a" ).subtract( relativePath( "a/b" ) ).isNone() );
+    }
+
     public void testToList()
     {
         assertTrue( relativePath( "/" ).toList().isEmpty() );

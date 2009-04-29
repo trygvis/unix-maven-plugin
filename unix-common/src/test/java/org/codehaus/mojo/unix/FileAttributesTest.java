@@ -24,12 +24,8 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import static fj.Function.*;
-import static fj.data.Option.*;
 import junit.framework.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
-import static org.codehaus.mojo.unix.UnixFileMode.none;
-import static org.codehaus.mojo.unix.util.UnixUtil.*;
 
 public class FileAttributesTest
     extends TestCase
@@ -52,10 +48,10 @@ public class FileAttributesTest
         assertEquals( EMPTY.user( "b" ), test( null, "b", null ) );
     }
 
-    public FileAttributes test( String defaultDefaults, String defaults, String attributes )
+    public FileAttributes test( String defaultDefaultUser, String defaultUser, String user )
     {
-        return compose( curry( useAsDefaultsFor, new FileAttributes( fromNull( defaultDefaults ), noneString, none ) ),
-                        curry( useAsDefaultsFor, new FileAttributes( fromNull( defaults ), noneString, none ) ) ).
-            f( new FileAttributes( fromNull( attributes ), noneString, none ) );
+        return EMPTY.user( defaultDefaultUser ).
+            useAsDefaultsFor( EMPTY.user( defaultUser ) ).
+            useAsDefaultsFor( EMPTY.user( user ) );
     }
 }

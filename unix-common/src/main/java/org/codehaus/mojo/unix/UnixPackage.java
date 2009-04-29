@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix;
 
 import fj.data.*;
 import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.util.*;
 
 import java.io.*;
 
@@ -138,6 +139,11 @@ public abstract class UnixPackage
         return basedir;
     }
 
+    public File getScripts()
+    {
+        return new File( getBasedir(), "src/main/unix/scripts" );
+    }
+
     public UnixPackage debug( boolean debug )
     {
         return this;
@@ -146,7 +152,7 @@ public abstract class UnixPackage
     public abstract void beforeAssembly( FileAttributes defaultDirectoryAttributes )
         throws IOException;
 
-    public abstract void packageToFile( File packageFile )
+    public abstract void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception;
 
     public final PackageVersion getVersion()

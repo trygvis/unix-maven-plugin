@@ -73,6 +73,16 @@ public class PrototypeFile
         iFiles = iFiles.cons( "i " + name + "=" + file.getAbsolutePath() );
     }
 
+    public void addIFileIf( Option<File> file, String name )
+    {
+        if ( file.isNone() )
+        {
+            return;
+        }
+
+        iFiles = iFiles.cons( "i " + name + "=" + file.some().getAbsolutePath() );
+    }
+
     public void addIFileIf( File file )
     {
         if ( file == null || !file.canRead() )
@@ -115,9 +125,8 @@ public class PrototypeFile
         stream.
             addAllLines( iFiles.reverse() );
 
-        for ( PackageFileSystemObject<PrototypeEntry> object : fileSystem.prettify().toList() )
+        for ( PackageFileSystemObject<PrototypeEntry> object : fileSystem.prettify().toList().filter( filterRoot ) )
         {
-            System.out.println( "p2._1() = " + object.getUnixFsObject() + ", p2._2() = " + object.getExtension() );
             object.getExtension().streamTo( stream );
         }
     }
@@ -142,6 +151,14 @@ public class PrototypeFile
         public Option<String> f( FileAttributes fileAttributes )
         {
             return findClassTag( fileAttributes );
+        }
+    };
+
+    private F<PackageFileSystemObject<PrototypeEntry>, Boolean> filterRoot = new F<PackageFileSystemObject<PrototypeEntry>, Boolean>()
+    {
+        public Boolean f( PackageFileSystemObject<PrototypeEntry> fileSystemObject )
+        {
+            return !fileSystemObject.getUnixFsObject().path.isBase();
         }
     };
 }
