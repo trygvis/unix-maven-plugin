@@ -24,8 +24,7 @@ package org.codehaus.mojo.unix.java;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.F2;
+import fj.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

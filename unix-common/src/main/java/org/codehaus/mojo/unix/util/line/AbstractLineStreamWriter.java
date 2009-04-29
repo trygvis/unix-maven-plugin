@@ -24,10 +24,10 @@ package org.codehaus.mojo.unix.util.line;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.util.Iterator;
+import java.io.*;
+import java.util.*;
 
 public abstract class AbstractLineStreamWriter
     implements LineStreamWriter

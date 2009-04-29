@@ -24,27 +24,17 @@ package org.codehaus.mojo.unix.util;
  * SOFTWARE.
  */
 
-import fj.Bottom;
-import fj.F;
-import fj.F2;
-import static fj.Function.compose;
-import static fj.Function.curry;
-import fj.data.Option;
-import static fj.data.Option.none;
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.MissingSettingException;
-import org.codehaus.mojo.unix.java.ClassF;
-import org.codehaus.mojo.unix.java.ObjectF;
-import org.codehaus.plexus.util.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormatter;
+import fj.*;
+import static fj.Function.*;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.java.*;
+import org.codehaus.plexus.util.*;
+import org.joda.time.*;
+import org.joda.time.format.*;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.Flushable;
-import java.io.IOException;
-import java.util.Iterator;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -126,7 +116,7 @@ public class UnixUtil
     {
         new SystemCommand().
 //            dumpCommandIf( true ).
-            setBasedir( basedir ).
+    setBasedir( basedir ).
             setCommand( "ln" ).
             addArgument( "-s" ).
             addArgument( source ).
@@ -138,26 +128,6 @@ public class UnixUtil
     // -----------------------------------------------------------------------
     // Functional Java
     // -----------------------------------------------------------------------
-
-    public static <A, B> Iterator<B> iteratorMap( final F<A, B> f, final Iterator<A> iterator ) {
-        return new Iterator<B>()
-        {
-            public boolean hasNext()
-            {
-                return iterator.hasNext();
-            }
-
-            public B next()
-            {
-                return f.f(iterator.next());
-            }
-
-            public void remove()
-            {
-                iterator.remove();
-            }
-        };
-    }
 
     public static <A> boolean optionEquals( Option<A> tis, java.lang.Object o )
     {
@@ -186,7 +156,8 @@ public class UnixUtil
         return tis.some().equals( that.some() );
     }
 
-    public static <A> F<Option<A>, Boolean> isSome_() {
+    public static <A> F<Option<A>, Boolean> isSome_()
+    {
         return new F<Option<A>, Boolean>()
         {
             public Boolean f( Option<A> option )
@@ -196,8 +167,10 @@ public class UnixUtil
         };
     }
 
-    public static <A> A someE( Option<A> option, String msg ) {
-        if( option.isSome() ) {
+    public static <A> A someE( Option<A> option, String msg )
+    {
+        if ( option.isSome() )
+        {
             return option.some();
         }
 
@@ -292,7 +265,7 @@ public class UnixUtil
 
     public static final class Filter
     {
-        public static <T> F<T, Boolean> instanceOfFilter(java.lang.Class cls)
+        public static <T> F<T, Boolean> instanceOfFilter( java.lang.Class cls )
         {
             return compose( curry( ClassF.isAssignableFrom, cls ), ObjectF.<T>getClass_() );
         }

@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.java;
+package org.codehaus.mojo.unix.util.fj;
 
 /*
  * The MIT License
@@ -25,46 +25,51 @@ package org.codehaus.mojo.unix.java;
  */
 
 import fj.*;
+import fj.data.*;
 
-/**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- */
-public class ClassF
+public class TreeZipperF
 {
-    public static <A, B> F<A, B> cast()
+    public static <A> F<TreeZipper<A>, Tree<A>> toTree()
     {
-        return new F<A, B>()
+        return new F<TreeZipper<A>, Tree<A>>()
         {
-            public B f( A a )
+            public Tree<A> f( TreeZipper<A> treeZipper )
             {
-                //noinspection unchecked
-                return (B) a;
+                return treeZipper.toTree();
             }
         };
     }
 
-    public static final F<java.lang.Class, Package> getPackage = new F<java.lang.Class, Package>()
+    public static <A> F2<TreeZipper<A>, F<A, A>, TreeZipper<A>> modifyLabel_()
     {
-        public Package f( java.lang.Class _this )
+        return new F2<TreeZipper<A>, F<A, A>, TreeZipper<A>>()
         {
-            return _this.getPackage();
-        }
-    };
+            public TreeZipper<A> f( TreeZipper<A> treeZipper, F<A, A> f )
+            {
+                return treeZipper.modifyLabel( f );
+            }
+        };
+    }
 
-    public static final F<java.lang.Class, java.lang.String> getName = new F<java.lang.Class, String>()
+    public static <A> F<TreeZipper<A>, A> getLabel_()
     {
-        public String f( java.lang.Class _this )
+        return new F<TreeZipper<A>, A>()
         {
-            return _this.getName();
-        }
-    };
+            public A f( TreeZipper<A> treeZipper )
+            {
+                return treeZipper.getLabel();
+            }
+        };
+    }
 
-    public static final F2<java.lang.Class, java.lang.Class, Boolean> isAssignableFrom = new F2<java.lang.Class, java.lang.Class, Boolean>()
+    public static <A> F2<TreeZipper<A>, Tree<A>, TreeZipper<A>> insertDownFirst()
     {
-        public Boolean f( java.lang.Class _this, java.lang.Class cls )
+        return new F2<TreeZipper<A>, Tree<A>, TreeZipper<A>>()
         {
-            return _this.isAssignableFrom( cls );
-        }
-    };
+            public TreeZipper<A> f( TreeZipper<A> treeZipper, Tree<A> tree )
+            {
+                return treeZipper.insertDownFirst( tree );
+            }
+        };
+    }
 }

@@ -24,8 +24,9 @@ package org.codehaus.mojo.unix.util;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
+import fj.data.*;
+import junit.framework.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -83,6 +84,21 @@ public class RelativePathTest
         assertEquals( "a", fromString( "b/a" ).name() );
         assertEquals( "a", fromString( "a" ).name() );
         assertEquals( ".", fromString( "." ).name() );
+    }
+
+    public void testToList()
+    {
+        assertTrue( fromString( "/" ).toList().isEmpty() );
+        assertTrue( fromString( "." ).toList().isEmpty() );
+
+        assertEquals( 1, fromString( "a" ).toList().length() );
+        assertEquals( "a", fromString( "a" ).toList().head() );
+
+        List<String> l = fromString( "/a/b/c" ).toList();
+//        Show.<String>listShow( Show.stringShow ).println( l );
+        assertEquals( "a", l.index( 0 ) );
+        assertEquals( "b", l.index( 1 ) );
+        assertEquals( "c", l.index( 2 ) );
     }
 
     public void testAsAbsolutePath()

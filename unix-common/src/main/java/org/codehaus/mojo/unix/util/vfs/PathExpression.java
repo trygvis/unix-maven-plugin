@@ -24,7 +24,7 @@ package org.codehaus.mojo.unix.util.vfs;
  * SOFTWARE.
  */
 
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

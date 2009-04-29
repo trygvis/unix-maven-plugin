@@ -24,19 +24,15 @@ package org.codehaus.mojo.unix.util.line;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import static java.util.Collections.unmodifiableList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.*;
+import java.util.*;
+import static java.util.Collections.*;
 
 /**
+ * TODO: Implement equals and hashCode.
+ *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */

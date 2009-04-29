@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix;
+package org.codehaus.mojo.unix.util.fj;
 
 /*
  * The MIT License
@@ -26,32 +26,43 @@ package org.codehaus.mojo.unix;
 
 import junit.framework.*;
 
-/**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- */
-public class UnixFileModeTest
+import java.io.*;
+
+public class FileScannerTest
     extends TestCase
 {
-    public void testConstants()
+    public void testBasic()
+        throws IOException
     {
-        testConstant( UnixFileMode._0644, "rw-r--r--", "644" );
-        testConstant( UnixFileMode._0755, "rwxr-xr-x", "755" );
+        System.out.println( "FileScannerTest.testBasic" );
+        FileScanner scanner = new FileScanner( new File( "src/test/resources" ), new String[0], new String[0] );
+
+        for ( File file : scanner.toStream() )
+        {
+            System.out.println( "file = " + file );
+        }
     }
 
-    public void testParsing()
+    public void testIncludes()
+        throws IOException
     {
-        assertEquals( "0001", UnixFileMode.fromString( "--------x" ).toOctalString() );
-        assertEquals( "0544", UnixFileMode.fromString( "r-xr--r--" ).toOctalString() );
-        assertEquals( "0755", UnixFileMode.fromString( "rwxr-xr-x" ).toOctalString() );
+        System.out.println( "FileScannerTest.testIncludes" );
+        File base = new File( System.getProperty("user.home") + "/.m2/repository" );
+        FileScanner scanner = new FileScanner( base, new String[]{"**/*.pkg"}, new String[0] );
+
+        for ( File file : scanner.toStream() )
+        {
+            System.out.println( "file = " + file );
+        }
     }
 
-    private void testConstant( UnixFileMode unixFileMode, String string, String octalString )
+    public void testNoMatch()
+        throws IOException
     {
-        assertEquals( "unixFileMode.toInt()", octalString, Integer.toString( unixFileMode.toInt(), 8 ) );
-        assertEquals( "unixFileMode.toString().length()", string.length(), unixFileMode.toString().length() );
-        assertEquals( "unixFileMode.toString()", string, unixFileMode.toString() );
+        System.out.println( "FileScannerTest.testNoMatch" );
+        File base = new File( "src/test/resources" ).getAbsoluteFile();
+        FileScanner scanner = new FileScanner( base, new String[]{"**/nothere/**"}, new String[0] );
 
-        assertEquals( "UnixFileMode.fromString(string).toOctalString()", "0" + octalString, UnixFileMode.fromString( string ).toOctalString() );
+        assertTrue( scanner.toStream().isEmpty() );
     }
 }

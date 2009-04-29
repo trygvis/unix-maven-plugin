@@ -24,8 +24,8 @@ package org.codehaus.mojo.unix.util.line;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.util.Iterator;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

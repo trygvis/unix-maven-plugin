@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.vfs;
+package org.codehaus.mojo.unix;
 
 /*
  * The MIT License
@@ -24,18 +24,17 @@ package org.codehaus.mojo.unix.util.vfs;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
-
-import java.io.*;
+import org.codehaus.mojo.unix.util.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
-public class VfsUtil
+public interface PackageFileSystemObject<E>
 {
-    public static File asFile( FileObject fileObject )
-    {
-        return new File( fileObject.getName().getPath() );
-    }
+    UnixFsObject getUnixFsObject();
+
+    E getExtension();
+
+    PackageFileSystemObject<E> setFileAttributes( FileAttributes fileAttributes );
+
+    PackageFileSystemObject<E> setPath( RelativePath path );
 }

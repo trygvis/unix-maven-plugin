@@ -24,7 +24,7 @@ package org.codehaus.mojo.unix.util.vfs;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

@@ -24,15 +24,11 @@ package org.codehaus.mojo.unix.util.vfs;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.FileType;
-import org.apache.commons.vfs.VFS;
-import org.codehaus.plexus.PlexusTestCase;
+import junit.framework.*;
+import org.apache.commons.vfs.*;
+import org.codehaus.plexus.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

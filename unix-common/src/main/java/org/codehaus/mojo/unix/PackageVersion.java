@@ -24,7 +24,7 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

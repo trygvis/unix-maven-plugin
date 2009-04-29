@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.vfs;
+package org.codehaus.mojo.unix;
 
 /*
  * The MIT License
@@ -24,18 +24,36 @@ package org.codehaus.mojo.unix.util.vfs;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
+import junit.framework.*;
+import static org.codehaus.mojo.unix.PackageFileSystem.*;
+import static org.codehaus.mojo.unix.PackageFileSystemTest.*;
 
-import java.io.*;
-
-/**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- */
-public class VfsUtil
+public class PackageFileSystemFormatterTest
+    extends TestCase
 {
-    public static File asFile( FileObject fileObject )
+    public void testBasic()
     {
-        return new File( fileObject.getName().getPath() );
+        PackageFileSystemFormatter<Object> formatter = PackageFileSystemFormatter.flatFormatter();
+
+        System.out.print( formatter.print( create( root, root ).
+            addDirectory( a ).
+            addDirectory( b )
+        ) );
+
+        System.out.print( formatter.print( create( root, root ).
+            addDirectory( a ).
+            addDirectory( b ).
+            addFile( a_x )
+        ) );
+
+        PackageFileSystem<Object> fs = create( root, root ).
+            addDirectory( b ).
+            addDirectory( a ).
+            addFile( a_x ).
+            addFile( b_x ).
+            addFile( a_y ).
+            addFile( c_x_u );
+
+        System.out.print( formatter.print( fs ) );
     }
 }

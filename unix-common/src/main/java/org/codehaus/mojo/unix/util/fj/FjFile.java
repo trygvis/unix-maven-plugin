@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.vfs;
+package org.codehaus.mojo.unix.util.fj;
 
 /*
  * The MIT License
@@ -24,18 +24,26 @@ package org.codehaus.mojo.unix.util.vfs;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
+import fj.*;
 
 import java.io.*;
 
-/**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- */
-public class VfsUtil
+public class FjFile
 {
-    public static File asFile( FileObject fileObject )
+    public final File file;
+
+    public FjFile( File file )
     {
-        return new File( fileObject.getName().getPath() );
+        this.file = file;
+    }
+
+    public static F<File, Boolean> toF( final FileFilter filter ) {
+        return new F<File, Boolean>()
+        {
+            public Boolean f( File file )
+            {
+                return filter.accept( file );
+            }
+        };
     }
 }

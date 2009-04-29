@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.vfs;
+package org.codehaus.mojo.unix.util.fj;
 
 /*
  * The MIT License
@@ -24,18 +24,37 @@ package org.codehaus.mojo.unix.util.vfs;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
+import fj.*;
 
-import java.io.*;
-
-/**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- */
-public class VfsUtil
+public class FunctionF
 {
-    public static File asFile( FileObject fileObject )
-    {
-        return new File( fileObject.getName().getPath() );
+    public static <A, B, C> F<F2<A, B, C>, F<A, F<B, C>>> curry_() {
+        return new F<F2<A, B, C>, F<A, F<B, C>>>()
+        {
+            public F<A, F<B, C>> f( F2<A, B, C> f )
+            {
+                return Function.curry(f);
+            }
+        };
+    }
+
+    public static <A, B, C> F2<F2<A, B, C>, A, F<B, C>> curryA() {
+        return new F2<F2<A, B, C>, A, F<B, C>>()
+        {
+            public F<B, C> f( F2<A, B, C> f, A a )
+            {
+                return Function.curry( f, a );
+            }
+        };
+    }
+
+    public static <A, B, C> F2<B, A, C> flip( final F2<A, B, C> f ) {
+        return new F2<B, A, C>()
+        {
+            public C f( B b, A a )
+            {
+                return f.f( a, b );
+            }
+        };
     }
 }

@@ -24,9 +24,10 @@ package org.codehaus.mojo.unix.util;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.pre.Ord;
-import fj.pre.Ordering;
+import fj.*;
+import fj.data.*;
+import static fj.data.List.*;
+import fj.pre.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -56,9 +57,19 @@ public class RelativePath
             return true;
         }
 
+        public List<String> toList()
+        {
+            return nil();
+        }
+
         public String asAbsolutePath( String basePath )
         {
             return basePath;
+        }
+
+        public boolean isBase()
+        {
+            return true;
         }
     };
 
@@ -106,6 +117,11 @@ public class RelativePath
         return basePath + ( basePath.endsWith( "/" ) ? "" : "/" ) + string;
     }
 
+    public boolean isBase()
+    {
+        return false;
+    }
+
     public String name()
     {
         int i = string.lastIndexOf( '/' );
@@ -123,11 +139,40 @@ public class RelativePath
         return string.startsWith( other.string );
     }
 
+    public List<String> toList()
+    {
+        int i = string.lastIndexOf( '/' );
+
+        if ( i == -1 )
+        {
+            return List.single( string );
+        }
+
+        List<String> list = List.single( string.substring( i + 1 ) );
+
+        String s = string.substring( 0, i );
+
+        do
+        {
+            i = s.lastIndexOf( '/' );
+
+            if ( i == -1 )
+            {
+                return list.cons( s );
+            }
+
+            list = list.cons( s.substring( i + 1 ) );
+
+            s = s.substring( 0, i );
+        }
+        while ( true );
+    }
+
     // -----------------------------------------------------------------------
     // Static
     // -----------------------------------------------------------------------
 
-    public static RelativePath fromString( String string )
+    public static RelativePath relativePath( String string )
     {
         string = string == null ? "/" : string.trim();
 
@@ -139,6 +184,11 @@ public class RelativePath
         }
 
         return new RelativePath( s );
+    }
+
+    public static RelativePath fromString( String string )
+    {
+        return relativePath( string );
     }
 
     static String clean( final String string )

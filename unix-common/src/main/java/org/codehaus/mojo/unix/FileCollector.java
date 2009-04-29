@@ -24,10 +24,10 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import fj.F2;
-import org.apache.commons.vfs.FileObject;
+import fj.*;
+import org.apache.commons.vfs.*;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

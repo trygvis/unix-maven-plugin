@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.vfs;
+package org.codehaus.mojo.unix.util.fj;
 
 /*
  * The MIT License
@@ -24,18 +24,32 @@ package org.codehaus.mojo.unix.util.vfs;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
+import fj.*;
+import fj.data.*;
+import static fj.data.List.*;
+import junit.framework.*;
 
-import java.io.*;
-
-/**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- */
-public class VfsUtil
+public class FjIteratorTest
+    extends TestCase
 {
-    public static File asFile( FileObject fileObject )
+    public void testFiltering()
     {
-        return new File( fileObject.getName().getPath() );
+        List<String> strings = List.list( "t", "f", "t", "f" );
+
+        assertEquals( 4, iterableList( FjIterator.<String>iterator( strings ).toIterable() ).length() );
+
+        List<String> actualStrings = iterableList( FjIterator.iterator( strings ).filter( filterF ).toIterable() );
+
+        assertEquals( 2, actualStrings.length() );
+        assertEquals( "t", actualStrings.index( 0 ) );
+        assertEquals( "t", actualStrings.index( 1 ) );
     }
+
+    F<String, Boolean> filterF = new F<String, Boolean>()
+    {
+        public Boolean f( String s )
+        {
+            return s.endsWith( "t" );
+        }
+    };
 }

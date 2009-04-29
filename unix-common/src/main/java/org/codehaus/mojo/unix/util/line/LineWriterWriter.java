@@ -24,12 +24,9 @@ package org.codehaus.mojo.unix.util.line;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.*;
 
-import java.io.Closeable;
-import java.io.Flushable;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 
 /**
  * A lazy writer that won't throw any exceptions until close() is called. If there is an exception while writing,

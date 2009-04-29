@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.vfs;
+package org.codehaus.mojo.unix;
 
 /*
  * The MIT License
@@ -24,18 +24,37 @@ package org.codehaus.mojo.unix.util.vfs;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
-
-import java.io.*;
+import org.codehaus.mojo.unix.util.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
-public class VfsUtil
+public class BasicPackageFileSystemObject
+    implements PackageFileSystemObject<Object>
 {
-    public static File asFile( FileObject fileObject )
+    private final UnixFsObject unixFsObject;
+
+    public BasicPackageFileSystemObject( UnixFsObject unixFsObject )
     {
-        return new File( fileObject.getName().getPath() );
+        this.unixFsObject = unixFsObject;
+    }
+
+    public UnixFsObject getUnixFsObject()
+    {
+        return unixFsObject;
+    }
+
+    public PackageFileSystemObject getExtension()
+    {
+        throw new RuntimeException( "Not implemented" );
+    }
+
+    public PackageFileSystemObject<Object> setFileAttributes( FileAttributes fileAttributes )
+    {
+        return new BasicPackageFileSystemObject( unixFsObject.setFileAttributes( fileAttributes ) );
+    }
+
+    public PackageFileSystemObject<Object> setPath( RelativePath path )
+    {
+        return new BasicPackageFileSystemObject( unixFsObject.setPath( path ) );
     }
 }

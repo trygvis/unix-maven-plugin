@@ -24,23 +24,18 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.F2;
-import static fj.Function.curry;
-import static fj.P.p;
-import fj.data.Option;
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.util.RelativePath;
-import org.codehaus.mojo.unix.util.UnixUtil;
-import org.codehaus.mojo.unix.util.Validate;
-import static org.codehaus.mojo.unix.util.UnixUtil.optionEquals;
-import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
-import org.codehaus.mojo.unix.util.line.LineProducer;
-import org.codehaus.mojo.unix.util.line.LineStreamWriter;
-import org.codehaus.plexus.util.StringUtils;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
+import fj.*;
+import static fj.Function.*;
+import static fj.P.*;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.UnixUtil.*;
+import static org.codehaus.mojo.unix.util.Validate.*;
+import org.codehaus.mojo.unix.util.line.*;
+import org.codehaus.plexus.util.*;
+import org.joda.time.*;
+import org.joda.time.format.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -91,7 +86,7 @@ public abstract class UnixFsObject<A extends UnixFsObject>
         return attributes.some();
     }
 
-    public UnixFsObject setFileAttributes( FileAttributes attributes )
+    public final A setFileAttributes( FileAttributes attributes )
     {
         Validate.validateNotNull( attributes );
         return copy( path, lastModified, size, some( attributes ) );
@@ -252,4 +247,30 @@ public abstract class UnixFsObject<A extends UnixFsObject>
             return StringUtils.leftPad( s, size );
         }
     };
+
+    // -----------------------------------------------------------------------
+    // First-order functions
+    // -----------------------------------------------------------------------
+
+    public static <A extends UnixFsObject> F2<RelativePath, UnixFsObject<A>, A> setPath_()
+    {
+        return new F2<RelativePath, UnixFsObject<A>, A>()
+        {
+            public A f( RelativePath relativePath, UnixFsObject<A> unixFsObject )
+            {
+                return unixFsObject.setPath( relativePath );
+            }
+        };
+    }
+
+    public static <A extends UnixFsObject> F2<FileAttributes, UnixFsObject<A>, A> setFileAttributes_()
+    {
+        return new F2<FileAttributes, UnixFsObject<A>, A>()
+        {
+            public A f( FileAttributes fileAttributes, UnixFsObject<A> unixFsObject )
+            {
+                return unixFsObject.setFileAttributes( fileAttributes );
+            }
+        };
+    }
 }

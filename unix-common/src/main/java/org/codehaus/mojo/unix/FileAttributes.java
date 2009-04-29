@@ -24,13 +24,12 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.F2;
-import fj.data.Option;
-import static fj.data.Option.fromNull;
-import static org.codehaus.mojo.unix.UnixFileMode.showLong;
-import static org.codehaus.mojo.unix.util.UnixUtil.optionEquals;
-import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
+import fj.*;
+import fj.data.*;
+import static fj.data.Option.*;
+import static org.codehaus.mojo.unix.UnixFileMode.*;
+import static org.codehaus.mojo.unix.util.UnixUtil.*;
+import static org.codehaus.mojo.unix.util.Validate.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

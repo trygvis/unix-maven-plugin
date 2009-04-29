@@ -24,10 +24,9 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.*;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * Represents a Unix package that has attributes and a set of files to be packaged.
@@ -41,6 +40,7 @@ public abstract class UnixPackage
     private final String packageFileExtension;
 
     private PackageVersion version;
+
     private File basedir;
 
     public UnixPackage( String packageFileExtension )
@@ -142,6 +142,9 @@ public abstract class UnixPackage
     {
         return this;
     }
+
+    public abstract void afterPropertiesSet()
+        throws Exception;
 
     public abstract void packageToFile( File packageFile )
         throws Exception;

@@ -24,19 +24,11 @@ package org.codehaus.mojo.unix.util;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.util.line.AbstractLineStreamWriter;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.util.line.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Executes a system command in a similar fasion to backtick (`) in sh and ruby.

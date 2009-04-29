@@ -24,14 +24,12 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import static fj.Function.compose;
-import static fj.Function.curry;
-import static fj.data.Option.fromNull;
-import junit.framework.TestCase;
-import static org.codehaus.mojo.unix.FileAttributes.useAsDefaultsFor;
-import static org.codehaus.mojo.unix.FileAttributes.EMPTY;
+import static fj.Function.*;
+import static fj.data.Option.*;
+import junit.framework.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFileMode.none;
-import static org.codehaus.mojo.unix.util.UnixUtil.noneString;
+import static org.codehaus.mojo.unix.util.UnixUtil.*;
 
 public class FileAttributesTest
     extends TestCase
