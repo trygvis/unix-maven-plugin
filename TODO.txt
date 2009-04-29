@@ -193,7 +193,7 @@ o MUNIX-14: Rename "pkg" to "sysv-pkg"
 o MUNIX-6: set-attributes doesn't pick up paths that aren't explicitly created with mkdirs
 o DONE: MUNIX-3, MUNIX-4: Implement support for "%config" and "%doc" in RPM, file classes in solaris.
  - Check how this work in debian
-o MUNIX-15: Improve the error message is an artifact can't be found.
+o DONE: MUNIX-15: Improve the error message is an artifact can't be found.
  - Create special exception that is caught in the mojo.
 o Run the plugin through a profiler
 o Document how to use the u-m-p in a development process. Explain the goals for creating index files, and how to

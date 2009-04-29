@@ -35,7 +35,9 @@ import static fj.data.Set.*;
 import static fj.pre.Ord.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.artifact.transform.*;
+import org.apache.maven.artifact.*;
 import org.apache.maven.plugin.*;
+import org.apache.maven.plugin.logging.*;
 import org.apache.maven.project.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
@@ -43,6 +45,7 @@ import org.codehaus.plexus.util.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.TreeMap;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -57,7 +60,8 @@ public abstract class MojoHelper
                                     boolean debug,
                                     boolean attachedMode,
                                     F<UnixPackage, UnixPackage> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage,
-                                    PackagingMojoParameters mojoParameters )
+                                    PackagingMojoParameters mojoParameters,
+                                    Log log )
         throws MojoFailureException, MojoExecutionException
     {
         PackagingFormat format = (PackagingFormat) formats.get( formatType );
@@ -131,6 +135,20 @@ public abstract class MojoHelper
                     createAssemblyOperations( project, mojoParameters, pakke, unixPackage, buildDirectory );
 
                 packages = packages.cons( P.p(unixPackage, pakke, assemblyOperations ) );
+            }
+            catch ( UnknownArtifactException e )
+            {
+                Map map = new TreeMap<String, Artifact>( e.artifactMap );
+
+                // TODO: Do not log here, throw a CouldNotFindArtifactException with the map as an argument
+                log.warn("Could not find artifact:" + e.artifact );
+                log.warn("Available artifacts:");
+                for ( Object o : map.keySet() )
+                {
+                    log.warn( o.toString() );
+                }
+
+                throw new MojoFailureException( "Unable to find artifact: '" + e.artifact + "'. See log for available artifacts." );
             }
             catch ( MissingSettingException e )
             {
@@ -300,7 +318,7 @@ public abstract class MojoHelper
                                                                     PackagingMojoParameters mojoParameters,
                                                                     Package pakke, UnixPackage unixPackage,
                                                                     FileObject basedir )
-        throws IOException, MojoFailureException
+        throws IOException, MojoFailureException, UnknownArtifactException
     {
         Defaults defaults = mojoParameters.defaults.orSome( new Defaults() );
 

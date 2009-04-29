@@ -59,7 +59,7 @@ public abstract class AssemblyOp
 
     public abstract AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
                                                        FileAttributes defaultDirectoryAttributes )
-        throws MojoFailureException, FileSystemException;
+        throws MojoFailureException, FileSystemException, UnknownArtifactException;
 
     // -----------------------------------------------------------------------
     // Utilities
@@ -156,7 +156,7 @@ public abstract class AssemblyOp
     }
 
     protected File validateArtifact( String artifact )
-        throws MojoFailureException
+        throws UnknownArtifactException
     {
         Artifact a = artifactMap.get( artifact );
 
@@ -172,16 +172,6 @@ public abstract class AssemblyOp
             return a.getFile();
         }
 
-        Map map = new TreeMap<String, Artifact>( artifactMap );
-
-        // TODO: Do not log here, throw a CouldNotFindArtifactException with the map as an argument
-        System.out.println("Could not find artifact:" + artifact );
-        System.out.println("Available artifacts:");
-        for ( Object o : map.keySet() )
-        {
-            System.out.println( o );
-        }
-
-        throw new MojoFailureException( "Could not find artifact '" + artifact + "'." );
+        throw new UnknownArtifactException( artifact, artifactMap );
     }
 }

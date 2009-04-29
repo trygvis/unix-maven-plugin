@@ -68,9 +68,14 @@ public class CopyArtifact
         this.toDir = relativePath( toDir );
     }
 
+    public void setAttributes( MojoFileAttributes attributes )
+    {
+        this.attributes = attributes;
+    }
+
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
                                               FileAttributes defaultDirectoryAttributes )
-        throws MojoFailureException, FileSystemException
+        throws MojoFailureException, FileSystemException, UnknownArtifactException
     {
         File artifactFile = validateArtifact( artifact );
 

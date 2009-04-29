@@ -52,7 +52,7 @@ public class ExtractArtifact
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
                                               FileAttributes defaultDirectoryAttributes )
-        throws MojoFailureException, FileSystemException
+        throws MojoFailureException, FileSystemException, UnknownArtifactException
     {
         File artifactFile = validateArtifact( artifact );
 

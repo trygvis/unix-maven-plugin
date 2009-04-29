@@ -68,7 +68,8 @@ public abstract class AbstractPackageMojo
                                                         architecture,
                                                         defaults,
                                                         assembly,
-                                                        packages ) ).
+                                                        packages ),
+                           getLog() ).
             execute( project, mavenProjectHelper );
     }
 }

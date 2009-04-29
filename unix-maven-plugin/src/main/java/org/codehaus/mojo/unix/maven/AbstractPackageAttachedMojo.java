@@ -25,7 +25,6 @@ package org.codehaus.mojo.unix.maven;
  */
 
 import fj.*;
-import fj.data.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
 
@@ -63,7 +62,8 @@ public abstract class AbstractPackageAttachedMojo
                                                         architecture,
                                                         defaults,
                                                         assembly,
-                                                        null ) ).
+                                                        null ),
+                           getLog() ).
             execute( project, mavenProjectHelper );
     }
 }
