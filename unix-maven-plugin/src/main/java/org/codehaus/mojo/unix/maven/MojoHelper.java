@@ -24,14 +24,16 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import fj.*;
+import fj.data.List;
+import static fj.data.List.*;
+import fj.data.*;
 import org.apache.commons.vfs.*;
-import org.apache.maven.artifact.*;
 import org.apache.maven.artifact.transform.*;
-import org.apache.maven.model.*;
 import org.apache.maven.plugin.*;
 import org.apache.maven.project.*;
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.util.*;
+import org.codehaus.mojo.unix.core.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
@@ -43,84 +45,17 @@ import java.util.*;
  */
 public abstract class MojoHelper
 {
-    private String formatType;
-    private MavenProject project;
-    private MavenProjectHelper mavenProjectHelper;
-    private Defaults defaults;
-    private boolean debug;
-
-    // -----------------------------------------------------------------------
-    //
-    // -----------------------------------------------------------------------
-
-    private boolean attachedMode;
-
-    private File buildDirectory;
-
-    private PackagingFormat format;
-
-    private PackageVersion version;
-
-    private Map<String, Artifact> artifactMap;
-
-    private PackagingMojoParameters mojoParameters;
-
-    // -----------------------------------------------------------------------
-    // This can be overridden
-    // -----------------------------------------------------------------------
-
-    protected abstract void validateMojoSettings()
-        throws MissingSettingException;
-
-    protected abstract void applyFormatSpecificSettingsToPackage( UnixPackage unixPackage );
-
-    // -----------------------------------------------------------------------
-    // The shit
-    // -----------------------------------------------------------------------
-
-    public MojoHelper attachedMode()
+    public static Execution create( Map formats,
+                                    String formatType,
+                                    SnapshotTransformation snapshotTransformation,
+                                    MavenProjectWrapper project,
+                                    boolean debug,
+                                    boolean attachedMode,
+                                    F<UnixPackage, UnixPackage> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage,
+                                    PackagingMojoParameters mojoParameters )
+        throws MojoFailureException, MojoExecutionException
     {
-        attachedMode = true;
-        return this;
-    }
-
-    /**
-     * All the parameters that are supposed to be customized by a Mojo user.
-     */
-    public MojoHelper setMojoParameters( PackagingMojoParameters mojoParameters )
-        throws MojoFailureException
-    {
-        this.mojoParameters = mojoParameters;
-
-        mojoParameters.packages = validatePackages( mojoParameters.packages );
-
-        return this;
-    }
-
-    public final MojoHelper setup( Map formats,
-                                   String formatType,
-                                   SnapshotTransformation snapshotTransformation,
-                                   MavenProject project,
-                                   MavenProjectHelper mavenProjectHelper,
-                                   boolean debug,
-                                   Defaults defaults )
-        throws MojoFailureException
-    {
-        this.formatType = formatType;
-        this.project = project;
-        this.mavenProjectHelper = mavenProjectHelper;
-        this.debug = debug;
-        this.defaults = defaults != null ? defaults : new Defaults();
-
-        artifactMap = new HashMap<String, Artifact>();
-
-        //noinspection unchecked
-        for ( Artifact artifact : (Set<Artifact>) project.getArtifacts() )
-        {
-            artifactMap.put( artifact.getDependencyConflictId(), artifact );
-        }
-
-        format = (PackagingFormat) formats.get( formatType );
+        PackagingFormat format = (PackagingFormat) formats.get( formatType );
 
         if ( format == null )
         {
@@ -130,165 +65,319 @@ public abstract class MojoHelper
         // TODO: This is using a private Maven API that might change. Perhaps use some reflection magic here.
         String timestamp = snapshotTransformation.getDeploymentTimestamp();
 
-        buildDirectory = new File( project.getBuild().getDirectory() );
-
-        version = PackageVersion.create( project.getVersion(), timestamp, project.getArtifact().isSnapshot(),
-            mojoParameters.version, mojoParameters.revision );
-
-        return this;
-    }
-
-    public final void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
         FileObject buildDirectory;
-        FileObject basedir;
 
         try
         {
             FileSystemManager fileSystemManager = VFS.getManager();
-            basedir = fileSystemManager.resolveFile( this.project.getBasedir().getAbsolutePath() );
-            buildDirectory = fileSystemManager.resolveFile( this.buildDirectory.getAbsolutePath() );
+            buildDirectory = fileSystemManager.resolveFile( project.buildDirectory.getAbsolutePath() );
         }
         catch ( FileSystemException e )
         {
             throw new MojoExecutionException( "Error while initializing Commons VFS", e);
         }
 
-        // -----------------------------------------------------------------------
-        // Create each package
-        // -----------------------------------------------------------------------
+        PackageVersion version = PackageVersion.create( project.version, timestamp, project.artifact.isSnapshot(),
+                                                        mojoParameters.version.orSome( (String)null ),
+                                                        mojoParameters.revision.orSome( (Integer)null ) );
 
-        for ( int i = 0; i < mojoParameters.packages.length; i++ )
+        List<P3<UnixPackage, Package, List<AssemblyOperation>>> packages = nil();
+
+        for ( Package pakke : validatePackages( mojoParameters.packages, attachedMode ) )
         {
-            Package pakke = mojoParameters.packages[i];
-
             try
             {
-                String classifier = pakke.getId().equals( "default" ) ? null : pakke.getId();
-
-                String name = "unix/root-" + formatType + "-" + pakke.getId();
+                String name = "unix/root-" + formatType + pakke.classifier.map( dashString ).orSome( "" );
 
                 FileObject packageRoot = buildDirectory.resolveFile( name );
                 packageRoot.createFolder();
 
+                PackageParameters parameters = calculatePackageParameters( format, project, version, mojoParameters, pakke );
+
                 UnixPackage unixPackage = format.start().
-                    basedir( project.getBasedir() ).
+                    mavenCoordinates( parameters.groupId, parameters.artifactId ).
+                    version( parameters.version ).
+                    id( parameters.id ).
+                    name( parameters.name ).
+                    description( parameters.description ).
+                    contact( parameters.contact ).
+                    contactEmail( parameters.contactEmail ).
+                    license( parameters.license ).
+                    architecture( parameters.architecture ).
                     workingDirectory( packageRoot ).
-                    mavenCoordinates( project.getGroupId(), project.getArtifactId(), classifier ).
-                    version( version ).
-                    debug( debug );
+                    debug( debug ).
+                    basedir( project.basedir );
 
                 // -----------------------------------------------------------------------
                 // Let the implementation add its metadata
                 // -----------------------------------------------------------------------
 
-                validateMojoSettings();
-
-                applyFormatSpecificSettingsToPackage( unixPackage );
-
-                unixPackage.afterPropertiesSet();
+                unixPackage = validateMojoSettingsAndApplyFormatSpecificSettingsToPackage.f( unixPackage );
 
                 // -----------------------------------------------------------------------
                 // DO IT
                 // -----------------------------------------------------------------------
 
                 // TODO: here the logic should be different if many packages are to be created.
-                // Example: packageName should be taken from mojoParameters if there is only a single package, if not
+                // Example: name should be taken from mojoParameters if there is only a single package, if not
                 //          it should come from the Pakke object. This should also be validated, at least for
-                //          packageName
+                //          name
 
-                File packageFile = new PackageCreationUtil( pakke, classifier, project, unixPackage, artifactMap,
-                                                            defaults ).
-                    appendAssemblyOperations( mojoParameters.assembly ).
-                    appendAssemblyOperations( pakke.getAssembly() ).
-                    name( pakke.getPackageName(), project.getArtifactId() + ( classifier == null ? "" : "-" + classifier ) ).
-                    contact( mojoParameters.contact ).
-                    contactEmail( mojoParameters.contactEmail ).
-                    shortDescription( pakke.getName(), project.getName() ).
-                    description( pakke.getDescription(), project.getDescription() ).
-                    license( getLicense( format, project ) ).
-                    architecture( mojoParameters.architecture, format.defaultArchitecture() ).
-                    createPackage( basedir );
+                List<AssemblyOperation> assemblyOperations =
+                    createAssemblyOperations( project, mojoParameters, pakke, unixPackage, buildDirectory );
 
-                attach( classifier, unixPackage, packageFile );
+                packages = packages.cons( P.p(unixPackage, pakke, assemblyOperations ) );
             }
             catch ( MissingSettingException e )
             {
-                throw new MojoFailureException(
-                    "Missing required setting '" + e.getSetting() + "' for '" + pakke.getId() + "', format '" + formatType + "'." );
+                String msg = "Missing required setting '" + e.getSetting() + "'";
+                if ( !pakke.classifier.isNone() )
+                {
+                    msg += ", for '" + pakke.classifier.some() + "'";
+                }
+                msg += ", format '" + formatType + "'.";
+                throw new MojoFailureException( msg );
             }
-            catch ( MojoExecutionException e )
+            catch ( IOException e )
             {
-                throw e;
-            }
-            catch ( MojoFailureException e )
-            {
-                throw e;
-            }
-            catch ( Exception e )
-            {
-                throw new MojoExecutionException( "Unable to create package.", e );
+                throw new MojoExecutionException( "Error creating package '" + pakke.classifier + "', format '" + formatType + "'.", e );
             }
         }
+
+        return new Execution( packages, project, formatType, attachedMode );
     }
 
-    private void attach( String classifier, UnixPackage unixPackage, File packageFile )
+    public static class Execution
     {
-        if ( attachedMode )
+        private final List<P3<UnixPackage, Package, List<AssemblyOperation>>> packages;
+
+        private final MavenProjectWrapper project;
+
+        private final String formatType;
+
+        private final boolean attachedMode;
+
+        public Execution( List<P3<UnixPackage, Package, List<AssemblyOperation>>> packages, MavenProjectWrapper project,
+                          String formatType, boolean attachedMode )
         {
-            mavenProjectHelper.attachArtifact( project, unixPackage.getPackageFileExtension(),
-                classifier, packageFile );
+            this.packages = packages;
+            this.project = project;
+            this.formatType = formatType;
+            this.attachedMode = attachedMode;
         }
-        else
+
+        public void execute( MavenProject mavenProject, MavenProjectHelper mavenProjectHelper )
+            throws MojoExecutionException, MojoFailureException
         {
-            if ( classifier == null )
+            for ( P3<UnixPackage, Package, List<AssemblyOperation>> p : packages )
             {
-                project.getArtifact().setFile( packageFile );
+                UnixPackage unixPackage = p._1();
+                Package pakke = p._2();
+
+                try
+                {
+                    // -----------------------------------------------------------------------
+                    // Assemble all the files
+                    // -----------------------------------------------------------------------
+
+                    for ( AssemblyOperation assemblyOperation : p._3() )
+                    {
+                        assemblyOperation.perform( unixPackage );
+                    }
+
+                    // -----------------------------------------------------------------------
+                    // Package the stuff
+                    // -----------------------------------------------------------------------
+
+                    String name = project.artifactId +
+                        pakke.classifier.map( dashString ).orSome( "" ) +
+                        "-" + unixPackage.getVersion().getMavenVersion() +
+                        "." + unixPackage.getPackageFileExtension();
+
+                    File packageFile = new File( project.buildDirectory, name );
+
+                    unixPackage.
+                        packageToFile( packageFile );
+
+                    attach( pakke, unixPackage, packageFile, mavenProject, mavenProjectHelper, attachedMode );
+                }
+                catch ( MojoExecutionException e )
+                {
+                    throw e;
+                }
+                catch ( MojoFailureException e )
+                {
+                    throw e;
+                }
+                catch ( Exception e )
+                {
+                    throw new MojoExecutionException( "Unable to create package.", e );
+                }
+            }
+        }
+
+        private void attach( Package pakke, UnixPackage unixPackage, File packageFile,
+                             MavenProject project, MavenProjectHelper mavenProjectHelper, boolean attachedMode )
+        {
+            if ( attachedMode )
+            {
+                // In attached mode all the packages are required to have an classifier
+                mavenProjectHelper.attachArtifact( project, unixPackage.getPackageFileExtension(), pakke.classifier.some(),
+                                                   packageFile );
             }
             else
             {
-                mavenProjectHelper.attachArtifact( project, formatType, classifier, packageFile );
+                if ( pakke.classifier.isNone() )
+                {
+                    project.getArtifact().setFile( packageFile );
+                }
+                else
+                {
+                    mavenProjectHelper.attachArtifact( project, formatType, pakke.classifier.some(), packageFile );
+                }
             }
         }
     }
 
-    private Package[] validatePackages( Package[] packages )
+    public static class PackageParameters
+    {
+        public final String groupId;
+        public final String artifactId;
+        public final PackageVersion version;
+        public final String id;
+        public final Option<String> name;
+        public final Option<String> description;
+        public final Option<String> contact;
+        public final Option<String> contactEmail;
+        public final String license;
+        public final String architecture;
+
+        public PackageParameters( String groupId, String artifactId, PackageVersion version, String id,
+                                  Option<String> name, Option<String> description, Option<String> contact,
+                                  Option<String> contactEmail, String license, String architecture )
+        {
+            this.groupId = groupId;
+            this.artifactId = artifactId;
+            this.version = version;
+            this.id = id;
+            this.name = name;
+            this.description = description;
+            this.contact = contact;
+            this.contactEmail = contactEmail;
+            this.license = license;
+            this.architecture = architecture;
+        }
+    }
+
+    public static PackageParameters calculatePackageParameters( PackagingFormat format, MavenProjectWrapper project,
+                                                                PackageVersion version,
+                                                                PackagingMojoParameters mojoParameters,
+                                                                Package pakke )
+    {
+        String defaultId = project.groupId + "-" + project.artifactId;
+
+        if ( pakke.classifier.isSome() )
+        {
+            defaultId += "-" + pakke.classifier.some();
+        }
+
+        return new PackageParameters( project.groupId, project.artifactId,
+                                      version,
+                                      pakke.id.orSome( defaultId.toLowerCase() ),
+                                      pakke.name.orElse( mojoParameters.name ).orElse( project.name ),
+                                      pakke.description.orElse( project.description ),
+                                      mojoParameters.contact,
+                                      mojoParameters.contactEmail,
+                                      getLicense( format, project ),
+                                      mojoParameters.architecture.orSome( format.defaultArchitecture() ) );
+    }
+
+    public static List<AssemblyOperation> createAssemblyOperations( MavenProjectWrapper project,
+                                                                    PackagingMojoParameters mojoParameters,
+                                                                    Package pakke, UnixPackage unixPackage,
+                                                                    FileObject basedir )
+        throws IOException, MojoFailureException
+    {
+        Defaults defaults = mojoParameters.defaults.orSome( new Defaults() );
+
+        List<AssemblyOperation> operations = nil();
+
+        // TODO: Add defaults from the package
+        FileAttributes defaultFileAttributes = defaults.getFileAttributes();
+        FileAttributes defaultDirectoryAttributes = defaults.getDirectoryAttributes();
+
+        System.out.println( "defaultFileAttributes = " + defaultFileAttributes );
+        System.out.println( "defaultDirectoryAttributes = " + defaultDirectoryAttributes );
+
+        unixPackage.beforeAssembly( defaultDirectoryAttributes );
+
+        for ( AssemblyOp assemblyOperation : mojoParameters.assembly.append( pakke.assembly ) )
+        {
+            assemblyOperation.setArtifactMap( project.artifactConflictIdMap );
+
+            operations = operations.cons( assemblyOperation.createOperation( basedir, defaultFileAttributes,
+                                                                             defaultDirectoryAttributes ) );
+        }
+
+        return operations;
+    }
+
+    public static List<Package> validatePackages( List<Package> packages, boolean attachedMode )
         throws MojoFailureException
     {
-        if ( packages == null )
+        if ( packages.isEmpty() )
         {
-            packages = new Package[1];
+            packages = single( new Package() );
         }
 
-        if ( packages[0] == null )
-        {
-            packages[0] = new Package();
-        }
+        java.util.Set<String> names = new java.util.HashSet<String>();
 
-        Set<String> names = new HashSet<String>();
+        boolean foundDefault = false;
 
         for (Package pakke : packages)
         {
-            if ( StringUtils.isEmpty( pakke.getId() ) )
+            if ( pakke.classifier.isNone() )
             {
-                pakke.setId( "default" );
+                if ( attachedMode )
+                {
+                    throw new MojoFailureException( "When running in attached mode all packages are required to have an classifier." );
+                }
+
+                if ( foundDefault )
+                {
+                    throw new MojoFailureException( "There can only be one package without an classifier." );
+                }
+
+                foundDefault = true;
+
+                continue;
             }
 
-            if ( names.contains( pakke.getId() ) )
+            if ( names.contains( pakke.classifier.some() ) )
             {
-                throw new MojoFailureException( "Duplicate package id: '" + pakke.getId() + "'." );
+                throw new MojoFailureException( "Duplicate package classifier: '" + pakke.classifier + "'." );
             }
 
-            names.add( pakke.getId() );
+            names.add( pakke.classifier.some() );
+        }
+
+        if ( !attachedMode && !foundDefault )
+        {
+            // The default package was not found, add to the front of the list
+            packages = cons( new Package(), packages );
         }
 
         return packages;
     }
 
-    private static String getLicense( PackagingFormat format, MavenProject project )
+    protected static String defaultValue( String value, String defaultValue )
     {
-        if ( project.getLicenses().size() == 0 )
+        return StringUtils.isNotEmpty( value ) ? value : defaultValue;
+    }
+
+    private static String getLicense( PackagingFormat format, MavenProjectWrapper project )
+    {
+        if ( project.licenses.size() == 0 )
         {
             if ( format.licenseRequired() )
             {
@@ -298,11 +387,14 @@ public abstract class MojoHelper
             return null;
         }
 
-        return ( (License) project.getLicenses().get( 0 ) ).getName();
+        return project.licenses.get( 0 ).getName();
     }
 
-    protected static String defaultValue( String value, String defaultValue )
+    static F<String, String> dashString = new F<String, String>()
     {
-        return StringUtils.isNotEmpty( value ) ? value : defaultValue;
-    }
+        public String f( String s )
+        {
+            return "-" + s;
+        }
+    };
 }

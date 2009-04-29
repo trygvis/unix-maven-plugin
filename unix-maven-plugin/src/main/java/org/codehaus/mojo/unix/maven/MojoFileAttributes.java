@@ -25,73 +25,72 @@ package org.codehaus.mojo.unix.maven;
  */
 
 import fj.*;
+import fj.data.*;
+import static fj.data.List.*;
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.java.StringF.*;
 
 /**
+ * TODO: Re-work how these attributes are validated. Right now a RuntimeException is thrown, but the
+ * create() method should return an Either or Option with an validation message on errors.
+ *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
+ * @version $Id: FileAttributes.java 9221 2009-03-15 22:52:14Z trygvis $
  */
-public class FileAttributes
+public class MojoFileAttributes
 {
-    public String user;
+    public Option<String> user = none();
 
-    public String group;
+    public Option<String> group = none();
 
-    public UnixFileMode mode = null;
+    public Option<UnixFileMode> mode = none();
 
-    public FileAttributes()
+    public List<String> tags = nil();
+    
+    public MojoFileAttributes()
     {
     }
 
     // Package protected for Defaults
-    FileAttributes( String user, String group, UnixFileMode mode )
+    MojoFileAttributes( String user, String group, UnixFileMode mode )
     {
-        this.user = user;
-        this.group = group;
-        this.mode = mode;
-    }
-
-    public String getUser()
-    {
-        return user;
+        this.user = fromNull( user );
+        this.group = fromNull( group );
+        this.mode = fromNull( mode );
     }
 
     public void setUser( String user )
     {
-        this.user = user;
-    }
-
-    public String getGroup()
-    {
-        return group;
+        this.user = fromNull( user );
     }
 
     public void setGroup( String group )
     {
-        this.group = group;
-    }
-
-    public UnixFileMode getMode()
-    {
-        return mode;
+        this.group = fromNull( group );
     }
 
     public void setMode( String mode )
     {
-        this.mode = UnixFileMode.fromInt( Integer.parseInt( mode, 8 ) );
+        this.mode = some( UnixFileMode.fromInt( Integer.parseInt( mode, 8 ) ) );
+    }
+
+    public void setTags( String tags )
+    {
+        this.tags = list( tags.split( "," ) ).map( trim );
     }
 
     public org.codehaus.mojo.unix.FileAttributes create()
     {
-        return new org.codehaus.mojo.unix.FileAttributes( fromNull( user ), fromNull( group ), fromNull( mode ) );
+        return new org.codehaus.mojo.unix.FileAttributes( user, group, mode, tags );
     }
 
-    public static final F<FileAttributes, org.codehaus.mojo.unix.FileAttributes> create_ = new F<FileAttributes, org.codehaus.mojo.unix.FileAttributes>()
-    {
-        public org.codehaus.mojo.unix.FileAttributes f( FileAttributes fileAttributes )
+    public static final F<MojoFileAttributes, org.codehaus.mojo.unix.FileAttributes> create_ =
+        new F<MojoFileAttributes, org.codehaus.mojo.unix.FileAttributes>()
         {
-            return fileAttributes.create();
-        }
-    };
+            public org.codehaus.mojo.unix.FileAttributes f( MojoFileAttributes fileAttributes )
+            {
+                return fileAttributes.create();
+            }
+        };
 }

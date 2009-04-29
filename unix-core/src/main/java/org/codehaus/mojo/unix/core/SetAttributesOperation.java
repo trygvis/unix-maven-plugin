@@ -61,7 +61,7 @@ public class SetAttributesOperation
         if ( fileAttributes.isSome() )
         {
             F2<UnixFsObject, FileAttributes, FileAttributes> f = new ApplyAttributes( UnixFsObject.RegularFile.class, basedir, fileAttributes.some() );
-            applyFileAttributes = fromNull( f );
+            applyFileAttributes = some( f );
         }
         else
         {

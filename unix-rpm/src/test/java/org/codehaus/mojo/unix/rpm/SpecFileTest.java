@@ -29,10 +29,11 @@ import fj.data.*;
 import static fj.data.Option.*;
 import junit.framework.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
@@ -74,17 +75,22 @@ public class SpecFileTest
         FileAttributes usrbinAttributes = new FileAttributes( myuser, mygroup, some( _0755 ) );
         FileAttributes binAttributes = new FileAttributes( myuser, mygroup, UnixFileMode.none );
 
-        UnixFsObject.Directory usrbin = directory( fromString( "/usr/bin" ), lastModified, usrbinAttributes );
-        UnixFsObject.Directory bin = directory( fromString( "/bin" ), lastModified, binAttributes );
+        UnixFsObject.Directory usrbin = directory( relativePath( "/usr/bin" ), lastModified, usrbinAttributes );
+        UnixFsObject.Directory bin = directory( relativePath( "/bin" ), lastModified, binAttributes );
 
-        FileAttributes fileAttributes = new FileAttributes( myuser, mygroup, some( _0644 ) );
-        RelativePath extract2Jar = fromString( "/extract2.jar" );
+        FileAttributes fileAttributes = new FileAttributes( myuser, mygroup, some( _0644 ) ).addTag( "unused" );
+        RelativePath extract2Jar = relativePath( "/extract2.jar" );
         FileAttributes extract2JarAttributes = fileAttributes.user( "extract" );
 
         specFile.addDirectory( usrbin );
         specFile.addDirectory( bin );
-        specFile.addFile( regularFile( fromString( "/extract.jar" ), lastModified, 10, some( fileAttributes ) ) );
+        specFile.addFile( regularFile( relativePath( "/extract.jar" ), lastModified, 10, some( fileAttributes ) ) );
         specFile.addFile( regularFile( extract2Jar, lastModified, 10, some( fileAttributes ) ) );
+        specFile.addFile( regularFile( relativePath( "/a" ), lastModified, 10, some( fileAttributes.addTag( "doc" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/b" ), lastModified, 10, some( fileAttributes.addTag( "config" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/c" ), lastModified, 10, some( fileAttributes.addTag( "rpm:missingok" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/d" ), lastModified, 10, some( fileAttributes.addTag( "rpm:noreplace" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/e" ), lastModified, 10, some( fileAttributes.addTag( "rpm:ghost" ) ) ) );
         specFile.apply( filter( extract2Jar, extract2JarAttributes ) );
 
         assertEquals( header.
@@ -92,11 +98,15 @@ public class SpecFileTest
             add( "%description" ).
             add().
             add( "%files" ).
-            add( "%dir %attr(0644,extract,mygroup) /" ).
-            add( "%attr(0644,extract,mygroup) /extract2.jar" ).
-            add( "%attr(0644,myuser,mygroup) /extract.jar" ).
+            add( "%doc %attr(0644,myuser,mygroup) /a" ).
+            add( "%config %attr(0644,myuser,mygroup) /b" ).
             add( "%dir %attr(-,myuser,mygroup) /bin" ).
-            add( "%dir %attr(-,-,-) /usr" ).
+            add( "%config(missingok) %attr(0644,myuser,mygroup) /c" ).
+            add( "%config(noreplace) %attr(0644,myuser,mygroup) /d" ).
+            add( "%ghost %attr(0644,myuser,mygroup) /e" ).
+            add( "%attr(0644,myuser,mygroup) /extract.jar" ).
+            add( "%attr(0644,extract,mygroup) /extract2.jar" ).
+            add( "%dir %attr(-,root,root) /usr" ).
             add( "%dir %attr(0755,myuser,mygroup) /usr/bin" ).
             toString(), toString( specFile ) );
     }
@@ -114,7 +124,6 @@ public class SpecFileTest
             add( "Yo yo" ).
             add().
             add( "%files" ).
-            add( "%dir %attr(-,-,-) /" ).
             toString(), toString( specFile ) );
     }
 
@@ -130,7 +139,6 @@ public class SpecFileTest
             add( "%description" ).
             add().
             add( "%files" ).
-            add( "%dir %attr(-,-,-) /" ).
             add().
             add( "%post" ).
             add( "%include " + specFile.includePost.getAbsolutePath() ).toString(), toString( specFile ) );
@@ -146,14 +154,16 @@ public class SpecFileTest
 
     private SpecFile testSpecFile()
     {
+        FileAttributes fileAttributes = EMPTY.user( "root" ).group( "root" );
+
         SpecFile specFile = new SpecFile();
-        specFile.groupId = "groupId";
-        specFile.artifactId = "artifactId";
+        specFile.name = "groupid-artifactid";
         specFile.version = PackageVersion.create( "1.0", "now", false, null, null );
         specFile.summary = "My summary";
         specFile.license = "License";
         specFile.group = "My Group";
         specFile.buildRoot = new File( "build-root" );
+        specFile.beforeAssembly( UnixFsObject.directory( BASE, new LocalDateTime(), fileAttributes ) );
         return specFile;
     }
 

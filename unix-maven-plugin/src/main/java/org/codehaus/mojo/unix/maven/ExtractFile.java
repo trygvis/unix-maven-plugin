@@ -28,6 +28,7 @@ import org.apache.commons.vfs.*;
 import static org.apache.commons.vfs.VFS.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.*;
 
 import java.io.*;
 
@@ -50,11 +51,13 @@ public class ExtractFile
         this.archive = archive;
     }
 
-    public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                              FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
         File file = validateFileIsReadableFile( archive, "archive" );
 
-        return createOperationInternal( getManager().resolveFile( file.getAbsolutePath() ), defaults );
+        return createOperationInternal( getManager().resolveFile( file.getAbsolutePath() ), defaultFileAttributes,
+                                        defaultDirectoryAttributes );
     }
 }

@@ -38,12 +38,6 @@
       <type>war</type>
     </dependency>
   </dependencies>
-  <repositories>
-    <repository>
-      <id>java.net</id>
-      <url>http://download.java.net/maven/2</url>
-    </repository>
-  </repositories>
   <build>
     <plugins>
       <plugin>
@@ -69,6 +63,13 @@
                 <mode>0666</mode>
               </attributes>
             </copy-artifact>
+            <copy-file>
+              <path>goals.txt</path>
+              <toFile>/usr/share/hudson/README.txt</toFile>
+              <attributes>
+                <tags>class:doc</tags>
+              </attributes>
+            </copy-file>
             <symlink>
               <path>/var/log/hudson</path>
               <value>/var/opt/hudson/log</value>

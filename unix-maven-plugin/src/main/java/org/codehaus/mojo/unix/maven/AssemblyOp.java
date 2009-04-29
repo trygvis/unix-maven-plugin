@@ -24,15 +24,13 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import static fj.Function.*;
 import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.maven.artifact.*;
 import org.apache.maven.plugin.*;
-import org.codehaus.mojo.unix.FileAttributes;
-import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
@@ -59,7 +57,8 @@ public abstract class AssemblyOp
     //
     // -----------------------------------------------------------------------
 
-    public abstract AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+    public abstract AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                                       FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException;
 
     // -----------------------------------------------------------------------
@@ -75,20 +74,6 @@ public abstract class AssemblyOp
         throws FileSystemException
     {
         return basedir.resolveFile( file.getAbsolutePath() );
-    }
-
-    public static FileAttributes applyFileDefaults( Defaults defaults, FileAttributes attributes )
-    {
-        return compose( curry( useAsDefaultsFor, Defaults.DEFAULT_FILE_ATTRIBUTES ),
-                        curry( useAsDefaultsFor, defaults.getFileAttributes() ) ).
-            f( attributes );
-    }
-
-    public static FileAttributes applyDirectoryDefaults( Defaults defaults, FileAttributes attributes )
-    {
-        return compose( curry( useAsDefaultsFor, Defaults.DEFAULT_DIRECTORY_ATTRIBUTES ),
-                        curry( useAsDefaultsFor, defaults.getDirectoryAttributes() ) ).
-            f( attributes );
     }
 
     protected static String nullifEmpty( String artifact )

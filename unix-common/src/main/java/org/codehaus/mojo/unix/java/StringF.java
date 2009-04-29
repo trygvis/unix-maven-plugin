@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.java;
  */
 
 import fj.*;
+import fj.data.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -32,19 +33,69 @@ import fj.*;
  */
 public class StringF
 {
+    public static final F2<String, String, Boolean> equals = new F2<String, String, Boolean>()
+    {
+        public Boolean f( final String a, final String b )
+        {
+            return a.equals( b );
+        }
+    };
+
     public static final F<String, Boolean> isEmpty = new F<String, Boolean>()
     {
-        public Boolean f( final String s )
+        public Boolean f( final String string )
         {
-            return s.length() == 0;
+            return string.length() == 0;
+        }
+    };
+
+    public static final F3<String, String, String, String> replaceAll = new F3<String, String, String, String>()
+    {
+        public String f( final String string, final String regex, final String replacement )
+        {
+            return string.replaceAll( regex, replacement );
+        }
+    };
+
+    public static final F2<String, String, List<String>> split = new F2<String, String, List<String>>()
+    {
+        public List<String> f( final String string, final String regex )
+        {
+            return List.list( string.split( regex ) );
         }
     };
 
     public static final F2<String, String, Boolean> startsWith = new F2<String, String, Boolean>()
     {
-        public Boolean f( final String s, final String startsWith )
+        public Boolean f( final String string, final String startsWith )
         {
-            return s.startsWith( startsWith );
+            return string.startsWith( startsWith );
+        }
+    };
+
+    public static final F<String, String> trim = new F<String, String>()
+    {
+        public String f( final String a )
+        {
+            return a.trim();
+        }
+    };
+
+    // -----------------------------------------------------------------------
+    // Extra
+    // -----------------------------------------------------------------------
+
+    public static final F<String, F2<String, String, String>> joiner = new F<String, F2<String, String, String>>()
+    {
+        public F2<String, String, String> f( final String separator )
+        {
+            return new F2<String, String, String>()
+            {
+                public String f( String s, String o )
+                {
+                    return s + separator + o;
+                }
+            };
         }
     };
 }

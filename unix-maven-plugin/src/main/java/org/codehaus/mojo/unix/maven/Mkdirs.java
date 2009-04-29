@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.maven;
 
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 
 /**
@@ -39,29 +40,15 @@ public class Mkdirs
 
     private String[] paths;
 
-    private FileAttributes attributes = new FileAttributes();
+    private MojoFileAttributes attributes = new MojoFileAttributes();
 
     public Mkdirs()
     {
         super( "mkdirs" );
     }
 
-    public void setPath( String path )
-    {
-        this.path = path;
-    }
-
-    public void setPaths( String[] paths )
-    {
-        this.paths = paths;
-    }
-
-    public void setAttributes( FileAttributes attributes )
-    {
-        this.attributes = attributes;
-    }
-
-    public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                              FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
         validateEitherIsSet(path, paths, "path", "paths");
@@ -71,6 +58,7 @@ public class Mkdirs
             paths = new String[]{path};
         }
 
-        return new CreateDirectoriesOperation( paths, applyDirectoryDefaults( defaults, attributes.create() ) );
+        return new CreateDirectoriesOperation( paths,
+                                               defaultDirectoryAttributes.useAsDefaultsFor( attributes.create() ) );
     }
 }

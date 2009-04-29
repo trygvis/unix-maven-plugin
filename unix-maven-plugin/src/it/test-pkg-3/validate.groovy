@@ -20,7 +20,7 @@ success &= assertRelaxed(
         PkginfoUtil.getPackageInforForDevice(main).some());
 
 success &= assertPkgEntries(main, [
-        directory("/usr", "0755", "nobody", "nogroup", none()),
+        directory("/usr", "17777777777", "?", "?", none()),
         directory("/usr/share", "0755", "nobody", "nogroup", none()),
         directory("/usr/share/hudson", "0755", "nobody", "nogroup", none()),
         directory("/usr/share/hudson/lib", "0755", "nobody", "nogroup", none()),
@@ -42,7 +42,7 @@ success &= assertRelaxed(
         PkginfoUtil.getPackageInforForDevice(slave).some());
 
 success &= assertPkgEntries(slave, [
-        directory("/usr", "0755", "nobody", "nogroup", none()),
+        directory("/usr", "17777777777", "?", "?", none()),
         directory("/usr/share", "0755", "nobody", "nogroup", none()),
         directory("/usr/share/hudson", "0755", "nobody", "nogroup", none()),
         directory("/usr/share/hudson/lib", "0755", "nobody", "nogroup", none()),

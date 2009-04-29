@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.apache.commons.vfs.*;
 
 import java.io.*;
@@ -52,7 +53,7 @@ public abstract class UnixPackage
     // Maven Meta Data
     // -----------------------------------------------------------------------
 
-    public UnixPackage mavenCoordinates( String groupId, String artifactId, String classifier )
+    public UnixPackage mavenCoordinates( String groupId, String artifactId )
     {
         return this;
     }
@@ -73,10 +74,7 @@ public abstract class UnixPackage
         return this;
     }
 
-    /**
-     * A unique identifier of the package.
-     */
-    public UnixPackage name( String name )
+    public UnixPackage id( String id )
     {
         return this;
     }
@@ -84,7 +82,7 @@ public abstract class UnixPackage
     /**
      * A single-line description of the package.
      */
-    public UnixPackage shortDescription( String shortDescription )
+    public UnixPackage name( Option<String> name )
     {
         return this;
     }
@@ -92,7 +90,7 @@ public abstract class UnixPackage
     /**
      * A multi-line description of the package.
      */
-    public UnixPackage description( String description )
+    public UnixPackage description( Option<String> description )
     {
         return this;
     }
@@ -102,12 +100,12 @@ public abstract class UnixPackage
         return this;
     }
 
-    public UnixPackage contact( String contact )
+    public UnixPackage contact( Option<String> contact )
     {
         return this;
     }
 
-    public UnixPackage contactEmail( String contactEmail )
+    public UnixPackage contactEmail( Option<String> contactEmail )
     {
         return this;
     }
@@ -143,8 +141,8 @@ public abstract class UnixPackage
         return this;
     }
 
-    public abstract void afterPropertiesSet()
-        throws Exception;
+    public abstract void beforeAssembly( FileAttributes defaultDirectoryAttributes )
+        throws IOException;
 
     public abstract void packageToFile( File packageFile )
         throws Exception;

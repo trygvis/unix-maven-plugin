@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven;
+package org.codehaus.mojo.unix.maven.pkg;
 
 /*
  * The MIT License
@@ -24,33 +24,33 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import fj.*;
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.pkg.*;
+import org.codehaus.mojo.unix.maven.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
+ * @version $Id: DpkgMojoHelper.java 9221 2009-03-15 22:52:14Z trygvis $
  */
-class PkgMojoHelper
-    extends MojoHelper
+public class PkgMojoUtil
 {
-    private PkgSpecificSettings pkg;
-
-    public PkgMojoHelper( PkgSpecificSettings pkg )
+    public static final F2<PkgSpecificSettings, UnixPackage, UnixPackage>
+        validateMojoSettingsAndApplyFormatSpecificSettingsToPackage = new F2<PkgSpecificSettings, UnixPackage, UnixPackage>()
     {
-        this.pkg = pkg;
-    }
+        public UnixPackage f( PkgSpecificSettings pkgSpecificSettings, UnixPackage unixPackage )
+        {
+            return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( pkgSpecificSettings, unixPackage );
+        }
+    };
 
-    protected void validateMojoSettings()
+    public static UnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( PkgSpecificSettings pkg,
+                                                                                           UnixPackage unixPackage )
     {
         if ( pkg == null )
         {
             pkg = new PkgSpecificSettings();
         }
-    }
 
-    protected void applyFormatSpecificSettingsToPackage( UnixPackage unixPackage )
-    {
 //        // TODO: add the extra prototype lines
 //        PrototypeEntry[] extraPrototype = new PrototypeEntry[pkg.getExtraPrototype().length];
 //
@@ -59,7 +59,7 @@ class PkgMojoHelper
 //            extraPrototype[i] = PrototypeEntry.fromLine( pkg.getExtraPrototype()[i] );
 //        }
 
-        PkgUnixPackage.cast( unixPackage ).
-            classes( pkg.getClasses() );
+        return PkgUnixPackage.cast( unixPackage ).
+            classes( pkg.classes );
     }
 }

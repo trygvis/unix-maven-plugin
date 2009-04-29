@@ -42,6 +42,11 @@
             <th>Pkg</th>
             <th>Rpm</th>
           </tr>
+
+          <!--
+          TODO: Add Package.id .. and all other missing fields from MojoParameters and Package
+          -->
+
           <tr class="b">
             <td><code>config.contact</code></td>
             <td>contact</td>

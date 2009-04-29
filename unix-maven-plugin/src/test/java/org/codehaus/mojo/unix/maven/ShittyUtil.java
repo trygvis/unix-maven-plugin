@@ -35,6 +35,7 @@ import org.codehaus.mojo.unix.FileAttributes;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.dpkg.*;
 import org.codehaus.mojo.unix.pkg.*;
+import org.codehaus.mojo.unix.pkg.prototype.*;
 import org.codehaus.mojo.unix.rpm.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
@@ -52,7 +53,7 @@ import java.util.zip.*;
  */
 public class ShittyUtil
 {
-    public static final LocalDateTime START_OF_TIME = new LocalDateTime( 1970, 1, 1, 0, 0 );
+    public static final LocalDateTime START_OF_TIME = PrototypeFile.START_OF_TIME;
 
     public static final OutputStreamWriter out = new OutputStreamWriter( System.out );
 

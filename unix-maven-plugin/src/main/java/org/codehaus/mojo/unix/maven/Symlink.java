@@ -57,11 +57,12 @@ public class Symlink
         this.value = value;
     }
 
-    public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                              FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
-        FileAttributes attributes = new FileAttributes( null, null, UnixFileMode._0777 );
+        MojoFileAttributes attributes = new MojoFileAttributes( null, null, UnixFileMode._0777 );
 
-        return new SymlinkOperation( path, value, applyFileDefaults( defaults, attributes.create() ) );
+        return new SymlinkOperation( path, value, defaultFileAttributes.useAsDefaultsFor( attributes.create() ) );
     }
 }

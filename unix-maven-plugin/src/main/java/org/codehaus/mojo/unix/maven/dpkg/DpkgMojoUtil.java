@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven;
+package org.codehaus.mojo.unix.maven.dpkg;
 
 /*
  * The MIT License
@@ -24,26 +24,28 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import fj.*;
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.dpkg.*;
+import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.plexus.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
+ * @version $Id: DpkgMojoHelper.java 9221 2009-03-15 22:52:14Z trygvis $
  */
-class DpkgMojoHelper
-    extends MojoHelper
+public class DpkgMojoUtil
 {
-    private final DpkgSpecificSettings dpkg;
-
-    public DpkgMojoHelper( DpkgSpecificSettings dpkg )
+    public static final F2<DpkgSpecificSettings, UnixPackage, UnixPackage>
+        validateMojoSettingsAndApplyFormatSpecificSettingsToPackage = new F2<DpkgSpecificSettings, UnixPackage, UnixPackage>()
     {
-        this.dpkg = dpkg;
-    }
+        public UnixPackage f( DpkgSpecificSettings dpkgSpecificSettings, UnixPackage unixPackage )
+        {
+            return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( dpkgSpecificSettings, unixPackage );
+        }
+    };
 
-    protected void validateMojoSettings()
-        throws MissingSettingException
+    public static UnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( DpkgSpecificSettings dpkg,
+                                                                                           UnixPackage unixPackage )
     {
         if ( dpkg == null )
         {
@@ -59,11 +61,8 @@ class DpkgMojoHelper
         {
             throw new MissingSettingException( "Section has to be specified." );
         }
-    }
 
-    protected void applyFormatSpecificSettingsToPackage( UnixPackage unixPackage )
-    {
-        DpkgUnixPackage.cast( unixPackage ).
+        return DpkgUnixPackage.cast( unixPackage ).
             priority( dpkg.getPriority() ).
             section( dpkg.getSection() );
     }

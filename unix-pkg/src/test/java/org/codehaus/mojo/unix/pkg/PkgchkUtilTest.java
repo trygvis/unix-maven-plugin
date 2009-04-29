@@ -51,24 +51,24 @@ public class PkgchkUtilTest
             add( "Expected sum(1) of contents: 3301" ).
             add( "Expected last modification: Jan 30 15:11:40 2009" ).
             add( "Current status: installed" ).
-            add( "" ).
+            add().
             add( "Pathname: /var/log/hudson" ).
             add( "Type: symbolic link" ).
             add( "Source of link: /var/opt/hudson/log" ).
             add( "Current status: installed" ).
-            add( "" ).
+            add().
             add( "Pathname: /usr/lib" ).
             add( "Type: directory" ).
             add( "Expected mode: 0755" ).
             add( "Expected owner: root" ).
             add( "Expected group: bin" ).
-            add( "" ).
+            add().
             add( "Pathname: pkginfo" ).
             add( "Type: installation file" ).
             add( "Expected file size (bytes): 143" ).
             add( "Expected sum(1) of contents: 11066" ).
             add( "Expected last modification: Feb 25 15:13:52 2009" ).
-            add( "" ).
+            add().
             add( "## Checking is complete." );
 
         PkgchkUtil.PkgchkParser parser = new PkgchkUtil.PkgchkParser();

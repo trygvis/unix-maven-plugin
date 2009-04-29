@@ -102,6 +102,18 @@ o Move all common objects to unix-common or unix-core
 o Add Option.someE(String msg) like Either.XProjection.valueE();
 o Add Hash.keySet() that return a Set
 
+o Figure out why there is no parMap(Stream). If reasonable, document it on Stream.
+o P.identity{1,8}
+
+o Submit FjIterator
+ - MappingIterator
+ - FilteringIterator
+ - Add FjIterator.toOption()
+ - Add FjIterator.toList()
+o Create FjFile:
+ - Iterator<File> listFiles
+ - Iterator<File> findFiles(includes, excludes)
+
 == Pkg ==
 
 o Support custom class installation files (like i.deamon, r.daemon)
@@ -124,6 +136,8 @@ o <organization> => %vendor
 o Explain possible workflow and where the different Mojos fit in
 
 o Need *lots* of includes/excludes examples, with regexp rewriting
+
+o Document concept "attached mode" vs "primary package mode"
 
 == Integration Test ==
 
@@ -172,27 +186,37 @@ o Subversion properties
 
 == For 1.0-alpha-4 ==
 
-o Support 'tar' and 'zip' formats
+o MUNIX-12, MUNIX-13: Support 'tar' and 'zip' formats
   Create integration tests similar to the existing tests
-o Rename "pkg" to "sysv-pkg"
-o Implement support for "%config" and "%doc" in RPM, file classes in solaris.
+  - First version of zip done, test-zip-1
+o MUNIX-14: Rename "pkg" to "sysv-pkg"
+o MUNIX-6: set-attributes doesn't pick up paths that aren't explicitly created with mkdirs
+o DONE: MUNIX-3, MUNIX-4: Implement support for "%config" and "%doc" in RPM, file classes in solaris.
  - Check how this work in debian
-o Improve the error message is an artifact can't be found.
+o MUNIX-15: Improve the error message is an artifact can't be found.
  - Create special exception that is caught in the mojo.
 o Run the plugin through a profiler
 o Document how to use the u-m-p in a development process. Explain the goals for creating index files, and how to
   run these tools automatically on commit hooks etc.
-o Re-implement the FsFileCollector to use a tree internally representing a file system
+o DONE: Re-implement the FsFileCollector to use a tree internally representing a file system
   - Makes it easier to debug, should be possible to write out the entire tree as a part of the building process
   - Makes it easier to implement proper mkdirs
+o MUNIX-16: Scripts documentation
+ - src/main/unix/scripts, common vs package specific directories
 o Document the flow of the assembly operations. Like:
   1) Find files
   2) Match against include and exclude
   3) Rewrite with pattern
   4) Set attributes
+o MUNIX-17: Go over how versions and revisions are handles.
+ - DONE: In pkginfo a SNAPSHOT is not resolved to a specific timestamp.
+ - Document how version, revision etc are calculated. For both releases and snapshots
+o DONE: MUNIX-20: Support per-package defaults too
+o Update mapping.xml, it is outdated now
 
 === Nits ===
 
+o Replace all "fileAttributes" with "file-attributes" etc
 o Write proper integation test of FsFileCollector as a replacement of the old SetAttributesOperationTest.
 o Consider creating a class that represent a complete set of attributes on a file.
   There has been a few surprises ("some() on None" exceptions) where the attribute was missing. Might be possible to
@@ -218,13 +242,5 @@ o DONE: Pkg: support all installation file types
 o DONE: Implement symlinks
 o DONE: Support chmod assembly operation
  - Has to support includes/excludes
-o Assembly Operation documentation
+o DONE: Assembly Operation documentation
  - Document each assembly operation separately
-o Scripts documentation
- - src/main/unix/scripts, common vs package specific directories
-
-=== Nits ===
-
-o Make sure the site looks good.
- - Check internal links
-o Remove RelativePath.asAbsolute()

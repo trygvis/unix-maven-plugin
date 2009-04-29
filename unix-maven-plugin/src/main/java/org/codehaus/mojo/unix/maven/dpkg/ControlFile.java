@@ -51,11 +51,13 @@ class ControlFile
 
     public String description;
 
+    // TODO: This should be renamed to name
     public String shortDescription;
 
     public String maintainer;
 
     // Debian specific
+    // TODO: This should be renamed to "id" or something similar in the dpkg nomenclature
     public String _package;
 
     public String architecture = "any";

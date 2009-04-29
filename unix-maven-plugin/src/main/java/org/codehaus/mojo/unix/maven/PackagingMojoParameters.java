@@ -1,5 +1,9 @@
 package org.codehaus.mojo.unix.maven;
 
+import fj.data.*;
+import static fj.data.Option.*;
+import static fj.data.List.*;
+
 /*
  * The MIT License
  *
@@ -32,15 +36,16 @@ package org.codehaus.mojo.unix.maven;
  */
 public class PackagingMojoParameters
 {
-    public final String name;
-    public final String version;
-    public final Integer revision;
-    public final String description;
-    public final String contact;
-    public final String contactEmail;
-    public final String architecture;
-    public final AssemblyOp[] assembly;
-    public Package[] packages;
+    public final Option<String> name;
+    public final Option<String> version;
+    public final Option<Integer> revision;
+    public final Option<String> description;
+    public final Option<String> contact;
+    public final Option<String> contactEmail;
+    public final Option<String> architecture;
+    public final Option<Defaults> defaults;
+    public final List<AssemblyOp> assembly;
+    public final List<Package> packages;
 
     public PackagingMojoParameters( String name,
                                     String version,
@@ -49,17 +54,19 @@ public class PackagingMojoParameters
                                     String contact,
                                     String contactEmail,
                                     String architecture,
+                                    Defaults defaults,
                                     AssemblyOp[] assembly,
                                     Package[] packages )
     {
-        this.name = name;
-        this.version = version;
-        this.revision = revision;
-        this.description = description;
-        this.contact = contact;
-        this.contactEmail = contactEmail;
-        this.architecture = architecture;
-        this.assembly = assembly;
-        this.packages = packages;
+        this.name = fromNull( name );
+        this.version = fromNull( version );
+        this.revision = fromNull( revision );
+        this.description = fromNull( description );
+        this.contact = fromNull( contact );
+        this.contactEmail = fromNull( contactEmail );
+        this.architecture = fromNull( architecture );
+        this.defaults = Option.fromNull( defaults );
+        this.assembly = assembly == null ? List.<AssemblyOp>nil() : list( assembly );
+        this.packages = packages == null ? List.<Package>nil() : list( packages );
     }
 }

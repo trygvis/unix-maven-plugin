@@ -25,15 +25,18 @@ package org.codehaus.mojo.unix.maven.rpm;
  */
 
 import fj.*;
+import fj.data.*;
 import org.apache.commons.vfs.*;
-import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.rpm.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.mojo.unix.util.vfs.*;
 import org.codehaus.plexus.util.*;
+import org.joda.time.*;
 
 import java.io.*;
 
@@ -44,9 +47,7 @@ import java.io.*;
 public class RpmUnixPackage
     extends UnixPackage
 {
-    private SpecFile specFile = new SpecFile();
-
-    private RpmTool rpmTool = new RpmTool();
+    private SpecFile specFile;
 
     private FsFileCollector fileCollector;
 
@@ -67,33 +68,25 @@ public class RpmUnixPackage
     public RpmUnixPackage()
     {
         super( "rpm" );
+
+        specFile = new SpecFile();
     }
 
-    public UnixPackage mavenCoordinates( String groupId, String artifactId, String classifier )
+    public UnixPackage id( String id )
     {
-        specFile.groupId = groupId;
-        specFile.artifactId = artifactId;
-
-        rpmTool.groupId = groupId;
-        rpmTool.artifactId = artifactId;
+        specFile.name = id;
         return this;
     }
 
-    public UnixPackage name( String name )
+    public UnixPackage name( Option<String> name )
     {
-        specFile.name = name;
+        specFile.summary = name.orSome( "" ); // TODO: This is not right
         return this;
     }
 
-    public UnixPackage shortDescription( String shortDescription )
+    public UnixPackage description( Option<String> description )
     {
-        specFile.summary = shortDescription;
-        return this;
-    }
-
-    public UnixPackage description( String description )
-    {
-        specFile.description = description;
+        specFile.description = description.orSome( "" ); // TODO: This is not right
         return this;
     }
 
@@ -123,9 +116,10 @@ public class RpmUnixPackage
         return this;
     }
 
-    public void afterPropertiesSet()
-        throws Exception
+    public void beforeAssembly( FileAttributes defaultDirectoryAttributes )
+        throws IOException
     {
+        specFile.beforeAssembly( directory( BASE, new LocalDateTime(), defaultDirectoryAttributes ) );
         fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
     }
 
@@ -178,8 +172,8 @@ public class RpmUnixPackage
         File rpms = new File( workingDirectoryF, "RPMS" );
         File specsDir = new File( workingDirectoryF, "SPECS" );
         File tmp = new File( workingDirectoryF, "tmp" );
-
-        File specFilePath = new File( specsDir, rpmTool.getBaseName() + ".spec" );
+        
+        File specFilePath = new File( specsDir, specFile.name + ".spec" );
 
         FileUtils.forceMkdir( new File( workingDirectoryF, "BUILD" ) );
         FileUtils.forceMkdir( rpms );

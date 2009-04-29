@@ -51,10 +51,11 @@ public class PrototypeFileTest
 
     RelativePath extractJarPath = fromString( "extract.jar" );
     RelativePath bashProfilePath = fromString( "/opt/jetty/.bash_profile" );
+    RelativePath specialPath = fromString( "/special" );
+    RelativePath smfManifestXmlPath = fromString( "/smf/manifest.xml" );
 
     FileAttributes fileAttributes = new FileAttributes( some( "nouser" ), some( "nogroup" ), some( _0644 ) );
     FileAttributes dirAttributes = new FileAttributes( some( "nouser" ), some( "nogroup" ), some( _0755 ) );
-    RelativePath specialPath = fromString( "/special" );
 
     FileAttributes defaultAttributes = EMPTY.user( "default" ).group( "default" );
     Directory defaultDirectory = directory( BASE, new LocalDateTime( 0 ), defaultAttributes );
@@ -74,9 +75,11 @@ public class PrototypeFileTest
         FileObject extractJarObject = fsManager.resolveFile( getTestPath( "src/test/non-existing/extract.jar" ) );
         UnixFsObject.RegularFile extractJar = regularFile( extractJarPath, dateTime, 0, some( fileAttributes ) );
         UnixFsObject.RegularFile bashProfile = regularFile( bashProfilePath, dateTime, 0, some( fileAttributes ) );
+        UnixFsObject.RegularFile smfManifestXml = regularFile( smfManifestXmlPath, dateTime, 0, some( fileAttributes.addTag( "class:smf" ) ) );
 
         prototypeFile.addFile( bashProfileObject, bashProfile );
         prototypeFile.addFile( extractJarObject, extractJar );
+        prototypeFile.addFile( extractJarObject, smfManifestXml );
         prototypeFile.addDirectory( directory( BASE, dateTime, dirAttributes ) );
         prototypeFile.addDirectory( directory( specialPath, dateTime, dirAttributes ) );
         prototypeFile.apply( filter( extractJarPath, fileAttributes.user( "funnyuser" ) ) );
@@ -88,11 +91,13 @@ public class PrototypeFileTest
 
         assertEquals( new LineFile().
             add( "d none / 0755 nouser nogroup" ).
-            add( "d none /special 0755 nouser funnygroup" ).
             add( "f none /extract.jar=" + extractJarObject.getName().getPath() + " 0644 funnyuser nogroup" ).
             add( "d none /opt ? default default" ).
             add( "d none /opt/jetty ? default default" ).
             add( "f none /opt/jetty/.bash_profile=" + bashProfileObject.getName().getPath() + " 0644 nouser nogroup" ).
+            add( "d none /smf ? default default" ).
+            add( "f smf /smf/manifest.xml=" + extractJarObject.getName().getPath() + " 0644 nouser nogroup" ).
+            add( "d none /special 0755 nouser funnygroup" ).
             toString(), stream.toString() );
     }
 

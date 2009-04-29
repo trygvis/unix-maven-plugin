@@ -28,6 +28,7 @@ import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.*;
 
 import static java.util.Arrays.*;
 import java.util.*;
@@ -49,9 +50,9 @@ public abstract class AbstractFileSetOp
 
     private String replacement;
 
-    private FileAttributes fileAttributes = new FileAttributes();
+    private MojoFileAttributes fileAttributes = new MojoFileAttributes();
 
-    private FileAttributes directoryAttributes = new FileAttributes();
+    private MojoFileAttributes directoryAttributes = new MojoFileAttributes();
 
     public AbstractFileSetOp( String operationType )
     {
@@ -83,17 +84,18 @@ public abstract class AbstractFileSetOp
         this.replacement = nullifEmpty( replacement );
     }
 
-    public void setFileAttributes( FileAttributes fileAttributes )
+    public void setFileAttributes( MojoFileAttributes fileAttributes )
     {
         this.fileAttributes = fileAttributes;
     }
 
-    public void setDirectoryAttributes( FileAttributes directoryAttributes )
+    public void setDirectoryAttributes( MojoFileAttributes directoryAttributes )
     {
         this.directoryAttributes = directoryAttributes;
     }
 
-    protected AssemblyOperation createOperationInternal( FileObject archive, Defaults defaults )
+    protected AssemblyOperation createOperationInternal( FileObject archive, FileAttributes defaultFileAttributes,
+                                                         FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
         if ( pattern != null && replacement == null )
@@ -102,7 +104,7 @@ public abstract class AbstractFileSetOp
         }
 
         return new CopyDirectoryOperation( archive, to, includes, excludes, pattern, replacement,
-                                           applyFileDefaults( defaults, fileAttributes.create() ),
-                                           applyDirectoryDefaults( defaults, directoryAttributes.create() ) );
+                                           defaultFileAttributes.useAsDefaultsFor( fileAttributes.create() ),
+                                           defaultDirectoryAttributes.useAsDefaultsFor( directoryAttributes.create() ) );
     }
 }

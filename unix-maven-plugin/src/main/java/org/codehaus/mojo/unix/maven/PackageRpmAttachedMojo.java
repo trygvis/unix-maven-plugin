@@ -1,5 +1,10 @@
 package org.codehaus.mojo.unix.maven;
 
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.maven.rpm.*;
+import fj.*;
+import static fj.Function.*;
+
 /*
  * The MIT License
  *
@@ -37,15 +42,15 @@ public class PackageRpmAttachedMojo
     /**
      * @parameter
      */
-    protected RpmSpecificSettings rpm;
+    protected RpmSpecificSettings rpm = new RpmSpecificSettings();
 
     public PackageRpmAttachedMojo()
     {
         super( "rpm" );
     }
 
-    protected MojoHelper getMojoHelper()
+    protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
     {
-        return super.getMojoHelper( new RpmMojoHelper( rpm ) );
+        return curry( RpmMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, rpm );
     }
 }

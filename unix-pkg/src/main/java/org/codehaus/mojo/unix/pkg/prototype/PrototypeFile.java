@@ -32,10 +32,8 @@ import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
-import org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
-import static org.codehaus.mojo.unix.util.UnixUtil.*;
 import org.codehaus.mojo.unix.util.line.*;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 import org.joda.time.*;
@@ -49,19 +47,20 @@ import java.io.*;
 public class PrototypeFile
     implements LineProducer
 {
-    public final FileAttributes UNKNOWN = EMPTY.user( "?" ).group( "?" );
+    public static final LocalDateTime START_OF_TIME = new LocalDateTime( 0, DateTimeZone.UTC );
 
     private List<String> iFiles = nil();
 
     private PackageFileSystem<PrototypeEntry> fileSystem;
 
-    public PrototypeFile( DirectoryEntry defaultEntry )
+    public PrototypeFile( DirectoryEntry defaultDirectory )
     {
-        Validate.validateNotNull( defaultEntry );
+        Validate.validateNotNull( defaultDirectory );
 
-        Directory root = UnixFsObject.directory( BASE, new LocalDateTime( 0, DateTimeZone.UTC ), UNKNOWN );
+        UnixFsObject.Directory root = UnixFsObject.directory( BASE, START_OF_TIME, EMPTY );
+        DirectoryEntry rootEntry = new DirectoryEntry( Option.<String>none(), root );
 
-        fileSystem = create( new DirectoryEntry( Option.<String>none(), root ), defaultEntry );
+        fileSystem = create( rootEntry, defaultDirectory );
     }
 
     public void addIFileIf( File file, String name )
@@ -91,17 +90,17 @@ public class PrototypeFile
 
     public void addDirectory( UnixFsObject.Directory directory )
     {
-        fileSystem = fileSystem.addDirectory( new DirectoryEntry( Option.<String>none(), directory ) );
+        fileSystem = fileSystem.addDirectory( new DirectoryEntry( directory.attributes.bind( findClassTag ), directory ) );
     }
 
     public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
     {
-        fileSystem = fileSystem.addFile( new FileEntry( noneString, some( false ), file, some( asFile( fromFile ) ) ) );
+        fileSystem = fileSystem.addFile( new FileEntry( file.attributes.bind( findClassTag ), some( false ), file, some( asFile( fromFile ) ) ) );
     }
 
     public void addSymlink( UnixFsObject.Symlink symlink )
     {
-        fileSystem = fileSystem.addSymlink( new SymlinkEntry( noneString, symlink ) );
+        fileSystem = fileSystem.addSymlink( new SymlinkEntry( symlink.attributes.bind( findClassTag ), symlink ) );
     }
 
     public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
@@ -116,43 +115,33 @@ public class PrototypeFile
         stream.
             addAllLines( iFiles.reverse() );
 
-        for ( PackageFileSystemObject<PrototypeEntry> object : fileSystem.toList() )
+        for ( PackageFileSystemObject<PrototypeEntry> object : fileSystem.prettify().toList() )
         {
             System.out.println( "p2._1() = " + object.getUnixFsObject() + ", p2._2() = " + object.getExtension() );
             object.getExtension().streamTo( stream );
         }
     }
-//
-//    // Applies the function to each path, and selects the last one that was some()
-//    F2<P2<RelativePath, FileAttributes>, F<RelativePath, Option<FileAttributes>>, P2<RelativePath, FileAttributes>>
-//        fileAttributeFolder =
-//        new F2<P2<RelativePath, FileAttributes>, F<RelativePath, Option<FileAttributes>>, P2<RelativePath, FileAttributes>>()
-//        {
-//            public P2<RelativePath, FileAttributes> f( final P2<RelativePath, FileAttributes> previous,
-//                                                       final F<RelativePath, Option<FileAttributes>> transformer )
-//            {
-//                return previous.map2( new F<FileAttributes, FileAttributes>()
-//                {
-//                    public FileAttributes f( FileAttributes fileAttributes )
-//                    {
-//                        return transformer.f( previous._1() ).orSome( previous._2() );
-//                    }
-//                } );
-//            }
-//        };
-//
-//    Ord<P2<UnixFsObject, PrototypeEntry>> entriesOrd =
-//        Ord.ord( new F<P2<UnixFsObject, PrototypeEntry>, F<P2<UnixFsObject, PrototypeEntry>, Ordering>>()
-//        {
-//            public F<P2<UnixFsObject, PrototypeEntry>, Ordering> f( final P2<UnixFsObject, PrototypeEntry> a )
-//            {
-//                return new F<P2<UnixFsObject, PrototypeEntry>, Ordering>()
-//                {
-//                    public Ordering f( P2<UnixFsObject, PrototypeEntry> b )
-//                    {
-//                        return RelativePath.ord.compare( a._1().path, b._1().path );
-//                    }
-//                };
-//            }
-//        } );
+
+    public static Option<String> findClassTag( FileAttributes fileAttributes )
+    {
+        String prefix = "class:";
+
+        for ( String tag : fileAttributes.tags )
+        {
+            if ( tag.startsWith( prefix ) )
+            {
+                return some( tag.substring( prefix.length() ) );
+            }
+        }
+
+        return none();
+    }
+
+    public static F<FileAttributes, Option<String>> findClassTag = new F<FileAttributes, Option<String>>()
+    {
+        public Option<String> f( FileAttributes fileAttributes )
+        {
+            return findClassTag( fileAttributes );
+        }
+    };
 }

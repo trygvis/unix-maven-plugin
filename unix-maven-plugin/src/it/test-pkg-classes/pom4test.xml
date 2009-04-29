@@ -26,14 +26,10 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>bar</groupId>
-  <artifactId>project-rpm-1</artifactId>
-  <version>1.1-2</version>
-  <packaging>rpm</packaging>
-  <licenses>
-    <license>
-      <name>BSD</name>
-    </license>
-  </licenses>
+  <artifactId>project-pkg-classes</artifactId>
+  <version>1.1</version>
+  <packaging>pkg</packaging>
+  <name>Hudson</name>
   <dependencies>
     <dependency>
       <groupId>org.jvnet.hudson.main</groupId>
@@ -52,35 +48,21 @@
         <configuration>
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
-          <rpm>
-            <softwareGroup>Application/Collectors</softwareGroup>
-          </rpm>
+          <pkg>
+            <classes>none, smf</classes>
+          </pkg>
           <assembly>
-            <mkdirs>
-              <paths>
-                <path>/opt/hudson</path>
-              </paths>
-            </mkdirs>
             <copy-artifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/opt/hudson/hudson.war</toFile>
-              <attributes>
-                <user>hudson</user>
-                <group>hudson</group>
-                <mode>0644</mode>
-              </attributes>
             </copy-artifact>
-            <copy-file>
-              <path>goals.txt</path>
-              <toFile>/usr/share/hudson/README.txt</toFile>
-              <attributes>
-                <tags>doc</tags>
-              </attributes>
-            </copy-file>
-            <symlink>
-              <path>/var/log/hudson</path>
-              <value>/var/opt/hudson/log</value>
-            </symlink>
+            <copy-directory>
+              <from>src/main/unix/files-smf</from>
+              <to>/var/lib</to>
+              <fileAttributes>
+                <tags>class:smf</tags>
+              </fileAttributes>
+            </copy-directory>
           </assembly>
         </configuration>
       </plugin>

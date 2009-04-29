@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix.maven;
 import org.apache.commons.vfs.*;
 import static org.apache.commons.vfs.VFS.*;
 import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 
 import java.io.*;
@@ -50,13 +51,15 @@ public class CopyDirectory
         this.from = from;
     }
 
-    public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                              FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
         validateIsSet( from, "from" );
 
         File file = validateFileIsDirectory( from, "from" );
 
-        return createOperationInternal( getManager().resolveFile( file.getAbsolutePath() ), defaults );
+        return createOperationInternal( getManager().resolveFile( file.getAbsolutePath() ), defaultFileAttributes,
+                                        defaultDirectoryAttributes );
     }
 }

@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.maven.rpm;
  */
 
 import fj.data.*;
+import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.*;
@@ -68,22 +69,22 @@ public class RpmUnixPackageTest
         File packageFile = getTestFile( "target/rpm-test/file.rpm" );
 
         UnixPackage unixPackage = RpmPackagingFormat.cast( packagingFormat.start().
-            mavenCoordinates( "mygroup", "myartifact", null ).
+            mavenCoordinates( "mygroup", "myartifact" ).
             version( PackageVersion.create( "1.0-1", "123", false, null, 0 ) ).
-            contact( "Kurt Cobain" ).
+            contact( some( "Kurt Cobain" ) ).
             architecture( "all" ).
-            shortDescription( "Yo!" ).
+            name( some( "Yo!" ) ).
             license( "BSD" ).
             workingDirectory( packageRoot ) ).
             group( "Fun" );
 
         LocalDateTime now = new LocalDateTime();
-        Option<FileAttributes> none = Option.<FileAttributes>none();
+        Option<FileAttributes> none = Option.none();
 
         unixPackage.
-            addFile( pomXml, regularFile( fromString( "/pom.xml" ), now, 0, none ) ).
-            addFile( fooLicense, regularFile( fromString( "/foo-license.txt" ), now, 0, none ) ).
-            addFile( barLicense, regularFile( fromString( "/bar-license.txt" ), now, 0, none ) );
+            addFile( pomXml, regularFile( relativePath( "/pom.xml" ), now, 0, none ) ).
+            addFile( fooLicense, regularFile( relativePath( "/foo-license.txt" ), now, 0, none ) ).
+            addFile( barLicense, regularFile( relativePath( "/bar-license.txt" ), now, 0, none ) );
 
         unixPackage.
             debug( true ).

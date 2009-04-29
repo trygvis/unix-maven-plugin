@@ -11,10 +11,13 @@ hudsonWar.setLastModified(System.currentTimeMillis())
 File rpm = findArtifact("bar", "project-rpm-1", "1.1-2", "rpm")
 
 success &= assertRpmEntries(rpm, [
-        new RpmUtil.FileInfo("/", "nobody", "nogroup", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/opt", "nobody", "nogroup", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/opt/hudson", "nobody", "nogroup", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/opt/hudson/hudson.war", "hudson", "hudson", "-rw-r--r--", 20623413, null),
+        new RpmUtil.FileInfo("/usr", "nobody", "nogroup", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/usr/share", "nobody", "nogroup", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/usr/share/hudson", "nobody", "nogroup", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/usr/share/hudson/README.txt", "nobody", "nogroup", "-rw-r--r--", 38, null),
         new RpmUtil.FileInfo("/var", "nobody", "nogroup", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/var/log", "nobody", "nogroup", "drwxr-xr-x", 0, null),
         // TODO: This should assert the target
@@ -22,7 +25,7 @@ success &= assertRpmEntries(rpm, [
 ])
 
 success &= assertRelaxed(
-        new SpecFile( "project-rpm-1", "1.1", 2, "Unnamed - bar:project-rpm-1:rpm:1.1-2", "BSD", "Application/Collectors", "", []),
+        new SpecFile( "bar-project-rpm-1", "1.1", 2, "Unnamed - bar:project-rpm-1:rpm:1.1-2", "BSD", "Application/Collectors", "", []),
         RpmUtil.getSpecFileFromRpm(rpm));
 
 return success

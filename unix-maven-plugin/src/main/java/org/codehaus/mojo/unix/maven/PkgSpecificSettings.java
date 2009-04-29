@@ -24,19 +24,23 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import fj.data.*;
+import static fj.data.List.*;
+import static org.codehaus.mojo.unix.java.StringF.*;
+
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class PkgSpecificSettings
 {
-    private String classes;
+    public List<String> classes = nil();
 
     private String[] extraPrototype = new String[0];
 
-    public String getClasses()
+    public void setClasses( String classes )
     {
-        return classes;
+        this.classes = list( classes.split( "," ) ).map( trim );
     }
 
     public String[] getExtraPrototype()

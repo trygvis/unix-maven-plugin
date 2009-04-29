@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven;
+package org.codehaus.mojo.unix.maven.rpm;
 
 /*
  * The MIT License
@@ -24,41 +24,34 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import fj.*;
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.rpm.*;
+import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.plexus.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
+ * @version $Id: PackageRpmMojo.java 9221 2009-03-15 22:52:14Z trygvis $
  */
-class RpmMojoHelper
-    extends MojoHelper
+public class RpmMojoUtil
 {
-    private RpmSpecificSettings rpm;
-
-    public RpmMojoHelper( RpmSpecificSettings rpm )
+    public static final F2<RpmSpecificSettings, UnixPackage, UnixPackage> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage = new F2<RpmSpecificSettings, UnixPackage, UnixPackage>()
     {
-        this.rpm = rpm;
-    }
-
-    protected void validateMojoSettings()
-        throws MissingSettingException
-    {
-        if ( rpm == null )
+        public UnixPackage f( RpmSpecificSettings rpmSpecificSettings, UnixPackage unixPackage )
         {
-            throw new MissingSettingException( "You need to specify the required properties when building rpm packages." );
+            return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( rpmSpecificSettings, unixPackage );
         }
+    };
 
+    public static UnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( RpmSpecificSettings rpm,
+                                                                                           UnixPackage unixPackage )
+    {
         if ( StringUtils.isEmpty( rpm.getSoftwareGroup() ) )
         {
             throw new MissingSettingException( "softwareGroup" );
         }
-    }
 
-    protected void applyFormatSpecificSettingsToPackage( UnixPackage unixPackage )
-    {
-        RpmUnixPackage.cast( unixPackage ).
+        return RpmUnixPackage.cast( unixPackage ).
             group( rpm.getSoftwareGroup() );
     }
 }

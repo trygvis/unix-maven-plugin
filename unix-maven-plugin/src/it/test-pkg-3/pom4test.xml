@@ -38,12 +38,6 @@
       <type>war</type>
     </dependency>
   </dependencies>
-  <repositories>
-    <repository>
-      <id>java.net</id>
-      <url>http://download.java.net/maven/2</url>
-    </repository>
-  </repositories>
   <build>
     <plugins>
       <plugin>
@@ -73,7 +67,7 @@
           </assembly>
           <packages>
             <package>
-              <id>default</id>
+              <classifier>default</classifier>
               <name>Hudson Master</name>
               <assembly>
                 <copy-artifact>
@@ -88,7 +82,7 @@
               </assembly>
             </package>
             <package>
-              <id>slave</id>
+              <classifier>slave</classifier>
               <name>Hudson Slave</name>
               <description>Hudson slave node</description>
               <assembly>

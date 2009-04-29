@@ -24,6 +24,9 @@ package org.codehaus.mojo.unix.pkg;
  * SOFTWARE.
  */
 
+import fj.data.List;
+import static fj.data.List.*;
+import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.plexus.util.*;
 
@@ -40,18 +43,19 @@ public class PkginfoFile
     implements LineProducer
 {
     public String packageName;
-    public String classifier;
     public String version;
     public String pstamp;
     public String name;
     public String desc;
     public String email;
     public String arch;
-    public String classes = "none";
+    public List<String> classes = nil();
     public String category = "application";
 
     public void streamTo( LineStreamWriter streamWriter)
     {
+        String classes = this.classes.isEmpty() ? "" :  this.classes.foldLeft1( StringF.joiner.f( " " ) );
+
         streamWriter.
             add( "PKG=" + packageName ).
             add( "NAME=" + StringUtils.clean( name ) ).
@@ -59,7 +63,7 @@ public class PkginfoFile
             addIf( StringUtils.isNotEmpty( email ), "EMAIL=" + email ).
             add( "VERSION=" + version ).
             add( "PSTAMP=" + pstamp ).
-            addIf( StringUtils.isNotEmpty( classes ), "CLASSES=" + (StringUtils.isNotEmpty( classes ) ? classes : "none") ).
+            addIf( this.classes.isNotEmpty(), "CLASSES=" + classes ).
             addIf( StringUtils.isNotEmpty( arch ), "ARCH=" + (StringUtils.isNotEmpty( arch ) ? arch : "all") ).
             addIf( StringUtils.isEmpty( arch ), "ARCH=all" ).
             add( "CATEGORY=" + StringUtils.clean( category ) );

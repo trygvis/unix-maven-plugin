@@ -29,6 +29,7 @@ import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.mojo.unix.*;
 
 import java.io.*;
 
@@ -45,16 +46,11 @@ public class CopyFile
 
     private RelativePath toDir;
 
-    private FileAttributes attributes = new FileAttributes();
+    private MojoFileAttributes attributes = new MojoFileAttributes();
 
     public CopyFile()
     {
         super( "copy-file" );
-    }
-
-    public void setPath( File path )
-    {
-        this.path = path;
     }
 
     public void setToFile( String toFile )
@@ -67,15 +63,11 @@ public class CopyFile
         this.toDir = fromString( toDir );
     }
 
-    public void setAttributes( FileAttributes attributes )
-    {
-        this.attributes = attributes;
-    }
-
-    public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                              FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
-        return new CopyFileOperation( applyFileDefaults( defaults, attributes.create() ),
+        return new CopyFileOperation( defaultFileAttributes.useAsDefaultsFor( attributes.create() ),
                                       resolve( basedir.getFileSystem(), path ),
                                       validateAndResolveOutputFile( path, toDir, this.toFile ) );
     }

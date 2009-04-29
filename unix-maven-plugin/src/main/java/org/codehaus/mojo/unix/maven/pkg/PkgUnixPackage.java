@@ -75,10 +75,6 @@ public class PkgUnixPackage
         addCustomScript( "space" ).
         build();
 
-    private static final Directory defaultDirectory = directory( BASE, fromDateFields( new Date( 0 ) ), EMPTY );
-
-    private static final DirectoryEntry directoryEntry = new DirectoryEntry( Option.<String>none(), defaultDirectory );
-
     private PrototypeFile prototypeFile;
 
     private final PkginfoFile pkginfoFile = new PkginfoFile();
@@ -94,33 +90,30 @@ public class PkgUnixPackage
     // Common Settings
     // -----------------------------------------------------------------------
 
-    public UnixPackage mavenCoordinates( String groupId, String artifactId, String classifier )
+    public UnixPackage id( String id )
     {
-        pkginfoFile.classifier = classifier;
+        pkginfoFile.packageName = id;
         return this;
     }
 
-    public UnixPackage name( String name )
+    public UnixPackage name( Option<String> name )
     {
-        pkginfoFile.packageName = name;
+        pkginfoFile.name = name.orSome( "" ); // TODO: This is not right
         return this;
     }
 
-    public UnixPackage shortDescription( String shortDescription )
+    public UnixPackage description( Option<String> description )
     {
-        pkginfoFile.name = shortDescription;
+        pkginfoFile.desc = description.orSome( "" ); // TODO: This is not right
         return this;
     }
 
-    public UnixPackage description( String description )
+    public UnixPackage contactEmail( Option<String> contactEmail )
     {
-        pkginfoFile.desc = description;
-        return this;
-    }
-
-    public UnixPackage contactEmail( String contactEmail )
-    {
-        pkginfoFile.email = contactEmail;
+        if ( contactEmail.isSome() )
+        {
+            pkginfoFile.email = contactEmail.some();
+        }
         return this;
     }
 
@@ -143,11 +136,14 @@ public class PkgUnixPackage
         return this;
     }
 
-    public void afterPropertiesSet()
-        throws Exception
+    public void beforeAssembly( FileAttributes defaultDirectoryAttributes )
+        throws IOException
     {
         prototype = workingDirectory.resolveFile( "prototype" );
         pkginfo = workingDirectory.resolveFile( "pkginfo" );
+
+        Directory defaultDirectory = directory( BASE, fromDateFields( new Date( 0 ) ), defaultDirectoryAttributes );
+        DirectoryEntry directoryEntry = new DirectoryEntry( Option.<String>none(), defaultDirectory );
 
         prototypeFile = new PrototypeFile( directoryEntry );
     }
@@ -156,9 +152,10 @@ public class PkgUnixPackage
     // Pkg Specific Settings
     // -----------------------------------------------------------------------
 
-    public void classes( String classes )
+    public PkgUnixPackage classes( List<String> classes )
     {
         pkginfoFile.classes = classes;
+        return this;
     }
 
     public void packageToFile( File packageFile )
@@ -172,6 +169,7 @@ public class PkgUnixPackage
         RelativePath[] specialPaths = new RelativePath[]{
             fromString( "/" ),
             fromString( "/etc" ),
+            fromString( "/etc/opt" ),
             fromString( "/opt" ),
             fromString( "/usr" ),
             fromString( "/var" ),

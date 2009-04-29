@@ -26,7 +26,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>bar</groupId>
-  <artifactId>project-rpm-1</artifactId>
+  <artifactId>project-rpm-3</artifactId>
   <version>1.1-2</version>
   <packaging>rpm</packaging>
   <licenses>
@@ -52,36 +52,60 @@
         <configuration>
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
+          <!-- Include the license in both packages -->
           <rpm>
             <softwareGroup>Application/Collectors</softwareGroup>
           </rpm>
           <assembly>
-            <mkdirs>
-              <paths>
-                <path>/opt/hudson</path>
-              </paths>
-            </mkdirs>
-            <copy-artifact>
+            <extract-artifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
-              <toFile>/opt/hudson/hudson.war</toFile>
-              <attributes>
-                <user>hudson</user>
-                <group>hudson</group>
-                <mode>0644</mode>
-              </attributes>
-            </copy-artifact>
-            <copy-file>
-              <path>goals.txt</path>
-              <toFile>/usr/share/hudson/README.txt</toFile>
-              <attributes>
-                <tags>doc</tags>
-              </attributes>
-            </copy-file>
-            <symlink>
-              <path>/var/log/hudson</path>
-              <value>/var/opt/hudson/log</value>
-            </symlink>
+              <includes>
+                <!-- TODO: this should work without the leading stars -->
+                <include>**/*-license.txt</include>
+              </includes>
+              <to>/usr/share/hudson/license</to>
+              <pattern>.*/(.*license.*)</pattern>
+              <replacement>$1</replacement>
+              <fileAttributes>
+                <user>root</user>
+                <group>bin</group>
+              </fileAttributes>
+            </extract-artifact>
           </assembly>
+          <packages>
+            <package>
+              <name>Hudson Master</name>
+              <assembly>
+                <copy-artifact>
+                  <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+                  <toFile>/usr/share/hudson/lib/hudson.war</toFile>
+                  <attributes>
+                    <user>hudson</user>
+                    <group>hudson</group>
+                    <mode>0644</mode>
+                  </attributes>
+                </copy-artifact>
+              </assembly>
+            </package>
+            <package>
+              <classifier>slave</classifier>
+              <name>Hudson Slave</name>
+              <description>Hudson slave node</description>
+              <assembly>
+                <!-- TODO: As this want to copy only a single file, add a "extract-file" version -->
+                <extract-artifact>
+                  <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
+                  <to>/usr/share/hudson/lib</to>
+                  <includes>
+                    <!-- TODO: this should work without the leading stars -->
+                    <include>**/WEB-INF/slave.jar</include>
+                  </includes>
+                  <pattern>WEB-INF/(slave.jar)</pattern>
+                  <replacement>$1</replacement>
+                </extract-artifact>
+              </assembly>
+            </package>
+          </packages>
         </configuration>
       </plugin>
     </plugins>

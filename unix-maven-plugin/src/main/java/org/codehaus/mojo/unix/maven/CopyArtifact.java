@@ -29,6 +29,7 @@ import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.mojo.unix.*;
 
 import java.io.*;
 
@@ -45,7 +46,7 @@ public class CopyArtifact
 
     private RelativePath toDir;
 
-    private FileAttributes attributes = new FileAttributes();
+    private MojoFileAttributes attributes = new MojoFileAttributes();
 
     public CopyArtifact()
     {
@@ -59,27 +60,23 @@ public class CopyArtifact
 
     public void setToFile( String toFile )
     {
-        this.toFile = fromString( toFile );
+        this.toFile = relativePath( toFile );
     }
 
     public void setToDir( String toDir )
     {
-        this.toDir = fromString( toDir );
+        this.toDir = relativePath( toDir );
     }
 
-    public void setAttributes( FileAttributes attributes )
-    {
-        this.attributes = attributes;
-    }
-
-    public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                              FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
         File artifactFile = validateArtifact( artifact );
 
         RelativePath toFile = validateAndResolveOutputFile( artifactFile, toDir, this.toFile );
 
-        return new CopyFileOperation( applyFileDefaults( defaults, attributes.create() ),
+        return new CopyFileOperation( defaultFileAttributes.useAsDefaultsFor( attributes.create() ),
                                       resolve( basedir.getFileSystem(), artifactFile ),
                                       toFile );
     }

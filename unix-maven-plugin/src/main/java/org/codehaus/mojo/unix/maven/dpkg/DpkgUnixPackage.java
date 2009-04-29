@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.maven.dpkg;
  */
 
 import fj.*;
+import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.*;
@@ -71,7 +72,7 @@ public class DpkgUnixPackage
         super( "deb" );
     }
 
-    public UnixPackage mavenCoordinates( String groupId, String artifactId, String classifier )
+    public UnixPackage mavenCoordinates( String groupId, String artifactId )
     {
         controlFile.groupId = groupId;
         controlFile.artifactId = artifactId;
@@ -85,27 +86,25 @@ public class DpkgUnixPackage
 //        return this;
 //    }
 
-    public UnixPackage name( String name )
+    public UnixPackage name( Option<String> name )
     {
-        controlFile._package = name;
+//        controlFile._package = name;
+        controlFile.shortDescription = name.orSome( "" ); // TODO: This is not right
         return this;
     }
 
-    public UnixPackage shortDescription( String shortDescription )
+    public UnixPackage description( Option<String> description )
     {
-        controlFile.shortDescription = shortDescription;
+        controlFile.description = description.orSome( "" ); // TODO: This is not right
         return this;
     }
 
-    public UnixPackage description( String description )
+    public UnixPackage contact( Option<String> contact )
     {
-        controlFile.description = description;
-        return this;
-    }
-
-    public UnixPackage contact( String contact )
-    {
-        controlFile.maintainer = contact;
+        if ( contact.isSome() )
+        {
+            controlFile.maintainer = contact.some();
+        }
         return this;
     }
 
@@ -128,8 +127,8 @@ public class DpkgUnixPackage
         return this;
     }
 
-    public void afterPropertiesSet()
-        throws Exception
+    public void beforeAssembly( FileAttributes defaultDirectoryAttributes )
+        throws IOException
     {
         fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
     }

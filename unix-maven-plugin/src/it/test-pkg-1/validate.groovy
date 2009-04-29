@@ -15,17 +15,21 @@ success &= ShittyUtil.assertRelaxed(
 
 // Ignore dates for now
 success &= ShittyUtil.assertPkgEntries(pkg, [
-        directory("/opt", "0755", "nobody", "nogroup", none()),
+        directory("/opt", "17777777777", "?", "?", none()),
         directory("/opt/hudson", "0755", "nobody", "nogroup", none()),
         regularFile("/opt/hudson/hudson.war", "0666", "hudson", "hudson", 20623413, 3301, none()),
-        directory("/var", "0755", "nobody", "nogroup", none()),
+        directory("/usr", "17777777777", "?", "?", none()),
+        directory("/usr/share", "0755", "nobody", "nogroup", none()),
+        directory("/usr/share/hudson", "0755", "nobody", "nogroup", none()),
+        regularFile("/usr/share/hudson/README.txt", "0644", "nobody", "nogroup", 38, 3568, none()),
+        directory("/var", "17777777777", "?", "?", none()),
         directory("/var/log", "0755", "nobody", "nogroup", none()),
         symlink("/var/log/hudson", "/var/opt/hudson/log"),
         installationFile("checkinstall", 28, 2563, none()),
         installationFile("compver", 0, 0, none()),
         installationFile("copyright", 24, 2150, none()),
         installationFile("depend", 0, 0, none()),
-        installationFile("pkginfo", 141, 0, none()),
+        installationFile("pkginfo", 149, 0, none()),
         installationFile("request", 46, 4055, none()),
         installationFile("space", 0, 0, none()),
 ])

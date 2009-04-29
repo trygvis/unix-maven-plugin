@@ -31,6 +31,7 @@ import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.fromString;
+import org.codehaus.mojo.unix.*;
 
 import static java.util.Arrays.*;
 import java.util.*;
@@ -49,9 +50,9 @@ public class SetAttributes
 
     private List<String> excludes = Collections.emptyList();
 
-    private Option<FileAttributes> fileAttributes = none();
+    private Option<MojoFileAttributes> fileAttributes = none();
 
-    private Option<FileAttributes> directoryAttributes = none();
+    private Option<MojoFileAttributes> directoryAttributes = none();
 
     public SetAttributes()
     {
@@ -73,21 +74,22 @@ public class SetAttributes
         this.excludes = asList( excludes );
     }
 
-    public void setFileAttributes( FileAttributes fileAttributes )
+    public void setFileAttributes( MojoFileAttributes fileAttributes )
     {
         this.fileAttributes = fromNull( fileAttributes );
     }
 
-    public void setDirectoryAttributes( FileAttributes directoryAttributes )
+    public void setDirectoryAttributes( MojoFileAttributes directoryAttributes )
     {
         this.directoryAttributes = fromNull( directoryAttributes );
     }
 
-    public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                              FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
         return new SetAttributesOperation( this.basedir, includes, excludes,
-            fileAttributes.map( FileAttributes.create_ ),
-            directoryAttributes.map( FileAttributes.create_ ) );
+            fileAttributes.map( MojoFileAttributes.create_ ),
+            directoryAttributes.map( MojoFileAttributes.create_ ) );
     }
 }

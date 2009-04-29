@@ -33,32 +33,33 @@ import static org.codehaus.mojo.unix.UnixFileMode.*;
  */
 public class Defaults
 {
+    // TODO: These should not be here, should come from the "platform" .. See TODO.txt about the "platform concept"
     public final static org.codehaus.mojo.unix.FileAttributes DEFAULT_FILE_ATTRIBUTES =
         new org.codehaus.mojo.unix.FileAttributes( some( "nobody" ), some( "nogroup" ), some( _0644 ) );
 
     public final static org.codehaus.mojo.unix.FileAttributes DEFAULT_DIRECTORY_ATTRIBUTES =
         new org.codehaus.mojo.unix.FileAttributes( some( "nobody" ), some( "nogroup" ), some( _0755 ) );
 
-    private FileAttributes fileAttributes = new FileAttributes();
+    private MojoFileAttributes fileAttributes = new MojoFileAttributes();
 
-    private FileAttributes directoryAttributes = new FileAttributes();
+    private MojoFileAttributes directoryAttributes = new MojoFileAttributes();
 
     public org.codehaus.mojo.unix.FileAttributes getFileAttributes()
     {
-        return fileAttributes.create();
+        return DEFAULT_FILE_ATTRIBUTES.useAsDefaultsFor( fileAttributes.create() );
     }
 
-    public void setFile( FileAttributes fileAttributes )
+    public void setFile( MojoFileAttributes fileAttributes )
     {
         this.fileAttributes = fileAttributes;
     }
 
     public org.codehaus.mojo.unix.FileAttributes getDirectoryAttributes()
     {
-        return directoryAttributes.create();
+        return DEFAULT_DIRECTORY_ATTRIBUTES.useAsDefaultsFor( directoryAttributes.create() );
     }
 
-    public void setDirectoryAttributes( FileAttributes directoryAttributes )
+    public void setDirectoryAttributes( MojoFileAttributes directoryAttributes )
     {
         this.directoryAttributes = directoryAttributes;
     }

@@ -24,6 +24,11 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import fj.*;
+import static fj.Function.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.maven.dpkg.*;
+
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -44,8 +49,8 @@ public class PackageDpkgAttachedMojo
         super( "dpkg" );
     }
 
-    protected MojoHelper getMojoHelper()
+    protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
     {
-        return super.getMojoHelper( new DpkgMojoHelper( dpkg ) );
+        return curry( DpkgMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, dpkg );
     }
 }

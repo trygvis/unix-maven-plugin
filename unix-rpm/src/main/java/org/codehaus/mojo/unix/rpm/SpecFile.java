@@ -26,10 +26,12 @@ package org.codehaus.mojo.unix.rpm;
 
 import static fj.Bottom.*;
 import fj.*;
+import static fj.Function.*;
 import fj.data.List;
 import fj.data.*;
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
@@ -49,9 +51,9 @@ import java.util.*;
 public class SpecFile
     implements LineProducer
 {
-    public String groupId;
-
-    public String artifactId;
+//    public String groupId;
+//
+//    public String artifactId;
 
     public PackageVersion version;
 
@@ -100,12 +102,14 @@ public class SpecFile
 
     public File includePostun;
 
-    public SpecFile()
+    public void beforeAssembly( Directory defaultDirectory )
     {
+        Validate.validateNotNull( defaultDirectory );
+
         Directory root = UnixFsObject.directory( BASE, fromDateFields( new Date( 0 ) ), EMPTY );
 
         fileSystem = PackageFileSystem.create( new BasicPackageFileSystemObject( root ),
-                                               new BasicPackageFileSystemObject( root ) );
+                                               new BasicPackageFileSystemObject( defaultDirectory ) );
     }
 
     public void addFile( UnixFsObject.RegularFile file )
@@ -138,16 +142,13 @@ public class SpecFile
         UnixUtil.assertField( "version", version );
 
         spec.
-            add( "Name: " + UnixUtil.getField( "name", getName() ) ).
+            add( "Name: " + name ).
             add( "Version: " + getRpmVersion( version ) ).
             add( "Release: " + getRpmRelease( version ) ).
             add( "Summary: " + UnixUtil.getField( "summary", summary ) ).
             add( "License: " + UnixUtil.getField( "license", license ) ).
             addIfNotEmpty( "Distribution: ", distribution ).
-//            addIf(icon != null, "Icon").addIfNotNull( icon ).
-//            addIfNotEmpty( "Vendor", vendor ).
-//            addIfNotEmpty( "URL", url ).
-    add( "Group: " + UnixUtil.getField( "group", group ) ).
+            add( "Group: " + UnixUtil.getField( "group", group ) ).
             addIfNotEmpty( "Packager", packager ).
             addAllLines( prefix( provides, "Provides" ) ).
             addAllLines( prefix( requires, "Requires" ) ).
@@ -163,7 +164,7 @@ public class SpecFile
 
         spec.
             add( "%files" ).
-            addAllLines( fileSystem.toList().map( SpecFile.showUnixFsObject() ) );
+            addAllLines( fileSystem.prettify().toList().filter( excludePaths ).map( SpecFile.showUnixFsObject() ) );
 
         spec.addIf( includePre != null || includePost != null || includePreun != null || includePostun != null, "" );
         if ( includePre != null )
@@ -190,25 +191,6 @@ public class SpecFile
         spec.addIf( dump, "%dump" );
     }
 
-    private String getName()
-    {
-        if ( name != null )
-        {
-            return name;
-        }
-
-        if ( StringUtils.isEmpty( groupId ) || StringUtils.isEmpty( artifactId ) )
-        {
-            throw new RuntimeException( "Both group id and artifact id has to be set." );
-        }
-
-        String name = groupId + "-" + artifactId;
-
-        name = name.toLowerCase();
-
-        return name;
-    }
-
     private static String getRpmVersion( PackageVersion version )
     {
         String rpmVersionString = version.version;
@@ -230,20 +212,25 @@ public class SpecFile
     //
     // -----------------------------------------------------------------------
 
-    private static F<PackageFileSystemObject<Object>, String> showUnixFsObject()
+    private static <A extends UnixFsObject> F<PackageFileSystemObject<Object>, String> showUnixFsObject()
     {
         return new F<PackageFileSystemObject<Object>, String>()
         {
             public String f( PackageFileSystemObject p2 )
             {
-                UnixFsObject unixFsObject = p2.getUnixFsObject();
-                @SuppressWarnings("unchecked") Option<FileAttributes> attributes = unixFsObject.attributes;
+                @SuppressWarnings({"unchecked"}) UnixFsObject<A> unixFsObject = p2.getUnixFsObject();
+                Option<FileAttributes> attributes = unixFsObject.attributes;
 
-                String s = "%attr(" +
-                    join( attributes.map( FileAttributes.modeF ) ).map( UnixFileMode.showOcalString ).orSome( "-" ) +
-                    "," + join( attributes.map( FileAttributes.userF ) ).orSome( "-" ) + "," +
-                    join( attributes.map( FileAttributes.groupF ) ).orSome( "-" ) + ") " +
-                    unixFsObject.path.asAbsolutePath( "/" );
+                String s = "";
+
+                s += unixFsObject.attributes.map( tagsF ).bind( formatTags ).orSome( "" );
+
+                s += "%attr(" +
+                    attributes.bind( FileAttributes.modeF ).map( UnixFileMode.showOcalString ).orSome( "-" ) + "," +
+                    attributes.bind( FileAttributes.userF ).orSome( "-" ) + "," +
+                    attributes.bind( FileAttributes.groupF ).orSome( "-" ) + ") ";
+
+                s += unixFsObject.path.asAbsolutePath( "/" );
 
                 if ( unixFsObject instanceof UnixFsObject.RegularFile || unixFsObject instanceof UnixFsObject.Symlink )
                 {
@@ -258,4 +245,51 @@ public class SpecFile
             }
         };
     }
+
+    private static final F<PackageFileSystemObject<Object>, Boolean> excludePaths = new F<PackageFileSystemObject<Object>, Boolean>()
+    {
+        public Boolean f( PackageFileSystemObject object )
+        {
+            return !object.getUnixFsObject().path.isBase();
+        }
+    };
+
+    private static final F<List<String>, Option<String>> formatTags = new F<List<String>, Option<String>>()
+    {
+        private final F<String, Boolean> config = curry( StringF.equals, "config" );
+        private final F<String, Boolean> noreplace = curry( StringF.equals, "rpm:noreplace" );
+        private final F<String, Boolean> missingok = curry( StringF.equals, "rpm:missingok" );
+        private final F<String, Boolean> doc = curry( StringF.equals, "doc" );
+        private final F<String, Boolean> ghost = curry( StringF.equals, "rpm:ghost" );
+
+        public Option<String> f( List<String> tags )
+        {
+            if ( tags.find( config ).isSome() )
+            {
+                return some( "%config " );
+            }
+
+            if ( tags.find( noreplace ).isSome() )
+            {
+                return some( "%config(noreplace) " );
+            }
+
+            if ( tags.find( missingok ).isSome() )
+            {
+                return some( "%config(missingok) " );
+            }
+
+            if ( tags.find( doc ).isSome() )
+            {
+                return some( "%doc " );
+            }
+
+            if ( tags.find( ghost ).isSome() )
+            {
+                return some( "%ghost " );
+            }
+
+            return none();
+        }
+    };
 }

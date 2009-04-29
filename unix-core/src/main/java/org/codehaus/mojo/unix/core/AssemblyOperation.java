@@ -60,7 +60,7 @@ public abstract class AssemblyOperation
         if ( !fromFile.getType().equals( FileType.FOLDER ) )
         {
             throw new FileSystemException(
-                "Not a directory: " + fromFile.getName().getPath() + ", was: " + fromFile.getType() + "" );
+                "Not a directory: " + fromFile.getName().getPath() + ", was: " + fromFile.getType() );
         }
 
         FileContent content = fromFile.getContent();

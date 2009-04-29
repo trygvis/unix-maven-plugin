@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix.maven;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.*;
 
 import java.io.*;
 
@@ -49,7 +50,8 @@ public class ExtractArtifact
         this.artifact = nullifEmpty( artifact );
     }
 
-    public AssemblyOperation createOperation( FileObject basedir, Defaults defaults )
+    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                              FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
         File artifactFile = validateArtifact( artifact );
@@ -58,6 +60,6 @@ public class ExtractArtifact
         FileObject archiveObject = fsManager.resolveFile( artifactFile.getAbsolutePath() );
         FileObject archive = fsManager.createFileSystem( archiveObject );
 
-        return createOperationInternal( archive, defaults );
+        return createOperationInternal( archive, defaultFileAttributes, defaultDirectoryAttributes );
     }
 }

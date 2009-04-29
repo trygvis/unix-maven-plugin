@@ -24,7 +24,9 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import fj.*;
 import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -40,35 +42,28 @@ public abstract class AbstractPackageAttachedMojo
         this.formatType = formatType;
     }
 
-    protected abstract MojoHelper getMojoHelper();
-
-    protected MojoHelper getMojoHelper( MojoHelper mojoHelper )
-    {
-        return mojoHelper.
-            attachedMode();
-    }
+    protected abstract F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF();
 
     public final void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        getMojoHelper().
-            setMojoParameters( new PackagingMojoParameters(
-                name,
-                version,
-                revision,
-                description,
-                contact,
-                contactEmail,
-                architecture,
-                assembly,
-                null ) ).
-            setup(
-                formats,
-                formatType,
-                snapshotTransformation,
-                project,
-                mavenProjectHelper,
-                debug,
-                defaults ).execute();
+        MojoHelper.create( formats,
+                           formatType,
+                           snapshotTransformation,
+                           MavenProjectWrapper.mavenProjectWrapper( project ),
+                           debug,
+                           true,
+                           getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF(),
+                           new PackagingMojoParameters( name,
+                                                        version,
+                                                        revision,
+                                                        description,
+                                                        contact,
+                                                        contactEmail,
+                                                        architecture,
+                                                        defaults,
+                                                        assembly,
+                                                        null ) ).
+            execute( project, mavenProjectHelper );
     }
 }

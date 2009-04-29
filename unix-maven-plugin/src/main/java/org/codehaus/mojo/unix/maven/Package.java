@@ -24,69 +24,62 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import fj.data.*;
+import static fj.data.Option.*;
+import static fj.data.List.*;
+
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Package
 {
-    private String id = "default";
+    public Option<String> classifier = none();
 
-    private String name;
+    public Option<String> id = none();
 
-    private String packageName;
+    public Option<String> name = none();
 
-    private String description;
+    public Option<String> description = none();
 
-    private AssemblyOp[] assembly = new AssemblyOp[0];
+    public MojoFileAttributes fileAttributes = new MojoFileAttributes();
 
-    public String getId()
+    public MojoFileAttributes directoryAttributes = new MojoFileAttributes();
+
+    public List<AssemblyOp> assembly = nil();
+
+    public void setClassifier( String classifier )
     {
-        return id;
+        this.classifier = Option.fromNull( classifier );
     }
 
     public void setId( String id )
     {
-        this.id = id;
-    }
-
-    public String getName()
-    {
-        return name;
+        this.id = Option.fromNull( id );
     }
 
     public void setName( String name )
     {
-        this.name = name;
-    }
-
-    public String getPackageName()
-    {
-        return packageName;
-    }
-
-    public void setPackageName( String packageName )
-    {
-        this.packageName = packageName;
-    }
-
-    public String getDescription()
-    {
-        return description;
+        this.name = Option.fromNull( name );
     }
 
     public void setDescription( String description )
     {
-        this.description = description;
+        this.description = Option.fromNull( description );
     }
 
-    public AssemblyOp[] getAssembly()
+    public void setFileAttributes( MojoFileAttributes fileAttributes )
     {
-        return assembly;
+        this.fileAttributes = fileAttributes;
+    }
+
+    public void setDirectoryAttributes( MojoFileAttributes directoryAttributes )
+    {
+        this.directoryAttributes = directoryAttributes;
     }
 
     public void setAssembly( AssemblyOp[] assembly )
     {
-        this.assembly = assembly != null ? assembly : new AssemblyOp[0];
+        this.assembly = list( assembly );
     }
 }

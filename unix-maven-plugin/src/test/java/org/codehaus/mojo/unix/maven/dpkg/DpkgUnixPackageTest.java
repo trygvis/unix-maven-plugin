@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix.maven.dpkg;
  * SOFTWARE.
  */
 
+import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.dpkg.*;
@@ -57,9 +58,9 @@ public class DpkgUnixPackageTest
         DpkgUnixPackage.cast( packagingFormat.start() ).
             section( "devel" ).
             debug( true ).
-            mavenCoordinates( "mygroup", "myartifact", null ).
+            mavenCoordinates( "mygroup", "myartifact" ).
             version( PackageVersion.create( "1.0", "123", false, null, 1 ) ).
-            contact( "Kurt Cobain" ).
+            contact( some( "Kurt Cobain" ) ).
             architecture( "all" ).
             workingDirectory( packageRoot ).
             packageToFile( packageFile );

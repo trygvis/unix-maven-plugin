@@ -39,7 +39,8 @@ import java.util.*;
  */
 public class RpmUtil
 {
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( "MMM dd HH:mm" );
+    public static final SimpleDateFormat DATE_FORMAT_SHORTER = new SimpleDateFormat( "MMM dd HH:mm" );
+    public static final SimpleDateFormat DATE_FORMAT_LONGER = new SimpleDateFormat( "MMM dd yyyy" );
 
     public static final class FileInfo
         implements EqualsIgnoreNull<FileInfo>, LineProducer
@@ -104,7 +105,7 @@ public class RpmUtil
                 append( user ).append( " " ).
                 append( group ).append( " " ).
                 append( size ).append( " " ).
-                append( date != null ? DATE_FORMAT.format( date ) : "<not set>" ).append( " " ).
+                append( date != null ? DATE_FORMAT_SHORTER.format( date ) : "<not set>" ).append( " " ).
                 append( path ).toString() );
         }
     }
@@ -245,20 +246,29 @@ public class RpmUtil
 
             // Dunno what the second element is
 
+            Date date;
             try
             {
-                list.add( new FileInfo( parts[8].trim(),
-                    parts[2].trim(),
-                    parts[3].trim(),
-                    parts[0].trim(),
-                    Integer.parseInt( parts[4].trim() ),
-                    DATE_FORMAT.parse( parts[5] + " " + parts[6] + " " + parts[7] ) ) );
+                date = DATE_FORMAT_SHORTER.parse( parts[5] + " " + parts[6] + " " + parts[7] );
             }
             catch ( ParseException e )
             {
-                // TODO: Try a different parser ("28 Oct 2008")
-                e.printStackTrace();
+                try
+                {
+                    date = DATE_FORMAT_LONGER.parse( parts[5] + " " + parts[6] + " " + parts[7] );
+                }
+                catch ( Exception e2 )
+                {
+                    e2.printStackTrace();
+                    return;
+                }
             }
+
+            list.add( new FileInfo( parts[8].trim(),
+                parts[2].trim(),
+                parts[3].trim(),
+                parts[0].trim(),
+                Integer.parseInt( parts[4].trim() ), date ) );
         }
 
         public List<FileInfo> getList()

@@ -43,50 +43,66 @@ public class FileAttributes
 
     public final Option<UnixFileMode> mode;
 
-    public final static Option<FileAttributes> none = Option.none();
+    public final List<String> tags;
 
     /**
      * A file object with all none fields. Use this when creating template objects.
      */
     public final static FileAttributes EMPTY = new FileAttributes( Option.<String>none(), Option.<String>none(),
-        Option.<UnixFileMode>none() );
+        Option.<UnixFileMode>none(), List.<String>nil() );
 
     public FileAttributes( Option<String> user, Option<String> group, Option<UnixFileMode> mode )
     {
-        validateNotNull( user, group, mode );
+        this( user, group, mode, List.<String>nil() );
+    }
+
+    public FileAttributes( Option<String> user, Option<String> group, Option<UnixFileMode> mode, List<String> tags )
+    {
+        validateNotNull( user, group, mode, tags );
         this.user = user;
         this.group = group;
         this.mode = mode;
+        this.tags = tags;
     }
 
     public FileAttributes user( String user )
     {
-        return new FileAttributes( fromNull( user ), group, mode );
+        return new FileAttributes( fromNull( user ), group, mode, tags );
     }
 
     public FileAttributes user( Option<String> user )
     {
-        return new FileAttributes( user, group, mode );
+        return new FileAttributes( user, group, mode, tags );
     }
 
     public FileAttributes group( String group )
     {
-        return new FileAttributes( user, fromNull( group ), mode );
+        return new FileAttributes( user, fromNull( group ), mode, tags );
     }
 
     public FileAttributes group( Option<String> group )
     {
-        return new FileAttributes( user, group, mode );
+        return new FileAttributes( user, group, mode, tags );
     }
 
     public FileAttributes mode( UnixFileMode mode )
     {
-        return new FileAttributes( user, group, fromNull( mode ) );
+        return new FileAttributes( user, group, fromNull( mode ), tags );
     }
 
     public FileAttributes mode( Option<UnixFileMode> mode )
     {
-        return new FileAttributes( user, group, mode );
+        return new FileAttributes( user, group, mode, tags );
+    }
+
+    public FileAttributes addTag( String tag )
+    {
+        return new FileAttributes( user, group, mode, tags.cons( tag ) );
+    }
+
+    public FileAttributes tags( List<String> tags )
+    {
+        return new FileAttributes( user, group, mode, tags.append( tags ) );
     }
 
     // -----------------------------------------------------------------------
@@ -98,8 +114,13 @@ public class FileAttributes
         return new FileAttributes(
             other.user.orElse( user ),
             other.group.orElse( group ),
-            other.mode.orElse( mode ) );
+            other.mode.orElse( mode ),
+            other.tags );
     }
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
 
     public final static F2<FileAttributes, FileAttributes, FileAttributes> useAsDefaultsFor = new F2<FileAttributes, FileAttributes, FileAttributes>()
     {
@@ -108,10 +129,6 @@ public class FileAttributes
             return defaults.useAsDefaultsFor( other );
         }
     };
-
-    // -----------------------------------------------------------------------
-    //
-    // -----------------------------------------------------------------------
 
     public final static F<FileAttributes, Option<String>> userF = new F<FileAttributes, Option<String>>()
     {
@@ -134,6 +151,14 @@ public class FileAttributes
         public Option<UnixFileMode> f( FileAttributes attributes )
         {
             return attributes.mode;
+        }
+    };
+
+    public final static F<FileAttributes, List<String>> tagsF = new F<FileAttributes, List<String>>()
+    {
+        public List<String> f( FileAttributes attributes )
+        {
+            return attributes.tags;
         }
     };
 
