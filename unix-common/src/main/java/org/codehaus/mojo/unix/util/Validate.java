@@ -32,11 +32,12 @@ public class Validate
 {
     public static void validateNotNull( Object... os )
     {
-        for ( Object o : os )
+        for ( int i = 0; i < os.length; i++ )
         {
+            Object o = os[i];
             if ( o == null )
             {
-                throw new NullPointerException( "An argument was null." );
+                throw new NullPointerException( "Argument #" + ( i + 1 ) + " was null." );
             }
         }
     }

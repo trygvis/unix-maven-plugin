@@ -49,7 +49,7 @@ public class Symlink
 
     public void setPath( String path )
     {
-        this.path = fromString( path );
+        this.path = relativePath( path );
     }
 
     public void setValue( String value )

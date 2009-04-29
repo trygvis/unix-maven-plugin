@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.maven;
  */
 
 import fj.*;
+import fj.data.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
 
@@ -55,7 +56,6 @@ public abstract class AbstractPackageAttachedMojo
                            true,
                            getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF(),
                            new PackagingMojoParameters( name,
-                                                        version,
                                                         revision,
                                                         description,
                                                         contact,

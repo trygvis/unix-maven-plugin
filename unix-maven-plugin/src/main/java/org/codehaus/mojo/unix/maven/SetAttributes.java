@@ -28,10 +28,10 @@ import fj.data.*;
 import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
-import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 
 import static java.util.Arrays.*;
 import java.util.*;
@@ -61,7 +61,7 @@ public class SetAttributes
 
     public void setBasedir( String basedir )
     {
-        this.basedir = fromString( basedir );
+        this.basedir = relativePath( basedir );
     }
 
     public void setIncludes( String[] includes )

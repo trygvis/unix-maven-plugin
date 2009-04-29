@@ -37,64 +37,64 @@ public class RelativePathTest
 {
     public void testFromString()
     {
-        assertEquals( ".", fromString( "" ).string );
-        assertEquals( ".", fromString( null ).string );
-        assertEquals( ".", fromString( "/" ).string );
-        assertEquals( ".", fromString( "/." ).string );
-        assertEquals( ".", fromString( "//" ).string );
-        assertEquals( "a", fromString( "a/" ).string );
-        assertEquals( "a", fromString( "/a" ).string );
-        assertEquals( "a", fromString( "/a/" ).string );
+        assertEquals( ".", relativePath( "" ).string );
+        assertEquals( ".", relativePath( null ).string );
+        assertEquals( ".", relativePath( "/" ).string );
+        assertEquals( ".", relativePath( "/." ).string );
+        assertEquals( ".", relativePath( "//" ).string );
+        assertEquals( "a", relativePath( "a/" ).string );
+        assertEquals( "a", relativePath( "/a" ).string );
+        assertEquals( "a", relativePath( "/a/" ).string );
 
-        assertEquals( "a", fromString( "/a//" ).string );
+        assertEquals( "a", relativePath( "/a//" ).string );
 
-        assertEquals( "a/b", fromString( "/a/b/" ).string );
+        assertEquals( "a/b", relativePath( "/a/b/" ).string );
 
-        assertEquals( "a/b/c", fromString( "/a////b//c////" ).string );
+        assertEquals( "a/b/c", relativePath( "/a////b//c////" ).string );
 
-        assertEquals( ".a", fromString( ".a" ).string );
-        assertEquals( ".", fromString( "/." ).string );
-        assertEquals( "a", fromString( "a/." ).string );
-        assertEquals( "a", fromString( "/a/." ).string );
+        assertEquals( ".a", relativePath( ".a" ).string );
+        assertEquals( ".", relativePath( "/." ).string );
+        assertEquals( "a", relativePath( "a/." ).string );
+        assertEquals( "a", relativePath( "/a/." ).string );
 
-        assertEquals( "opt/jb/.bash_profile", fromString( "/opt/jb/.bash_profile" ).string );
-        assertEquals( ".bash_profile", fromString( ".bash_profile" ).string );
+        assertEquals( "opt/jb/.bash_profile", relativePath( "/opt/jb/.bash_profile" ).string );
+        assertEquals( ".bash_profile", relativePath( ".bash_profile" ).string );
 
-        assertEquals( "opt/jetty/bin", fromString( "/opt/jetty/bin" ).string );
-        assertEquals( "opt/jetty", fromString( "/opt/jetty/" ).string );
-        assertEquals( "opt", fromString( "/opt" ).string );
+        assertEquals( "opt/jetty/bin", relativePath( "/opt/jetty/bin" ).string );
+        assertEquals( "opt/jetty", relativePath( "/opt/jetty/" ).string );
+        assertEquals( "opt", relativePath( "/opt" ).string );
     }
 
     public void testAdd()
     {
-        assertEquals( ".", fromString( "" ).add( "" ).string );
-        assertEquals( ".", fromString( "" ).add( "/" ).string );
-        assertEquals( ".", fromString( "/" ).add( "" ).string );
-        assertEquals( ".", fromString( "/" ).add( "/" ).string );
+        assertEquals( ".", relativePath( "" ).add( "" ).string );
+        assertEquals( ".", relativePath( "" ).add( "/" ).string );
+        assertEquals( ".", relativePath( "/" ).add( "" ).string );
+        assertEquals( ".", relativePath( "/" ).add( "/" ).string );
 
-        assertEquals( "a", fromString( "./" ).add( "/a/" ).string );
-        assertEquals( "a", fromString( "/a/" ).add( "/." ).string );
+        assertEquals( "a", relativePath( "./" ).add( "/a/" ).string );
+        assertEquals( "a", relativePath( "/a/" ).add( "/." ).string );
 
-        assertEquals( "opt/foo/bin/yo", fromString( "/opt/foo" ).add( "/bin/yo" ).string );
-        assertEquals( "opt/jetty/README-unix.txt", fromString( "/" ).add( "/opt/jetty/README-unix.txt" ).string );
+        assertEquals( "opt/foo/bin/yo", relativePath( "/opt/foo" ).add( "/bin/yo" ).string );
+        assertEquals( "opt/jetty/README-unix.txt", relativePath( "/" ).add( "/opt/jetty/README-unix.txt" ).string );
     }
 
     public void testName()
     {
-        assertEquals( "a", fromString( "b/a" ).name() );
-        assertEquals( "a", fromString( "a" ).name() );
-        assertEquals( ".", fromString( "." ).name() );
+        assertEquals( "a", relativePath( "b/a" ).name() );
+        assertEquals( "a", relativePath( "a" ).name() );
+        assertEquals( ".", relativePath( "." ).name() );
     }
 
     public void testToList()
     {
-        assertTrue( fromString( "/" ).toList().isEmpty() );
-        assertTrue( fromString( "." ).toList().isEmpty() );
+        assertTrue( relativePath( "/" ).toList().isEmpty() );
+        assertTrue( relativePath( "." ).toList().isEmpty() );
 
-        assertEquals( 1, fromString( "a" ).toList().length() );
-        assertEquals( "a", fromString( "a" ).toList().head() );
+        assertEquals( 1, relativePath( "a" ).toList().length() );
+        assertEquals( "a", relativePath( "a" ).toList().head() );
 
-        List<String> l = fromString( "/a/b/c" ).toList();
+        List<String> l = relativePath( "/a/b/c" ).toList();
 //        Show.<String>listShow( Show.stringShow ).println( l );
         assertEquals( "a", l.index( 0 ) );
         assertEquals( "b", l.index( 1 ) );
@@ -103,14 +103,14 @@ public class RelativePathTest
 
     public void testAsAbsolutePath()
     {
-        assertEquals( "/", fromString( "." ).asAbsolutePath( "/" ) );
-        assertEquals( "/", fromString( "/" ).asAbsolutePath( "/" ) );
-        assertEquals( "/a", fromString( "a" ).asAbsolutePath( "/" ) );
-        assertEquals( "/a", fromString( "a/" ).asAbsolutePath( "/" ) );
-        assertEquals( "/a", fromString( "/a" ).asAbsolutePath( "/" ) );
-        assertEquals( "/a", fromString( "/a/" ).asAbsolutePath( "/" ) );
-        assertEquals( "/a/b", fromString( "a/b" ).asAbsolutePath( "/" ) );
-        assertEquals( "/opt/jb/.bash_profile", fromString( "/opt/jb/.bash_profile" ).asAbsolutePath( "/" ) );
+        assertEquals( "/", relativePath( "." ).asAbsolutePath( "/" ) );
+        assertEquals( "/", relativePath( "/" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a", relativePath( "a" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a", relativePath( "a/" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a", relativePath( "/a" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a", relativePath( "/a/" ).asAbsolutePath( "/" ) );
+        assertEquals( "/a/b", relativePath( "a/b" ).asAbsolutePath( "/" ) );
+        assertEquals( "/opt/jb/.bash_profile", relativePath( "/opt/jb/.bash_profile" ).asAbsolutePath( "/" ) );
     }
 
     public void testClean()

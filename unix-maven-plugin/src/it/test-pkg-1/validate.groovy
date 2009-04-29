@@ -10,11 +10,12 @@ boolean success = true
 File pkg = new File((File) basedir, "target/project-pkg-1-1.1-2.pkg")
 
 success &= ShittyUtil.assertRelaxed( 
-        new PackageInfo( "project-pkg-1", "Hudson", "application", "all", "1.1-2", none(), none()),
+        new PackageInfo( "bar-project-pkg-1", "Hudson", "application", "all", "1.1-2", none(), none()),
         PkginfoUtil.getPackageInforForDevice(pkg).some());
 
 // Ignore dates for now
 success &= ShittyUtil.assertPkgEntries(pkg, [
+        directory("/", "17777777777", "?", "?", none()),
         directory("/opt", "17777777777", "?", "?", none()),
         directory("/opt/hudson", "0755", "nobody", "nogroup", none()),
         regularFile("/opt/hudson/hudson.war", "0666", "hudson", "hudson", 20623413, 3301, none()),
@@ -29,7 +30,7 @@ success &= ShittyUtil.assertPkgEntries(pkg, [
         installationFile("compver", 0, 0, none()),
         installationFile("copyright", 24, 2150, none()),
         installationFile("depend", 0, 0, none()),
-        installationFile("pkginfo", 149, 0, none()),
+        installationFile("pkginfo", 151, 0, none()),
         installationFile("request", 46, 4055, none()),
         installationFile("space", 0, 0, none()),
 ])

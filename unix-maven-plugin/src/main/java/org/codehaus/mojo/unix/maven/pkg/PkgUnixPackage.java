@@ -167,13 +167,13 @@ public class PkgUnixPackage
 
         // TODO: This should be more configurable
         RelativePath[] specialPaths = new RelativePath[]{
-            fromString( "/" ),
-            fromString( "/etc" ),
-            fromString( "/etc/opt" ),
-            fromString( "/opt" ),
-            fromString( "/usr" ),
-            fromString( "/var" ),
-            fromString( "/var/opt" ),
+            relativePath( "/" ),
+            relativePath( "/etc" ),
+            relativePath( "/etc/opt" ),
+            relativePath( "/opt" ),
+            relativePath( "/usr" ),
+            relativePath( "/var" ),
+            relativePath( "/var/opt" ),
         };
 
         // TODO: This should use setDirectoryAttributes
@@ -195,7 +195,7 @@ public class PkgUnixPackage
         File prototypeF = VfsUtil.asFile( prototype );
 
         ScriptUtil.Execution execution = scriptUtil.copyScripts( getBasedir(), workingDirectoryF );
-        pkginfoFile.version = getPkgVersion();
+        pkginfoFile.version = getPkgVersion( getVersion() );
         pkginfoFile.pstamp = getVersion().timestamp;
         LineStreamUtil.toFile( pkginfoFile, pkginfoF );
 
@@ -235,13 +235,18 @@ public class PkgUnixPackage
             execute( workingDirectoryF, packageFile, pkg );
     }
 
-    private String getPkgVersion()
+    public static String getPkgVersion( PackageVersion v )
     {
-        String version = getVersion().version;
+        String version = v.version;
 
-        if ( getVersion().snapshot )
+        if ( v.revision.isSome() )
         {
-            version += "-" + getVersion().timestamp;
+            version += "-" + v.revision.some();
+        }
+
+        if ( v.snapshot )
+        {
+            version += "-" + v.timestamp;
         }
 
         return version;

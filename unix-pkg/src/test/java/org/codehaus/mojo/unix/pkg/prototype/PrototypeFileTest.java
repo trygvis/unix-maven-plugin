@@ -35,7 +35,7 @@ import static org.codehaus.mojo.unix.UnixFileMode.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
+import static org.codehaus.mojo.unix.util.RelativePath.relativePath;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
@@ -49,10 +49,10 @@ public class PrototypeFileTest
 {
     private final LocalDateTime dateTime = new LocalDateTime();
 
-    RelativePath extractJarPath = fromString( "extract.jar" );
-    RelativePath bashProfilePath = fromString( "/opt/jetty/.bash_profile" );
-    RelativePath specialPath = fromString( "/special" );
-    RelativePath smfManifestXmlPath = fromString( "/smf/manifest.xml" );
+    RelativePath extractJarPath = relativePath( "extract.jar" );
+    RelativePath bashProfilePath = relativePath( "/opt/jetty/.bash_profile" );
+    RelativePath specialPath = relativePath( "/special" );
+    RelativePath smfManifestXmlPath = relativePath( "/smf/manifest.xml" );
 
     FileAttributes fileAttributes = new FileAttributes( some( "nouser" ), some( "nogroup" ), some( _0644 ) );
     FileAttributes dirAttributes = new FileAttributes( some( "nouser" ), some( "nogroup" ), some( _0755 ) );

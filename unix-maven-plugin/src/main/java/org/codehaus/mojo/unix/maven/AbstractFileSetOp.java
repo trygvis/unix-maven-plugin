@@ -26,9 +26,10 @@ package org.codehaus.mojo.unix.maven;
 
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 
 import static java.util.Arrays.*;
 import java.util.*;
@@ -61,7 +62,7 @@ public abstract class AbstractFileSetOp
 
     public void setTo( String to )
     {
-        this.to = RelativePath.fromString( to );
+        this.to = relativePath( to );
     }
 
     public void setIncludes( String[] includes )

@@ -32,6 +32,8 @@ import java.io.*;
 /**
  * Represents a Unix package that has attributes and a set of files to be packaged.
  *
+ * TODO: Move to unix-core. Stuff in unix-common should be generic for "unix stuff".
+ *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */

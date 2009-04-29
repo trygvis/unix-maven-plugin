@@ -52,7 +52,7 @@ public class CreateDirectoriesOperation
     {
         for (String path : paths)
         {
-            fileCollector.addDirectory( UnixFsObject.directory( fromString( path ), new LocalDateTime(), attributes ) );
+            fileCollector.addDirectory( UnixFsObject.directory( relativePath( path ), new LocalDateTime(), attributes ) );
         }
     }
 }

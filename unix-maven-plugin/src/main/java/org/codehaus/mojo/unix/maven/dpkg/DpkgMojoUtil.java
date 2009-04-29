@@ -35,14 +35,14 @@ import org.codehaus.plexus.util.*;
  */
 public class DpkgMojoUtil
 {
-    public static final F2<DpkgSpecificSettings, UnixPackage, UnixPackage>
-        validateMojoSettingsAndApplyFormatSpecificSettingsToPackage = new F2<DpkgSpecificSettings, UnixPackage, UnixPackage>()
-    {
-        public UnixPackage f( DpkgSpecificSettings dpkgSpecificSettings, UnixPackage unixPackage )
+    public static final F2<DpkgSpecificSettings, UnixPackage, UnixPackage> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage =
+        new F2<DpkgSpecificSettings, UnixPackage, UnixPackage>()
         {
-            return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( dpkgSpecificSettings, unixPackage );
-        }
-    };
+            public UnixPackage f( DpkgSpecificSettings dpkgSpecificSettings, UnixPackage unixPackage )
+            {
+                return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( dpkgSpecificSettings, unixPackage );
+            }
+        };
 
     public static UnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( DpkgSpecificSettings dpkg,
                                                                                            UnixPackage unixPackage )
@@ -61,6 +61,19 @@ public class DpkgMojoUtil
         {
             throw new MissingSettingException( "Section has to be specified." );
         }
+
+        // TODO: Move this
+//        if ( mojoParameters.revision.isSome() )
+//        {
+//            try
+//            {
+//                Integer.parseInt( mojoParameters.revision.some() );
+//            }
+//            catch ( NumberFormatException e )
+//            {
+//                throw new MissingSettingException( "The revision field has to be an integer for DPKG packages." );
+//            }
+//        }
 
         return DpkgUnixPackage.cast( unixPackage ).
             priority( dpkg.getPriority() ).

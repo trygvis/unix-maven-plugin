@@ -29,7 +29,7 @@ import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.core.AssemblyOperation.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
+import static org.codehaus.mojo.unix.util.RelativePath.relativePath;
 import org.codehaus.plexus.*;
 import org.easymock.*;
 
@@ -73,10 +73,10 @@ public class OperationTest
     public static final Objects objects = new Objects();
 
     public static class Paths {
-        RelativePath optJettyBin = fromString( "/opt/jetty/bin" );
-        RelativePath optJettyBinExtraApp = fromString( "/opt/jetty/bin/extra-app" );
-        RelativePath optJettyReadmeUnix = fromString( "/opt/jetty/README-unix.txt" );
-        RelativePath optJettyBashProfile = fromString( "/opt/jetty/.bash_profile" );
+        RelativePath optJettyBin = relativePath( "/opt/jetty/bin" );
+        RelativePath optJettyBinExtraApp = relativePath( "/opt/jetty/bin/extra-app" );
+        RelativePath optJettyReadmeUnix = relativePath( "/opt/jetty/README-unix.txt" );
+        RelativePath optJettyBashProfile = relativePath( "/opt/jetty/.bash_profile" );
     }
 
     public static class Files {
@@ -153,11 +153,11 @@ public class OperationTest
 
         FileObject fooLicense = archive.getChild( "foo-license.txt" );
         UnixFsObject.RegularFile fooLicenseUnixFile =
-            fromFileObject( fromString( "licenses/foo-license.txt" ), fooLicense, fileAttributes );
+            fromFileObject( relativePath( "licenses/foo-license.txt" ), fooLicense, fileAttributes );
 
         FileObject barLicense = archive.getChild( "mydir" ).getChild( "bar-license.txt" );
         UnixFsObject.RegularFile barLicenseUnixFile =
-            fromFileObject( fromString( "licenses/bar-license.txt" ), barLicense, fileAttributes );
+            fromFileObject( relativePath( "licenses/bar-license.txt" ), barLicense, fileAttributes );
 
         MockControl control = MockControl.createControl( FileCollector.class );
         FileCollector fileCollector = (FileCollector) control.getMock();
@@ -166,7 +166,7 @@ public class OperationTest
         control.expectAndReturn( fileCollector.addFile( fooLicense, fooLicenseUnixFile ), fileCollector );
         control.replay();
 
-        new CopyDirectoryOperation( archive, fromString( "licenses" ), asList( "**/*license.txt" ), null,
+        new CopyDirectoryOperation( archive, relativePath( "licenses" ), asList( "**/*license.txt" ), null,
                                     ".*/(.*license.*)", "$1", fileAttributes, directoryAttributes ).
             perform( fileCollector );
 
@@ -198,7 +198,7 @@ public class OperationTest
     {
         try
         {
-            return dirFromFileObject( fromString( path ), files.resolveFile( path ), directoryAttributes );
+            return dirFromFileObject( relativePath( path ), files.resolveFile( path ), directoryAttributes );
         }
         catch ( FileSystemException e )
         {

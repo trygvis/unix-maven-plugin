@@ -24,7 +24,9 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.*;
+import fj.data.*;
+import static fj.data.Option.*;
+import static org.codehaus.mojo.unix.util.Validate.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -38,53 +40,18 @@ public final class PackageVersion
 
     public final boolean snapshot;
 
-    public final int revision;
+    public final Option<String> revision;
 
-    private PackageVersion( String version, String timestamp, boolean snapshot, int revision )
+    private PackageVersion( String version, String timestamp, boolean snapshot, Option<String> revision )
     {
+        validateNotNull( version, timestamp, snapshot, revision );
         this.version = version;
         this.timestamp = timestamp;
         this.snapshot = snapshot;
         this.revision = revision;
     }
 
-    /**
-     * This function parses the fields that is given in a Maven project
-     */
-    static PackageVersion fromMavenProject( String version, String timestamp, boolean snapshot )
-    {
-        if ( snapshot )
-        {
-            if ( timestamp == null )
-            {
-                throw new RuntimeException( "The timestamp can't be null when creating a snapshot version" );
-            }
-        }
-
-        version = stripSnapshot( snapshot, version );
-
-        int maintainerRevision = -1;
-
-        int index = version.lastIndexOf( '-' );
-
-        if ( index != -1 )
-        {
-            try
-            {
-                maintainerRevision = Integer.parseInt( version.substring( index + 1 ) );
-
-                version = version.substring( 0, index );
-            }
-            catch ( NumberFormatException e )
-            {
-                maintainerRevision = -1;
-            }
-        }
-
-        return new PackageVersion( version, timestamp, snapshot, maintainerRevision );
-    }
-
-    private static String stripSnapshot( boolean snapshot, String version )
+    private static String version( boolean snapshot, String version )
     {
         if( !snapshot )
         {
@@ -101,43 +68,41 @@ public final class PackageVersion
         return version.substring( 0, version.length() - 9 );
     }
 
-    public static PackageVersion create( String version, String timestamp, boolean snapshot,
-                                         String configuredVersion, Integer configuredRevision )
+    public static PackageVersion packageVersion( String mavenVersion, String timestamp, boolean snapshot,
+                                                 Option<String> configuredRevision )
     {
-        if ( version == null )
-        {
-            throw new RuntimeException( "version == null" );
-        }
+        validateNotNull( mavenVersion, timestamp, configuredRevision );
 
-        if ( timestamp == null )
-        {
-            throw new RuntimeException( "timestamp == null" );
-        }
-
+        String version = version( snapshot, mavenVersion );
+        
         // If the configured revision is set, there is not need to transform the version
-        if ( configuredRevision != null )
+        if ( configuredRevision.isSome() )
         {
-            return new PackageVersion( stripSnapshot( snapshot, version ), timestamp, snapshot,
-                configuredRevision );
+            return new PackageVersion( version( snapshot, mavenVersion ), timestamp, snapshot, configuredRevision );
         }
 
-        PackageVersion v = fromMavenProject( version, timestamp, snapshot );
-
-        version = StringUtils.isNotEmpty( configuredVersion ) ? configuredVersion : v.version;
-
-        switch ( v.revision )
+        if ( snapshot )
         {
-            case -1:
-            case 0:
-                return new PackageVersion( version, v.timestamp, v.snapshot, 1 );
-            default:
-                return new PackageVersion( version, v.timestamp, v.snapshot, v.revision );
+            if ( timestamp == null )
+            {
+                throw new RuntimeException( "The timestamp can't be null when creating a snapshot version" );
+            }
         }
+
+        int index = version.lastIndexOf( '-' );
+
+        if ( index != -1 )
+        {
+            return new PackageVersion( version.substring( 0, index ), timestamp, snapshot,
+                                       some( version.substring( index + 1 ) ) );
+        }
+
+        return new PackageVersion( version, timestamp, snapshot, Option.<String>none() );
     }
 
     public String getMavenVersion()
     {
-        String v = version + "-" + revision;
+        String v = revision.isSome() ? version + "-" + revision.some() : version;
 
         if ( snapshot )
         {
@@ -145,5 +110,11 @@ public final class PackageVersion
         }
 
         return v;
+    }
+
+    public String toString()
+    {
+        return "PackageVersion{" + "version='" + version + '\'' + ", timestamp='" + timestamp + '\'' + ", snapshot=" +
+            snapshot + ", revision=" + revision + '}';
     }
 }

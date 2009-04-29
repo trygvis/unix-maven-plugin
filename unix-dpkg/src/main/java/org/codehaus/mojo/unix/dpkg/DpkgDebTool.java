@@ -31,6 +31,7 @@ import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.ar.*;
 import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.joda.time.*;
 
 import java.io.*;
@@ -95,7 +96,7 @@ public class DpkgDebTool
         {
             Option<UnixFileMode> mode = some( UnixFileMode.fromInt( entry.getMode() ) );
             FileAttributes attributes = new FileAttributes( some( entry.getUserName() ), some( entry.getGroupName() ), mode );
-            RelativePath path = RelativePath.fromString( entry.getName() );
+            RelativePath path = relativePath( entry.getName() );
             LocalDateTime lastModified = LocalDateTime.fromDateFields( entry.getModTime() );
 
             objects.add( entry.isDirectory() ?

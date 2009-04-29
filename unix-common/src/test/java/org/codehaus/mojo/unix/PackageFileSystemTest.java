@@ -34,7 +34,7 @@ import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
+import static org.codehaus.mojo.unix.util.RelativePath.relativePath;
 import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
@@ -61,21 +61,21 @@ public class PackageFileSystemTest
 
     static BasicPackageFileSystemObject root = basic( directory( RelativePath.BASE, lm, directoryA ) );
 
-    static BasicPackageFileSystemObject a = basic( directory( fromString( "/a" ), lm, directoryA ) );
+    static BasicPackageFileSystemObject a = basic( directory( relativePath( "/a" ), lm, directoryA ) );
 
-    static BasicPackageFileSystemObject b = basic( directory( fromString( "/b" ), lm, directoryA.mode( UnixFileMode.none ) ) );
+    static BasicPackageFileSystemObject b = basic( directory( relativePath( "/b" ), lm, directoryA.mode( UnixFileMode.none ) ) );
 
-    static BasicPackageFileSystemObject a_x = basic( regularFile( fromString( "/a/a-x" ), lm, 10, some( fileA ) ) );
+    static BasicPackageFileSystemObject a_x = basic( regularFile( relativePath( "/a/a-x" ), lm, 10, some( fileA ) ) );
 
-    static BasicPackageFileSystemObject a_y = basic( regularFile( fromString( "/a/a-y" ), lm, 10, some( fileA ) ) );
+    static BasicPackageFileSystemObject a_y = basic( regularFile( relativePath( "/a/a-y" ), lm, 10, some( fileA ) ) );
 
-    static BasicPackageFileSystemObject b_x = basic( regularFile( fromString( "/b/b-x" ), lm, 10, some( fileA ) ) );
+    static BasicPackageFileSystemObject b_x = basic( regularFile( relativePath( "/b/b-x" ), lm, 10, some( fileA ) ) );
 
-    static BasicPackageFileSystemObject c = basic( directory( fromString( "/c" ), lm, directoryA ) );
+    static BasicPackageFileSystemObject c = basic( directory( relativePath( "/c" ), lm, directoryA ) );
 
-    static BasicPackageFileSystemObject c_x = basic( directory( fromString( "/c/c-x" ), lm, directoryA ) );
+    static BasicPackageFileSystemObject c_x = basic( directory( relativePath( "/c/c-x" ), lm, directoryA ) );
 
-    static BasicPackageFileSystemObject c_x_u = basic( regularFile( fromString( "/c/c-x/c-x-u" ), lm, 10, some( fileA ) ) );
+    static BasicPackageFileSystemObject c_x_u = basic( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, some( fileA ) ) );
 
     Show<List<PackageFileSystemObject<Object>>> fsShow = Show.listShow( Show.showS( new F<PackageFileSystemObject<Object>, String>()
     {

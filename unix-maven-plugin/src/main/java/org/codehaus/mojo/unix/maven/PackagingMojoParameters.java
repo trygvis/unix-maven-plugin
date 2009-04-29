@@ -1,9 +1,5 @@
 package org.codehaus.mojo.unix.maven;
 
-import fj.data.*;
-import static fj.data.Option.*;
-import static fj.data.List.*;
-
 /*
  * The MIT License
  *
@@ -28,6 +24,10 @@ import static fj.data.List.*;
  * SOFTWARE.
  */
 
+import fj.data.*;
+import static fj.data.Option.*;
+import static fj.data.List.*;
+
 /**
  * A utility class to contain all configuration settings for a packaging mojo.
  *
@@ -37,8 +37,7 @@ import static fj.data.List.*;
 public class PackagingMojoParameters
 {
     public final Option<String> name;
-    public final Option<String> version;
-    public final Option<Integer> revision;
+    public final Option<String> revision;
     public final Option<String> description;
     public final Option<String> contact;
     public final Option<String> contactEmail;
@@ -48,8 +47,7 @@ public class PackagingMojoParameters
     public final List<Package> packages;
 
     public PackagingMojoParameters( String name,
-                                    String version,
-                                    Integer revision,
+                                    String revision,
                                     String description,
                                     String contact,
                                     String contactEmail,
@@ -59,7 +57,6 @@ public class PackagingMojoParameters
                                     Package[] packages )
     {
         this.name = fromNull( name );
-        this.version = fromNull( version );
         this.revision = fromNull( revision );
         this.description = fromNull( description );
         this.contact = fromNull( contact );

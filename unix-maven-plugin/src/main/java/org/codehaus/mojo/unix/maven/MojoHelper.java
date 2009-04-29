@@ -27,7 +27,12 @@ package org.codehaus.mojo.unix.maven;
 import fj.*;
 import fj.data.List;
 import static fj.data.List.*;
+import static fj.data.List.single;
 import fj.data.*;
+import fj.data.Set;
+import static fj.data.Option.*;
+import static fj.data.Set.*;
+import static fj.pre.Ord.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.artifact.transform.*;
 import org.apache.maven.plugin.*;
@@ -77,9 +82,8 @@ public abstract class MojoHelper
             throw new MojoExecutionException( "Error while initializing Commons VFS", e);
         }
 
-        PackageVersion version = PackageVersion.create( project.version, timestamp, project.artifact.isSnapshot(),
-                                                        mojoParameters.version.orSome( (String)null ),
-                                                        mojoParameters.revision.orSome( (Integer)null ) );
+        PackageVersion version = PackageVersion.packageVersion( project.version, timestamp,
+                                                                project.artifact.isSnapshot(), mojoParameters.revision );
 
         List<P3<UnixPackage, Package, List<AssemblyOperation>>> packages = nil();
 
@@ -330,44 +334,52 @@ public abstract class MojoHelper
             packages = single( new Package() );
         }
 
-        java.util.Set<String> names = new java.util.HashSet<String>();
+        Set<String> names = empty( stringOrd );
+        List<Package> outPackages = nil();
 
-        boolean foundDefault = false;
+        Option<Package> defaultPackage = none();
 
-        for (Package pakke : packages)
+        for ( Package pakke : packages )
         {
-            if ( pakke.classifier.isNone() )
+            if ( pakke.classifier.isNone() || pakke.classifier.some().equals( "default" ) )
             {
-                if ( attachedMode )
-                {
-                    throw new MojoFailureException( "When running in attached mode all packages are required to have an classifier." );
-                }
-
-                if ( foundDefault )
+                if ( defaultPackage.isSome() )
                 {
                     throw new MojoFailureException( "There can only be one package without an classifier." );
                 }
 
-                foundDefault = true;
+                pakke.classifier = none();
 
-                continue;
+                defaultPackage = some( pakke );
             }
-
-            if ( names.contains( pakke.classifier.some() ) )
+            else
             {
-                throw new MojoFailureException( "Duplicate package classifier: '" + pakke.classifier + "'." );
+                if ( names.member( pakke.classifier.some() ) )
+                {
+                    throw new MojoFailureException( "Duplicate package classifier: '" + pakke.classifier + "'." );
+                }
+
+                names = names.insert( pakke.classifier.some() );
+                outPackages = outPackages.cons( pakke );
+            }
+        }
+
+        if ( attachedMode )
+        {
+            if ( defaultPackage.isSome() )
+            {
+                throw new MojoFailureException( "When running in attached mode all packages are required to have an classifier." );
             }
 
-            names.add( pakke.classifier.some() );
+            return outPackages;
         }
 
-        if ( !attachedMode && !foundDefault )
+        if ( defaultPackage.isNone() )
         {
-            // The default package was not found, add to the front of the list
-            packages = cons( new Package(), packages );
+            throw new MojoFailureException( "When running in 'primary artifact mode' exactly one package is required to have 'default' or none classifier." );
         }
 
-        return packages;
+        return defaultPackage.toList().append( outPackages );
     }
 
     protected static String defaultValue( String value, String defaultValue )

@@ -25,6 +25,9 @@ package org.codehaus.mojo.unix;
  */
 
 import junit.framework.*;
+import static org.codehaus.mojo.unix.PackageVersion.*;
+import static fj.data.Option.*;
+import fj.data.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -33,64 +36,86 @@ import junit.framework.*;
 public class PackageVersionTest
     extends TestCase
 {
+    Option<String> noneS = Option.none();
+
     public void testReleaseVersionWithEmbeddedRevision()
     {
-        assertVersion( "1.0", "20080703.084400", 1, "1.0-1",
-            PackageVersion.create( "1.0-1", "20080703.084400", false, null, null ) );
+        assertVersion( "1.0", "20080703.084400", some( "1" ), "1.0-1",
+                       packageVersion( "1.0-1", "20080703.084400", false, noneS ) );
     }
 
     public void testReleaseVersionWithoutEmbeddedRevison()
     {
-        assertVersion( "1.0", "20080703.084400", 1, "1.0-1",
-        PackageVersion.create( "1.0", "20080703.084400", false, null, null ) );
+        assertVersion( "1.0", "20080703.084400", noneS, "1.0",
+                       packageVersion( "1.0", "20080703.084400", false, noneS ) );
     }
 
     public void testReleaseVersionWithConfiguredRevison()
     {
-        assertVersion( "1.0-alpha-2", "20080703.084400", 3, "1.0-alpha-2-3",
-        PackageVersion.create( "1.0-alpha-2", "20080703.084400", false, null, 3 ) );
+        assertVersion( "1.0-alpha-2", "20080703.084400", some( "3" ), "1.0-alpha-2-3",
+                       packageVersion( "1.0-alpha-2", "20080703.084400", false, some( "3" ) ) );
+    }
+
+    public void testSnapshotVersionWithEmbeddedRevision()
+    {
+        assertVersion( "1.0", "20080703.084400", some( "1" ), "1.0-1-SNAPSHOT",
+                       packageVersion( "1.0-1-SNAPSHOT", "20080703.084400", true, noneS ) );
     }
 
     public void testSnapshotVersionWithoutEmbeddedRevison()
     {
         // When your project uses versions on the form "1.0-alpha-2" you have to specify the revision
-        assertVersion( "1.0-alpha-2", "20080703.084400", 3, "1.0-alpha-2-3-SNAPSHOT",
-            PackageVersion.create( "1.0-alpha-2-SNAPSHOT", "20080703.084400", true, null, 3 ) );
+        assertVersion( "1.0-alpha-2", "20080703.084400", some( "3" ), "1.0-alpha-2-3-SNAPSHOT",
+                       packageVersion( "1.0-alpha-2-SNAPSHOT", "20080703.084400", true, some( "3" ) ) );
+    }
+
+    public void testSnapshotVersionWithConfiguredRevision()
+    {
+        assertVersion( "1.0-1", "20080703.084400", some( "3" ), "1.0-1-3-SNAPSHOT",
+                       packageVersion( "1.0-1-SNAPSHOT", "20080703.084400", true, some( "3" ) ) );
     }
 
     public void testRevision()
         throws Exception
     {
-        assertVersion( "1.0", "20080703.084400", 2, "1.0-2",
-            PackageVersion.create( "1.0-2", "20080703.084400", false, null, null ) );
+        assertVersion( "1.0", "20080703.084400", some( "2" ), "1.0-2",
+                       packageVersion( "1.0-2", "20080703.084400", false, noneS ) );
 
-        assertVersion( "1.0-alpha", "20080703.084400", 2, "1.0-alpha-2-SNAPSHOT",
-            PackageVersion.create( "1.0-alpha-2-SNAPSHOT", "20080703.084400", true, null, null ) );
+        assertVersion( "1.0-alpha", "20080703.084400", some( "2" ), "1.0-alpha-2-SNAPSHOT",
+                       packageVersion( "1.0-alpha-2-SNAPSHOT", "20080703.084400", true, noneS ) );
 
         // Hm, should this be allowed? Creating non-snapshot artifacts from snapshot artifacts.
-        assertVersion( "1.0", "20080703.084400", 2, "1.0-2-SNAPSHOT",
-            PackageVersion.create( "1.0-2-SNAPSHOT", "20080703.084400", true, null, null ) );
+        assertVersion( "1.0", "20080703.084400", some( "2" ), "1.0-2-SNAPSHOT",
+                       packageVersion( "1.0-2-SNAPSHOT", "20080703.084400", true, noneS ) );
     }
 
     public void testThatTimestampIsRequired()
     {
         try
         {
-            PackageVersion.create( "1.0-SNAPSHOT", null, true, null, null );
+            packageVersion( "1.0-SNAPSHOT", null, true, noneS );
             fail( "Expected error" );
         }
-        catch ( RuntimeException e )
+        catch ( NullPointerException e )
         {
-            assertTrue( e.getMessage().indexOf( "timestamp == null" ) != -1 );
+            assertTrue( e.getMessage().startsWith( "Argument #2 " ) );
         }
     }
 
-    private void assertVersion( String version, String timestamp, int revision, String mavenVersion,
+    private void assertVersion( String version, String timestamp, Option<String> revision, String mavenVersion,
                                 PackageVersion packageVersion )
     {
         assertEquals( "version", version, packageVersion.version );
         assertEquals( "timestamp", timestamp, packageVersion.timestamp );
-        assertEquals( "revision", revision, packageVersion.revision );
+        if ( revision.isSome() )
+        {
+            assertTrue( packageVersion.revision.isSome() );
+            assertEquals( "revision.isSome()", revision.some(), packageVersion.revision.some() );
+        }
+        else
+        {
+            assertTrue( "revision", packageVersion.revision.isNone() );
+        }
         assertEquals( "mavenVersion", mavenVersion, packageVersion.getMavenVersion() );
     }
 }

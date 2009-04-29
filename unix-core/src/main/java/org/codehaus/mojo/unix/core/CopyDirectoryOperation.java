@@ -98,7 +98,7 @@ public class CopyDirectoryOperation
             // With this one can write "/server-1.0.0/(.*)" => $1
             if ( pattern != null )
             {
-                String path = fromString( relativeName ).asAbsolutePath( "/" );
+                String path = relativePath( relativeName ).asAbsolutePath( "/" );
                 relativeName = pattern.matcher( path ).replaceAll( replacement );
             }
 

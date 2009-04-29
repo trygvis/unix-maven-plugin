@@ -186,11 +186,6 @@ public class RelativePath
         return new RelativePath( s );
     }
 
-    public static RelativePath fromString( String string )
-    {
-        return relativePath( string );
-    }
-
     static String clean( final String string )
     {
         String s = removeDuplicateSlashes( string );

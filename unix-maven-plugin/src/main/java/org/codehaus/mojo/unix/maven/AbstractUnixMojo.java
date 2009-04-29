@@ -56,20 +56,12 @@ public abstract class AbstractUnixMojo
     protected String name;
 
     /**
-     * Optional parameter to specify the version of the package. If not set it will be parsed from the
-     * version information in the Maven project.
-     *
-     * @parameter
-     */
-    protected String version;
-
-    /**
      * Optional parameter to specify the revision of the package. If not set it will be parsed from the
      * version information in the Maven project.
      *
      * @parameter
      */
-    protected Integer revision;
+    protected String revision;
 
     /**
      * @parameter expression="${project.description}"

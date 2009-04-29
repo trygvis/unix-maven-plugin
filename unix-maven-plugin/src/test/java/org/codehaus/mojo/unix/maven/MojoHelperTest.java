@@ -36,6 +36,7 @@ import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.maven.MojoHelper.*;
 import org.codehaus.mojo.unix.maven.pkg.*;
 import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.UnixUtil.*;
 
 import java.util.*;
 import java.util.Set;
@@ -47,6 +48,8 @@ import java.util.Set;
 public class MojoHelperTest
     extends TestCase
 {
+    public final static Package nonePackage = new Package();
+
     public final static Package defaultPackage = new Package();
 
     public final static Package packageA = new Package();
@@ -55,91 +58,110 @@ public class MojoHelperTest
 
     static
     {
+        defaultPackage.classifier = some( "default" );
         packageA.classifier = some( "a" );
         packageB.classifier = some( "b" );
     }
 
+    // -----------------------------------------------------------------------
+    // Primary
+    // -----------------------------------------------------------------------
+
     public void testPackageValidationEmptyPackagesPrimaryArtifact()
         throws Exception
     {
-        List<Package> configuredPackages = nil();
-        boolean attachedMode = false;
+        assertPackages( list( nonePackage ), List.<Package>nil(), false );
+    }
 
-        List<Package> packages = MojoHelper.validatePackages( configuredPackages, attachedMode );
-
-        assertEquals( 1, packages.length() );
-        Package pakke = packages.index( 0 );
-        assertTrue( pakke.classifier.isNone() );
+    public void testPackageValidationNonePackagePrimaryArtifact()
+        throws Exception
+    {
+        assertPackages( list( nonePackage ), list( nonePackage ), false );
     }
 
     public void testPackageValidationDefaultPackagePrimaryArtifact()
         throws Exception
     {
-        List<Package> configuredPackages = list( defaultPackage );
-        boolean attachedMode = false;
+        assertPackages( list( nonePackage ), list( defaultPackage ), false );
+    }
 
-        List<Package> packages = MojoHelper.validatePackages( configuredPackages, attachedMode );
+    public void testPackageValidationNonePackageAPackagePrimaryArtifact()
+        throws Exception
+    {
+        assertPackages( list(  nonePackage, packageA  ), list( nonePackage, packageA ), false );
+    }
 
-        assertEquals( 1, packages.length() );
-        Package pakke = packages.index( 0 );
-        assertTrue( pakke.classifier.isNone() );
+    public void testPackageValidationDefaultPackageAPackagePrimaryArtifact()
+        throws Exception
+    {
+        assertPackages( list(  nonePackage, packageA  ), list( defaultPackage, packageA ), false );
     }
 
     public void testPackageValidationPackageAPrimaryArtifact()
         throws Exception
     {
-        List<Package> configuredPackages = list( packageA );
-        boolean attachedMode = false;
-
-        List<Package> packages = MojoHelper.validatePackages( configuredPackages, attachedMode );
-
-        assertEquals( 2, packages.length() );
-        Package pakke = packages.index( 0 );
-        assertTrue( pakke.classifier.isNone() );
-        pakke = packages.index( 1 );
-        assertTrue( pakke.classifier.isSome() );
-    }
-
-    public void testPackageValidationEmptyPackagesAsAttached()
-    {
-        List<Package> configuredPackages = nil();
-        boolean attachedMode = true;
         try
         {
-            MojoHelper.validatePackages( configuredPackages, attachedMode );
+            MojoHelper.validatePackages( list( packageA ), false );
             fail( "Expected Exception" );
         }
         catch ( MojoFailureException e )
         {
-            assertEquals( "When running in attached mode all packages are required to have an classifier.", e.getMessage() );
+            assertEquals( "When running in 'primary artifact mode' exactly one package is required to have 'default' or none classifier.",
+                          e.getMessage() );
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Attached
+    // -----------------------------------------------------------------------
+
+    public void testPackageValidationEmptyPackagesAsAttached()
+    {
+        try
+        {
+            MojoHelper.validatePackages( List.<Package>nil(), true );
+            fail( "Expected Exception" );
+        }
+        catch ( MojoFailureException e )
+        {
+            assertEquals( "When running in attached mode all packages are required to have an classifier.",
+                          e.getMessage() );
+        }
+    }
+
+    public void testPackageValidationNonePackageAsAttached()
+    {
+        try
+        {
+            MojoHelper.validatePackages( single( nonePackage ), true );
+            fail( "Expected Exception" );
+        }
+        catch ( MojoFailureException e )
+        {
+            assertEquals( "When running in attached mode all packages are required to have an classifier.",
+                          e.getMessage() );
         }
     }
 
     public void testPackageValidationDefaultPackageAsAttached()
     {
-        List<Package> configuredPackages = single( defaultPackage );
-        boolean attachedMode = true;
         try
         {
-            MojoHelper.validatePackages( configuredPackages, attachedMode );
+            MojoHelper.validatePackages( single( defaultPackage ), true );
             fail( "Expected Exception" );
         }
         catch ( MojoFailureException e )
         {
-            assertEquals( "When running in attached mode all packages are required to have an classifier.", e.getMessage() );
+            assertEquals( "When running in attached mode all packages are required to have an classifier.",
+                          e.getMessage() );
         }
     }
 
     public void testPackageValidationPackagesAAsAttached()
         throws MojoFailureException
     {
-        List<Package> configuredPackages = single( packageA );
-        boolean attachedMode = true;
-
-        List<Package> packages = MojoHelper.validatePackages( configuredPackages, attachedMode );
-        assertEquals( 1, packages.length() );
-        Package pakke = packages.index( 0 );
-        assertTrue( pakke.classifier.isSome() );
+        assertPackages( single( packageA ), single( packageA ), true );
     }
 
     public void testNameOverriding()
@@ -165,16 +187,15 @@ public class MojoHelperTest
         java.util.List<License> licenses = Collections.emptyList();
         Map<String, Artifact> artifactMap = Collections.emptyMap();
 
-        PackageVersion version = PackageVersion.create( "1.0", "123456.123456", false, null, null );
+        PackageVersion version = PackageVersion.packageVersion( "1.0", "123456.123456", false, Option.<String>none() );
 
         MavenProjectWrapper mavenProject = new MavenProjectWrapper( "groupId", "artifactId", "1.0", null, projectName,
                                                                     null, null, null, artifactSet, licenses,
                                                                     artifactMap );
 
-        PackagingMojoParameters mojoParameters = new PackagingMojoParameters( mojoName, mavenProject.version, null,
-                                                                              "Description", "A B", "a@b.com", "all",
-                                                                              new Defaults(), new AssemblyOp[0],
-                                                                              new Package[0] );
+        PackagingMojoParameters mojoParameters = new PackagingMojoParameters( mojoName, null, "Description", "A B",
+                                                                              "a@b.com", "all", new Defaults(),
+                                                                              new AssemblyOp[0], new Package[0] );
 
         Package pakke = new Package();
         pakke.id = fromNull( packageName );
@@ -182,5 +203,19 @@ public class MojoHelperTest
                                                                    mojoParameters, pakke );
 
         UnixUtil.optionEquals( expectedName, parameters.name );
+    }
+
+    private void assertPackages( List<Package> expectedPackages, List<Package> configuredPackages,
+                                 boolean attachedMode )
+        throws MojoFailureException
+    {
+        List<Package> packages = MojoHelper.validatePackages( configuredPackages, attachedMode );
+
+        assertEquals( expectedPackages.length(), packages.length() );
+        for ( Package expectedPackage : expectedPackages )
+        {
+            Package actualPackage = packages.index( 0 );
+            optionEquals( expectedPackage.id, actualPackage.id );
+        }
     }
 }

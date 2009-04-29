@@ -35,7 +35,7 @@ import java.util.*;
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-class ControlFile
+public class ControlFile
 {
     private static final String EOL = System.getProperty( "line.separator" );
 
@@ -158,13 +158,14 @@ class ControlFile
         FileUtils.fileWrite( control.getAbsolutePath(), string.toString() );
     }
 
-    private String getDebianVersion( PackageVersion version )
+    public static String getDebianVersion( PackageVersion version )
     {
         String v = version.version;
 
-        if ( version.revision > 0 )
+        if ( version.revision.isSome() )
         {
-            v += "-" + version.revision;
+            // It is assumed that this is validated elsewhere (in the dpkg mojo helper to be specific)
+            v += "-" + Integer.parseInt( version.revision.some() );
         }
 
         if ( !version.snapshot )

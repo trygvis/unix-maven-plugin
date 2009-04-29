@@ -16,10 +16,11 @@ println "Hudson Master"
 // No <description> inside <project>, no <description> inside <package> => null
 
 success &= assertRelaxed(
-        new PackageInfo( "project-pkg-3", "Hudson Master", "application", "all", "1.1-2", none(), none() ),
+        new PackageInfo( "bar-project-pkg-3", "Hudson Master", "application", "all", "1.1-2", none(), none() ),
         PkginfoUtil.getPackageInforForDevice(main).some());
 
 success &= assertPkgEntries(main, [
+        directory("/", "17777777777", "?", "?", none()),
         directory("/usr", "17777777777", "?", "?", none()),
         directory("/usr/share", "0755", "nobody", "nogroup", none()),
         directory("/usr/share/hudson", "0755", "nobody", "nogroup", none()),
@@ -29,7 +30,7 @@ success &= assertPkgEntries(main, [
         regularFile("/usr/share/hudson/license/atom-license.txt", "0644", "root", "bin", 49, 4473, none()),
         regularFile("/usr/share/hudson/license/dc-license.txt", "0644", "root", "bin", 1544, 59072, none()),
 //        new PkgchkUtil.RegularFile("/usr/share/hudson/server/README.txt", "0644", "root", "bin", 1544, 59072, null),
-        installationFile("pkginfo", 148, 0, none()),
+        installationFile("pkginfo", 154, 0, none()),
 ])
 
 println "************************************************************************"
@@ -38,10 +39,11 @@ println "Hudson Slave"
 // This has the <description> set on <package> too
 File slave = new File((File) basedir, "target/project-pkg-3-slave-1.1-2.pkg")
 success &= assertRelaxed(
-        new PackageInfo( "project-pkg-3-slave", "Hudson Slave", "application", "all", "1.1-2", some("Hudson slave node"), none() ),
+        new PackageInfo( "bar-project-pkg-3-slave", "Hudson Slave", "application", "all", "1.1-2", some("Hudson slave node"), none() ),
         PkginfoUtil.getPackageInforForDevice(slave).some());
 
 success &= assertPkgEntries(slave, [
+        directory("/", "17777777777", "?", "?", none()),
         directory("/usr", "17777777777", "?", "?", none()),
         directory("/usr/share", "0755", "nobody", "nogroup", none()),
         directory("/usr/share/hudson", "0755", "nobody", "nogroup", none()),
@@ -50,7 +52,7 @@ success &= assertPkgEntries(slave, [
         directory("/usr/share/hudson/license", "0755", "nobody", "nogroup", none()),
         regularFile("/usr/share/hudson/license/atom-license.txt", "0644", "root", "bin", 49, 4473, none()),
         regularFile("/usr/share/hudson/license/dc-license.txt", "0644", "root", "bin", 1544, 59072, none()),
-        installationFile("pkginfo", 170, 0, none()),
+        installationFile("pkginfo", 176, 0, none()),
 ])
 
 return success

@@ -26,7 +26,7 @@ package org.codehaus.mojo.unix.maven.dpkg;
 
 import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
-import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.PackageVersion.*;
 import org.codehaus.mojo.unix.dpkg.*;
 import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.util.vfs.*;
@@ -51,7 +51,7 @@ public class DpkgUnixPackageTest
 
         DpkgPackagingFormat packagingFormat = (DpkgPackagingFormat) lookup( PackagingFormat.ROLE, "dpkg" );
 
-        FileObject dpkgTest = VFS.getManager().resolveFile( getTestPath("target/dpkg-test") );
+        FileObject dpkgTest = VFS.getManager().resolveFile( getTestPath( "target/dpkg-test" ) );
         FileObject packageRoot = dpkgTest.resolveFile( "root" );
         File packageFile = VfsUtil.asFile( dpkgTest.resolveFile( "file.deb" ) );
 
@@ -59,7 +59,7 @@ public class DpkgUnixPackageTest
             section( "devel" ).
             debug( true ).
             mavenCoordinates( "mygroup", "myartifact" ).
-            version( PackageVersion.create( "1.0", "123", false, null, 1 ) ).
+            version( packageVersion( "1.0", "123", false, some( "1" ) ) ).
             contact( some( "Kurt Cobain" ) ).
             architecture( "all" ).
             workingDirectory( packageRoot ).

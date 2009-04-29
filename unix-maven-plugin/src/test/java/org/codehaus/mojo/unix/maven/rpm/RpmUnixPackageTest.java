@@ -29,6 +29,7 @@ import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.PackageVersion.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.rpm.*;
@@ -70,7 +71,7 @@ public class RpmUnixPackageTest
 
         UnixPackage unixPackage = RpmPackagingFormat.cast( packagingFormat.start().
             mavenCoordinates( "mygroup", "myartifact" ).
-            version( PackageVersion.create( "1.0-1", "123", false, null, 0 ) ).
+            version( packageVersion( "1.0-1", "123", false, Option.<String>none() ) ).
             contact( some( "Kurt Cobain" ) ).
             architecture( "all" ).
             name( some( "Yo!" ) ).

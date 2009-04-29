@@ -55,12 +55,12 @@ public class CopyFile
 
     public void setToFile( String toFile )
     {
-        this.toFile = fromString( toFile );
+        this.toFile = relativePath( toFile );
     }
 
     public void setToDir( String toDir )
     {
-        this.toDir = fromString( toDir );
+        this.toDir = relativePath( toDir );
     }
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,

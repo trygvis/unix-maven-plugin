@@ -144,7 +144,7 @@ public class SpecFile
         spec.
             add( "Name: " + name ).
             add( "Version: " + getRpmVersion( version ) ).
-            add( "Release: " + getRpmRelease( version ) ).
+            add( "Release: " + getRpmRelease( version ).orSome( "1" ) ).
             add( "Summary: " + UnixUtil.getField( "summary", summary ) ).
             add( "License: " + UnixUtil.getField( "license", license ) ).
             addIfNotEmpty( "Distribution: ", distribution ).
@@ -191,7 +191,7 @@ public class SpecFile
         spec.addIf( dump, "%dump" );
     }
 
-    private static String getRpmVersion( PackageVersion version )
+    public static String getRpmVersion( PackageVersion version )
     {
         String rpmVersionString = version.version;
 
@@ -203,7 +203,7 @@ public class SpecFile
         return rpmVersionString.replace( '-', '_' );
     }
 
-    private static int getRpmRelease( PackageVersion version )
+    public static Option<String> getRpmRelease( PackageVersion version )
     {
         return version.revision;
     }
