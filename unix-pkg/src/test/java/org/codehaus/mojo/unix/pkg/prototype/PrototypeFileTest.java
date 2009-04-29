@@ -24,23 +24,21 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.F2;
-import static fj.data.Option.some;
-import junit.framework.TestCase;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
-import org.codehaus.mojo.unix.FileAttributes;
-import static org.codehaus.mojo.unix.UnixFileMode._0644;
-import static org.codehaus.mojo.unix.UnixFileMode._0755;
-import org.codehaus.mojo.unix.UnixFsObject;
-import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.RelativePath.BASE;
+import fj.*;
+import fj.data.*;
+import static fj.data.Option.*;
+import junit.framework.*;
+import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
+import static org.codehaus.mojo.unix.UnixFileMode.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 import static org.codehaus.mojo.unix.util.RelativePath.fromString;
-import static org.codehaus.mojo.unix.util.UnixUtil.getTestPath;
-import org.codehaus.mojo.unix.util.line.LineFile;
-import org.joda.time.LocalDateTime;
+import static org.codehaus.mojo.unix.util.UnixUtil.*;
+import org.codehaus.mojo.unix.util.line.*;
+import org.joda.time.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -58,6 +56,10 @@ public class PrototypeFileTest
     FileAttributes dirAttributes = new FileAttributes( some( "nouser" ), some( "nogroup" ), some( _0755 ) );
     RelativePath specialPath = fromString( "/special" );
 
+    FileAttributes defaultAttributes = EMPTY.user( "default" ).group( "default" );
+    Directory defaultDirectory = directory( BASE, new LocalDateTime( 0 ), defaultAttributes );
+    DirectoryEntry defaultEntry = new DirectoryEntry( Option.<String>none(), defaultDirectory );
+
     public void testBasic()
         throws Exception
     {
@@ -66,7 +68,7 @@ public class PrototypeFileTest
         FileObject root = fsManager.resolveFile( getTestPath( "target/prototype-test/assembly" ) );
         root.createFolder();
 
-        PrototypeFile prototypeFile = new PrototypeFile();
+        PrototypeFile prototypeFile = new PrototypeFile( defaultEntry );
 
         FileObject bashProfileObject = fsManager.resolveFile( getTestPath( "src/test/non-existing/bash_profile" ) );
         FileObject extractJarObject = fsManager.resolveFile( getTestPath( "src/test/non-existing/extract.jar" ) );
@@ -75,8 +77,8 @@ public class PrototypeFileTest
 
         prototypeFile.addFile( bashProfileObject, bashProfile );
         prototypeFile.addFile( extractJarObject, extractJar );
-        prototypeFile.addDirectory( UnixFsObject.directory( BASE, dateTime, dirAttributes ) );
-        prototypeFile.addDirectory( UnixFsObject.directory( specialPath, dateTime, dirAttributes ) );
+        prototypeFile.addDirectory( directory( BASE, dateTime, dirAttributes ) );
+        prototypeFile.addDirectory( directory( specialPath, dateTime, dirAttributes ) );
         prototypeFile.apply( filter( extractJarPath, fileAttributes.user( "funnyuser" ) ) );
         prototypeFile.apply( filter( specialPath, dirAttributes.group( "funnygroup" ) ) );
 
@@ -86,9 +88,11 @@ public class PrototypeFileTest
 
         assertEquals( new LineFile().
             add( "d none / 0755 nouser nogroup" ).
-            add( "f none /extract.jar=" + extractJarObject.getName().getPath() + " 0644 funnyuser nogroup" ).
-            add( "f none /opt/jetty/.bash_profile=" + bashProfileObject.getName().getPath() + " 0644 nouser nogroup" ).
             add( "d none /special 0755 nouser funnygroup" ).
+            add( "f none /extract.jar=" + extractJarObject.getName().getPath() + " 0644 funnyuser nogroup" ).
+            add( "d none /opt ? default default" ).
+            add( "d none /opt/jetty ? default default" ).
+            add( "f none /opt/jetty/.bash_profile=" + bashProfileObject.getName().getPath() + " 0644 nouser nogroup" ).
             toString(), stream.toString() );
     }
 

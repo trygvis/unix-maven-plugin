@@ -24,20 +24,14 @@ package org.codehaus.mojo.unix.pkg;
  * SOFTWARE.
  */
 
-import fj.F2;
+import fj.*;
 import fj.Function;
-import fj.Unit;
-import fj.data.List;
-import fj.data.Option;
-import junit.framework.TestCase;
-import static org.codehaus.mojo.unix.pkg.PkgchkUtil.FileInfo;
-import static org.codehaus.mojo.unix.pkg.PkgchkUtil.directory;
-import static org.codehaus.mojo.unix.pkg.PkgchkUtil.installationFile;
-import static org.codehaus.mojo.unix.pkg.PkgchkUtil.regularFile;
-import static org.codehaus.mojo.unix.pkg.PkgchkUtil.symlink;
-import org.codehaus.mojo.unix.util.UnixUtil;
-import org.codehaus.mojo.unix.util.line.LineFile;
-import org.joda.time.LocalDateTime;
+import fj.data.*;
+import junit.framework.*;
+import static org.codehaus.mojo.unix.pkg.PkgchkUtil.*;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
+import org.joda.time.*;
 
 public class PkgchkUtilTest
     extends TestCase

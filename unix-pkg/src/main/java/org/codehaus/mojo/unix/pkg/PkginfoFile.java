@@ -24,17 +24,11 @@ package org.codehaus.mojo.unix.pkg;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.util.line.LineConsumer;
-import org.codehaus.mojo.unix.util.line.LineFile;
-import org.codehaus.mojo.unix.util.line.LineProducer;
-import org.codehaus.mojo.unix.util.line.LineStreamWriter;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.util.line.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
 /**
  * The logic creating the pkginfo file.

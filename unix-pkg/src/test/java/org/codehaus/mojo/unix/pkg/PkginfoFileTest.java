@@ -24,8 +24,8 @@ package org.codehaus.mojo.unix.pkg;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
-import org.codehaus.mojo.unix.util.line.LineFile;
+import junit.framework.*;
+import org.codehaus.mojo.unix.util.line.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

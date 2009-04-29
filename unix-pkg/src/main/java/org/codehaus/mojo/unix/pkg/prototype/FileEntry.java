@@ -24,61 +24,56 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.data.Option;
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.FileAttributes;
-import static org.codehaus.mojo.unix.UnixFileMode.showOcalString;
-import org.codehaus.mojo.unix.util.RelativePath;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.util.*;
 
-import java.io.File;
-import static java.lang.Boolean.FALSE;
+import java.io.*;
+import static java.lang.Boolean.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class FileEntry
-    extends PrototypeEntry
+    extends PrototypeEntry<RegularFile>
 {
     private final Option<File> realPath;
 
-    private final FileAttributes attributes;
-
     /**
-     * The same as calling {@link #FileEntry(Option, RelativePath, Option, Option, FileAttributes)}
+     * The same as calling {@link #FileEntry(Option, Option, RegularFile, Option)}
      * with <code>relative=false</code> and <code>realPath=null</code>.
      */
-    public FileEntry( Option<String> pkgClass, RelativePath path, FileAttributes attributes )
+    public FileEntry( Option<String> pkgClass, RegularFile file )
     {
-        this( pkgClass, path, some( FALSE ) , Option.<File>none(), attributes );
+        this( pkgClass, some( FALSE ), file, Option.<File>none() );
     }
 
-    public FileEntry( Option<String> pkgClass, RelativePath path, Option<Boolean> relative, Option<File> realPath, FileAttributes attributes )
+    public FileEntry( Option<String> pkgClass, Option<Boolean> relative, RegularFile file, Option<File> realPath )
     {
-        super( pkgClass, relative, path );
+        super( pkgClass, relative, file );
         this.realPath = realPath;
-        this.attributes = attributes;
-    }
-
-    public FileAttributes getFileAttributes()
-    {
-        return attributes;
-    }
-
-    public FileEntry setFileAttributes( FileAttributes attributes )
-    {
-        return new FileEntry( some( pkgClass ), path, relative, realPath, attributes );
     }
 
     public String generatePrototypeLine()
     {
-        return "f " + pkgClass +
-            " " + getProcessedPath( realPath ) +
-            " " + toString( attributes );
+        return "f " + pkgClass + " " + getProcessedPath( realPath ) + " " + toString( object.getFileAttributes() );
     }
 
-    public static String getModeString( FileAttributes attributes )
+    public FileAttributes getFileAttributes()
     {
-        return attributes.mode.map( showOcalString ).orSome( "?" );
+        return object.getFileAttributes();
+    }
+
+    public FileEntry setFileAttributes( FileAttributes attributes )
+    {
+        return new FileEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ), realPath );
+    }
+
+    public FileEntry setPath( RelativePath path )
+    {
+        return new FileEntry( some( pkgClass ), relative, object.setPath( path ), realPath );
     }
 }

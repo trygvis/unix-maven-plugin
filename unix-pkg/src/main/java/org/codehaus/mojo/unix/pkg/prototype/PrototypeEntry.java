@@ -24,27 +24,22 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.data.Option;
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.UnixFileMode;
-import org.codehaus.mojo.unix.HasFileAttributes;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
-import org.codehaus.mojo.unix.util.Validate;
-import org.codehaus.mojo.unix.util.line.LineProducer;
-import org.codehaus.mojo.unix.util.line.LineStreamWriter;
+import fj.*;
+import fj.data.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.UnixFileMode.*;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
 
-import java.io.File;
-import static java.lang.Boolean.TRUE;
+import java.io.*;
+import static java.lang.Boolean.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public abstract class PrototypeEntry
-    implements LineProducer, HasFileAttributes<PrototypeEntry>
+public abstract class PrototypeEntry<U extends UnixFsObject>
+    implements LineProducer, PackageFileSystemObject<PrototypeEntry>, HasFileAttributes<PrototypeEntry<U>>
 {
     static final String EOL = System.getProperty( "line.separator" );
 
@@ -52,50 +47,24 @@ public abstract class PrototypeEntry
 
     protected final Option<Boolean> relative;
 
-    protected final RelativePath path;
+    protected final U object;
 
-    public static PrototypeEntry fromLine( String line )
+    protected PrototypeEntry( Option<String> pkgClass, Option<Boolean> relative, U object )
     {
-        String[] parts = line.split( " " );
-
-        if ( parts.length < 6 )
-        {
-            throw new RuntimeException( "Invalid line, expected at least 6 parts." );
-        }
-
-        String type = parts[0];
-
-        if ( "f".equals( type ) )
-        {
-            FileAttributes attributes = new FileAttributes( some( parts[3] ), some( parts[4] ), some( UnixFileMode.fromString( parts[2] ) ) );
-
-            if ( parts.length != 7 )
-            {
-                throw new RuntimeException( "parts.length != 7" );
-            }
-
-            return new FileEntry( some( parts[1] ), fromString( parts[6] ), attributes );
-//            if ( parts.length == 7 )
-//            {
-//                return new FileEntry( parts[1], fromString( parts[6] ), attributes );
-//            }
-//            else
-//            {
-//                return new FileEntry( parts[1], none(), attributes );
-//            }
-        }
-        else
-        {
-            throw new RuntimeException( "Unknown file type '" + type + "'." );
-        }
-    }
-
-    protected PrototypeEntry( Option<String> pkgClass, Option<Boolean> relative, RelativePath path )
-    {
-        Validate.validateNotNull( pkgClass, relative, path );
+        Validate.validateNotNull( pkgClass, relative, object );
         this.pkgClass = pkgClass.orSome( "none" );
         this.relative = relative;
-        this.path = path;
+        this.object = object;
+    }
+
+    public UnixFsObject getUnixFsObject()
+    {
+        return object;
+    }
+
+    public PrototypeEntry getExtension()
+    {
+        return this;
     }
 
     protected abstract String generatePrototypeLine();
@@ -114,10 +83,10 @@ public abstract class PrototypeEntry
     {
         if ( TRUE.equals( relative.orSome( false ) ) )
         {
-            return path.string;
+            return object.path.string;
         }
 
-        return path.asAbsolutePath( "/" );
+        return object.path.asAbsolutePath( "/" );
     }
 
     // -----------------------------------------------------------------------
@@ -137,12 +106,12 @@ public abstract class PrototypeEntry
 
         PrototypeEntry that = (PrototypeEntry) o;
 
-        return path.equals( that.path );
+        return object.path.equals( that.object.path );
     }
 
     public int hashCode()
     {
-        return path.hashCode();
+        return object.path.hashCode();
     }
 
     // -----------------------------------------------------------------------
@@ -162,9 +131,8 @@ public abstract class PrototypeEntry
 
     protected String toString( FileAttributes attributes )
     {
-        return
-            FileEntry.getModeString( attributes ) +
-            " " + attributes.user.orSome( "?" ) +
-            " " + attributes.group.orSome( "?" );
+        return attributes.mode.map( showOcalString ).orSome( "?" ) + " " +
+            attributes.user.orSome( "?" ) + " " +
+            attributes.group.orSome( "?" );
     }
 }

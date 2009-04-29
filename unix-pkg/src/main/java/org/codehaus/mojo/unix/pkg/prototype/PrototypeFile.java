@@ -24,28 +24,23 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.F;
-import fj.F2;
-import fj.P2;
-import fj.data.List;
-import static fj.data.List.nil;
-import fj.data.Option;
-import static fj.data.Option.some;
-import fj.pre.Ord;
-import fj.pre.Ordering;
-import org.apache.commons.vfs.FileObject;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.PackageFileSystem;
-import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.UnixUtil.noneString;
-import static org.codehaus.mojo.unix.util.UnixUtil.someE;
-import org.codehaus.mojo.unix.util.line.LineProducer;
-import org.codehaus.mojo.unix.util.line.LineStreamWriter;
-import static org.codehaus.mojo.unix.util.vfs.VfsUtil.asFile;
+import fj.*;
+import fj.data.*;
+import static fj.data.List.*;
+import static fj.data.Option.*;
+import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
+import static org.codehaus.mojo.unix.PackageFileSystem.*;
+import org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
+import static org.codehaus.mojo.unix.util.UnixUtil.*;
+import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
+import org.joda.time.*;
 
-import java.io.File;
-import java.util.Comparator;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -54,15 +49,20 @@ import java.util.Comparator;
 public class PrototypeFile
     implements LineProducer
 {
+    public final FileAttributes UNKNOWN = EMPTY.user( "?" ).group( "?" );
+
     private List<String> iFiles = nil();
 
-    private final PackageFileSystem<PrototypeEntry> fileSystem = new PackageFileSystem<PrototypeEntry>( new Comparator<PrototypeEntry>()
+    private PackageFileSystem<PrototypeEntry> fileSystem;
+
+    public PrototypeFile( DirectoryEntry defaultEntry )
     {
-        public int compare( PrototypeEntry o1, PrototypeEntry o2 )
-        {
-            return o1.getPath().compareTo( o2.getPath() );
-        }
-    } );
+        Validate.validateNotNull( defaultEntry );
+
+        Directory root = UnixFsObject.directory( BASE, new LocalDateTime( 0, DateTimeZone.UTC ), UNKNOWN );
+
+        fileSystem = create( new DirectoryEntry( Option.<String>none(), root ), defaultEntry );
+    }
 
     public void addIFileIf( File file, String name )
     {
@@ -91,70 +91,68 @@ public class PrototypeFile
 
     public void addDirectory( UnixFsObject.Directory directory )
     {
-        DirectoryEntry entry = new DirectoryEntry( Option.<String>none(), directory.path, someE(directory.attributes, "Attributes is not set." ) );
-
-        fileSystem.addDirectory( directory, entry );
+        fileSystem = fileSystem.addDirectory( new DirectoryEntry( Option.<String>none(), directory ) );
     }
 
     public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
     {
-        // TODO: add missing parent directory entries
-
-        Option<File> from = some( asFile( fromFile ) );
-        FileEntry entry = new FileEntry( noneString, file.path, some( false ), from, someE( file.attributes, "Attributes is not set." ) );
-        fileSystem.addFile( file, entry );
+        fileSystem = fileSystem.addFile( new FileEntry( noneString, some( false ), file, some( asFile( fromFile ) ) ) );
     }
 
     public void addSymlink( UnixFsObject.Symlink symlink )
     {
-        fileSystem.addSymlink( symlink, new SymlinkEntry( noneString, symlink.path, symlink.value ) );
+        fileSystem = fileSystem.addSymlink( new SymlinkEntry( noneString, symlink ) );
     }
 
     public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
     {
-        fileSystem.apply( f );
+        fileSystem = fileSystem.apply( f );
     }
 
     public void streamTo( final LineStreamWriter stream )
     {
+        System.out.println( PackageFileSystemFormatter.<PrototypeEntry>flatFormatter().print( fileSystem ) );
+
         stream.
             addAllLines( iFiles.reverse() );
 
-        for ( PrototypeEntry entry : fileSystem )
+        for ( PackageFileSystemObject<PrototypeEntry> object : fileSystem.toList() )
         {
-            entry.streamTo( stream );
+            System.out.println( "p2._1() = " + object.getUnixFsObject() + ", p2._2() = " + object.getExtension() );
+            object.getExtension().streamTo( stream );
         }
     }
-
-    // Applies the function to each path, and selects the last one that was some()
-    F2<P2<RelativePath, FileAttributes>, F<RelativePath, Option<FileAttributes>>, P2<RelativePath, FileAttributes>> fileAttributeFolder =
-        new F2<P2<RelativePath, FileAttributes>, F<RelativePath, Option<FileAttributes>>, P2<RelativePath, FileAttributes>>()
-    {
-        public P2<RelativePath, FileAttributes> f( final P2<RelativePath, FileAttributes> previous,
-                                                   final F<RelativePath, Option<FileAttributes>> transformer )
-        {
-            return previous.map2( new F<FileAttributes, FileAttributes>()
-            {
-                public FileAttributes f( FileAttributes fileAttributes )
-                {
-                    return transformer.f( previous._1() ).orSome( previous._2() );
-                }
-            } );
-        }
-    };
-
-    Ord<P2<UnixFsObject, PrototypeEntry>> entriesOrd =
-        Ord.ord( new F<P2<UnixFsObject, PrototypeEntry>, F<P2<UnixFsObject, PrototypeEntry>, Ordering>>()
-        {
-            public F<P2<UnixFsObject, PrototypeEntry>, Ordering> f( final P2<UnixFsObject, PrototypeEntry> a )
-            {
-                return new F<P2<UnixFsObject, PrototypeEntry>, Ordering>()
-                {
-                    public Ordering f( P2<UnixFsObject, PrototypeEntry> b )
-                    {
-                        return RelativePath.ord.compare( a._1().path, b._1().path );
-                    }
-                };
-            }
-        } );
+//
+//    // Applies the function to each path, and selects the last one that was some()
+//    F2<P2<RelativePath, FileAttributes>, F<RelativePath, Option<FileAttributes>>, P2<RelativePath, FileAttributes>>
+//        fileAttributeFolder =
+//        new F2<P2<RelativePath, FileAttributes>, F<RelativePath, Option<FileAttributes>>, P2<RelativePath, FileAttributes>>()
+//        {
+//            public P2<RelativePath, FileAttributes> f( final P2<RelativePath, FileAttributes> previous,
+//                                                       final F<RelativePath, Option<FileAttributes>> transformer )
+//            {
+//                return previous.map2( new F<FileAttributes, FileAttributes>()
+//                {
+//                    public FileAttributes f( FileAttributes fileAttributes )
+//                    {
+//                        return transformer.f( previous._1() ).orSome( previous._2() );
+//                    }
+//                } );
+//            }
+//        };
+//
+//    Ord<P2<UnixFsObject, PrototypeEntry>> entriesOrd =
+//        Ord.ord( new F<P2<UnixFsObject, PrototypeEntry>, F<P2<UnixFsObject, PrototypeEntry>, Ordering>>()
+//        {
+//            public F<P2<UnixFsObject, PrototypeEntry>, Ordering> f( final P2<UnixFsObject, PrototypeEntry> a )
+//            {
+//                return new F<P2<UnixFsObject, PrototypeEntry>, Ordering>()
+//                {
+//                    public Ordering f( P2<UnixFsObject, PrototypeEntry> b )
+//                    {
+//                        return RelativePath.ord.compare( a._1().path, b._1().path );
+//                    }
+//                };
+//            }
+//        } );
 }

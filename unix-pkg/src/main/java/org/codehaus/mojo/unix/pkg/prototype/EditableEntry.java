@@ -24,37 +24,34 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.data.Option;
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.util.RelativePath;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.util.*;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class EditableEntry
-    extends PrototypeEntry
+    extends PrototypeEntry<RegularFile>
 {
     private final Option<File> realPath;
 
-    private final FileAttributes attributes;
-
-    public EditableEntry( Option<String> pkgClass, Option<Boolean> relative, RelativePath path, Option<File> realPath,
-                          FileAttributes attributes )
+    public EditableEntry( Option<String> pkgClass, Option<Boolean> relative, RegularFile object, Option<File> realPath  )
     {
-        super( pkgClass, relative, path );
+        super( pkgClass, relative, object );
         this.realPath = realPath;
-        this.attributes = attributes;
     }
 
     public String generatePrototypeLine()
     {
         return "e " + pkgClass +
             " " + getProcessedPath( realPath ) +
-            " " + toString( attributes );
+            " " + toString( object.getFileAttributes() );
     }
 
     public FileAttributes getFileAttributes()
@@ -62,8 +59,13 @@ public class EditableEntry
         throw new RuntimeException( "Not implemented" );
     }
 
-    public PrototypeEntry setFileAttributes( FileAttributes attributes )
+    public EditableEntry setFileAttributes( FileAttributes attributes )
     {
-        return new EditableEntry( some( pkgClass ), relative, path, realPath, attributes );
+        return new EditableEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ), realPath );
+    }
+
+    public EditableEntry setPath( RelativePath path )
+    {
+        return new EditableEntry( some( pkgClass ), relative, object.setPath( path ), realPath );
     }
 }

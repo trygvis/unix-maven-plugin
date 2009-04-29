@@ -24,11 +24,10 @@ package org.codehaus.mojo.unix.pkg;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.util.SystemCommand;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

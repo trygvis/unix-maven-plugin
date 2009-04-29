@@ -24,49 +24,50 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.data.Option;
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.util.RelativePath;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class DirectoryEntry
-    extends PrototypeEntry
+    extends PrototypeEntry<Directory>
 {
-    private final FileAttributes attributes;
-
     /**
-     * The same as calling {@link #DirectoryEntry(Option, RelativePath, Option, FileAttributes)}
+     * The same as calling {@link #DirectoryEntry(Option, Option, Directory)}
      * with <code>relative=none()</code>.
      */
-    public DirectoryEntry( Option<String> pkgClass, RelativePath path, FileAttributes attributes )
+    public DirectoryEntry( Option<String> pkgClass, Directory directory )
     {
-        this( pkgClass, path, Option.<Boolean>none(), attributes );
+        this( pkgClass, Option.<Boolean>none(), directory );
     }
 
-    public DirectoryEntry( Option<String> pkgClass, RelativePath path, Option<Boolean> relative, FileAttributes attributes )
+    public DirectoryEntry( Option<String> pkgClass, Option<Boolean> relative, Directory directory )
     {
-        super( pkgClass, relative, path );
-        this.attributes = attributes;
+        super( pkgClass, relative, directory );
     }
 
     public String generatePrototypeLine()
     {
-        return "d " + pkgClass +
-            " " + getPath() +
-            " " + toString( attributes );
+        return "d " + pkgClass + " " + getPath() + " " + toString( object.getFileAttributes() );
     }
 
     public FileAttributes getFileAttributes()
     {
-        return attributes;
+        return object.getFileAttributes();
     }
 
     public DirectoryEntry setFileAttributes( FileAttributes attributes )
     {
-        return new DirectoryEntry( some( pkgClass ), path, relative, attributes );
+        return new DirectoryEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ) );
+    }
+
+    public PackageFileSystemObject<PrototypeEntry> setPath( RelativePath path )
+    {
+        return new DirectoryEntry( some( pkgClass ), relative, object.setPath( path ) );
     }
 }

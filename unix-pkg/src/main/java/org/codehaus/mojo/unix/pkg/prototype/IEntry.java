@@ -24,40 +24,51 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.data.Option;
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.util.RelativePath;
-import org.codehaus.mojo.unix.FileAttributes;
+import static fj.Bottom.*;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.joda.time.LocalDateTime.*;
 
-import java.io.File;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class IEntry
-    extends PrototypeEntry
+    extends PrototypeEntry<UnixFsObject>
 {
     private final File realPath;
 
     public IEntry( Option<String> pkgClass, RelativePath path, File realPath )
     {
-        super( pkgClass, Option.<Boolean>none(), path );
+        super( pkgClass, Option.<Boolean>none(),
+               regularFile( path, fromDateFields( new Date( realPath.lastModified() ) ), realPath.length(),
+                            Option.<FileAttributes>none() ) );
         this.realPath = realPath;
     }
 
     public String generatePrototypeLine()
     {
-        return "i " + getProcessedPath( some( realPath ) ) ;
+        return "i " + getProcessedPath( some( realPath ) );
     }
 
     public FileAttributes getFileAttributes()
     {
-        throw new RuntimeException( "Not implemented" );
+        throw error( "Not applicable" );
     }
 
-    public PrototypeEntry setFileAttributes( FileAttributes attributes )
+    public PrototypeEntry<UnixFsObject> setFileAttributes( FileAttributes attributes )
     {
-        throw new RuntimeException( "Not implemented" );
+        throw error( "Not applicable" );
+    }
+
+    public PackageFileSystemObject<PrototypeEntry> setPath( RelativePath path )
+    {
+        throw error( "Not applicable" );
     }
 }

@@ -24,41 +24,42 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import fj.data.Option;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.UnixUtil.noneBoolean;
-import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
-import org.codehaus.mojo.unix.FileAttributes;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.UnixUtil.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class SymlinkEntry
-    extends PrototypeEntry
+    extends PrototypeEntry<Symlink>
 {
-    private String source;
-
-    protected SymlinkEntry( Option<String> pkgClass, RelativePath path, String source )
+    protected SymlinkEntry( Option<String> pkgClass, Symlink symlink )
     {
-        super( pkgClass, noneBoolean, path );
-        validateNotNull( source );
-
-        this.source = source;
+        super( pkgClass, noneBoolean, symlink );
     }
 
     public String generatePrototypeLine()
     {
-        return "s " + pkgClass + " " + getPath() + "=" + source;
+        return "s " + pkgClass + " " + getPath() + "=" + object;
     }
 
     public FileAttributes getFileAttributes()
     {
-        throw new RuntimeException( "Not implemented" );
+        return object.getFileAttributes();
     }
 
-    public PrototypeEntry setFileAttributes( FileAttributes attributes )
+    public SymlinkEntry setFileAttributes( FileAttributes attributes )
     {
-        return this;
+        return new SymlinkEntry( some( pkgClass ), object.setFileAttributes( attributes ) );
+    }
+
+    public PackageFileSystemObject<PrototypeEntry> setPath( RelativePath path )
+    {
+        return new SymlinkEntry( Option.some( pkgClass ), object.setPath( path ) );
     }
 }

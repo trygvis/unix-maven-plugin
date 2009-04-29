@@ -24,25 +24,19 @@ package org.codehaus.mojo.unix.pkg;
  * SOFTWARE.
  */
 
-import fj.F;
-import static fj.Function.curry;
-import fj.data.List;
-import fj.data.Option;
-import static fj.data.Option.none;
-import org.codehaus.mojo.unix.EqualsIgnoreNull;
-import org.codehaus.mojo.unix.util.SystemCommand;
-import org.codehaus.mojo.unix.util.UnixUtil;
-import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
-import org.codehaus.mojo.unix.util.line.LineProducer;
-import org.codehaus.mojo.unix.util.line.LineStreamWriter;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
+import fj.*;
+import static fj.Function.*;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.Validate.*;
+import org.codehaus.mojo.unix.util.line.*;
+import org.joda.time.*;
+import org.joda.time.format.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.io.*;
+import java.text.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

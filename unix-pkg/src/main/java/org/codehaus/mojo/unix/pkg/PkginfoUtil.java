@@ -24,18 +24,14 @@ package org.codehaus.mojo.unix.pkg;
  * SOFTWARE.
  */
 
-import fj.data.Option;
-import static fj.data.Option.none;
-import static fj.data.Option.some;
-import org.codehaus.mojo.unix.EqualsIgnoreNull;
-import org.codehaus.mojo.unix.util.SystemCommand;
-import static org.codehaus.mojo.unix.util.Validate.validateNotNull;
-import org.codehaus.mojo.unix.util.line.LineProducer;
-import org.codehaus.mojo.unix.util.line.LineStreamWriter;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.Validate.*;
+import org.codehaus.mojo.unix.util.line.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -87,23 +83,36 @@ public class PkginfoUtil
 
         public boolean equalsIgnoreNull( PackageInfo that )
         {
-            return instance.equals( that.instance ) &&
-                name.equals( that.name ) &&
-                category.equals( that.category ) &&
-                arch.equals( that.arch ) &&
-                version.equals( that.version ) &&
+            return instance.equals( that.instance ) && name.equals( that.name ) && category.equals( that.category ) &&
+                arch.equals( that.arch ) && version.equals( that.version ) &&
                 ( desc.isNone() || desc.some().equals( that.desc.some() ) ) &&
                 ( pstamp.isNone() || pstamp.some().equals( that.pstamp.some() ) );
         }
     }
 
-    public static Option<PackageInfo> getPackageInforForDevice( File device )
-        throws IOException
+    public boolean debug;
+
+    public PkginfoUtil()
     {
-        return getPackageInforForDevice( device, null );
     }
 
-    public static Option<PackageInfo> getPackageInforForDevice( File device, String instance )
+    public PkginfoUtil( boolean debug )
+    {
+        this.debug = debug;
+    }
+
+    public PkginfoUtil debug()
+    {
+        return new PkginfoUtil( true );
+    }
+
+    public Option<PackageInfo> getPackageInforForDevice2( File device )
+        throws IOException
+    {
+        return getPackageInforForDevice2( device, "all" );
+    }
+
+    public Option<PackageInfo> getPackageInforForDevice2( File device, String instance )
         throws IOException
     {
         if ( !device.canRead() )
@@ -113,7 +122,7 @@ public class PkginfoUtil
 
         PkginfoParser parser = new PkginfoParser();
         new SystemCommand().
-            dumpCommandIf( true ).
+            dumpCommandIf( debug ).
             withStderrConsumer( parser ).
             withStdoutConsumer( parser ).
             setCommand( "pkginfo" ).
@@ -124,9 +133,22 @@ public class PkginfoUtil
             execute().
             assertSuccess();
 
-        // ( StringUtils.isNotEmpty( instance ) ? this : addArgument(instance) )
-
         return parser.getPackageInfo();
+    }
+
+    public static Option<PackageInfo> getPackageInforForDevice( File device )
+        throws IOException
+    {
+        return getPackageInforForDevice( device, null );
+    }
+
+    /**
+     * @deprecated
+     */
+    public static Option<PackageInfo> getPackageInforForDevice( File device, String instance )
+        throws IOException
+    {
+        return new PkginfoUtil().debug().getPackageInforForDevice2( device, instance );
     }
 
     private static class PkginfoParser
@@ -195,7 +217,9 @@ public class PkginfoUtil
                 return none();
             }
 
-            return some( new PackageInfo( instance.some(), name.some(), category.some(), arch.some(), version.some(), desc, pstamp ) );
+            return some(
+                new PackageInfo( instance.some(), name.some(), category.some(), arch.some(), version.some(), desc,
+                                 pstamp ) );
         }
     }
 }
