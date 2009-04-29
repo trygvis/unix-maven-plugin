@@ -24,25 +24,23 @@ package org.codehaus.mojo.unix.rpm;
  * SOFTWARE.
  */
 
-import static fj.Bottom.error;
-import fj.F;
-import fj.F2;
+import static fj.Bottom.*;
+import fj.*;
 import fj.data.List;
-import fj.data.Option;
-import static fj.data.Option.join;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.PackageFileSystem;
-import org.codehaus.mojo.unix.PackageVersion;
-import org.codehaus.mojo.unix.UnixFileMode;
-import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.util.UnixUtil;
-import org.codehaus.mojo.unix.util.line.LineProducer;
-import static org.codehaus.mojo.unix.util.line.LineStreamUtil.prefix;
-import org.codehaus.mojo.unix.util.line.LineStreamWriter;
-import org.codehaus.plexus.util.StringUtils;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
+import org.codehaus.mojo.unix.UnixFsObject.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
+import org.codehaus.plexus.util.*;
+import static org.joda.time.LocalDateTime.*;
 
-import java.io.File;
-import java.util.Comparator;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -92,15 +90,7 @@ public class SpecFile
 
     public boolean dump;
 
-//    private List<UnixFsObject<?>> files = List.nil();
-
-    private final PackageFileSystem fileSystem = new PackageFileSystem( new Comparator<UnixFsObject>()
-    {
-        public int compare( UnixFsObject a, UnixFsObject b )
-        {
-            return a.compareTo( b );
-        }
-    } );
+    private PackageFileSystem<Object> fileSystem;
 
     public File includePre;
 
@@ -110,24 +100,32 @@ public class SpecFile
 
     public File includePostun;
 
+    public SpecFile()
+    {
+        Directory root = UnixFsObject.directory( BASE, fromDateFields( new Date( 0 ) ), EMPTY );
+
+        fileSystem = PackageFileSystem.create( new BasicPackageFileSystemObject( root ),
+                                               new BasicPackageFileSystemObject( root ) );
+    }
+
     public void addFile( UnixFsObject.RegularFile file )
     {
-        fileSystem.addFile( file, file );
+        fileSystem = fileSystem.addFile( new BasicPackageFileSystemObject( file ) );
     }
 
     public void addDirectory( UnixFsObject.Directory directory )
     {
-        fileSystem.addDirectory( directory, directory );
+        fileSystem = fileSystem.addDirectory( new BasicPackageFileSystemObject( directory ) );
     }
 
     public void addSymlink( UnixFsObject.Symlink symlink )
     {
-        fileSystem.addSymlink( symlink, symlink );
+        fileSystem = fileSystem.addSymlink( new BasicPackageFileSystemObject( symlink ) );
     }
 
     public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
     {
-        fileSystem.apply( f );
+        fileSystem = fileSystem.apply( f );
     }
 
     public void streamTo( LineStreamWriter spec )
@@ -149,7 +147,7 @@ public class SpecFile
 //            addIf(icon != null, "Icon").addIfNotNull( icon ).
 //            addIfNotEmpty( "Vendor", vendor ).
 //            addIfNotEmpty( "URL", url ).
-            add( "Group: " + UnixUtil.getField( "group", group ) ).
+    add( "Group: " + UnixUtil.getField( "group", group ) ).
             addIfNotEmpty( "Packager", packager ).
             addAllLines( prefix( provides, "Provides" ) ).
             addAllLines( prefix( requires, "Requires" ) ).
@@ -165,7 +163,7 @@ public class SpecFile
 
         spec.
             add( "%files" ).
-            addAllLines( UnixUtil.iteratorMap( SpecFile.showUnixFsObject(), fileSystem.iterator() ) );
+            addAllLines( fileSystem.toList().map( SpecFile.showUnixFsObject() ) );
 
         spec.addIf( includePre != null || includePost != null || includePreun != null || includePostun != null, "" );
         if ( includePre != null )
@@ -232,20 +230,20 @@ public class SpecFile
     //
     // -----------------------------------------------------------------------
 
-    private static F<UnixFsObject, String> showUnixFsObject()
+    private static F<PackageFileSystemObject<Object>, String> showUnixFsObject()
     {
-        return new F<UnixFsObject, String>()
+        return new F<PackageFileSystemObject<Object>, String>()
         {
-            public String f( UnixFsObject unixFsObject )
+            public String f( PackageFileSystemObject p2 )
             {
-                Option<FileAttributes> attributes = unixFsObject.attributes;
+                UnixFsObject unixFsObject = p2.getUnixFsObject();
+                @SuppressWarnings("unchecked") Option<FileAttributes> attributes = unixFsObject.attributes;
 
-                String s =
-                    "%attr(" +
-                        join( attributes.map( FileAttributes.modeF ) ).map( UnixFileMode.showOcalString ).orSome( "-" ) + "," +
-                        join( attributes.map( FileAttributes.userF ) ).orSome( "-" ) + "," +
-                        join( attributes.map( FileAttributes.groupF ) ).orSome( "-" ) + ") " +
-                        unixFsObject.path.asAbsolutePath( "/" );
+                String s = "%attr(" +
+                    join( attributes.map( FileAttributes.modeF ) ).map( UnixFileMode.showOcalString ).orSome( "-" ) +
+                    "," + join( attributes.map( FileAttributes.userF ) ).orSome( "-" ) + "," +
+                    join( attributes.map( FileAttributes.groupF ) ).orSome( "-" ) + ") " +
+                    unixFsObject.path.asAbsolutePath( "/" );
 
                 if ( unixFsObject instanceof UnixFsObject.RegularFile || unixFsObject instanceof UnixFsObject.Symlink )
                 {

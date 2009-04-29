@@ -24,25 +24,19 @@ package org.codehaus.mojo.unix.rpm;
  * SOFTWARE.
  */
 
-import fj.F2;
-import fj.data.Option;
-import static fj.data.Option.some;
-import junit.framework.TestCase;
-import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.PackageVersion;
-import org.codehaus.mojo.unix.UnixFileMode;
-import static org.codehaus.mojo.unix.UnixFileMode._0644;
-import static org.codehaus.mojo.unix.UnixFileMode._0755;
-import org.codehaus.mojo.unix.UnixFsObject;
-import static org.codehaus.mojo.unix.UnixFsObject.directory;
-import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
-import org.codehaus.mojo.unix.util.RelativePath;
+import fj.*;
+import fj.data.*;
+import static fj.data.Option.*;
+import junit.framework.*;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.UnixFileMode.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.fromString;
-import org.codehaus.mojo.unix.util.line.LineFile;
-import org.joda.time.LocalDateTime;
+import org.codehaus.mojo.unix.util.line.*;
+import org.joda.time.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -98,9 +92,11 @@ public class SpecFileTest
             add( "%description" ).
             add().
             add( "%files" ).
-            add( "%dir %attr(-,myuser,mygroup) /bin" ).
-            add( "%attr(0644,myuser,mygroup) /extract.jar" ).
+            add( "%dir %attr(0644,extract,mygroup) /" ).
             add( "%attr(0644,extract,mygroup) /extract2.jar" ).
+            add( "%attr(0644,myuser,mygroup) /extract.jar" ).
+            add( "%dir %attr(-,myuser,mygroup) /bin" ).
+            add( "%dir %attr(-,-,-) /usr" ).
             add( "%dir %attr(0755,myuser,mygroup) /usr/bin" ).
             toString(), toString( specFile ) );
     }
@@ -117,7 +113,9 @@ public class SpecFileTest
             add( "%description" ).
             add( "Yo yo" ).
             add().
-            add( "%files" ).toString(), toString( specFile ) );
+            add( "%files" ).
+            add( "%dir %attr(-,-,-) /" ).
+            toString(), toString( specFile ) );
     }
 
     public void testScriptGeneration()
@@ -132,6 +130,7 @@ public class SpecFileTest
             add( "%description" ).
             add().
             add( "%files" ).
+            add( "%dir %attr(-,-,-) /" ).
             add().
             add( "%post" ).
             add( "%include " + specFile.includePost.getAbsolutePath() ).toString(), toString( specFile ) );

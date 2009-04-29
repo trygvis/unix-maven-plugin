@@ -24,22 +24,14 @@ package org.codehaus.mojo.unix.rpm;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.EqualsIgnoreNull;
-import org.codehaus.mojo.unix.util.SystemCommand;
-import org.codehaus.mojo.unix.util.line.LineProducer;
-import org.codehaus.mojo.unix.util.line.LineStreamUtil;
-import org.codehaus.mojo.unix.util.line.LineStreamWriter;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.*;
+import java.text.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -112,7 +104,7 @@ public class RpmUtil
                 append( user ).append( " " ).
                 append( group ).append( " " ).
                 append( size ).append( " " ).
-                append( date != null ? DATE_FORMAT.format( date ) : "not set" ).append( " " ).
+                append( date != null ? DATE_FORMAT.format( date ) : "<not set>" ).append( " " ).
                 append( path ).toString() );
         }
     }
@@ -264,6 +256,7 @@ public class RpmUtil
             }
             catch ( ParseException e )
             {
+                // TODO: Try a different parser ("28 Oct 2008")
                 e.printStackTrace();
             }
         }
