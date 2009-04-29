@@ -24,15 +24,10 @@ package org.codehaus.mojo.unix.ar;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.*;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

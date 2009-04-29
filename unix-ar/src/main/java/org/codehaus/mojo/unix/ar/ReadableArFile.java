@@ -24,10 +24,9 @@ package org.codehaus.mojo.unix.ar;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.*;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

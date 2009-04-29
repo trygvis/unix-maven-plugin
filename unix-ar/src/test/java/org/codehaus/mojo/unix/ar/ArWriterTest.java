@@ -24,12 +24,9 @@ package org.codehaus.mojo.unix.ar;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

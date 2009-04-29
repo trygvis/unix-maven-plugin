@@ -24,8 +24,7 @@ package org.codehaus.mojo.unix.ar;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

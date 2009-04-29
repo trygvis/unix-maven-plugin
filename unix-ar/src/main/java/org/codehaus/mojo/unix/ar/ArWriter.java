@@ -24,16 +24,11 @@ package org.codehaus.mojo.unix.ar;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.io.*;
+import java.nio.*;
+import java.nio.charset.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
