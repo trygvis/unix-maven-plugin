@@ -28,14 +28,17 @@ import org.codehaus.mojo.unix.util.*;
 
 /**
  */
-public class BasicPackageFileSystemObject
-    implements PackageFileSystemObject<Object>
+public class BasicPackageFileSystemObject<E>
+    implements PackageFileSystemObject<E>
 {
     private final UnixFsObject unixFsObject;
 
-    public BasicPackageFileSystemObject( UnixFsObject unixFsObject )
+    private final E extension;
+
+    public BasicPackageFileSystemObject( UnixFsObject unixFsObject, E extension )
     {
         this.unixFsObject = unixFsObject;
+        this.extension = extension;
     }
 
     public UnixFsObject getUnixFsObject()
@@ -43,18 +46,18 @@ public class BasicPackageFileSystemObject
         return unixFsObject;
     }
 
-    public PackageFileSystemObject getExtension()
+    public E getExtension()
     {
-        throw new RuntimeException( "Not implemented" );
+        return extension;
     }
 
-    public PackageFileSystemObject<Object> setFileAttributes( FileAttributes fileAttributes )
+    public PackageFileSystemObject<E> setFileAttributes( FileAttributes fileAttributes )
     {
-        return new BasicPackageFileSystemObject( unixFsObject.setFileAttributes( fileAttributes ) );
+        return new BasicPackageFileSystemObject<E>( unixFsObject.setFileAttributes( fileAttributes ), extension );
     }
 
-    public PackageFileSystemObject<Object> setPath( RelativePath path )
+    public PackageFileSystemObject<E> setPath( RelativePath path )
     {
-        return new BasicPackageFileSystemObject( unixFsObject.setPath( path ) );
+        return new BasicPackageFileSystemObject<E>( unixFsObject.setPath( path ), extension );
     }
 }

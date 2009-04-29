@@ -46,7 +46,7 @@ public class PackageRpmMojo
 
     public PackageRpmMojo()
     {
-        super( "rpm" );
+        super( "rpm", "rpm" );
     }
 
     protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()

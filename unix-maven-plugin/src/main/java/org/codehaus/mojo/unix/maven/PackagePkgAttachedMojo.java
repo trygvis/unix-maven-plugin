@@ -46,7 +46,7 @@ public class PackagePkgAttachedMojo
 
     public PackagePkgAttachedMojo()
     {
-        super( "pkg" );
+        super( "pkg", "pkg" );
     }
 
     protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()

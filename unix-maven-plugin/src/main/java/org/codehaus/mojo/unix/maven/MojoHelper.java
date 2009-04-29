@@ -69,7 +69,7 @@ public abstract class MojoHelper
 
         if ( format == null )
         {
-            throw new MojoFailureException( "Internal error, could not find format for type '" + formatType + "'." );
+            throw new MojoFailureException( "INTERNAL ERROR: could not find format for type '" + formatType + "'." );
         }
 
         // TODO: This is using a private Maven API that might change. Perhaps use some reflection magic here.
@@ -189,7 +189,7 @@ public abstract class MojoHelper
             this.attachedMode = attachedMode;
         }
 
-        public void execute( MavenProject mavenProject, MavenProjectHelper mavenProjectHelper, ScriptUtil.Strategy strategy )
+        public void execute( String artifactType, MavenProject mavenProject, MavenProjectHelper mavenProjectHelper, ScriptUtil.Strategy strategy )
             throws MojoExecutionException, MojoFailureException
         {
             for ( P3<UnixPackage, Package, List<AssemblyOperation>> p : packages )
@@ -222,7 +222,7 @@ public abstract class MojoHelper
                     unixPackage.
                         packageToFile( packageFile, strategy );
 
-                    attach( pakke, unixPackage, packageFile, mavenProject, mavenProjectHelper, attachedMode );
+                    attach( pakke, artifactType, packageFile, mavenProject, mavenProjectHelper, attachedMode );
                 }
                 catch ( MojoExecutionException e )
                 {
@@ -239,13 +239,13 @@ public abstract class MojoHelper
             }
         }
 
-        private void attach( Package pakke, UnixPackage unixPackage, File packageFile,
+        private void attach( Package pakke, String artifactType, File packageFile,
                              MavenProject project, MavenProjectHelper mavenProjectHelper, boolean attachedMode )
         {
             if ( attachedMode )
             {
                 // In attached mode all the packages are required to have an classifier
-                mavenProjectHelper.attachArtifact( project, unixPackage.getPackageFileExtension(), pakke.classifier.some(),
+                mavenProjectHelper.attachArtifact( project, artifactType, pakke.classifier.some(),
                                                    packageFile );
             }
             else

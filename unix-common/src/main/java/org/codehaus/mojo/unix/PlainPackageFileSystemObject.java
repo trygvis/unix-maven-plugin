@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven;
+package org.codehaus.mojo.unix;
 
 /*
  * The MIT License
@@ -24,33 +24,18 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import fj.*;
-import static fj.Function.*;
-import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.dpkg.*;
-
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- * @goal package-dpkg
- * @phase package
- * @requiresDependencyResolution runtime
  */
-public class PackageDpkgMojo
-    extends AbstractPackageMojo
+public class PlainPackageFileSystemObject
+    extends BasicPackageFileSystemObject<Object>
 {
-    /**
-     * @parameter
-     */
-    private DpkgSpecificSettings dpkg;
-
-    public PackageDpkgMojo()
+    public PlainPackageFileSystemObject( UnixFsObject unixFsObject )
     {
-        super( "dpkg", "dpkg" );
+        super( unixFsObject, null );
     }
 
-    protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
+    public PackageFileSystemObject getExtension()
     {
-        return curry( DpkgMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, dpkg );
+        throw new RuntimeException( "Not implemented" );
     }
 }

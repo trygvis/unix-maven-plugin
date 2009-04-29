@@ -34,7 +34,7 @@ import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.RelativePath.relativePath;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
@@ -59,23 +59,23 @@ public class PackageFileSystemTest
 
     static FileAttributes directoryA = new FileAttributes( myuser, mygroup, some( _0755 ) );
 
-    static BasicPackageFileSystemObject root = basic( directory( RelativePath.BASE, lm, directoryA ) );
+    static PlainPackageFileSystemObject root = plain( directory( RelativePath.BASE, lm, directoryA ) );
 
-    static BasicPackageFileSystemObject a = basic( directory( relativePath( "/a" ), lm, directoryA ) );
+    static PlainPackageFileSystemObject a = plain( directory( relativePath( "/a" ), lm, directoryA ) );
 
-    static BasicPackageFileSystemObject b = basic( directory( relativePath( "/b" ), lm, directoryA.mode( UnixFileMode.none ) ) );
+    static PlainPackageFileSystemObject b = plain( directory( relativePath( "/b" ), lm, directoryA.mode( UnixFileMode.none ) ) );
 
-    static BasicPackageFileSystemObject a_x = basic( regularFile( relativePath( "/a/a-x" ), lm, 10, some( fileA ) ) );
+    static PlainPackageFileSystemObject a_x = plain( regularFile( relativePath( "/a/a-x" ), lm, 10, some( fileA ) ) );
 
-    static BasicPackageFileSystemObject a_y = basic( regularFile( relativePath( "/a/a-y" ), lm, 10, some( fileA ) ) );
+    static PlainPackageFileSystemObject a_y = plain( regularFile( relativePath( "/a/a-y" ), lm, 10, some( fileA ) ) );
 
-    static BasicPackageFileSystemObject b_x = basic( regularFile( relativePath( "/b/b-x" ), lm, 10, some( fileA ) ) );
+    static PlainPackageFileSystemObject b_x = plain( regularFile( relativePath( "/b/b-x" ), lm, 10, some( fileA ) ) );
 
-    static BasicPackageFileSystemObject c = basic( directory( relativePath( "/c" ), lm, directoryA ) );
+    static PlainPackageFileSystemObject c = plain( directory( relativePath( "/c" ), lm, directoryA ) );
 
-    static BasicPackageFileSystemObject c_x = basic( directory( relativePath( "/c/c-x" ), lm, directoryA ) );
+    static PlainPackageFileSystemObject c_x = plain( directory( relativePath( "/c/c-x" ), lm, directoryA ) );
 
-    static BasicPackageFileSystemObject c_x_u = basic( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, some( fileA ) ) );
+    static PlainPackageFileSystemObject c_x_u = plain( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, some( fileA ) ) );
 
     Show<List<PackageFileSystemObject<Object>>> fsShow = Show.listShow( Show.showS( new F<PackageFileSystemObject<Object>, String>()
     {
@@ -87,7 +87,7 @@ public class PackageFileSystemTest
 
     public void testAddSingleNodeToRoot()
     {
-        PackageFileSystem<Object> fileSystem = create( root, root ).
+        PackageFileSystem<Object> fileSystem = PackageFileSystem.<Object>create( root, root ).
             addDirectory( a );
 
         assertEquals( new LineFile().
@@ -201,7 +201,7 @@ public class PackageFileSystemTest
 
         FileAttributes newAttributes = root.getUnixFsObject().getFileAttributes().user( "woot" );
 
-        fs = fs.addDirectory( basic( directory( RelativePath.BASE, lm, newAttributes ) ) );
+        fs = fs.addDirectory( plain( directory( RelativePath.BASE, lm, newAttributes ) ) );
 
         assertEquals( newAttributes, fs.getObject( RelativePath.BASE ).some().getUnixFsObject().getFileAttributes() );
     }
@@ -228,8 +228,8 @@ public class PackageFileSystemTest
         };
     }
 
-    public static BasicPackageFileSystemObject basic( UnixFsObject unixFsObject )
+    public static PlainPackageFileSystemObject plain( UnixFsObject unixFsObject )
     {
-        return new BasicPackageFileSystemObject( unixFsObject );
+        return new PlainPackageFileSystemObject( unixFsObject );
     }
 }

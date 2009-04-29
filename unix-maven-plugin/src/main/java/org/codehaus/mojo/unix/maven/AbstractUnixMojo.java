@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.maven;
  */
 
 import org.apache.maven.artifact.transform.*;
+import org.apache.maven.artifact.handler.*;
 import org.apache.maven.plugin.*;
 import org.apache.maven.project.*;
 

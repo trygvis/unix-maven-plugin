@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven;
+package org.codehaus.mojo.unix.java;
 
 /*
  * The MIT License
@@ -25,32 +25,16 @@ package org.codehaus.mojo.unix.maven;
  */
 
 import fj.*;
-import static fj.Function.*;
-import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.dpkg.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- * @goal package-dpkg
- * @phase package
- * @requiresDependencyResolution runtime
  */
-public class PackageDpkgMojo
-    extends AbstractPackageMojo
+public class BooleanF
 {
-    /**
-     * @parameter
-     */
-    private DpkgSpecificSettings dpkg;
-
-    public PackageDpkgMojo()
+    public static F<Boolean, Boolean> invert = new F<Boolean, Boolean>()
     {
-        super( "dpkg", "dpkg" );
-    }
-
-    protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
-    {
-        return curry( DpkgMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, dpkg );
-    }
+        public Boolean f( Boolean bool )
+        {
+            return !bool;
+        }
+    };
 }

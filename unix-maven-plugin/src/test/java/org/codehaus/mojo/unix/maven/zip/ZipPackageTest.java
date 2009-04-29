@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.fj;
+package org.codehaus.mojo.unix.maven.zip;
 
 /*
  * The MIT License
@@ -25,41 +25,47 @@ package org.codehaus.mojo.unix.util.fj;
  */
 
 import junit.framework.*;
+import org.apache.commons.vfs.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
+import org.codehaus.mojo.unix.core.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.plexus.*;
 
 import java.io.*;
 
-public class FileScannerTest
+/**
+ */
+public class ZipPackageTest
     extends TestCase
 {
     public void testBasic()
-        throws IOException
+        throws Exception
     {
-        FileScanner scanner = new FileScanner( new File( "src/test/resources" ), new String[0], new String[0] );
+        FileSystemManager fileSystemManager = VFS.getManager();
 
-        for ( File file : scanner.toStream() )
+        File zip1 = PlexusTestCase.getTestFile( "src/it/test-zip-1" );
+        File zip = new File( zip1, "target/zip/test.zip" );
+        if ( !zip.getParentFile().isDirectory() )
         {
-            System.out.println( "file = " + file );
+            assertTrue( zip.getParentFile().mkdirs() );
         }
-    }
 
-    public void testIncludes()
-        throws IOException
-    {
-        File base = new File( System.getProperty("user.home") + "/.m2/repository" );
-        FileScanner scanner = new FileScanner( base, new String[]{"**/*.pkg"}, new String[0] );
+        FileObject basedir = fileSystemManager.resolveFile( zip1.getAbsolutePath() );
 
-        for ( File file : scanner.toStream() )
-        {
-            System.out.println( "file = " + file );
-        }
-    }
+        ZipUnixPackage zipPackage = new ZipUnixPackage();
 
-    public void testNoMatch()
-        throws IOException
-    {
-        File base = new File( "src/test/resources" ).getAbsoluteFile();
-        FileScanner scanner = new FileScanner( base, new String[]{"**/nothere/**"}, new String[0] );
+        zipPackage.beforeAssembly( EMPTY );
 
-        assertTrue( scanner.toStream().isEmpty() );
+        assertEquals( FileType.FOLDER, basedir.getType() );
+
+        new CreateDirectoriesOperation( new String[]{"/opt/hudson"}, EMPTY ).
+            perform( zipPackage );
+
+        new CopyFileOperation( EMPTY, basedir.resolveFile( "pom4test.xml" ), relativePath( "/opt/hudson/hudson.war" ) ).
+            perform( zipPackage );
+
+        zipPackage.
+            packageToFile( zip, ScriptUtil.Strategy.SINGLE );
     }
 }

@@ -24,33 +24,27 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import org.codehaus.mojo.unix.*;
 import fj.*;
 import static fj.Function.*;
-import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.dpkg.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- * @goal package-dpkg
+ * @version $Id: PackageRpmMojo.java 9221 2009-03-15 22:52:14Z trygvis $
+ * @goal package-zip
  * @phase package
  * @requiresDependencyResolution runtime
  */
-public class PackageDpkgMojo
+public class PackageZipMojo
     extends AbstractPackageMojo
 {
-    /**
-     * @parameter
-     */
-    private DpkgSpecificSettings dpkg;
-
-    public PackageDpkgMojo()
+    public PackageZipMojo()
     {
-        super( "dpkg", "dpkg" );
+        super( "zip", "unix-zip" );
     }
 
     protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
     {
-        return curry( DpkgMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, dpkg );
+        return identity();
     }
 }

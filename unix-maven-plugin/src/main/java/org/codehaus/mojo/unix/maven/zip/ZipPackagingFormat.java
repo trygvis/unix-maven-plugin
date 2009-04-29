@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven;
+package org.codehaus.mojo.unix.maven.zip;
 
 /*
  * The MIT License
@@ -24,33 +24,34 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import fj.*;
-import static fj.Function.*;
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.dpkg.*;
+import org.codehaus.mojo.unix.maven.*;
+import org.codehaus.mojo.unix.maven.rpm.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
- * @goal package-dpkg
- * @phase package
- * @requiresDependencyResolution runtime
+ * @version $Id: RpmPackagingFormat.java 9221 2009-03-15 22:52:14Z trygvis $
  */
-public class PackageDpkgMojo
-    extends AbstractPackageMojo
+public class ZipPackagingFormat
+    implements PackagingFormat
 {
-    /**
-     * @parameter
-     */
-    private DpkgSpecificSettings dpkg;
-
-    public PackageDpkgMojo()
+    public UnixPackage start()
     {
-        super( "dpkg", "dpkg" );
+        return new ZipUnixPackage();
     }
 
-    protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
+    public boolean licenseRequired()
     {
-        return curry( DpkgMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, dpkg );
+        return false;
+    }
+
+    public String defaultArchitecture()
+    {
+        return "all";
+    }
+
+    public static ZipUnixPackage cast( UnixPackage unixPackage )
+    {
+        return (ZipUnixPackage) unixPackage;
     }
 }

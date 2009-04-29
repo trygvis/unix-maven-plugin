@@ -84,6 +84,7 @@
               <goal>package-dpkg-attached</goal>
               <goal>package-pkg-attached</goal>
               <goal>package-rpm-attached</goal>
+              <goal>package-zip-attached</goal>
             </goals>
           </execution>
         </executions>

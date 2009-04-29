@@ -44,9 +44,13 @@ public abstract class AbstractPackageMojo
 
     private final String formatType;
 
-    protected AbstractPackageMojo( String formatType )
+    private final String artifactType;
+
+    protected AbstractPackageMojo( String formatType, String artifactType )
     {
         this.formatType = formatType;
+
+        this.artifactType = artifactType;
     }
 
     protected abstract F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF();
@@ -71,6 +75,6 @@ public abstract class AbstractPackageMojo
                                                         assembly,
                                                         packages ),
                            getLog() ).
-            execute( project, mavenProjectHelper, SINGLE );
+            execute( artifactType, project, mavenProjectHelper, SINGLE );
     }
 }

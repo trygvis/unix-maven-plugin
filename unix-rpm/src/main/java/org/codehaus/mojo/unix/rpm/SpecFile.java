@@ -31,6 +31,7 @@ import fj.data.List;
 import fj.data.*;
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
@@ -108,23 +109,23 @@ public class SpecFile
 
         Directory root = UnixFsObject.directory( BASE, fromDateFields( new Date( 0 ) ), EMPTY );
 
-        fileSystem = PackageFileSystem.create( new BasicPackageFileSystemObject( root ),
-                                               new BasicPackageFileSystemObject( defaultDirectory ) );
+        fileSystem = create( new PlainPackageFileSystemObject( root ),
+                             new PlainPackageFileSystemObject( defaultDirectory ) );
     }
 
     public void addFile( UnixFsObject.RegularFile file )
     {
-        fileSystem = fileSystem.addFile( new BasicPackageFileSystemObject( file ) );
+        fileSystem = fileSystem.addFile( new PlainPackageFileSystemObject( file ) );
     }
 
     public void addDirectory( UnixFsObject.Directory directory )
     {
-        fileSystem = fileSystem.addDirectory( new BasicPackageFileSystemObject( directory ) );
+        fileSystem = fileSystem.addDirectory( new PlainPackageFileSystemObject( directory ) );
     }
 
     public void addSymlink( UnixFsObject.Symlink symlink )
     {
-        fileSystem = fileSystem.addSymlink( new BasicPackageFileSystemObject( symlink ) );
+        fileSystem = fileSystem.addSymlink( new PlainPackageFileSystemObject( symlink ) );
     }
 
     public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )

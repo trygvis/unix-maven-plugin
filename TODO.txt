@@ -184,9 +184,9 @@ o Subversion properties
 
 == For 1.0-alpha-4 ==
 
-o MUNIX-12, MUNIX-13: Support 'tar' and 'zip' formats
+o DONE: MUNIX-12: Support 'zip' format
+o MUNIX-13: Support 'tar' format
   Create integration tests similar to the existing tests
-  - First version of zip done, test-zip-1
 o MUNIX-14: Rename "pkg" to "sysv-pkg"
 o MUNIX-6: set-attributes doesn't pick up paths that aren't explicitly created with mkdirs
 o DONE: MUNIX-3, MUNIX-4: Implement support for "%config" and "%doc" in RPM, file classes in solaris.

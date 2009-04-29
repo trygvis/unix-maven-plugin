@@ -28,6 +28,7 @@ import fj.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.*;
+import org.apache.maven.artifact.handler.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -38,9 +39,13 @@ public abstract class AbstractPackageAttachedMojo
 {
     private final String formatType;
 
-    protected AbstractPackageAttachedMojo( String formatType )
+    private final String artifactType;
+
+    protected AbstractPackageAttachedMojo( String formatType, String artifactType )
     {
         this.formatType = formatType;
+
+        this.artifactType = artifactType;
     }
 
     protected abstract F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF();
@@ -65,6 +70,6 @@ public abstract class AbstractPackageAttachedMojo
                                                         assembly,
                                                         null ),
                            getLog() ).
-            execute( project, mavenProjectHelper, MULTIPLE );
+            execute( artifactType, project, mavenProjectHelper, MULTIPLE );
     }
 }
