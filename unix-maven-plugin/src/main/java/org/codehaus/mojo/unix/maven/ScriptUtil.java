@@ -24,15 +24,10 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import fj.data.List;
-import org.codehaus.plexus.util.IOUtil;
+import fj.data.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

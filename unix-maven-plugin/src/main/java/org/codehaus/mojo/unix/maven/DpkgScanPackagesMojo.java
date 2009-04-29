@@ -24,16 +24,11 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.mojo.unix.util.SystemCommand;
-import org.codehaus.plexus.util.IOUtil;
+import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * Executes "dpkg-scanpackages".

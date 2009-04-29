@@ -24,13 +24,12 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import static org.apache.commons.vfs.VFS.getManager;
-import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.mojo.unix.core.AssemblyOperation;
+import org.apache.commons.vfs.*;
+import static org.apache.commons.vfs.VFS.*;
+import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.core.*;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

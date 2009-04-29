@@ -24,8 +24,8 @@ package org.codehaus.mojo.unix.maven.dpkg;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.maven.PackagingFormat;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.maven.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

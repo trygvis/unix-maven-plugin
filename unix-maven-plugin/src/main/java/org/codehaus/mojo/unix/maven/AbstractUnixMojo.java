@@ -24,12 +24,11 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import org.apache.maven.artifact.transform.SnapshotTransformation;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.artifact.transform.*;
+import org.apache.maven.plugin.*;
+import org.apache.maven.project.*;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

@@ -24,25 +24,18 @@ package org.codehaus.mojo.unix.maven.util;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.mojo.unix.MissingSettingException;
-import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.core.AssemblyOperation;
-import org.codehaus.mojo.unix.maven.AssemblyOp;
-import org.codehaus.mojo.unix.maven.Defaults;
+import org.apache.commons.vfs.*;
+import org.apache.maven.artifact.*;
+import org.apache.maven.plugin.*;
+import org.apache.maven.project.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.maven.Package;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * Utility to handle the creation of a single package.

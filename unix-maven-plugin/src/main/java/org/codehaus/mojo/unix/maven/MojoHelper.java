@@ -24,28 +24,18 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.transform.SnapshotTransformation;
-import org.apache.maven.model.License;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
-import org.codehaus.mojo.unix.MissingSettingException;
-import org.codehaus.mojo.unix.PackageVersion;
-import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.maven.util.PackageCreationUtil;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.vfs.*;
+import org.apache.maven.artifact.*;
+import org.apache.maven.artifact.transform.*;
+import org.apache.maven.model.*;
+import org.apache.maven.plugin.*;
+import org.apache.maven.project.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.maven.util.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -196,6 +186,8 @@ public abstract class MojoHelper
                 validateMojoSettings();
 
                 applyFormatSpecificSettingsToPackage( unixPackage );
+
+                unixPackage.afterPropertiesSet();
 
                 // -----------------------------------------------------------------------
                 // DO IT

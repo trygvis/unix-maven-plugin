@@ -24,21 +24,18 @@ package org.codehaus.mojo.unix.maven.rpm;
  * SOFTWARE.
  */
 
-import fj.data.Option;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
+import fj.data.*;
+import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.PackageVersion;
-import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
-import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.maven.PackagingFormat;
-import org.codehaus.mojo.unix.rpm.Rpmbuild;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
-import org.codehaus.plexus.PlexusTestCase;
-import org.joda.time.LocalDateTime;
+import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.maven.*;
+import org.codehaus.mojo.unix.rpm.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.plexus.*;
+import org.joda.time.*;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

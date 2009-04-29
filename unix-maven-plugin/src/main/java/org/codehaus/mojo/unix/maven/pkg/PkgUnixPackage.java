@@ -24,34 +24,30 @@ package org.codehaus.mojo.unix.maven.pkg;
  * SOFTWARE.
  */
 
-import fj.F2;
-import fj.Unit;
+import fj.*;
 import fj.data.List;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.Selectors;
-import org.apache.commons.vfs.provider.local.LocalFileSystem;
+import fj.data.*;
+import org.apache.commons.vfs.*;
+import org.apache.commons.vfs.provider.local.*;
 import org.codehaus.mojo.unix.FileAttributes;
-import static org.codehaus.mojo.unix.FileAttributes.EMPTY;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.maven.ScriptUtil;
-import org.codehaus.mojo.unix.pkg.PkginfoFile;
-import org.codehaus.mojo.unix.pkg.PkgmkCommand;
-import org.codehaus.mojo.unix.pkg.PkgtransCommand;
-import org.codehaus.mojo.unix.pkg.prototype.PrototypeFile;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
-import org.codehaus.mojo.unix.util.line.LineStreamUtil;
-import org.codehaus.mojo.unix.util.vfs.VfsUtil;
-import org.codehaus.plexus.util.IOUtil;
-import org.joda.time.LocalDateTime;
+import static org.codehaus.mojo.unix.FileAttributes.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.UnixFsObject.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.maven.*;
+import org.codehaus.mojo.unix.pkg.*;
+import org.codehaus.mojo.unix.pkg.prototype.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.mojo.unix.util.line.*;
+import org.codehaus.mojo.unix.util.vfs.*;
+import org.codehaus.plexus.util.*;
+import org.joda.time.*;
+import static org.joda.time.LocalDateTime.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.Callable;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -65,7 +61,7 @@ public class PkgUnixPackage
     private FileObject pkginfo;
     private boolean debug;
 
-    private final static ScriptUtil scriptUtil = new ScriptUtil.ScriptUtilBuilder().
+    private static final ScriptUtil scriptUtil = new ScriptUtil.ScriptUtilBuilder().
         format( "pkg" ).
         setPreInstall( "preinstall" ).
         setPostInstall( "postinstall" ).
@@ -79,7 +75,11 @@ public class PkgUnixPackage
         addCustomScript( "space" ).
         build();
 
-    private PrototypeFile prototypeFile = new PrototypeFile();
+    private static final Directory defaultDirectory = directory( BASE, fromDateFields( new Date( 0 ) ), EMPTY );
+
+    private static final DirectoryEntry directoryEntry = new DirectoryEntry( Option.<String>none(), defaultDirectory );
+
+    private PrototypeFile prototypeFile;
 
     private final PkginfoFile pkginfoFile = new PkginfoFile();
 
@@ -134,8 +134,6 @@ public class PkgUnixPackage
         throws FileSystemException
     {
         this.workingDirectory = workingDirectory;
-        prototype = workingDirectory.resolveFile( "prototype" );
-        pkginfo = workingDirectory.resolveFile( "pkginfo" );
         return this;
     }
 
@@ -143,6 +141,15 @@ public class PkgUnixPackage
     {
         this.debug = debug;
         return this;
+    }
+
+    public void afterPropertiesSet()
+        throws Exception
+    {
+        prototype = workingDirectory.resolveFile( "prototype" );
+        pkginfo = workingDirectory.resolveFile( "pkginfo" );
+
+        prototypeFile = new PrototypeFile( directoryEntry );
     }
 
     // -----------------------------------------------------------------------
@@ -177,7 +184,7 @@ public class PkgUnixPackage
             if ( prototypeFile.hasPath( specialPath ) )
             {
                 // TODO: this should come from a common time object so that all "now" timestamps are the same
-                prototypeFile.addDirectory( UnixFsObject.directory( specialPath, new LocalDateTime(), EMPTY ) );
+                prototypeFile.addDirectory( directory( specialPath, new LocalDateTime(), EMPTY ) );
             }
         }
 
@@ -190,7 +197,7 @@ public class PkgUnixPackage
         File prototypeF = VfsUtil.asFile( prototype );
 
         ScriptUtil.Execution execution = scriptUtil.copyScripts( getBasedir(), workingDirectoryF );
-        pkginfoFile.version = getVersion().getMavenVersion();
+        pkginfoFile.version = getPkgVersion();
         pkginfoFile.pstamp = getVersion().timestamp;
         LineStreamUtil.toFile( pkginfoFile, pkginfoF );
 
@@ -228,6 +235,18 @@ public class PkgUnixPackage
             setAsDatastream( true ).
             setOverwrite( true ).
             execute( workingDirectoryF, packageFile, pkg );
+    }
+
+    private String getPkgVersion()
+    {
+        String version = getVersion().version;
+
+        if ( getVersion().snapshot )
+        {
+            version += "-" + getVersion().timestamp;
+        }
+
+        return version;
     }
 
     public FileObject getRoot()

@@ -24,19 +24,16 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import fj.data.Option;
-import static fj.data.Option.fromNull;
-import static fj.data.Option.none;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.mojo.unix.core.AssemblyOperation;
-import org.codehaus.mojo.unix.core.SetAttributesOperation;
-import org.codehaus.mojo.unix.util.RelativePath;
+import fj.data.*;
+import static fj.data.Option.*;
+import org.apache.commons.vfs.*;
+import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.fromString;
 
-import static java.util.Arrays.asList;
-import java.util.Collections;
+import static java.util.Arrays.*;
+import java.util.*;
 import java.util.List;
 
 /**

@@ -24,9 +24,9 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import fj.F;
-import static fj.data.Option.fromNull;
-import org.codehaus.mojo.unix.UnixFileMode;
+import fj.*;
+import static fj.data.Option.*;
+import org.codehaus.mojo.unix.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

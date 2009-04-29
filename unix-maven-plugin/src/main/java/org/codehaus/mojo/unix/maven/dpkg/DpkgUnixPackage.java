@@ -24,21 +24,17 @@ package org.codehaus.mojo.unix.maven.dpkg;
  * SOFTWARE.
  */
 
-import fj.F2;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
+import fj.*;
+import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.core.FsFileCollector;
-import org.codehaus.mojo.unix.dpkg.Dpkg;
-import org.codehaus.mojo.unix.maven.ScriptUtil;
-import org.codehaus.mojo.unix.util.UnixUtil;
-import static org.codehaus.mojo.unix.util.vfs.VfsUtil.asFile;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.dpkg.*;
+import org.codehaus.mojo.unix.maven.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -48,6 +44,8 @@ public class DpkgUnixPackage
     extends UnixPackage
 {
     private final ControlFile controlFile = new ControlFile();
+
+    private FileObject workingDirectory;
 
     private FsFileCollector fileCollector;
 
@@ -120,7 +118,7 @@ public class DpkgUnixPackage
     public UnixPackage workingDirectory( FileObject workingDirectory )
         throws FileSystemException
     {
-        fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
+        this.workingDirectory = workingDirectory;
         return this;
     }
 
@@ -128,6 +126,12 @@ public class DpkgUnixPackage
     {
         this.debug = debug;
         return this;
+    }
+
+    public void afterPropertiesSet()
+        throws Exception
+    {
+        fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
     }
 
     public FileObject getRoot()

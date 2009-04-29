@@ -24,23 +24,18 @@ package org.codehaus.mojo.unix.maven.rpm;
  * SOFTWARE.
  */
 
-import fj.F2;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
+import fj.*;
+import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.FileAttributes;
-import org.codehaus.mojo.unix.FileCollector;
-import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.core.FsFileCollector;
-import org.codehaus.mojo.unix.maven.ScriptUtil;
-import org.codehaus.mojo.unix.rpm.Rpmbuild;
-import org.codehaus.mojo.unix.rpm.SpecFile;
-import org.codehaus.mojo.unix.util.line.LineStreamUtil;
-import org.codehaus.mojo.unix.util.vfs.VfsUtil;
-import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.maven.*;
+import org.codehaus.mojo.unix.rpm.*;
+import org.codehaus.mojo.unix.util.line.*;
+import org.codehaus.mojo.unix.util.vfs.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -55,24 +50,19 @@ public class RpmUnixPackage
 
     private FsFileCollector fileCollector;
 
-    private File workingDirectoryF;
+    private FileObject workingDirectory;
 
     private String rpmbuildPath;
 
     private boolean debug;
 
-    private final static ScriptUtil scriptUtil;
-
-    static
-    {
-        scriptUtil = new ScriptUtil.ScriptUtilBuilder().
-            format( "rpm" ).
-            setPreInstall( "pre-install" ).
-            setPostInstall( "post-install" ).
-            setPreRemove( "pre-remove" ).
-            setPostRemove( "post-remove" ).
-            build();
-    }
+    private final static ScriptUtil scriptUtil = new ScriptUtil.ScriptUtilBuilder().
+        format( "rpm" ).
+        setPreInstall( "pre-install" ).
+        setPostInstall( "post-install" ).
+        setPreRemove( "pre-remove" ).
+        setPostRemove( "post-remove" ).
+        build();
 
     public RpmUnixPackage()
     {
@@ -122,8 +112,7 @@ public class RpmUnixPackage
     public UnixPackage workingDirectory( FileObject workingDirectory )
         throws FileSystemException
     {
-        workingDirectoryF = VfsUtil.asFile( workingDirectory );
-        fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
+        this.workingDirectory = workingDirectory;
         return this;
     }
 
@@ -132,6 +121,12 @@ public class RpmUnixPackage
         this.specFile.dump = debug;
         this.debug = debug;
         return this;
+    }
+
+    public void afterPropertiesSet()
+        throws Exception
+    {
+        fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
     }
 
     // TODO: This is not used
@@ -179,6 +174,7 @@ public class RpmUnixPackage
     public void packageToFile( File packageFile )
         throws Exception
     {
+        File workingDirectoryF = VfsUtil.asFile( workingDirectory );
         File rpms = new File( workingDirectoryF, "RPMS" );
         File specsDir = new File( workingDirectoryF, "SPECS" );
         File tmp = new File( workingDirectoryF, "tmp" );

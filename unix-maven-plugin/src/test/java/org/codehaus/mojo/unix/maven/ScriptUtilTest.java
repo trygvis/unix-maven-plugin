@@ -24,12 +24,11 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.util.FileUtils;
+import junit.framework.*;
+import org.codehaus.plexus.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

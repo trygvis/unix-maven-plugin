@@ -24,19 +24,12 @@ package org.codehaus.mojo.unix.maven.dpkg;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.MissingSettingException;
-import org.codehaus.mojo.unix.PackageVersion;
-import org.codehaus.mojo.unix.util.UnixUtil;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

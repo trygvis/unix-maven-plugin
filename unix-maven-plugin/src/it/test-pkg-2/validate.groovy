@@ -14,9 +14,14 @@ success &= ShittyUtil.assertRelaxed(
         PkginfoUtil.getPackageInforForDevice(pkg).some());
 
 success &= ShittyUtil.assertPkgEntries(pkg, [
+        directory("/usr", "0755", "nobody", "nogroup", none()),
+        directory("/usr/share", "0755", "nobody", "nogroup", none()),
+        directory("/usr/share/hudson", "0755", "nobody", "nogroup", none()),
+        directory("/usr/share/hudson/lib", "0755", "nobody", "nogroup", none()),
         regularFile("/usr/share/hudson/lib/slave.jar", "0644", "nobody", "nogroup", 158615, 48565, none()),
+        directory("/usr/share/hudson/license", "0755", "nobody", "nogroup", none()),
         regularFile("/usr/share/hudson/license/atom-license.txt", "0644", "nobody", "nogroup", 49, 4473, none()),
         regularFile("/usr/share/hudson/license/dc-license.txt", "0644", "nobody", "nogroup", 1544, 59072, none()),
-        installationFile("pkginfo", 149, 0, none()),
+        installationFile("pkginfo", 147, 0, none()),
 ])
 return success

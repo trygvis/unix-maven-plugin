@@ -24,15 +24,13 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.mojo.unix.core.AssemblyOperation;
-import org.codehaus.mojo.unix.core.CopyFileOperation;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.RelativePath.fromString;
+import org.apache.commons.vfs.*;
+import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

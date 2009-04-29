@@ -24,24 +24,19 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import static fj.Function.compose;
-import static fj.Function.curry;
-import org.apache.commons.vfs.FileObject;
+import static fj.Function.*;
+import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.FileSystem;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.artifact.*;
+import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.FileAttributes;
-import static org.codehaus.mojo.unix.FileAttributes.useAsDefaultsFor;
-import org.codehaus.mojo.unix.core.AssemblyOperation;
-import org.codehaus.mojo.unix.util.RelativePath;
-import org.codehaus.plexus.util.StringUtils;
+import static org.codehaus.mojo.unix.FileAttributes.*;
+import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.util.*;
+import org.codehaus.plexus.util.*;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

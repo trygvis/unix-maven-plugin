@@ -24,15 +24,14 @@ package org.codehaus.mojo.unix.maven.dpkg;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.VFS;
-import org.codehaus.mojo.unix.PackageVersion;
-import org.codehaus.mojo.unix.dpkg.Dpkg;
-import org.codehaus.mojo.unix.maven.PackagingFormat;
-import org.codehaus.mojo.unix.util.vfs.VfsUtil;
-import org.codehaus.plexus.PlexusTestCase;
+import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.dpkg.*;
+import org.codehaus.mojo.unix.maven.*;
+import org.codehaus.mojo.unix.util.vfs.*;
+import org.codehaus.plexus.*;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

@@ -24,10 +24,9 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.MissingSettingException;
-import org.codehaus.mojo.unix.UnixPackage;
-import org.codehaus.mojo.unix.maven.rpm.RpmUnixPackage;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.maven.rpm.*;
+import org.codehaus.plexus.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

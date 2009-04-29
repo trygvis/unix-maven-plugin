@@ -24,23 +24,27 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import groovy.lang.Closure;
-import org.codehaus.mojo.unix.EqualsIgnoreNull;
-import org.codehaus.mojo.unix.UnixFsObject;
-import org.codehaus.mojo.unix.dpkg.DpkgDebTool;
-import org.codehaus.mojo.unix.pkg.PkgchkUtil;
-import org.codehaus.mojo.unix.rpm.RpmUtil;
-import org.codehaus.mojo.unix.util.RelativePath;
-import static org.codehaus.mojo.unix.util.UnixUtil.flush;
-import org.codehaus.mojo.unix.util.line.LineProducer;
-import org.codehaus.mojo.unix.util.line.LineWriterWriter;
-import org.joda.time.LocalDateTime;
+import fj.*;
+import fj.data.*;
+import static fj.data.HashMap.*;
+import static fj.data.Option.*;
+import static fj.data.Stream.*;
+import groovy.lang.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.FileAttributes;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.dpkg.*;
+import org.codehaus.mojo.unix.pkg.*;
+import org.codehaus.mojo.unix.rpm.*;
+import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
+import static org.codehaus.mojo.unix.util.UnixUtil.*;
+import org.codehaus.mojo.unix.util.line.*;
+import org.codehaus.plexus.util.*;
+import org.joda.time.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.zip.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -49,13 +53,50 @@ import java.util.List;
 public class ShittyUtil
 {
     public static final LocalDateTime START_OF_TIME = new LocalDateTime( 1970, 1, 1, 0, 0 );
+
     public static final OutputStreamWriter out = new OutputStreamWriter( System.out );
+
     public static final LineWriterWriter stream = new LineWriterWriter( out );
 
     public static RelativePath r( String path )
     {
-        return RelativePath.fromString( path );
+        return relativePath( path );
     }
+
+    // -----------------------------------------------------------------------
+    // Misc Utils
+    // -----------------------------------------------------------------------
+
+    public static File findArtifact( String groupId, String artifactId, String version, String type )
+        throws IOException
+    {
+        return findArtifact( groupId, artifactId, version, type, null );
+    }
+
+    public static File findArtifact(String groupId, String artifactId, String version, String type, String classifier)
+        throws IOException
+    {
+        File m2Repository = new File( System.getProperty( "user.home" ), ".m2/repository" );
+
+        // TODO: This can be improved
+        if ( !m2Repository.isDirectory() )
+        {
+            throw new IOException( "Unable to find local repository: " + m2Repository.getAbsolutePath() );
+        }
+
+        String base = groupId.replace( '/', '.' ) + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version;
+
+        if ( classifier != null )
+        {
+            base += "-" + classifier;
+        }
+
+        return new File( m2Repository, base + "." + type );
+    }
+
+    // -----------------------------------------------------------------------
+    // Assertion tools
+    // -----------------------------------------------------------------------
 
     public static boolean assertFormat( String type, String tool, boolean available, Closure closure )
     {
@@ -108,73 +149,163 @@ public class ShittyUtil
         return false;
     }
 
-    public static boolean assertDpkgEntries( File pkg, List<UnixFsObject> expectedFiles )
+    public static boolean assertDpkgEntries( File pkg, java.util.List<UnixFsObject> expectedFiles )
         throws IOException
     {
-        return assertEntries( expectedFiles, DpkgDebTool.contents( pkg ), new Checker<UnixFsObject>()
+        final HashMap<RelativePath, UnixFsObject> map = hashMap();
+        iterableStream( DpkgDebTool.contents( pkg ) ).foreach( new Effect<UnixFsObject>()
         {
-            public boolean equalsIgnoreNull( UnixFsObject expected, UnixFsObject actual )
+            public void e( UnixFsObject unixFsObject )
             {
-                return expected.path.equals( actual.path ) &&
-                    ( expected.size == 0 || expected.size == actual.size ) &&
-                    ( expected.lastModified == null || expected.lastModified.equals( START_OF_TIME ) || expected.lastModified.equals( actual.lastModified ) );
-            }
-
-            public String getPath( UnixFsObject o )
-            {
-                return o.path.string;
+                map.set( unixFsObject.path, unixFsObject );
             }
         } );
+
+        return assertEntries( iterableStream( expectedFiles ).map( unixFsObjectToP2 ), map, new UnixFsObjectChecker() );
     }
 
-    public static boolean assertPkgEntries( File pkg, List<PkgchkUtil.FileInfo> expectedFiles )
+    public static boolean assertPkgEntries( File pkg, java.util.List<PkgchkUtil.FileInfo> expectedFiles )
         throws IOException
     {
-        return assertEntries( expectedFiles, new ArrayList<PkgchkUtil.FileInfo>( PkgchkUtil.getPackageInforForDevice( pkg ).toCollection() ), new Checker<PkgchkUtil.FileInfo>()
+        final HashMap<RelativePath, PkgchkUtil.FileInfo> map = hashMap();
+        PkgchkUtil.getPackageInforForDevice( pkg ).foreach( new Effect<PkgchkUtil.FileInfo>()
         {
-            public boolean equalsIgnoreNull( PkgchkUtil.FileInfo expected, PkgchkUtil.FileInfo actual )
+            public void e( PkgchkUtil.FileInfo fileInfo )
+            {
+                map.set( relativePath( fileInfo.pathname ), fileInfo );
+            }
+        } );
+
+        F<PkgchkUtil.FileInfo, P2<RelativePath, PkgchkUtil.FileInfo>> fileInfoToP2 =
+            new F<PkgchkUtil.FileInfo, P2<RelativePath, PkgchkUtil.FileInfo>>()
+            {
+                public P2<RelativePath, PkgchkUtil.FileInfo> f( PkgchkUtil.FileInfo fileInfo )
+                {
+                    return P.p( relativePath( fileInfo.pathname ), fileInfo );
+                }
+            };
+
+        F2<PkgchkUtil.FileInfo, PkgchkUtil.FileInfo, Boolean> fileInfoChecker = new F2<PkgchkUtil.FileInfo, PkgchkUtil.FileInfo, Boolean>()
+        {
+            public Boolean f( PkgchkUtil.FileInfo expected, PkgchkUtil.FileInfo actual )
             {
                 return expected.equalsIgnoreNull( actual );
             }
+        };
 
-            public String getPath( PkgchkUtil.FileInfo o )
-            {
-                return o.pathname;
-            }
-        } );
+        return assertEntries( iterableStream( expectedFiles ).map( fileInfoToP2 ), map, fileInfoChecker );
     }
 
-    public static boolean assertRpmEntries( File pkg, List<RpmUtil.FileInfo> expectedFiles )
+    public static boolean assertRpmEntries( File pkg, java.util.List<RpmUtil.FileInfo> expectedFiles )
         throws IOException
     {
-        return assertEntries( expectedFiles, RpmUtil.queryPackageForFileInfo( pkg ), new Checker<RpmUtil.FileInfo>()
-        {
-            public boolean equalsIgnoreNull( RpmUtil.FileInfo expected, RpmUtil.FileInfo actual )
-            {
-                return expected.equalsIgnoreNull( actual );
-            }
+        final HashMap<RelativePath, RpmUtil.FileInfo> map = hashMap();
 
-            public String getPath( RpmUtil.FileInfo o )
+        F<RpmUtil.FileInfo, P2<RelativePath, RpmUtil.FileInfo>> fileInfoToP2 =
+            new F<RpmUtil.FileInfo, P2<RelativePath, RpmUtil.FileInfo>>()
             {
-                return o.path;
-            }
-        } );
+                public P2<RelativePath, RpmUtil.FileInfo> f( RpmUtil.FileInfo fileInfo )
+                {
+                    return P.p( relativePath( fileInfo.path ), fileInfo );
+                }
+            };
+
+        iterableStream( RpmUtil.queryPackageForFileInfo( pkg ) ).foreach(
+            new Effect<org.codehaus.mojo.unix.rpm.RpmUtil.FileInfo>()
+            {
+                public void e( org.codehaus.mojo.unix.rpm.RpmUtil.FileInfo fileInfo )
+                {
+                    map.set( relativePath( fileInfo.path ), fileInfo );
+                }
+            } );
+
+        F2<RpmUtil.FileInfo, RpmUtil.FileInfo, Boolean> fileInfoChecker = new F2<RpmUtil.FileInfo, RpmUtil.FileInfo, Boolean>()
+            {
+                public Boolean f( RpmUtil.FileInfo expected, RpmUtil.FileInfo actual )
+                {
+                    return expected.equalsIgnoreNull( actual );
+                }
+            };
+
+        return assertEntries( iterableStream( expectedFiles ).map( fileInfoToP2 ), map, fileInfoChecker );
     }
 
-    public static <T extends LineProducer>  boolean assertEntries( List<T> expectedFiles, List<T> actualFiles, Checker<T> checker )
+    public static boolean assertZipEntries( File zip, java.util.List<UnixFsObject> expectedFiles )
+        throws IOException
+    {
+        HashMap<RelativePath, UnixFsObject> actualFiles = hashMap();
+
+        ZipInputStream zis = null;
+        try
+        {
+            zis = new ZipInputStream( new FileInputStream( zip ) );
+
+            ZipEntry zipEntry = zis.getNextEntry();
+
+            while ( zipEntry != null )
+            {
+                LocalDateTime time = new LocalDateTime( zipEntry.getTime() );
+                RelativePath path = relativePath( zipEntry.getName() );
+                UnixFsObject o;
+                if ( zipEntry.isDirectory() )
+                {
+                    o = directory( path, time, FileAttributes.EMPTY );
+                }
+                else
+                {
+                    long size = zipEntry.getSize();
+
+                    // For some reason ZipInputStream can't give me zipEntry objects with a reasonable getSize()
+                    if(size == -1) {
+                        size = 0;
+                        int s;
+
+                        while ( true )
+                        {
+                            byte[] bytes = new byte[1024 * 128];
+                            s = zis.read( bytes, 0, bytes.length );
+                            if ( s == -1 )
+                            {
+                                break;
+                            }
+                            size += s;
+                        }
+
+                    }
+
+                    o = regularFile( path, time, size, some( FileAttributes.EMPTY ) );
+                }
+                actualFiles.set( path, o );
+                zipEntry = zis.getNextEntry();
+            }
+        }
+        finally
+        {
+            IOUtil.close( zis );
+        }
+
+        return assertEntries( iterableStream( expectedFiles ).map( unixFsObjectToP2 ), actualFiles,
+                              new UnixFsObjectChecker() );
+    }
+
+    public static <T extends LineProducer> boolean assertEntries( Stream<P2<RelativePath, T>> expectedFiles,
+                                                                  HashMap<RelativePath, T> actualFiles,
+                                                                  F2<T, T, Boolean> checker )
         throws IOException
     {
         boolean success = true;
 
-        for (T expected : expectedFiles)
+        for ( P2<RelativePath, T> p2 : expectedFiles )
         {
-            int i = actualFiles.indexOf( expected );
-            if ( i != -1 )
+            RelativePath expectedPath = p2._1();
+            Option<T> actualO = actualFiles.get( expectedPath );
+            if ( actualO.isSome() )
             {
-                T actual = actualFiles.remove( i );
-                if ( !checker.equalsIgnoreNull( expected, actual ) )
+                T actual = actualO.some();
+                T expected = p2._2();
+                if ( !checker.f( expected, actual ) )
                 {
-                    stream.add( "Found invalid entry: " + checker.getPath( expected ) );
+                    stream.add( "Found invalid entry: " + expectedPath );
                     stream.add( "Expected" );
                     expected.streamTo( stream );
                     stream.add( "Actual" );
@@ -186,11 +317,13 @@ public class ShittyUtil
                     // This output is a bit too noisy
                     // stream.add( "Found entry: " + expected.pathname );
                 }
+
+                actualFiles.delete( expectedPath );
             }
             else
             {
                 success = false;
-                stream.add( "Missing entry: " + checker.getPath( expected ) );
+                stream.add( "Missing entry: " + expectedPath );
             }
         }
 
@@ -199,9 +332,9 @@ public class ShittyUtil
             success = false;
             stream.add( "Extra files in package:" );
 
-            for ( T actualFile : actualFiles )
+            for ( RelativePath path : actualFiles.keys() )
             {
-                stream.add( "Extra entry: " + checker.getPath( actualFile ) );
+                stream.add( "Extra entry: " + path );
             }
         }
 
@@ -209,10 +342,23 @@ public class ShittyUtil
         return success;
     }
 
-    private interface Checker<T>
+    private static class UnixFsObjectChecker
+        implements F2<UnixFsObject, UnixFsObject,  Boolean>
     {
-        boolean equalsIgnoreNull( T expected, T actual );
-
-        String getPath( T o);
+        public Boolean f( UnixFsObject expected, UnixFsObject actual )
+        {
+            return expected.path.equals( actual.path ) && ( expected.size == 0 || expected.size == actual.size ) &&
+                ( expected.lastModified == null || expected.lastModified.equals( START_OF_TIME ) ||
+                    expected.lastModified.equals( actual.lastModified ) );
+        }
     }
+
+    static F<UnixFsObject, P2<RelativePath, UnixFsObject>> unixFsObjectToP2 =
+        new F<UnixFsObject, P2<RelativePath, UnixFsObject>>()
+        {
+            public P2<RelativePath, UnixFsObject> f( UnixFsObject unixFsObject )
+            {
+                return P.p( unixFsObject.path, unixFsObject );
+            }
+        };
 }

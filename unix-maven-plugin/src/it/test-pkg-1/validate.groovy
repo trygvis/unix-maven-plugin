@@ -15,14 +15,17 @@ success &= ShittyUtil.assertRelaxed(
 
 // Ignore dates for now
 success &= ShittyUtil.assertPkgEntries(pkg, [
+        directory("/opt", "0755", "nobody", "nogroup", none()),
         directory("/opt/hudson", "0755", "nobody", "nogroup", none()),
         regularFile("/opt/hudson/hudson.war", "0666", "hudson", "hudson", 20623413, 3301, none()),
+        directory("/var", "0755", "nobody", "nogroup", none()),
+        directory("/var/log", "0755", "nobody", "nogroup", none()),
         symlink("/var/log/hudson", "/var/opt/hudson/log"),
         installationFile("checkinstall", 28, 2563, none()),
         installationFile("compver", 0, 0, none()),
         installationFile("copyright", 24, 2150, none()),
         installationFile("depend", 0, 0, none()),
-        installationFile("pkginfo", 143, 0, none()),
+        installationFile("pkginfo", 141, 0, none()),
         installationFile("request", 46, 4055, none()),
         installationFile("space", 0, 0, none()),
 ])
