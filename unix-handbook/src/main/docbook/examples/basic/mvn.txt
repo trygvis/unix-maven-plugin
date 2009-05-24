@@ -8,8 +8,6 @@
 [INFO] [resources:resources]
 [INFO] Using default encoding to copy filtered resources.
 [INFO] [unix:package-pkg]
-defaultFileAttributes = user=nobody, group=nogroup, mode=rw-r--r--
-defaultDirectoryAttributes = user=nobody, group=nogroup, mode=rwxr-xr-x
 .
     opt
         hudson

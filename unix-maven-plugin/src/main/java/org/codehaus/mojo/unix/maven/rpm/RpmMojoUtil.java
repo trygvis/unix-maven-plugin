@@ -46,12 +46,12 @@ public class RpmMojoUtil
     public static UnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( RpmSpecificSettings rpm,
                                                                                            UnixPackage unixPackage )
     {
-        if ( StringUtils.isEmpty( rpm.getSoftwareGroup() ) )
+        if ( rpm.getGroup().isNone() )
         {
-            throw new MissingSettingException( "softwareGroup" );
+            throw new MissingSettingException( "group" );
         }
 
         return RpmUnixPackage.cast( unixPackage ).
-            group( rpm.getSoftwareGroup() );
+            group( rpm.getGroup().some() );
     }
 }

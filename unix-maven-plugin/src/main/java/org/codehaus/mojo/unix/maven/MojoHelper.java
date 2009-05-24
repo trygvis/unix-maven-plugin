@@ -300,9 +300,6 @@ public abstract class MojoHelper
         FileAttributes defaultFileAttributes = defaults.getFileAttributes();
         FileAttributes defaultDirectoryAttributes = defaults.getDirectoryAttributes();
 
-        System.out.println( "defaultFileAttributes = " + defaultFileAttributes );
-        System.out.println( "defaultDirectoryAttributes = " + defaultDirectoryAttributes );
-
         unixPackage.beforeAssembly( defaultDirectoryAttributes );
 
         for ( AssemblyOp assemblyOperation : mojoParameters.assembly.append( pakke.assembly ) )

@@ -62,14 +62,14 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <defaults>
-            <fileAttributes>
+            <file-attributes>
               <user>jetty</user>
               <group>jetty</group>
-            </fileAttributes>
-            <directoryAttributes>
+            </file-attributes>
+            <directory-attributes>
               <user>jetty</user>
               <group>jetty</group>
-            </directoryAttributes>
+            </directory-attributes>
           </defaults>
           <dpkg>
             <section>devel</section>
@@ -97,9 +97,9 @@
               </includes>
               <pattern>/jetty-7.0.0pre3/bin/(.*)</pattern>
               <replacement>bin/$1</replacement>
-              <fileAttributes>
+              <file-attributes>
                 <mode>0755</mode>
-              </fileAttributes>
+              </file-attributes>
             </extract-artifact>
             <!-- This will copy *all* licenses into the share/licenses/* directory -->
             <extract-artifact>

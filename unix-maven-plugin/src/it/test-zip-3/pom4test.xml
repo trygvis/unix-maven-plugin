@@ -59,10 +59,10 @@
               <to>/usr/share/hudson/license</to>
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>
-              <fileAttributes>
+              <file-attributes>
                 <user>root</user>
                 <group>bin</group>
-              </fileAttributes>
+              </file-attributes>
             </extract-artifact>
           </assembly>
           <packages>

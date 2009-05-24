@@ -59,18 +59,18 @@
               <to>/usr/share/hudson/license</to>
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>
-              <fileAttributes>
+              <file-attributes>
                 <user>root</user>
                 <group>bin</group>
-              </fileAttributes>
+              </file-attributes>
             </extract-artifact>
             <set-attributes>
               <basedir>/usr/share/hudson</basedir>
-              <directoryAttributes>
+              <directory-attributes>
                 <user>root</user>
                 <group>bin</group>
                 <mode>755</mode>
-              </directoryAttributes>
+              </directory-attributes>
             </set-attributes>
           </assembly>
           <packages>

@@ -40,38 +40,72 @@ import static org.codehaus.mojo.unix.util.UnixUtil.*;
 public class VersionTest
     extends TestCase
 {
-    public void testSnapshotWithRevision()
-    {
-        verify( packageVersion( "1.2-3-SNAPSHOT", "20090423095107", true, Option.<String>none() ),
-                dpkg( "1.2-3-20090423095107" ),
-                pkg( "1.2-3-20090423095107" ),
-                rpm( "1.2_20090423095107", some( "3" ) ) );
-    }
-
-    public void testReleaseWithRevision()
-    {
-        verify( packageVersion( "1.2-3", "20090423095107", false, Option.<String>none() ),
-                dpkg( "1.2-3" ),
-                pkg( "1.2-3" ),
-                rpm( "1.2", some( "3" ) ) );
-    }
-
     public void testSnapshotWithoutRevision()
     {
-        PackageVersion version = packageVersion( "1.2-SNAPSHOT", "20090423095107", true, Option.<String>none() );
-        System.out.println( "version = " + version );
-        verify( version,
-                pkg( "1.2-20090423095107" ),
-                dpkg( "1.2-20090423095107" ),
-                rpm( "1.2_20090423095107", Option.<String>none() ) );
+        verify( packageVersion( "1.2-SNAPSHOT", "20090423095107", true, Option.<String>none() ),
+            pkg( "1.2-20090423095107" ),
+            dpkg( "1.2-20090423095107" ),
+            rpm( "1.2_20090423095107", "1" ) );
     }
+
+    public void testSnapshotWithConfiguredRevision()
+    {
+        verify( packageVersion( "1.2-SNAPSHOT", "20090423095107", true, some( "3" ) ),
+            dpkg( "1.2-3-20090423095107" ),
+            pkg( "1.2-3-20090423095107" ),
+            rpm( "1.2_20090423095107", "3" ) );
+    }
+
+    public void testSnapshotWithEmbeddedRevision()
+    {
+        verify( packageVersion( "1.2-3-SNAPSHOT", "20090423095107", true, Option.<String>none() ),
+            dpkg( "1.2-3-20090423095107" ),
+            pkg( "1.2-3-20090423095107" ),
+            rpm( "1.2_20090423095107", "3" ) );
+    }
+
+    public void testSnapshotWithEmbeddedAndConfiguredRevision()
+    {
+        verify( packageVersion( "1.2-3-SNAPSHOT", "20090423095107", true, some( "3" ) ),
+            dpkg( "1.2-3-3-20090423095107" ),
+            pkg( "1.2-3-3-20090423095107" ),
+            rpm( "1.2_3_20090423095107", "3" ) );
+    }
+
+    // -----------------------------------------------------------------------
+    // Release
+    // -----------------------------------------------------------------------
 
     public void testReleaseWithoutRevision()
     {
         verify( packageVersion( "1.2", "20090423095107", false, Option.<String>none() ),
-                pkg( "1.2" ),
-                dpkg( "1.2" ),
-                rpm( "1.2", Option.<String>none() ) );
+            dpkg( "1.2" ),
+            pkg( "1.2" ),
+            rpm( "1.2", "1" ) );
+    }
+
+    public void testReleaseWithConfiguredRevision()
+    {
+        verify( packageVersion( "1.2", "20090423095107", false, some( "3" ) ),
+            dpkg( "1.2-3" ),
+            pkg( "1.2-3" ),
+            rpm( "1.2", "3" ) );
+    }
+
+    public void testReleaseWithEmbeddedRevision()
+    {
+        verify( packageVersion( "1.2-3", "20090423095107", false, Option.<String>none() ),
+            dpkg( "1.2-3" ),
+            pkg( "1.2-3" ),
+            rpm( "1.2", "3" ) );
+    }
+
+    public void testReleaseWithConfiguredAndEmbeddedRevision()
+    {
+        verify( packageVersion( "1.2-3", "20090423095107", false, some( "3" ) ),
+            dpkg( "1.2-3-3" ),
+            pkg( "1.2-3-3" ),
+            rpm( "1.2_3", "3" ) );
     }
 
     public static <A> void verify( A a, Verifyer<A>... verifyers )
@@ -109,15 +143,15 @@ public class VersionTest
         };
     }
 
-    private Verifyer<PackageVersion> rpm( final String expected, final Option<String> revision )
+    private Verifyer<PackageVersion> rpm( final String expected, final String revision )
     {
         return new Verifyer<PackageVersion>()
         {
             public void verify( PackageVersion packageVersion )
             {
-                P2<String,Option<String>> rpmVersion = RpmUnixPackage.getRpmVersion( packageVersion );
-                assertEquals( "rpm", expected, rpmVersion._1() );
-                assertTrue( optionEquals( revision, rpmVersion._2() ) );
+                P2<String, String> rpmVersion = RpmUnixPackage.getRpmVersion( packageVersion );
+                assertEquals( "rpm.version", expected, rpmVersion._1() );
+                assertEquals( "rpm.revision", revision, rpmVersion._2() );
             }
         };
     }

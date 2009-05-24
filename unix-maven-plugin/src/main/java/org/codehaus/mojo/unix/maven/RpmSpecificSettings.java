@@ -25,6 +25,8 @@ package org.codehaus.mojo.unix.maven;
  */
 
 import org.apache.commons.lang.builder.*;
+import fj.data.*;
+import static fj.data.Option.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -32,16 +34,16 @@ import org.apache.commons.lang.builder.*;
  */
 public class RpmSpecificSettings
 {
-    private String softwareGroup;
+    private Option<String> group = none();
 
-    public String getSoftwareGroup()
+    public Option<String> getGroup()
     {
-        return softwareGroup;
+        return group;
     }
 
-    public void setSoftwareGroup( String softwareGroup )
+    public void setGroup( String group )
     {
-        this.softwareGroup = softwareGroup;
+        this.group = fromNull( group );
     }
 
     public String toString()

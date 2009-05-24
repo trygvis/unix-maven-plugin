@@ -42,6 +42,8 @@ import java.io.*;
 public class DpkgUnixPackage
     extends UnixPackage
 {
+    private static final String EOL = System.getProperty( "line.separator" );
+
     private ControlFile controlFile;
 
     private FileObject workingDirectory;
@@ -51,8 +53,6 @@ public class DpkgUnixPackage
     private String dpkgDebPath;
 
     private boolean debug;
-
-    private String id;
 
     private final static ScriptUtil scriptUtil = new ScriptUtil( "preinst", "postinst", "prerm", "postrm" );
 
@@ -64,17 +64,15 @@ public class DpkgUnixPackage
     public DpkgUnixPackage parameters( PackageParameters parameters )
     {
         controlFile = new ControlFile();
-        controlFile.groupId = parameters.groupId;
-        controlFile.artifactId = parameters.artifactId;
-        this.id = parameters.id;
-        controlFile.shortDescription = parameters.name.orSome( "" ); // TODO: This is not right
-        controlFile.description = parameters.description.orSome( "" ); // TODO: This is not right
+        controlFile.packageName = parameters.id;
+        controlFile.description = getDescription( parameters );
         if ( parameters.contact.isSome() )
         {
             controlFile.maintainer = parameters.contact.some();
         }
-        controlFile.architecture = parameters.architecture.orSome("all");
+        controlFile.architecture = parameters.architecture.orSome( "all" );
         controlFile.version = parameters.version;
+
         return this;
     }
 
@@ -168,7 +166,7 @@ public class DpkgUnixPackage
         fileCollector.collect();
 
         ScriptUtil.Result result = scriptUtil.
-            createExecution( id, "dpkg", getScripts(), asFile( debian ), strategy ).
+            createExecution( controlFile.packageName, "dpkg", getScripts(), asFile( debian ), strategy ).
             execute();
 
         UnixUtil.chmodIf( result.preInstall, "0755" );
@@ -187,5 +185,71 @@ public class DpkgUnixPackage
     public static DpkgUnixPackage cast( UnixPackage unixPackage )
     {
         return (DpkgUnixPackage) unixPackage;
+    }
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
+
+    public static String getDescription( PackageParameters parameters )
+    {
+        String description = "";
+
+        if ( parameters.name.isSome() )
+        {
+            description = parameters.name.some().trim();
+        }
+
+        if ( parameters.description.isSome() )
+        {
+            description = description + EOL + parameters.description.some().trim();
+        }
+
+        // ----------------------------------------------------------------------
+        // Trim each line, replace blank lines with " ."
+        // ----------------------------------------------------------------------
+
+        String debianDescription;
+
+        try
+        {
+            BufferedReader reader = new BufferedReader( new StringReader( description.trim() ) );
+
+            String line;
+
+            debianDescription = reader.readLine();
+
+            line = reader.readLine();
+
+            if ( line != null )
+            {
+                debianDescription += EOL + " " + line.trim();
+
+                line = reader.readLine();
+            }
+
+            while ( line != null )
+            {
+                line = line.trim();
+
+                if ( line.equals( "" ) )
+                {
+                    debianDescription += EOL + ".";
+                }
+                else
+                {
+                    debianDescription += EOL + " " + line;
+                }
+
+                line = reader.readLine();
+            }
+        }
+        catch ( IOException e )
+        {
+            // This won't happen.
+            throw new RuntimeException( "Internal error", e );
+        }
+
+        return debianDescription;
     }
 }

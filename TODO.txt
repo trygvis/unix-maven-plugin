@@ -180,52 +180,53 @@ o Subversion properties
 
 = Change Log =
 
-== For 1.0-alpha-4 ==
+== For 1.0-alpha-5 ==
 
-o DONE: MUNIX-12: Support 'zip' format
 o MUNIX-13: Support 'tar' format
   Create integration tests similar to the existing tests
 o MUNIX-14: Rename "pkg" to "sysv-pkg"
-o DONE: MUNIX-6: set-attributes doesn't pick up paths that aren't explicitly created with mkdirs
-  set-attributes now work on any directory that is created before the operation is run.
-o DONE: MUNIX-3, MUNIX-4: Implement support for "%config" and "%doc" in RPM, file classes in solaris.
- - Check how this work in debian
-o DONE: MUNIX-15: Improve the error message is an artifact can't be found.
- - Create special exception that is caught in the mojo.
-o Run the plugin through a profiler
 o Document how to use the u-m-p in a development process. Explain the goals for creating index files, and how to
   run these tools automatically on commit hooks etc.
-o DONE: Re-implement the FsFileCollector to use a tree internally representing a file system
-  - Makes it easier to debug, should be possible to write out the entire tree as a part of the building process
-  - Makes it easier to implement proper mkdirs
-o MUNIX-16: Scripts documentation
- - src/main/unix/scripts, common vs package specific directories
-o Document the flow of the assembly operations. Like:
-  1) Find files
-  2) Match against include and exclude
-  3) Rewrite with pattern
-  4) Set attributes
-  - Explain that the operations is supposed to work just like a normal file systems. The order of the operations is
-    significant.
-o MUNIX-17: Go over how versions and revisions are handles.
- - DONE: In pkginfo a SNAPSHOT is not resolved to a specific timestamp.
- - Document how version, revision etc are calculated. For both releases and snapshots
-o DONE: MUNIX-18: Simplify the script mechanism
-o DONE: MUNIX-20: Support per-package defaults too
-o Update mapping.xml, it is outdated now
-o Check scripts.xml
+o Replace "dpkg" with "deb" where appropriate.
+  "deb" is the format that is supported, "dpkg" is the name of the tool set to create it.
 
 === Nits ===
 
-o Replace all "fileAttributes" with "file-attributes" etc
-o Write proper integation test of FsFileCollector as a replacement of the old SetAttributesOperationTest.
 o Consider creating a class that represent a complete set of attributes on a file.
   There has been a few surprises ("some() on None" exceptions) where the attribute was missing. Might be possible to
   require that FileAttributes in unix-core require all fields to be set, and that any null fields must be set by a
   default before given to the core.
 o Make the pkg stuff die when the source files has a space in the path names. pkgmk dies on prototypes like this:
   f none /foo/bar.war=/var/opt/hudson/workspace/Myapp - Integration tests/bar.war 0644 root sys
-o Rename RelativePath.isBelowOrSame to RelativePath.isSameOrBelow
+
+== For 1.0-alpha-4 ==
+
+o DONE: MUNIX-12: Support 'zip' format
+o DONE: MUNIX-6: set-attributes doesn't pick up paths that aren't explicitly created with mkdirs
+  set-attributes now work on any directory that is created before the operation is run.
+o DONE: MUNIX-3, MUNIX-4: Implement support for "%config" and "%doc" in RPM, file classes in solaris.
+ - Check how this work in debian
+o DONE: MUNIX-15: Improve the error message is an artifact can't be found.
+ - Create special exception that is caught in the mojo.
+o DONE: Run the plugin through a profiler
+o DONE: Re-implement the FsFileCollector to use a tree internally representing a file system
+  - Makes it easier to debug, should be possible to write out the entire tree as a part of the building process
+  - Makes it easier to implement proper mkdirs
+o MUNIX-16: Scripts documentation
+ - src/main/unix/scripts, common vs package specific directories
+o DONE: Document the flow of the assembly operations. Like:
+  1) Find files
+  2) Match against include and exclude
+  3) Rewrite with pattern
+  4) Set attributes
+  - Explain that the operations is supposed to work just like a normal file systems. The order of the operations is
+    significant.
+o DONE: MUNIX-17: Go over how versions and revisions are handles.
+ - In pkginfo a SNAPSHOT is not resolved to a specific timestamp.
+ - Document how version, revision etc are calculated. For both releases and snapshots
+o DONE: MUNIX-18: Simplify the script mechanism
+o DONE: MUNIX-20: Support per-package defaults too
+o DONE: Update mapping.xml, it is outdated now
 
 == For 1.0-alpha-3 ==
 

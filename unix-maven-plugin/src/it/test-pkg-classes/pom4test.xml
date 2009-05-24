@@ -59,9 +59,9 @@
             <copy-directory>
               <from>src/main/unix/files-smf</from>
               <to>/var/lib</to>
-              <fileAttributes>
+              <file-attributes>
                 <tags>class:smf</tags>
-              </fileAttributes>
+              </file-attributes>
             </copy-directory>
           </assembly>
         </configuration>

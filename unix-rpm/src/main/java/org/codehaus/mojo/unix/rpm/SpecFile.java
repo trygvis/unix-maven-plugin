@@ -54,7 +54,7 @@ public class SpecFile
 {
     public String version;
 
-    public Option<String> release = none();
+    public String release;
 
     // Will be generated if not set
     public String name;
@@ -139,11 +139,12 @@ public class SpecFile
         }
 
         UnixUtil.assertField( "version", version );
+        UnixUtil.assertField( "release", release );
 
         spec.
             add( "Name: " + name ).
             add( "Version: " + version ).
-            add( "Release: " + release.orSome( "1" ) ).
+            add( "Release: " + release ).
             add( "Summary: " + UnixUtil.getField( "summary", summary ) ).
             add( "License: " + UnixUtil.getField( "license", license ) ).
             addIfNotEmpty( "Distribution: ", distribution ).

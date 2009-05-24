@@ -26,7 +26,6 @@ package org.codehaus.mojo.unix.maven.rpm;
 
 import fj.*;
 import static fj.P.*;
-import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
@@ -78,7 +77,7 @@ public class RpmUnixPackage
         specFile.description = parameters.description.orSome( "" ); // TODO: This is not right
         specFile.license = parameters.license.some();
 
-        P2<String, Option<String>> rpmVersion = getRpmVersion( parameters.version );
+        P2<String, String> rpmVersion = getRpmVersion( parameters.version );
         specFile.version = rpmVersion._1();
         specFile.release = rpmVersion._2();
 
@@ -206,7 +205,7 @@ public class RpmUnixPackage
         return (RpmUnixPackage) unixPackage;
     }
 
-    public static P2<String, Option<String>> getRpmVersion( PackageVersion version )
+    public static P2<String, String> getRpmVersion( PackageVersion version )
     {
         String rpmVersionString = version.version;
 
@@ -215,6 +214,6 @@ public class RpmUnixPackage
             rpmVersionString += "_" + version.timestamp;
         }
 
-        return p( rpmVersionString.replace( '-', '_' ), version.revision );
+        return p( rpmVersionString.replace( '-', '_' ), version.revision.orSome( "1" ) );
     }
 }

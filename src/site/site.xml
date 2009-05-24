@@ -33,7 +33,8 @@
     <menu name="Developers">
       <item name="Overview" href="developers/"/>
       <item name="Javadoc" href="apidocs/"/>
-      <item name="XRef" href="xref"/>
+      <item name="XRef" href="xref/"/>
+      <item name="Test XRef" href="xref-test/"/>
     </menu>
   </body>
 </project>

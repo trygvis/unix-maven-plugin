@@ -22,1043 +22,1968 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
   -->
-<book version="5.0" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
-  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"
-  xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:html="http://www.w3.org/1999/xhtml"
-      ><info><title>Unix Maven Plug-in</title><author>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:ns="http://docbook.org/ns/docbook"
+      xmlns:mathml="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml">
+  <info>
+    <title>Unix Maven Plug-in</title>
+
+    <author>
       <personname>Trygve Laugstøl</personname>
+
       <affiliation>
         <orgname>Arktekk AS</orgname>
       </affiliation>
+
       <email>trygve.laugstol@arktekk.no</email>
     </author>
+
     <pubdate>$Id$</pubdate>
   </info>
+
   <acknowledgements>
-    <para>Trygve Laugstøl would like to thank the following persons and companies in no particular
-      order for their effort in helping with the development of the Unix Maven Plugin</para>
+    <para>Trygve Laugstøl would like to thank the following persons and
+    companies in no particular order for their effort in helping with the
+    development of the Unix Maven Plugin</para>
+
     <itemizedlist>
       <listitem>
-        <para>Erik Drolshammer, Objectware for providing me with RPM related use cases and being
-          helpful with testing new features.</para>
+        <para>Erik Drolshammer, Objectware for providing me with RPM related
+        use cases and being helpful with testing new features.</para>
       </listitem>
+
       <listitem>
-        <para>Conax for providing use cases and allowing me to work on the plugin while on the
-          clock.</para>
+        <para>Conax for providing use cases and allowing me to work on the
+        plugin while on the clock.</para>
       </listitem>
+
       <listitem>
-        <para>Arktekk for giving me a lots of payed time to work on the plugin.</para>
+        <para>Arktekk for giving me a payed month to work on the
+        plugin.</para>
       </listitem>
     </itemizedlist>
   </acknowledgements>
+
   <part xml:id="guide">
     <title>Guide</title>
+
     <chapter xml:id="introduction">
       <title>Introduction</title>
+
       <section xml:id="scope">
         <title>Scope</title>
+
         <warning>
-          <para>What does the plugin cover, what does it not cover. Contrast in particular with the
-            Assembly plugin</para>
+          <para>What does the plugin cover, what does it not cover. Contrast
+          in particular with the Assembly plugin</para>
         </warning>
       </section>
+
       <section xml:id="about-the-plugin">
         <title>About the plugin</title>
-        <para>The Unix Maven Plugin is meant to fill in the gap between creating platform
-          independent applications and reality. It make it possible to create Java application with
-          your standard Java development stack, but still be able to install the applications using
-          the native tools that your system administrators already know.</para>
-        <para>As it automates yet another step in the development chain<footnote>
-            <para>Development chain here refers to all the step that's between writing the code in
-              an IDE to having it run in production or a production-like environment.</para>
-          </footnote>, it also give a new set of possibilities that can be taken advantage of. In
-          particular the ability to store production ready binaries in a repository and the ability
-          to install, remove and upgrade the software in an uniform and consistent way across an
-          entire company.</para>
-        <para>Both of these abilities is similar to what Maven did for Java developers with the
-          repository concept with Maven 1 and the high focus on build unification in Maven 2.</para>
+
+        <para>The Unix Maven Plugin is meant to fill in the gap between
+        creating platform independent applications and reality. It make it
+        possible to create Java application with your standard Java
+        development stack, but still be able to install the applications using
+        the native tools that your system administrators already know.</para>
+
+        <para>As it automates yet another step in the development
+        chain<footnote>
+            <para>Development chain here refers to all the step that's between
+            writing the code in an IDE to having it run in production or a
+            production-like environment.</para>
+          </footnote>, it also give a new set of possibilities that can be
+        taken advantage of. In particular the ability to store production
+        ready binaries in a repository and the ability to install, remove and
+        upgrade the software in an uniform and consistent way across an entire
+        company.</para>
+
+        <para>Both of these abilities is similar to what Maven did for Java
+        developers with the repository concept with Maven 1 and the high focus
+        on build unification in Maven 2.</para>
       </section>
+
       <section xml:id="how-the-plugin-work">
         <title>How the Plugin Work</title>
-        <para>This section is a high level explanation of how the plugin work.</para>
+
+        <para>This section is a high level explanation of how the plugin
+        work.</para>
+
         <para>The plugin has two major phases that it goes through:</para>
+
         <variablelist>
           <varlistentry>
             <term>Meta data generation</term>
+
             <listitem>
-              <para>Each package format contain some form of meta data that it uses when the package
-                is being installed or removed. The plugin will pick up as much meta data as possible
-                from the Maven POM as possible, but there are certain options that might have to be
-                filled in, depending on the package format.</para>
+              <para>Each package format contain some form of meta data that it
+              uses when the package is being installed or removed. The plugin
+              will pick up as much meta data as possible from the Maven POM as
+              possible, but there are certain options that might have to be
+              filled in, depending on the package format.</para>
             </listitem>
           </varlistentry>
+
           <varlistentry>
             <term>Assembly operation execution</term>
+
             <listitem>
-              <para>For each package that is to be created, a virtual package file system is created
-                with pointers to the original file or which file in and archive the file came from.
-                The assembled file system will be used when the physical package is created.</para>
+              <para>For each package that is to be created, a virtual package
+              file system is created with pointers to the original file or
+              which file in and archive the file came from. The assembled file
+              system will be used when the physical package is created.</para>
             </listitem>
           </varlistentry>
         </variablelist>
+
         <section>
           <title>Assembly Operation Execution</title>
-          <para>The virtual package file system is just like a normal file system. Files can be
-            added, and their attributes can be modified by any operation. As in a normal file
-            system, if the a file is written to the file system twice, the last one will overwrite
-            the first one.</para>
-          <para>As the file system is just a virtual file system with pointers to the original file
-            or files in an archive only the last file will actually be used when creating the
-            physical package.</para>
-          <para>When an existing file object is used as a source, as much as possible of the
-            existing attributes will be copied from the object.</para>
-          <para>After all the assembly operations has been executed, the physical package file will
-            be created.</para>
-          <para>See also <xref linkend="concept-package-file-system"/>.</para>
+
+          <para>The virtual package file system is just like a normal file
+          system. Files can be added, and their attributes can be modified by
+          any operation. As in a normal file system, if the a file is written
+          to the file system twice, the last one will overwrite the first
+          one.</para>
+
+          <para>As the file system is just a virtual file system with pointers
+          to the original file or files in an archive only the last file will
+          actually be used when creating the physical package.</para>
+
+          <para>When an existing file object is used as a source, as much as
+          possible of the existing attributes will be copied from the
+          object.</para>
+
+          <para>After all the assembly operations has been executed, the
+          physical package file will be created.</para>
+
+          <para>See also <xref
+          linkend="concept-package-file-system" />.</para>
         </section>
       </section>
+
       <section>
         <title>About the Alternatives to the Unix Maven Plugin</title>
+
         <note>
           <para>This information is current as of May 2009.</para>
         </note>
-        <para>The Unix Maven Plugin contains functionality that is similar to at least four existing
-          plugins: The Deb Maven plugin, the RPM Maven Plugin, the Solaris Maven plugin and the
-          Maven Assembly plugin.</para>
-        <para>The Unix plugin is loosely based on the source code of the Deb, Solaris and Rpm Maven
-          plugins and was meant as a unified and complete replacement for all three plugins. The
-          plugins supported different areas of functionality and the Unix plugin has implemented all
-          features for all formats where applicable. The Unix plugin is already more complete and
-          easier to use than the Deb and Solaris plugins. The RPM plugin still has features that the
-          Unix plugin does not support yet.</para>
-        <para>One major feature of the Unix Maven plugin is the support for assembling the files to
-          be included into the package, including file attributes. The Assembly plugin is cumbersome
-          to use and gives little to no control over the file attributes that are requested. If the
-          Unix plugin was to require a pre-assembled file system before executing the process would
-          be significantly slower as all the files would have to be written to disk in an
-          intermediate area. The Unix Maven plugin optimizes this as much as possible and will in
-          many cases read the files directly from inside the Maven repository or from archives in a
-          repository. This gives significant speed improvements when large binaries are
-          created.</para>
+
+        <para>The Unix Maven Plugin contains functionality that is similar to
+        at least four existing plugins: The Deb Maven plugin, the RPM Maven
+        Plugin, the Solaris Maven plugin and the Maven Assembly plugin.</para>
+
+        <para>The Unix plugin is loosely based on the source code of the Deb,
+        Solaris and Rpm Maven plugins and was meant as a unified and complete
+        replacement for all three plugins. The plugins supported different
+        areas of functionality and the Unix plugin has implemented all
+        features for all formats where applicable. The Unix plugin is already
+        more complete and easier to use than the Deb and Solaris plugins. The
+        RPM plugin still has features that the Unix plugin does not support
+        yet.</para>
+
+        <para>One major feature of the Unix Maven plugin is the support for
+        assembling the files to be included into the package, including file
+        attributes. The Assembly plugin is cumbersome to use and gives little
+        to no control over the file attributes that are requested. If the Unix
+        plugin was to require a pre-assembled file system before executing the
+        process would be significantly slower as all the files would have to
+        be written to disk in an intermediate area. The Unix Maven plugin
+        optimizes this as much as possible and will in many cases read the
+        files directly from inside the Maven repository or from archives in a
+        repository. This gives significant speed improvements when large
+        binaries are created.</para>
       </section>
     </chapter>
+
     <chapter>
       <title>Concepts</title>
-      <para/>
+
       <section>
         <title>Operation Modes</title>
-        <para>The plugin can operate in two major modes, depending on how it is configured:</para>
+
+        <para>The plugin can operate in two major modes, depending on how it
+        is configured:</para>
+
         <variablelist>
           <varlistentry>
             <term>Primary artifact mode</term>
+
             <listitem>
-              <para>The plugin is running in primary mode when the project has set a
-                &lt;packaging&gt; to one of the packaging that the plugin support. The plugin will
-                install an artifact as the primary artifact into the repository</para>
+              <para>The plugin is running in primary mode when the project has
+              set a &lt;packaging&gt; to one of the packaging that the plugin
+              support. The plugin will install an artifact as the primary
+              artifact into the repository</para>
             </listitem>
           </varlistentry>
+
           <varlistentry>
             <term>Attached artifact mode</term>
+
             <listitem>
-              <para>The plugin is running in attached mode when the project is executing the one of
-                the package-FOO-attached goals. The plugin will install a package in addition to the
-                primary artifact which will be delivered by another plugin.</para>
+              <para>The plugin is running in attached mode when the project is
+              executing the one of the package-FOO-attached goals. The plugin
+              will install a package in addition to the primary artifact which
+              will be delivered by another plugin.</para>
             </listitem>
           </varlistentry>
         </variablelist>
       </section>
+
       <section>
         <title>Package Formats</title>
-        <para>A package format is a specific file format that a platform supports. The plugin
-          currently support three formats; deb, pkg and rpm.</para>
+
+        <para>A package format is a specific file format that a platform
+        supports. The plugin currently support three formats; deb, pkg and
+        rpm.</para>
       </section>
+
       <section>
         <title>Platform</title>
-        <para>A platform is a specific operating system, for example Debian or Solaris. Each
-          platform has its own native package format while some platforms support multiple
-          formats.</para>
+
+        <para>A platform is a specific operating system, for example Debian or
+        Solaris. Each platform has its own native package format while some
+        platforms support multiple formats.</para>
       </section>
+
       <section xml:id="concept-package-file-system">
         <title>Package File System and File System Objects</title>
-        <para>A package file system is a virtual file system created while the plugin executes all
-          the assembly operations. It consist of file objects that represent regular files,
-          directories and symbolic links.</para>
-        <para>Each file system object has a set of attributes similar to a normal Unix file
-          system:</para>
+
+        <para>A package file system is a virtual file system created while the
+        plugin executes all the assembly operations. It consist of file
+        objects that represent regular files, directories and symbolic
+        links.</para>
+
+        <para>Each file system object has a set of attributes similar to a
+        normal Unix file system:</para>
+
         <variablelist>
           <varlistentry>
             <term>User and group</term>
+
             <listitem>
-              <para>These two attributes control the user and group that own the file.</para>
+              <para>These two attributes control the user and group that own
+              the file.</para>
             </listitem>
           </varlistentry>
+
           <varlistentry>
             <term>Mode</term>
+
             <listitem>
-              <para>The read, write and execute permissions of the file object.</para>
+              <para>The read, write and execute permissions of the file
+              object.</para>
             </listitem>
           </varlistentry>
+
           <varlistentry>
             <term>Tags</term>
+
             <listitem>
-              <para>Each file object can have a set of tags which are plain text labels that each
-                package format can use as an extension method.</para>
+              <para>Each file object can have a set of tags which are plain
+              text labels that each package format can use as an extension
+              method.</para>
             </listitem>
           </varlistentry>
         </variablelist>
+
         <example>
           <title>Example of file mode specifications</title>
+
           <itemizedlist>
             <listitem>
-              <para><literal>0644</literal> becomes <literal>-rw-r--r--</literal></para>
+              <para><literal>0644</literal> becomes
+              <literal>-rw-r--r--</literal></para>
             </listitem>
+
             <listitem>
-              <para><literal>0744</literal> becomes <literal>-rwxr--r--</literal></para>
+              <para><literal>0744</literal> becomes
+              <literal>-rwxr--r--</literal></para>
             </listitem>
           </itemizedlist>
         </example>
+
         <note>
           <para>Not all file objects support all attributes.</para>
         </note>
       </section>
     </chapter>
+
     <chapter>
       <title>Default Values</title>
+
       <section>
         <title>Default Assembly Operations</title>
+
         <warning>
-          <para>Show a completely expanded <tag>&lt;configuration&gt;</tag> section with
-            defaults</para>
+          <para>Show a completely expanded <tag>&lt;configuration&gt;</tag>
+          section with defaults</para>
         </warning>
       </section>
     </chapter>
-  </part><part>
+  </part>
+
+  <part>
     <title>Example of Usage</title>
+
     <preface>
       <title>Introduction to the Examples</title>
+
       <warning>
-        <para>Explain the general format of each example, which concepts are used. Other plugins
-          used. Different formats.</para>
+        <para>Explain the general format of each example, which concepts are
+        used. Other plugins used. Different formats.</para>
       </warning>
     </preface>
+
     <chapter>
       <title>Single, Standalone Application</title>
+
       <warning>
         <para>Missing appassembler snippet</para>
       </warning>
-      <para>This is an example on how a simple, standalone application can be packaged. The example
-        is available in all three formats.</para>
+
+      <para>This is an example on how a simple, standalone application can be
+      packaged. The example is available in all three formats.</para>
+
       <para>Keywords:</para>
+
       <itemizedlist>
         <listitem>
           <para>Primary Artifact Mode</para>
         </listitem>
+
         <listitem>
           <para><link linkend="copy-artifact">
-              <tag>&lt;copy-artifact&gt;</tag>
-            </link></para>
+          <tag>&lt;copy-artifact&gt;</tag> </link></para>
         </listitem>
+
         <listitem>
           <para><link linkend="extract-artifact">
-              <tag>&lt;extract-artifact&gt;</tag>
-            </link></para>
+          <tag>&lt;extract-artifact&gt;</tag> </link></para>
         </listitem>
+
         <listitem>
-          <para><link linkend="symlink">
-              <tag>&lt;symlink&gt;</tag>
-            </link></para>
+          <para><link linkend="symlink"> <tag>&lt;symlink&gt;</tag>
+          </link></para>
         </listitem>
       </itemizedlist>
+
       <section>
         <title>The pom.xml for pkg</title>
-        <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include href="../examples/basic/pom-pkg.xml" parse="text"/></programlisting>
+
+        <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
+            href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
       </section>
+
       <section>
         <title>Resulting PKG</title>
-        <para>After running <command>mvn install</command> on the pkg version of the project, the
-          package is packaged into <filename>target/basic-pkg-1.0.pkg</filename>.</para>
+
+        <para>After running <command>mvn install</command> on the pkg version
+        of the project, the package is packaged into
+        <filename>target/basic-pkg-1.0.pkg</filename>.</para>
+
         <para>The generated meta data will look like this:</para>
-        <screen><?dbfo-font-size 75% ?><xi:include href="../examples/basic/pkginfo.txt" parse="text"/></screen>
-        <para>Notice that the SNAPSHOT part of the version string has been replaced with the a
-          timestamp.</para>
+
+        <screen><?dbfo-font-size 75% ?><xi:include
+            href="../examples/basic/pkginfo.txt" parse="text" /></screen>
+
+        <para>Notice that the SNAPSHOT part of the version string has been
+        replaced with the a timestamp.</para>
+
         <para>To see verify the paths and their attributes, run this:</para>
-        <screen><?dbfo-font-size 75% ?><xi:include href="../examples/basic/pkgchk.txt" parse="text"/></screen>
+
+        <screen><?dbfo-font-size 75% ?><xi:include
+            href="../examples/basic/pkgchk.txt" parse="text" /></screen>
       </section>
+
       <section>
         <title>Resulting RPM</title>
-        <para>After running <command>mvn install</command> on the rpm version of the project, the
-          package is packaged into <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+
+        <para>After running <command>mvn install</command> on the rpm version
+        of the project, the package is packaged into
+        <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+
         <para>The package will contain these files:</para>
-        <screen><xi:include href="../examples/basic/rpm-qlp.txt" parse="text"/></screen>
+
+        <screen><xi:include href="../examples/basic/rpm-qlp.txt" parse="text" /></screen>
       </section>
     </chapter>
+
     <chapter>
       <title>Other</title>
+
       <para>Other examples to write</para>
+
       <variablelist>
         <varlistentry>
           <term>Package Attached to a WAR</term>
+
           <listitem>
-            <para>Show a normal "hello world" web application (generated from the webapp archetype
-              perhaps) which creates an attached package</para>
+            <para>Show a normal "hello world" web application (generated from
+            the webapp archetype perhaps) which creates an attached
+            package</para>
           </listitem>
         </varlistentry>
+
         <varlistentry>
-          <term>Show a complete standalone application with appassembler and docx plugin to generate
-            man pages</term>
+          <term>Show a complete standalone application with appassembler and
+          docx plugin to generate man pages</term>
+
           <listitem>
-            <para>Useful to show how to interact with other plugins. Should also show of default
-              values if possible</para>
+            <para>Useful to show how to interact with other plugins. Should
+            also show of default values if possible</para>
           </listitem>
         </varlistentry>
+
         <varlistentry>
           <term>Package for multple platforms</term>
+
           <listitem>
-            <para> Show how the src/unix/files and script directories are picked </para>
+            <para>Show how the src/unix/files and script directories are
+            picked</para>
           </listitem>
         </varlistentry>
       </variablelist>
     </chapter>
-  </part><part>
+  </part>
+
+  <part>
     <title>Reference</title>
+
     <chapter>
       <title>Unix Package Definition</title>
-      <para>When the plugin is collecting all relevant data for a package it collects all the
-        information in a generic object called "package parameters". This object is used as the
-        basis when the package is created. See the <xref linkend="mapping"/> document how the
-        package parameters map to the format specific fields.</para>
+
+      <para>When the plugin is collecting all relevant data for a package it
+      collects all the information in a generic object called "package
+      parameters". This object is used as the basis when the package is
+      created. See <xref linkend="mapping" /> on how the package parameters
+      map to the format specific fields.</para>
+
       <note>
         <itemizedlist>
           <listitem>
-            <para>Parameters that reference <code>mojo</code> refers to parameters configured in a
-                <tag>&lt;configuration&gt;</tag> block.</para>
+            <para>Parameters that reference <code>mojo</code> refers to
+            parameters configured in a <tag>&lt;configuration&gt;</tag>
+            block.</para>
           </listitem>
+
           <listitem>
-            <para>When multiple values are are available, the first one is selected.</para>
+            <para>When multiple values are are available, the first one is
+            selected.</para>
           </listitem>
         </itemizedlist>
       </note>
+
       <informaltable>
-        <tgroup cols="3">
-          <colspec colnum="1" colwidth="0.5*"/>
-          <colspec colnum="2" colwidth="0.75*"/>
+        <tgroup cols="4">
+          <colspec colwidth="0.60*" />
+
+          <colspec align="center" colwidth="0.30*" />
+
           <thead>
             <row>
               <entry align="center">Field</entry>
+
+              <entry align="center">Required</entry>
+
               <entry align="center">Source(s)</entry>
+
               <entry align="center">Description</entry>
             </row>
           </thead>
+
           <tbody>
             <row>
               <entry><literal>groupId</literal></entry>
+
+              <entry>Y</entry>
+
               <entry><code>project.groupId</code></entry>
-              <entry/>
+
+              <entry></entry>
             </row>
+
             <row>
               <entry><literal>artifactId</literal></entry>
+
+              <entry>Y</entry>
+
               <entry><code>project.artifactId</code></entry>
-              <entry/>
+
+              <entry></entry>
             </row>
+
             <row>
               <entry><literal>version</literal></entry>
+
+              <entry>N/A</entry>
+
               <entry>Calculated</entry>
-              <entry>This field is calculated from different sources. See the Version section for
-                details.</entry>
+
+              <entry>This field is calculated from different sources. See
+              <xref linkend="version-calculation" /> for details.</entry>
             </row>
+
+            <row>
+              <entry><literal>revison</literal></entry>
+
+              <entry>N</entry>
+
+              <entry><code>mojo.revision</code></entry>
+
+              <entry>This field is calculated from different sources unless
+              specified. See <xref linkend="version-calculation" /> for
+              details.</entry>
+            </row>
+
             <row>
               <entry><literal>id</literal></entry>
+
+              <entry>N</entry>
+
               <entry><code>package.id</code></entry>
-              <entry>The default value is the lower case version of the artifact id.</entry>
+
+              <entry>The default value is the lower case version of the
+              artifact id.</entry>
             </row>
+
             <row>
               <entry><literal>name</literal></entry>
-              <entry>
-                <orderedlist>
+
+              <entry>N</entry>
+
+              <entry><orderedlist>
                   <listitem>
                     <para><code>package.name</code></para>
                   </listitem>
+
                   <listitem>
                     <para><code>mojo.name</code></para>
                   </listitem>
+
                   <listitem>
                     <para><code>project.name</code></para>
                   </listitem>
-                </orderedlist>
-              </entry>
-              <entry>Maven will supply a default name if none is given.</entry>
+                </orderedlist></entry>
+
+              <entry>Maven will supply a default name if none is
+              given.</entry>
             </row>
+
             <row>
               <entry><literal>description</literal></entry>
-              <entry>
-                <orderedlist>
+
+              <entry>N</entry>
+
+              <entry><orderedlist>
                   <listitem>
                     <para><literal>package.description </literal></para>
                   </listitem>
+
                   <listitem>
                     <para><literal>mojo.description</literal></para>
                   </listitem>
+
                   <listitem>
                     <para><literal>project.description</literal></para>
                   </listitem>
-                </orderedlist>
-              </entry>
-              <entry/>
+                </orderedlist></entry>
+
+              <entry></entry>
             </row>
+
             <row>
               <entry><literal>contact</literal></entry>
+
+              <entry>N</entry>
+
               <entry><code>mojo.contact</code></entry>
-              <entry/>
+
+              <entry></entry>
             </row>
+
             <row>
               <entry><literal>contactEmail</literal></entry>
+
+              <entry>N</entry>
+
               <entry><code>mojo.contactEmail</code></entry>
-              <entry/>
+
+              <entry></entry>
             </row>
+
             <row>
               <entry><literal>license</literal></entry>
+
+              <entry>N</entry>
+
               <entry><code>project.licenses</code></entry>
+
               <entry>The first license listed in the POM will be used.</entry>
             </row>
+
             <row>
               <entry><literal>architecture</literal></entry>
-              <entry>
-                <orderedlist>
+
+              <entry>N</entry>
+
+              <entry><orderedlist>
                   <listitem>
                     <para><literal>mojo.architecture</literal></para>
                   </listitem>
+
                   <listitem>
                     <para><literal>format.architecture</literal></para>
                   </listitem>
-                </orderedlist>
-              </entry>
-              <entry>A default value indicating that the package is architecture independent is used
-                if applicable.</entry>
+                </orderedlist></entry>
+
+              <entry>A default value indicating that the package is
+              architecture independent is used if applicable.</entry>
             </row>
           </tbody>
         </tgroup>
       </informaltable>
+
+      <warning>
+        <para>Particular formats might add additional requirements.</para>
+      </warning>
+
+      <tip>
+        <para>For more information see the class
+        org.codehaus.mojo.unix.PackageParameters.</para>
+      </tip>
+
+      <para>In addition to the generic object, additional information is
+      collected for each type of package.</para>
+
       <section>
-        <title>Version Calculation</title>
-        <warning>
-          <para>Describe.</para>
-        </warning>
-        <warning>
-          <para>Add mapping from Version object to formats.</para>
-        </warning>
-      </section>
-      <section xml:base="" xml:id="mapping">
-        <title>Mapping</title>
-        <para>This table describe the relationship between the fields in the pom.xml and the fields
-          in the generated package.</para>
-        <note>
-          <para>This table is outdated.</para>
-        </note>
-        <table>
-          <title>Mapping between the generic format and the specific format</title>
+        <title>Deb</title>
+
+        <informaltable>
           <tgroup cols="4">
-            <colspec align="center"/>
+            <colspec colwidth="0.60*" />
+
+            <colspec align="center" arch="" colwidth="0.30*" />
+
+            <thead>
+              <row>
+                <entry align="center">Field</entry>
+
+                <entry align="center">Required</entry>
+
+                <entry align="center">Source(s)</entry>
+
+                <entry align="center">Description</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry><literal>priority</literal></entry>
+
+                <entry>Y</entry>
+
+                <entry><code>deb.priority</code></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry><literal>section</literal></entry>
+
+                <entry>Y</entry>
+
+                <entry><code>deb.section</code></entry>
+
+                <entry></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+      </section>
+
+      <section>
+        <title>Pkg</title>
+
+        <para>The <literal>pkg</literal> format does not have any specific
+        settings. All settings is derived from the generic settings.</para>
+      </section>
+
+      <section>
+        <title>Rpm</title>
+
+        <para>Additional requirements for the RPM format:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>At least one license is specified in the POM.</para>
+          </listitem>
+        </itemizedlist>
+
+        <informaltable>
+          <tgroup cols="4">
+            <colspec colwidth="0.60*" />
+
+            <colspec align="center" colwidth="0.30*" />
+
+            <thead>
+              <row>
+                <entry align="center">Field</entry>
+
+                <entry align="center">Required</entry>
+
+                <entry align="center">Source(s)</entry>
+
+                <entry align="center">Description</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry><literal>rpm.group</literal></entry>
+
+                <entry>Y</entry>
+
+                <entry><code>rpm.group</code></entry>
+
+                <entry></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+      </section>
+
+      <section xml:id="version-calculation">
+        <title>Version Calculation</title>
+
+        <tip>
+          <para>This information is derived from <link
+          xlink:href="http://mojo.codehaus.org/unix/xref-test/org/codehaus/mojo/unix/maven/VersionTest.html">org.codehaus.mojo.unix.maven.VersionTest</link>.</para>
+        </tip>
+
+        <para>When the plugin is creating a unix package it also create a
+        version object which consist of the following fields:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>Version</term>
+
+            <listitem>
+              <para>The "main" part of the version configured in the POM. The
+              main part is everything before the last dash in the version
+              string.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Revision</term>
+
+            <listitem>
+              <para>The "rest" part of the version configured in the
+              POM.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Timestamp</term>
+
+            <listitem>
+              <para>The timestamp of the build. This is the same timestamp as
+              the one used for installing the artifacts in the
+              repository.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <example>
+          <title>Examples on how the version fields are calculated</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>1.0-SNAPSHOT</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para><literal>version=1.0</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><literal>revision=</literal>&lt;none&gt;</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>1.0-3-SNAPSHOT</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para><literal>version=1.0</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><literal>revision=3</literal></para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </example>
+
+        <para>The overall strategy for SNAPSHOT versions is to make the
+        version field in the package as specific as possible. This means that
+        the build timestamp will be appended to the version string where
+        applicable.</para>
+
+        <section>
+          <title>Version Calculation for Snapshot Versions</title>
+
+          <informaltable>
+            <tgroup cols="4">
+              <colspec align="center" colwidth="0.50*" />
+
+              <colspec align="center" colwidth="0.30*" />
+
+              <colspec align="center" colwidth="0.30*" />
+
+              <thead>
+                <row>
+                  <entry>Version</entry>
+
+                  <entry>Revision</entry>
+
+                  <entry>Format</entry>
+
+                  <entry>Result</entry>
+                </row>
+              </thead>
+
+              <tbody>
+                <row>
+                  <entry morerows="5"
+                  valign="middle"><literal>1.2-SNAPSHOT</literal></entry>
+
+                  <entry morerows="2" valign="middle">Not set</entry>
+
+                  <entry>Deb</entry>
+
+                  <entry><literal>1.2-20090423095107</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2-20090423095107</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Rpm</entry>
+
+                  <entry><literal>1.2_20090423095107, rev:
+                  </literal><literal>1</literal></entry>
+                </row>
+
+                <row>
+                  <entry morerows="2"
+                  valign="middle"><literal>3</literal></entry>
+
+                  <entry>Deb</entry>
+
+                  <entry><literal>1.2-3-20090423095107</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2-3-20090423095107</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Rpm</entry>
+
+                  <entry><literal>1.2_20090423095107, rev:
+                  </literal><literal>3</literal></entry>
+                </row>
+
+                <row>
+                  <entry morerows="5"
+                  valign="middle"><literal>1.2-3-SNAPSHOT</literal></entry>
+
+                  <entry morerows="2" valign="middle">Not set</entry>
+
+                  <entry>Deb</entry>
+
+                  <entry><literal>1.2-3-20090423095107</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2-3-20090423095107</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Rpm</entry>
+
+                  <entry><literal>1.2_20090423095107, rev:
+                  </literal><literal>3</literal></entry>
+                </row>
+
+                <row>
+                  <entry morerows="2"><literal>3</literal></entry>
+
+                  <entry>Deb</entry>
+
+                  <entry><literal>1.2-3-3-20090423095107</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2-3-3-20090423095107</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2_3_20090423095107, rev:
+                  </literal><literal>3</literal></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+        </section>
+
+        <section>
+          <title>Version Calculation for Release Versions</title>
+
+          <informaltable>
+            <tgroup cols="4">
+              <colspec align="center" colwidth="0.50*" />
+
+              <colspec align="center" colwidth="0.30*" />
+
+              <colspec align="center" colwidth="0.30*" />
+
+              <thead>
+                <row>
+                  <entry>Version</entry>
+
+                  <entry>Revision</entry>
+
+                  <entry>Format</entry>
+
+                  <entry>Result</entry>
+                </row>
+              </thead>
+
+              <tbody>
+                <row>
+                  <entry morerows="5"
+                  valign="middle"><literal>1.2</literal></entry>
+
+                  <entry morerows="2" valign="middle">Not set</entry>
+
+                  <entry>Deb</entry>
+
+                  <entry><literal>1.2</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Rpm</entry>
+
+                  <entry><literal>1.2, rev:
+                  </literal><literal>1</literal></entry>
+                </row>
+
+                <row>
+                  <entry morerows="2"
+                  valign="middle"><literal>3</literal></entry>
+
+                  <entry>Deb</entry>
+
+                  <entry><literal>1.2</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Rpm</entry>
+
+                  <entry><literal>1.2, rev:
+                  </literal><literal>3</literal></entry>
+                </row>
+
+                <row>
+                  <entry morerows="5"
+                  valign="middle"><literal>1.2-3</literal></entry>
+
+                  <entry morerows="2" valign="middle">Not set</entry>
+
+                  <entry>Deb</entry>
+
+                  <entry><literal>1.2-3</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2-3</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Rpm</entry>
+
+                  <entry><literal>1.2, rev:
+                  </literal><literal>3</literal></entry>
+                </row>
+
+                <row>
+                  <entry morerows="2"><literal>3</literal></entry>
+
+                  <entry>Deb</entry>
+
+                  <entry><literal>1.2-3-3</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2-3-3</literal></entry>
+                </row>
+
+                <row>
+                  <entry>Pkg</entry>
+
+                  <entry><literal>1.2_3, rev:
+                  </literal><literal>3</literal></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+        </section>
+      </section>
+
+      <section xml:base="" xml:id="mapping">
+        <title>Mapping to Native Formats</title>
+
+        <para>This table describe the relationship between the fields in the
+        pom.xml and the fields in the generated package.</para>
+
+        <para>In addition to the generic fields, some formats has additional
+        mappings.</para>
+
+        <table>
+          <title>Mapping between the generic definition and the specific
+          format</title>
+
+          <tgroup cols="4">
+            <colspec align="center" />
+
             <thead>
               <row>
                 <entry>Unix Package</entry>
-                <entry>DPKG</entry>
+
+                <entry>Deb</entry>
+
                 <entry>Pkg</entry>
-                <entry>RPM</entry>
+
+                <entry>Rpm</entry>
               </row>
             </thead>
+
             <tbody>
               <row>
-                <entry><literal>contact</literal></entry>
-                <entry><literal>Maintainer</literal></entry>
-                <entry/>
-                <entry/>
+                <entry><literal>version</literal></entry>
+
+                <entry morerows="1"
+                valign="middle"><literal>Version</literal></entry>
+
+                <entry morerows="1"
+                valign="middle"><literal>VERS</literal></entry>
+
+                <entry><literal>Version</literal></entry>
               </row>
+
               <row>
-                <entry><literal>contactEmail</literal></entry>
-                <entry><literal>Maintainer</literal></entry>
-                <entry><literal>EMAIL</literal></entry>
-                <entry/>
+                <entry><literal>revision</literal></entry>
+
+                <entry><literal>Release</literal></entry>
               </row>
+
               <row>
                 <entry><literal>id</literal></entry>
-                <entry/>
+
+                <entry><literal>Package</literal></entry>
+
                 <entry><literal>PKG</literal></entry>
-                <entry><literal>name</literal></entry>
+
+                <entry><literal>Name</literal></entry>
               </row>
+
               <row>
                 <entry><literal>name</literal></entry>
-                <entry>shortDescription</entry>
+
+                <entry morerows="1"
+                valign="middle"><literal>Description</literal></entry>
+
                 <entry><literal>NAME</literal></entry>
-                <entry><literal>summary</literal></entry>
+
+                <entry><literal>Summary</literal></entry>
               </row>
+
               <row>
                 <entry><literal>description</literal></entry>
-                <entry/>
+
                 <entry><literal>DESC</literal></entry>
-                <entry><literal>description</literal></entry>
+
+                <entry><literal>Description</literal></entry>
               </row>
+
+              <row>
+                <entry><literal>contact</literal></entry>
+
+                <entry valign="middle"><literal>Maintainer</literal></entry>
+
+                <entry></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry><literal>contactEmail</literal></entry>
+
+                <entry valign="middle"></entry>
+
+                <entry><literal>EMAIL</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry><literal>license</literal></entry>
+
+                <entry></entry>
+
+                <entry></entry>
+
+                <entry><literal>License</literal></entry>
+              </row>
+
               <row>
                 <entry><literal>architecture</literal></entry>
-                <entry/>
+
+                <entry><literal>Architecture</literal></entry>
+
                 <entry><literal>ARCH</literal></entry>
-                <entry/>
+
+                <entry></entry>
               </row>
             </tbody>
           </tgroup>
         </table>
+
+        <section>
+          <title>Deb Specific Mappings</title>
+
+          <para>The <literal>Architecture</literal> field will default to
+          <literal>all</literal> if not set.</para>
+        </section>
+
+        <section>
+          <title>Pkg Specific Mappings</title>
+
+          <para>The <literal>PSTAMP</literal> field in
+          <literal>pkginfo</literal> is set to
+          <literal>version.timestamp</literal>.</para>
+        </section>
+
+        <section>
+          <title>Rpm Specific Mappings</title>
+
+          <para></para>
+        </section>
       </section>
     </chapter>
+
     <chapter>
       <title>Operating Requirements</title>
-      <para/>
+
+      <warning>
+        <para>Document the required binaries</para>
+      </warning>
     </chapter>
+
     <chapter>
       <title>Assembly Operations</title>
+
       <table>
         <title>Summary of assembly operations</title>
+
         <tgroup cols="2">
-          <colspec colnum="2" colwidth="4*"/>
+          <colspec colnum="2" colwidth="4*" />
+
           <tbody>
             <row>
               <entry>Copy file</entry>
+
               <entry>Copies a single file</entry>
             </row>
+
             <row>
               <entry>Copy directory</entry>
+
               <entry>Copies a directory structure</entry>
             </row>
+
             <row>
               <entry>Copy artifact</entry>
+
               <entry>Copies an artifact from the repository</entry>
             </row>
+
             <row>
               <entry>Extract file</entry>
+
               <entry>Extracts a single file</entry>
             </row>
+
             <row>
               <entry>Extract artifact</entry>
+
               <entry>Extracts an artifact from the repository</entry>
             </row>
+
             <row>
               <entry>Make directory</entry>
+
               <entry>Creates one or more directories</entry>
             </row>
+
             <row>
               <entry>Set attributes</entry>
+
               <entry>Sets file attribues on a file set</entry>
             </row>
+
             <row>
               <entry>Symlink</entry>
+
               <entry>Creates a symlink</entry>
             </row>
           </tbody>
         </tgroup>
       </table>
+
       <section>
         <title>Common Settings and Behaviour</title>
-        <para>All <emphasis role="bold"><literal>to</literal></emphasis> elements refer to a path
-            <emphasis>within</emphasis> the package. <warning>
+
+        <para>All <emphasis role="bold"><literal>to</literal></emphasis>
+        elements refer to a path <emphasis>within</emphasis> the package.
+        <warning>
             <para>Explain "file object" somewhere</para>
           </warning></para>
+
         <section xml:id="artifact-naming-and-identification">
           <title>Artifact Naming and Identification</title>
-          <para>The plugin has operations that can use artifacts from the Maven repository directly.
-            In order to do this the plugin require that you have a dependency on the artifact that
-            you want to use. This is required for proper ordering in the Maven reactor.</para>
-          <para>When referring an artifact from an assembly operation the normal
-              <literal>groupId:artifactId[:classifier][:type]</literal> syntax is used. Note that
-            the version is not specified, the version specified as a dependency will be used. If a
-            type is not specified, a default value of <literal>jar</literal> is used.</para>
+
+          <para>The plugin has operations that can use artifacts from the
+          Maven repository directly. In order to do this the plugin require
+          that you have a dependency on the artifact that you want to use.
+          This is required for proper ordering in the Maven reactor.</para>
+
+          <para>When referring an artifact from an assembly operation the
+          normal <literal>groupId:artifactId[:classifier][:type]</literal>
+          syntax is used. Note that the version is not specified, the version
+          specified as a dependency will be used. If a type is not specified,
+          a default value of <literal>jar</literal> is used.</para>
+
           <example>
             <title>Artifact naming</title>
+
             <variablelist>
               <varlistentry>
                 <term><literal>com.acme:myapp</literal></term>
+
                 <listitem>
-                  <literallayout><tag><![CDATA[<dependency>
-  <groupId>com.acme</groupId>
-  <artifactId>myapp</artifactId>
-  <version>...</version>
-</dependency>]]></tag></literallayout>
+                  <literallayout><tag>&lt;dependency&gt;
+  &lt;groupId&gt;com.acme&lt;/groupId&gt;
+  &lt;artifactId&gt;myapp&lt;/artifactId&gt;
+  &lt;version&gt;...&lt;/version&gt;
+&lt;/dependency&gt;</tag></literallayout>
                 </listitem>
               </varlistentry>
+
               <varlistentry>
                 <term><literal>com.acme:myapp:tar.gz</literal></term>
+
                 <listitem>
-                  <literallayout><tag><![CDATA[<dependency>
-  <groupId>com.acme</groupId>
-  <artifactId>myapp</artifactId>
-  <version>...</version>
-  <type>tar.gz</type>
-</dependency>]]></tag></literallayout>
+                  <literallayout><tag>&lt;dependency&gt;
+  &lt;groupId&gt;com.acme&lt;/groupId&gt;
+  &lt;artifactId&gt;myapp&lt;/artifactId&gt;
+  &lt;version&gt;...&lt;/version&gt;
+  &lt;type&gt;tar.gz&lt;/type&gt;
+&lt;/dependency&gt;</tag></literallayout>
                 </listitem>
               </varlistentry>
+
               <varlistentry>
                 <term><literal>com.acme:myapp:slave:tar.gz</literal></term>
+
                 <listitem>
-                  <literallayout><tag><![CDATA[<dependency>
-  <groupId>com.acme</groupId>
-  <artifactId>myapp</artifactId>
-  <version>...</version>
-  <classifier>slave</classifier>
-  <type>tar.gz</type>
-</dependency>]]></tag></literallayout>
+                  <literallayout><tag>&lt;dependency&gt;
+  &lt;groupId&gt;com.acme&lt;/groupId&gt;
+  &lt;artifactId&gt;myapp&lt;/artifactId&gt;
+  &lt;version&gt;...&lt;/version&gt;
+  &lt;classifier&gt;slave&lt;/classifier&gt;
+  &lt;type&gt;tar.gz&lt;/type&gt;
+&lt;/dependency&gt;</tag></literallayout>
                 </listitem>
               </varlistentry>
             </variablelist>
           </example>
-          <para>If the plugin can't find the artifact that's referred to it will list all available
-            artifacts.</para>
+
+          <para>If the plugin can't find the artifact that's referred to it
+          will list all available artifacts.</para>
         </section>
+
         <section xml:base="" xml:id="file-renaming">
           <title>File renaming</title>
-          <para>All operations that involves moving a set of files around support renaming the files
-            before putting them in the package.</para>
+
+          <para>All operations that involves moving a set of files around
+          support renaming the files before putting them in the
+          package.</para>
+
           <para>The renaming process is controlled by two attributes:</para>
+
           <variablelist>
             <varlistentry>
               <term><literal>pattern</literal></term>
+
               <listitem>
-                <para>A regular expression that selects the files to be renamed. The regular
-                  expression may contain groups to pick out parts of the string.</para>
-                <para>The syntax used is the standard Java syntax. See the reference documentation
-                  on <link
-                    xlink:href="http://java.sun.com/javase/1.5.0/docs/api/java/util/regex/Pattern.html"
-                    >Pattern</link>.</para>
+                <para>A regular expression that selects the files to be
+                renamed. The regular expression may contain groups to pick out
+                parts of the string.</para>
+
+                <para>The syntax used is the standard Java syntax. See the
+                reference documentation on <link
+                xlink:href="http://java.sun.com/javase/1.5.0/docs/api/java/util/regex/Pattern.html">Pattern</link>.</para>
               </listitem>
             </varlistentry>
+
             <varlistentry>
               <term><literal>replacement</literal></term>
+
               <listitem>
-                <para>The new name of the file. May contain references to groups matched in the
-                    <literal>pattern</literal>.</para>
+                <para>The new name of the file. May contain references to
+                groups matched in the <literal>pattern</literal>.</para>
               </listitem>
             </varlistentry>
           </variablelist>
+
           <warning>
-            <para>Document the effect on the matched files vs those that doesn't match</para>
+            <para>Document the effect on the matched files vs those that
+            doesn't match</para>
           </warning>
+
           <example>
             <title>Removing the first directory by renaming the files</title>
-            <literallayout><tag><![CDATA[<extract-artifact>
-  <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-  <to>/opt/jetty</to>
-  <pattern>/jetty-${jetty.version}(.*)</pattern>
-  <replacement>$1</replacement>
-</extract-artifact>]]></tag></literallayout>
-            <para>This example will match all files in the <literal>jetty-assembly</literal>
-              artifact, put the entire path except the first part into group number one. The
-              replacement value will be the value of the first group.</para>
+
+            <literallayout><tag>&lt;extract-artifact&gt;
+  &lt;artifact&gt;org.mortbay.jetty:jetty-assembly:zip&lt;/artifact&gt;
+  &lt;to&gt;/opt/jetty&lt;/to&gt;
+  &lt;pattern&gt;/jetty-${jetty.version}(.*)&lt;/pattern&gt;
+  &lt;replacement&gt;$1&lt;/replacement&gt;
+&lt;/extract-artifact&gt;</tag></literallayout>
+
+            <para>This example will match all files in the
+            <literal>jetty-assembly</literal> artifact, put the entire path
+            except the first part into group number one. The replacement value
+            will be the value of the first group.</para>
           </example>
         </section>
+
         <section xml:id="includes-and-excludes">
           <title>Includes and Excludes</title>
-          <para>
-            <warning>
+
+          <para><warning>
               <para>Explain the difference between:<itemizedlist>
                   <listitem>
                     <para>*.foo</para>
                   </listitem>
+
                   <listitem>
                     <para>**/*.foo</para>
                   </listitem>
                 </itemizedlist></para>
-            </warning>
-          </para>
-          <para>
-            <warning>
+            </warning></para>
+
+          <para><warning>
               <para>The order of includes vs excludes</para>
-            </warning>
-          </para>
-          <para>
-            <warning>
-              <para>Explain the effect of having a basedir-like parameter set when calculating
-                matches. (the include/exclude expressions can't contain the basedir part). Applies
-                only to set attributes for now.</para>
-            </warning>
-          </para>
+            </warning></para>
+
+          <para><warning>
+              <para>Explain the effect of having a basedir-like parameter set
+              when calculating matches. (the include/exclude expressions can't
+              contain the basedir part). Applies only to set attributes for
+              now.</para>
+            </warning></para>
         </section>
+
         <section xml:id="file-attributes">
           <title>File Attributes</title>
-          <para>All file objects has a set of attributes. Note: not all attributes applies to all
-            object types.</para>
+
+          <para>All file objects has a set of attributes. Note: not all
+          attributes applies to all object types.</para>
+
           <note>
-            <para>Some assembly operations support both per-directory and per-file attributes. If so
-              the outer tag will be named <tag>&lt;file-attributes&gt;</tag> and
-              &lt;directory-attributes&gt;, but they contain exactly the same set of
-              elements.</para>
+            <para>Some assembly operations support both per-directory and
+            per-file attributes. If so the outer tag will be named
+            <tag>&lt;file-attributes&gt;</tag> and
+            &lt;directory-attributes&gt;, but they contain exactly the same
+            set of elements.</para>
           </note>
+
           <table>
             <title>Available attributes</title>
+
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="3*"/>
+              <colspec colnum="2" colwidth="3*" />
+
               <tbody>
                 <row>
                   <entry><literal>user</literal></entry>
+
                   <entry>Specifies the user of the owns the file</entry>
                 </row>
+
                 <row>
                   <entry><literal>group</literal></entry>
+
                   <entry>Specifies the group that owns the file</entry>
                 </row>
+
                 <row>
                   <entry><literal>mode</literal></entry>
-                  <entry>
-                    <para>Specifies the read/write/executable bits on the file. The value has to be
-                      be in octal notation</para>
-                  </entry>
+
+                  <entry><para>Specifies the read/write/executable bits on the
+                  file. The value has to be be in octal
+                  notation</para></entry>
                 </row>
               </tbody>
             </tgroup>
           </table>
+
           <para>Mode examples:<itemizedlist>
               <listitem>
-                <para><literal>0644</literal> becomes <literal>-rw-r--r--</literal></para>
+                <para><literal>0644</literal> becomes
+                <literal>-rw-r--r--</literal></para>
               </listitem>
+
               <listitem>
-                <para><literal>0744</literal> becomes <literal>-rwxr--r--</literal></para>
+                <para><literal>0744</literal> becomes
+                <literal>-rwxr--r--</literal></para>
               </listitem>
             </itemizedlist></para>
-          <para>See <xref linkend="concept-package-file-system"/> for more details.</para>
+
+          <para>See <xref linkend="concept-package-file-system" /> for more
+          details.</para>
+
           <example>
-            <title>Example usage of <literal>&lt;attributes&gt;</literal></title>
-            <programlisting><![CDATA[<attributes>
-  <user>myapp</user>
-  <group>myapp</group>
-  <mode>0644</mode>
-</attributes>]]></programlisting>
+            <title>Example usage of
+            <literal>&lt;attributes&gt;</literal></title>
+
+            <programlisting>&lt;attributes&gt;
+  &lt;user&gt;myapp&lt;/user&gt;
+  &lt;group&gt;myapp&lt;/group&gt;
+  &lt;mode&gt;0644&lt;/mode&gt;
+&lt;/attributes&gt;</programlisting>
           </example>
         </section>
       </section>
+
       <section xml:id="copy-file">
         <title>Copy File</title>
+
         <para>Purpose: to copy a single file from the file system.</para>
+
         <table>
           <title>Supported parameters for <tag>&lt;copy-file&gt;</tag></title>
+
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*"/>
+            <colspec colnum="2" colwidth="3*" />
+
             <tbody>
               <row>
                 <entry><literal>file</literal></entry>
+
                 <entry>The file to copy</entry>
               </row>
+
               <row>
-                <entry><literal>toFile</literal> or <literal>toDir</literal></entry>
-                <entry>The destination file or directory. Only one of the two parameters may be
-                  specified. If <literal>toDir</literal> is used, a file with be created in the
-                  specified directory with the same name as the source file.</entry>
+                <entry><literal>toFile</literal> or
+                <literal>toDir</literal></entry>
+
+                <entry>The destination file or directory. Only one of the two
+                parameters may be specified. If <literal>toDir</literal> is
+                used, a file with be created in the specified directory with
+                the same name as the source file.</entry>
               </row>
+
               <row>
                 <entry><literal>attributes</literal></entry>
-                <entry>The attributes to set on the copied file. See <xref linkend="file-attributes"
-                  />.</entry>
+
+                <entry>The attributes to set on the copied file. See <xref
+                linkend="file-attributes" />.</entry>
               </row>
             </tbody>
           </tgroup>
         </table>
+
         <example>
           <title>Example usage of <tag>&lt;copy-file&gt;</tag></title>
-          <programlisting><![CDATA[<copy-file>
-  <file>src/main/native/myapp.so</file>
-  <toFile>/opt/myapp/myapp.so</toFile>
-  <attributes>
-    <user>myapp</user>
-    <group>myapp</group>
-    <mode>0644</mode>
-  </attributes>
-</copy-file>]]></programlisting>
+
+          <programlisting>&lt;copy-file&gt;
+  &lt;file&gt;src/main/native/myapp.so&lt;/file&gt;
+  &lt;toFile&gt;/opt/myapp/myapp.so&lt;/toFile&gt;
+  &lt;attributes&gt;
+    &lt;user&gt;myapp&lt;/user&gt;
+    &lt;group&gt;myapp&lt;/group&gt;
+    &lt;mode&gt;0644&lt;/mode&gt;
+  &lt;/attributes&gt;
+&lt;/copy-file&gt;</programlisting>
         </example>
       </section>
+
       <section xml:id="copy-artifact">
         <title>Copy Artifact</title>
+
         <para>Purpose: to copy an artifact from a Maven repository.</para>
+
         <para>See also: <link linkend="copy-file">Copy File</link></para>
+
         <table>
-          <title>Supported parameters for <tag>&lt;copy-artifact&gt;</tag></title>
+          <title>Supported parameters for
+          <tag>&lt;copy-artifact&gt;</tag></title>
+
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*"/>
+            <colspec colnum="2" colwidth="3*" />
+
             <tbody>
               <row>
                 <entry><literal>artifact</literal></entry>
-                <entry>The artifact to copy. See <xref linkend="artifact-naming-and-identification"
-                  /> on how to identify the artifact to copy.</entry>
+
+                <entry>The artifact to copy. See <xref
+                linkend="artifact-naming-and-identification" /> on how to
+                identify the artifact to copy.</entry>
               </row>
+
               <row>
-                <entry><literal>toFile</literal> or <literal>toDir</literal></entry>
-                <entry>The destination file or directory. Only one of the two parameters may be
-                  specified. If <literal>toDir</literal> is used, a file with be created in the
-                  specified directory with the same name as the source file.</entry>
+                <entry><literal>toFile</literal> or
+                <literal>toDir</literal></entry>
+
+                <entry>The destination file or directory. Only one of the two
+                parameters may be specified. If <literal>toDir</literal> is
+                used, a file with be created in the specified directory with
+                the same name as the source file.</entry>
               </row>
+
               <row>
                 <entry><literal>attributes</literal></entry>
-                <entry>The attributes to set on the copied file. See <xref linkend="file-attributes"
-                  />.</entry>
+
+                <entry>The attributes to set on the copied file. See <xref
+                linkend="file-attributes" />.</entry>
               </row>
             </tbody>
           </tgroup>
         </table>
+
         <example>
           <title>Example usage of <tag>&lt;copy-artifact&gt;</tag></title>
-          <programlisting><![CDATA[<copy-artifact>
-  <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
-  <toFile>/opt/hudson/hudson.war</toFile>
-  <attributes>
-    <user>hudson</user>
-    <group>hudson</group>
-    <mode>0644</mode>
-  </attributes>
-</copy-artifact>]]></programlisting>
+
+          <programlisting>&lt;copy-artifact&gt;
+  &lt;artifact&gt;org.jvnet.hudson.main:hudson-war:war&lt;/artifact&gt;
+  &lt;toFile&gt;/opt/hudson/hudson.war&lt;/toFile&gt;
+  &lt;attributes&gt;
+    &lt;user&gt;hudson&lt;/user&gt;
+    &lt;group&gt;hudson&lt;/group&gt;
+    &lt;mode&gt;0644&lt;/mode&gt;
+  &lt;/attributes&gt;
+&lt;/copy-artifact&gt;</programlisting>
         </example>
       </section>
+
       <section xml:id="make-directory">
         <title>Make Directory</title>
+
         <para>Purpose: to create one or more directories</para>
+
         <table>
-          <title>Supported parameters <tag>&lt;make-directory&gt;</tag></title>
+          <title>Supported parameters
+          <tag>&lt;make-directory&gt;</tag></title>
+
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*"/>
+            <colspec colnum="2" colwidth="3*" />
+
             <tbody>
               <row>
-                <entry><literal>path</literal> or <literal>paths</literal></entry>
-                <entry>The directory or directories to create. Only one of these parameters can be
-                  specified.</entry>
+                <entry><literal>path</literal> or
+                <literal>paths</literal></entry>
+
+                <entry>The directory or directories to create. Only one of
+                these parameters can be specified.</entry>
               </row>
+
               <row>
                 <entry><literal>attributes</literal></entry>
-                <entry>The attributes to set on the copied file. See <xref linkend="file-attributes"
-                  />.</entry>
+
+                <entry>The attributes to set on the copied file. See <xref
+                linkend="file-attributes" />.</entry>
               </row>
             </tbody>
           </tgroup>
         </table>
+
         <example>
           <title>Example usage of <tag>&lt;mkdirs&gt;</tag></title>
-          <programlisting><![CDATA[<mkdirs>
-  <paths>
-    <path>/var/opt/jetty</path>
-    <path>/var/opt/jetty/cache</path>
-    <path>/var/opt/jetty/log</path>
-  </paths>
-  <attributes>
-    <user>jetty</user>
-    <group>jetty</group>
-  </attributes>
-</mkdirs>]]></programlisting>
+
+          <programlisting>&lt;mkdirs&gt;
+  &lt;paths&gt;
+    &lt;path&gt;/var/opt/jetty&lt;/path&gt;
+    &lt;path&gt;/var/opt/jetty/cache&lt;/path&gt;
+    &lt;path&gt;/var/opt/jetty/log&lt;/path&gt;
+  &lt;/paths&gt;
+  &lt;attributes&gt;
+    &lt;user&gt;jetty&lt;/user&gt;
+    &lt;group&gt;jetty&lt;/group&gt;
+  &lt;/attributes&gt;
+&lt;/mkdirs&gt;</programlisting>
         </example>
       </section>
+
       <section xml:id="set-attributes">
         <title>Set Attributes</title>
-        <para>Purpose: to change one or more attributes on a set of files</para>
+
+        <para>Purpose: to change one or more attributes on a set of
+        files</para>
+
         <table>
-          <title>Supported parameters <tag>&lt;set-attributes&gt;</tag></title>
+          <title>Supported parameters
+          <tag>&lt;set-attributes&gt;</tag></title>
+
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*"/>
+            <colspec colnum="2" colwidth="3*" />
+
             <tbody>
               <row>
                 <entry><literal>basedir</literal></entry>
-                <entry>The base directory when applying. Default: the root of the package.</entry>
+
+                <entry>The base directory when applying. Default: the root of
+                the package.</entry>
               </row>
+
               <row>
                 <entry><literal>file-attributes</literal></entry>
-                <entry>The attributes to set on the matched <emphasis>files</emphasis>. See <xref
-                    linkend="file-attributes"/>.</entry>
+
+                <entry>The attributes to set on the matched
+                <emphasis>files</emphasis>. See <xref
+                linkend="file-attributes" />.</entry>
               </row>
+
               <row>
                 <entry><literal>directory-attributes</literal></entry>
-                <entry>The attributes to set on the matched <emphasis>directories</emphasis>. See
-                    <xref linkend="file-attributes"/>.</entry>
+
+                <entry>The attributes to set on the matched
+                <emphasis>directories</emphasis>. See <xref
+                linkend="file-attributes" />.</entry>
               </row>
+
               <row>
-                <entry><literal>includes</literal> and <literal>excludes</literal></entry>
-                <entry>Selects which files to include into the package. See <xref
-                    linkend="includes-and-excludes"/>.</entry>
+                <entry><literal>includes</literal> and
+                <literal>excludes</literal></entry>
+
+                <entry>Selects which files to include into the package. See
+                <xref linkend="includes-and-excludes" />.</entry>
               </row>
             </tbody>
           </tgroup>
         </table>
+
         <example>
           <title>Example usage of <tag>&lt;set-attributes&gt;</tag></title>
-          <programlisting><![CDATA[<set-attributes>
-  <basedir>/usr/share/hello/bin</basedir>
-  <fileAttributes>
-    <user>foo</user>
-    <group>bar</group>
-    <mode>0755</mode>
-  </fileAttributes>
-</set-attributes>]]></programlisting>
+
+          <programlisting>&lt;set-attributes&gt;
+  &lt;basedir&gt;/usr/share/hello/bin&lt;/basedir&gt;
+  &lt;file-attributes&gt;
+    &lt;user&gt;foo&lt;/user&gt;
+    &lt;group&gt;bar&lt;/group&gt;
+    &lt;mode&gt;0755&lt;/mode&gt;
+  &lt;/file-attributes&gt;
+&lt;/set-attributes&gt;</programlisting>
         </example>
       </section>
+
       <section xml:id="symlink">
         <title>Symlink</title>
+
         <para>Purpose: to create symbolic links.</para>
+
         <table>
           <title>Supported parameters <tag>&lt;symlink&gt;</tag></title>
+
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*"/>
+            <colspec colnum="2" colwidth="3*" />
+
             <tbody>
               <row>
                 <entry><literal>path</literal></entry>
+
                 <entry>The file object to create in the package</entry>
               </row>
+
               <row>
                 <entry><literal>value</literal></entry>
+
                 <entry>The value of the link</entry>
               </row>
             </tbody>
           </tgroup>
         </table>
+
         <example>
           <title>Example usage of <literal>&lt;symlink&gt;</literal></title>
-          <programlisting><literal><![CDATA[<symlink>
-  <path>/var/log/myapp</path>
-  <value>/var/opt/myapp/log</value>
-</symlink>]]></literal></programlisting>
+
+          <programlisting><literal>&lt;symlink&gt;
+  &lt;path&gt;/var/log/myapp&lt;/path&gt;
+  &lt;value&gt;/var/opt/myapp/log&lt;/value&gt;
+&lt;/symlink&gt;</literal></programlisting>
         </example>
-        <para>This will create a symbolink link under <literal>/var/log/myapp</literal> that points
-          to <literal>/var/opt/myapp/log</literal>.</para>
+
+        <para>This will create a symbolink link under
+        <literal>/var/log/myapp</literal> that points to
+        <literal>/var/opt/myapp/log</literal>.</para>
       </section>
+
       <section>
         <title>Copy Directory, Extract Artifact and Extract File</title>
-        <para>These operation work in a similar fasion and share these attributes:</para>
+
+        <para>These operation work in a similar fasion and share these
+        attributes:</para>
+
         <table>
-          <title>Common parameters for the copy directory, extract artifact and extract file
-            operations</title>
+          <title>Common parameters for the copy directory, extract artifact
+          and extract file operations</title>
+
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*"/>
+            <colspec colnum="2" colwidth="3*" />
+
             <tbody>
               <row>
                 <entry><literal>to</literal></entry>
+
                 <entry>The base destination directory</entry>
               </row>
+
               <row>
-                <entry><literal>includes</literal> and <literal>excludes</literal></entry>
-                <entry>Selects which files to include into the package. See <xref
-                    linkend="includes-and-excludes"/>.</entry>
+                <entry><literal>includes</literal> and
+                <literal>excludes</literal></entry>
+
+                <entry>Selects which files to include into the package. See
+                <xref linkend="includes-and-excludes" />.</entry>
               </row>
+
               <row>
-                <entry><literal>pattern</literal> and <literal>replacement</literal></entry>
-                <entry>Controls renaming of the files. See <xref linkend="file-renaming"/>.</entry>
+                <entry><literal>pattern</literal> and
+                <literal>replacement</literal></entry>
+
+                <entry>Controls renaming of the files. See <xref
+                linkend="file-renaming" />.</entry>
               </row>
+
               <row>
                 <entry><literal>file-attributes</literal></entry>
-                <entry>The attributes to set on the matched <emphasis>files</emphasis>. See <xref
-                    linkend="file-attributes"/>.</entry>
+
+                <entry>The attributes to set on the matched
+                <emphasis>files</emphasis>. See <xref
+                linkend="file-attributes" />.</entry>
               </row>
+
               <row>
                 <entry><literal>directory-attributes</literal></entry>
-                <entry>The attributes to set on the matched <emphasis>directories</emphasis>. See
-                    <xref linkend="file-attributes"/>.</entry>
+
+                <entry>The attributes to set on the matched
+                <emphasis>directories</emphasis>. See <xref
+                linkend="file-attributes" />.</entry>
               </row>
             </tbody>
           </tgroup>
         </table>
+
         <section xml:id="copy-directory">
           <title>Copy Directory</title>
+
           <para>Purpose: to copy a directory structure.</para>
+
           <table>
-            <title>Additional parameters for <tag>&lt;copy-directory&gt;</tag></title>
+            <title>Additional parameters for
+            <tag>&lt;copy-directory&gt;</tag></title>
+
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="3*"/>
+              <colspec colnum="2" colwidth="3*" />
+
               <tbody>
                 <row>
                   <entry><literal>from</literal></entry>
+
                   <entry>The directory to copy from.</entry>
                 </row>
               </tbody>
             </tgroup>
           </table>
+
           <example>
             <title>Example usage of <tag>&lt;copy-directory&gt;</tag></title>
-            <programlisting><![CDATA[<copy-directory>
-  <from>target/appassembler</from>
-  <to>/usr/share/hello</to>
-</copy-directory>]]></programlisting>
+
+            <programlisting>&lt;copy-directory&gt;
+  &lt;from&gt;target/appassembler&lt;/from&gt;
+  &lt;to&gt;/usr/share/hello&lt;/to&gt;
+&lt;/copy-directory&gt;</programlisting>
           </example>
         </section>
+
         <section xml:id="extract-artifact">
           <title>Extract Artifact</title>
-          <para>Purpose: to extract an artifact from the repository into the package.</para>
+
+          <para>Purpose: to extract an artifact from the repository into the
+          package.</para>
+
           <table>
-            <title>Additional parameters for <tag>&lt;extract-artifacrt&gt;</tag></title>
+            <title>Additional parameters for
+            <tag>&lt;extract-artifacrt&gt;</tag></title>
+
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="3*"/>
+              <colspec colnum="2" colwidth="3*" />
+
               <tbody>
                 <row>
                   <entry><literal>artifact</literal></entry>
+
                   <entry>The artifact to copy. See <xref
-                      linkend="artifact-naming-and-identification"/> on how to identify the artifact
-                    to copy.</entry>
+                  linkend="artifact-naming-and-identification" /> on how to
+                  identify the artifact to copy.</entry>
                 </row>
               </tbody>
             </tgroup>
           </table>
+
           <warning>
-            <para>document the supported archive types. (at least zip, jar and war are
-              supported).</para>
+            <para>document the supported archive types. (at least zip, jar and
+            war are supported).</para>
           </warning>
+
           <example>
-            <title>Example usage of <tag>&lt;extract-artifact&gt;</tag></title>
-            <programlisting><![CDATA[<extract-artifact>
-  <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
-  <to>/opt/jetty</to>
-</extract-artifact>]]></programlisting>
+            <title>Example usage of
+            <tag>&lt;extract-artifact&gt;</tag></title>
+
+            <programlisting>&lt;extract-artifact&gt;
+  &lt;artifact&gt;org.mortbay.jetty:jetty-assembly:zip&lt;/artifact&gt;
+  &lt;to&gt;/opt/jetty&lt;/to&gt;
+&lt;/extract-artifact&gt;</programlisting>
           </example>
         </section>
+
         <section xml:id="extract-file">
           <title>Extract File</title>
-          <para>Purpose: to extract a file from the file system into the package.</para>
+
+          <para>Purpose: to extract a file from the file system into the
+          package.</para>
+
           <warning>
-            <para>document the supported archive types. (at least zip, jar and war are
-              supported).</para>
+            <para>document the supported archive types. (at least zip, jar and
+            war are supported).</para>
           </warning>
+
           <table>
-            <title>Additional parameters for <tag>&lt;extract-file&gt;</tag></title>
+            <title>Additional parameters for
+            <tag>&lt;extract-file&gt;</tag></title>
+
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="3*"/>
+              <colspec colnum="2" colwidth="3*" />
+
               <tbody>
                 <row>
                   <entry><literal>archive</literal></entry>
+
                   <entry>The path to an archive to extract. See <xref
-                      linkend="artifact-naming-and-identification"/> on how to identify the artifact
-                    to copy.</entry>
+                  linkend="artifact-naming-and-identification" /> on how to
+                  identify the artifact to copy.</entry>
                 </row>
               </tbody>
             </tgroup>
           </table>
+
           <example>
-            <title>Example usage of <tag>&lt;extract-artifact&gt;</tag></title>
-            <programlisting><![CDATA[<extract-file>
-  <archive>src/main/extras.zip</archive>
-  <to>/opt/share/myapp/extras</to>
-</extract-file>]]></programlisting>
+            <title>Example usage of
+            <tag>&lt;extract-artifact&gt;</tag></title>
+
+            <programlisting>&lt;extract-file&gt;
+  &lt;archive&gt;src/main/extras.zip&lt;/archive&gt;
+  &lt;to&gt;/opt/share/myapp/extras&lt;/to&gt;
+&lt;/extract-file&gt;</programlisting>
           </example>
         </section>
       </section>
     </chapter>
+
     <chapter>
       <title>Creating Native Package Repositories</title>
-      <para/>
+
+      <para></para>
+
       <section>
         <title>Creating Debian/APT Repositories</title>
-        <para/>
+
+        <para></para>
       </section>
+
       <section>
         <title>Creating RPM/Yum Repositories</title>
-        <para/>
+
+        <para></para>
       </section>
+
       <section>
         <title>Creating pkg-get/pkgutil Repositories</title>
-        <para/>
+
+        <para></para>
       </section>
     </chapter>
+
     <chapter>
       <title>Troubleshooting</title>
+
       <section>
         <title>Debugging</title>
+
         <para>Run with -X to see what the plugin does.</para>
+
         <para>Explain -Dmaven.unix.debug</para>
       </section>
     </chapter>
+
     <!--
     <chapter>
       <title>Upgrading From Previous Versions</title>
@@ -1076,12 +2001,13 @@
         =>
         
         <defaults>
-          <fileAttributes>
+          <file-attributes>
             <user>..</user>
             <group>..</group>
-          <fileAttributes>
+          <file-attributes>
         </defaults>
       </section>
     </chapter>
     -->
-  </part></book>
+  </part>
+</book>

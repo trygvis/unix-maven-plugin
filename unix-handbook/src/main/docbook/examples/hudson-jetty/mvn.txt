@@ -9,8 +9,6 @@
 [WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
 [INFO] skip non existing resourceDirectory /home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/src/main/resources
 [INFO] [unix:package-pkg]
-defaultFileAttributes = user=nobody, group=nogroup, mode=rw-r--r--
-defaultDirectoryAttributes = user=nobody, group=nogroup, mode=rwxr-xr-x
 .
     opt
         hudson

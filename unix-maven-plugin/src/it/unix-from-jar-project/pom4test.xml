@@ -92,11 +92,11 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <defaults>
-            <fileAttributes>
+            <file-attributes>
               <user>hudson</user>
               <group>hudson</group>
               <mode>044</mode>
-            </fileAttributes>
+            </file-attributes>
           </defaults>
           <dpkg>
             <section>devel</section>
@@ -119,11 +119,11 @@
             </copy-directory>
             <set-attributes>
               <basedir>/usr/share/hello/bin</basedir>
-              <fileAttributes>
+              <file-attributes>
                 <user>bah</user>
                 <group>bah</group>
                 <mode>0755</mode>
-              </fileAttributes>
+              </file-attributes>
             </set-attributes>
           </assembly>
         </configuration>
