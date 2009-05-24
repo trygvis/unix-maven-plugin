@@ -744,7 +744,7 @@
 
             <tbody>
               <row>
-                <entry><literal>rpm.group</literal></entry>
+                <entry><literal>group</literal></entry>
 
                 <entry>Y</entry>
 
@@ -1227,13 +1227,11 @@
       picking up scripts from the source folders.</para>
 
       <para>The plugin will automatically pick up scripts from the
-      <filename>src/main/unix/scripts</filename> directory. The plugin uses
-      two different strategies for naming the scripts based on the operation
-      mode as described below.</para>
-
-      <para>If a build is generating more than one artifact, it is possible to
-      share common parts of the script between the packages based on the
-      package id.</para>
+      <filename>src/main/unix/scripts</filename> directory. If a build is
+      generating more than one artifact, it is possible to share common parts
+      of the script between the packages based on the package id. The plugin
+      uses two different strategies for naming the scripts based on the
+      operation mode as described below.</para>
 
       <section>
         <title>Action Scripts in Primary Artifact Mode</title>
