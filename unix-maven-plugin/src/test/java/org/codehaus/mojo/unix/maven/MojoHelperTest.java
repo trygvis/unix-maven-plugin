@@ -34,7 +34,6 @@ import org.apache.maven.model.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.maven.MojoHelper.*;
-import org.codehaus.mojo.unix.maven.pkg.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
 
@@ -48,7 +47,7 @@ import java.util.Set;
 public class MojoHelperTest
     extends TestCase
 {
-    public final static Package nonePackage = new Package();
+    public final static Package noClassifierPackage = new Package();
 
     public final static Package defaultPackage = new Package();
 
@@ -70,31 +69,31 @@ public class MojoHelperTest
     public void testPackageValidationEmptyPackagesPrimaryArtifact()
         throws Exception
     {
-        assertPackages( list( nonePackage ), List.<Package>nil(), false );
+        assertPackages( list( noClassifierPackage ), List.<Package>nil(), false );
     }
 
-    public void testPackageValidationNonePackagePrimaryArtifact()
+    public void testPackageValidationNoClassifierPackagePrimaryArtifact()
         throws Exception
     {
-        assertPackages( list( nonePackage ), list( nonePackage ), false );
+        assertPackages( list( noClassifierPackage ), list( noClassifierPackage ), false );
     }
 
     public void testPackageValidationDefaultPackagePrimaryArtifact()
         throws Exception
     {
-        assertPackages( list( nonePackage ), list( defaultPackage ), false );
+        assertPackages( list( noClassifierPackage ), list( defaultPackage ), false );
     }
 
-    public void testPackageValidationNonePackageAPackagePrimaryArtifact()
+    public void testPackageValidationNoClassifierPackageAPackagePrimaryArtifact()
         throws Exception
     {
-        assertPackages( list(  nonePackage, packageA  ), list( nonePackage, packageA ), false );
+        assertPackages( list(  noClassifierPackage, packageA  ), list( noClassifierPackage, packageA ), false );
     }
 
     public void testPackageValidationDefaultPackageAPackagePrimaryArtifact()
         throws Exception
     {
-        assertPackages( list(  nonePackage, packageA  ), list( defaultPackage, packageA ), false );
+        assertPackages( list(  noClassifierPackage, packageA  ), list( defaultPackage, packageA ), false );
     }
 
     public void testPackageValidationPackageAPrimaryArtifact()
@@ -102,13 +101,41 @@ public class MojoHelperTest
     {
         try
         {
-            MojoHelper.validatePackages( list( packageA ), false );
+            MojoHelper.validatePackages( single( packageA ), false );
             fail( "Expected Exception" );
         }
         catch ( MojoFailureException e )
         {
-            assertEquals( "When running in 'primary artifact mode' exactly one package is required to have 'default' or none classifier.",
+            assertEquals( "When running in 'primary artifact mode' either one package has to have 'default' as classifier or there has to be one without any classifier.",
                           e.getMessage() );
+        }
+    }
+
+    public void testPackageValidationTwoUnnamedPrimaryArtifact()
+        throws Exception
+    {
+        try
+        {
+            MojoHelper.validatePackages( list( noClassifierPackage, noClassifierPackage ), false );
+            fail( "Expected Exception" );
+        }
+        catch ( MojoFailureException e )
+        {
+            assertEquals( MojoHelper.DUPLICATE_UNCLASSIFIED, e.getMessage() );
+        }
+    }
+
+    public void testPackageValidationTwoDefaultPrimaryArtifact()
+        throws Exception
+    {
+        try
+        {
+            MojoHelper.validatePackages( list( defaultPackage, defaultPackage ), false );
+            fail( "Expected Exception" );
+        }
+        catch ( MojoFailureException e )
+        {
+            assertEquals( MojoHelper.DUPLICATE_UNCLASSIFIED, e.getMessage() );
         }
     }
 
@@ -117,45 +144,35 @@ public class MojoHelperTest
     // -----------------------------------------------------------------------
 
     public void testPackageValidationEmptyPackagesAsAttached()
+        throws MojoFailureException
     {
-        try
-        {
-            MojoHelper.validatePackages( List.<Package>nil(), true );
-            fail( "Expected Exception" );
-        }
-        catch ( MojoFailureException e )
-        {
-            assertEquals( "When running in attached mode all packages are required to have an classifier.",
-                          e.getMessage() );
-        }
+        assertPackages( list( noClassifierPackage ), List.<Package>nil(), true );
+//        // Hm, is running with an empty configuration really a bug? Should result in no packages to be generated
+//        // which is ok as long as the build is attached and another (non-unix) artifact will be generated as the
+//        // primary artifact - trygve
+//
+//        try
+//        {
+//            MojoHelper.validatePackages( List.<Package>nil(), true );
+//            fail( "Expected Exception" );
+//        }
+//        catch ( MojoFailureException e )
+//        {
+//            assertEquals( MojoHelper.ATTACHED_NO_ARTIFACTS_CONFIGURED,
+//                          e.getMessage() );
+//        }
     }
 
-    public void testPackageValidationNonePackageAsAttached()
+    public void testPackageValidationNoClassifierPackageAsAttached()
+        throws MojoFailureException
     {
-        try
-        {
-            MojoHelper.validatePackages( single( nonePackage ), true );
-            fail( "Expected Exception" );
-        }
-        catch ( MojoFailureException e )
-        {
-            assertEquals( "When running in attached mode all packages are required to have an classifier.",
-                          e.getMessage() );
-        }
+        assertPackages( single( noClassifierPackage ), single( noClassifierPackage ), true );
     }
 
     public void testPackageValidationDefaultPackageAsAttached()
+        throws MojoFailureException
     {
-        try
-        {
-            MojoHelper.validatePackages( single( defaultPackage ), true );
-            fail( "Expected Exception" );
-        }
-        catch ( MojoFailureException e )
-        {
-            assertEquals( "When running in attached mode all packages are required to have an classifier.",
-                          e.getMessage() );
-        }
+        assertPackages( single( noClassifierPackage ), single( defaultPackage ), true );
     }
 
     public void testPackageValidationPackagesAAsAttached()
@@ -199,7 +216,7 @@ public class MojoHelperTest
 
         Package pakke = new Package();
         pakke.id = fromNull( packageName );
-        PackageParameters parameters = calculatePackageParameters( new PkgPackagingFormat(), mavenProject, version,
+        PackageParameters parameters = calculatePackageParameters( mavenProject, version,
                                                                    mojoParameters, pakke );
 
         UnixUtil.optionEquals( expectedName, parameters.name );

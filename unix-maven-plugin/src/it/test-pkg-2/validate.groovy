@@ -10,7 +10,7 @@ boolean success = true
 File pkg = new File((File) basedir, "target/project-pkg-2-1.1-2.pkg")
 
 success &= ShittyUtil.assertRelaxed(
-        new PackageInfo( "bar-project-pkg-2", "Hudson Slave", "application", "all", "1.1-2", none(), none() ),
+        new PackageInfo( "project-pkg-2", "Hudson Slave", "application", "all", "1.1-2", none(), none() ),
         PkginfoUtil.getPackageInforForDevice(pkg).some());
 
 success &= ShittyUtil.assertPkgEntries(pkg, [
@@ -22,6 +22,6 @@ success &= ShittyUtil.assertPkgEntries(pkg, [
         directory("/usr/share/hudson/license", "0755", "nobody", "nogroup", none()),
         regularFile("/usr/share/hudson/license/atom-license.txt", "0644", "nobody", "nogroup", 49, 4473, none()),
         regularFile("/usr/share/hudson/license/dc-license.txt", "0644", "nobody", "nogroup", 1544, 59072, none()),
-        installationFile("pkginfo", 153, 0, none()),
+        installationFile("pkginfo", 149, 0, none()),
 ])
 return success

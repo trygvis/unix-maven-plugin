@@ -27,7 +27,7 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>20</version>
+    <version>21-SNAPSHOT</version>
   </parent>
   <groupId>org.codehaus.mojo.unix</groupId>
   <artifactId>unix</artifactId>
@@ -36,6 +36,9 @@
   <name>Maven Unix Support</name>
   <inceptionYear>2008</inceptionYear>
   <description>Supporting tools for writing software for the UNIX platform</description>
+  <properties>
+    <functionaljava.version>2.19</functionaljava.version>
+  </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -62,6 +65,11 @@
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>1.5.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.functionaljava</groupId>
+        <artifactId>fj</artifactId>
+        <version>${functionaljava.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -132,6 +140,16 @@
           <attach>true</attach>
         </configuration>
       </plugin>
+<!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>2.0</version>
+        <configuration>
+          <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
+        </configuration>
+      </plugin>
+-->
     </plugins>
   </build>
   <repositories>
@@ -152,6 +170,7 @@
     <module>unix-common</module>
     <module>unix-core</module>
     <module>unix-dpkg</module>
+    <module>unix-handbook</module>
     <module>unix-maven-plugin</module>
     <module>unix-pkg</module>
     <module>unix-rpm</module>
@@ -188,6 +207,7 @@ time mvn site -Preporting && time mvn site:deploy && time mvn site -Preporting-a
                 <link>http://java.sun.com/j2ee/1.4/docs/api</link>
                 <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
                 <link>http://junit.sourceforge.net/javadoc/</link>
+                <link>http://functionaljava.googlecode.com/svn/artifacts/${functionaljava.version}/javadoc</link>
               </links>
               <aggregate>true</aggregate>
             </configuration>

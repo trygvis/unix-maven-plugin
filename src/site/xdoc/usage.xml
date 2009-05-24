@@ -25,28 +25,19 @@
   -->
 <document>
   <properties>
-    <title>Concepts</title>
+    <title>Unix Maven Plugin</title>
     <author email="trygvis@codehaus.org">Trygve Laugstol</author>
   </properties>
   <body>
-    <section name="Concepts">
-      <subsection name="Operation Modes, &amp;Attached Artifact Mode&amp; vs &amp;Primary Artifact Mode&amp;">
-        <p>
-          The plugin can operate in two major modes, depending on how it is configured:
-        </p>
-        <ul>
-          <li>
-            <b>Primary artifact mode</b>: The plugin is running in primary mode when the project has set a
-            <code>&lt;packaging&gt;</code> to one of the packaging that the plugin support. The plugin will
-            install an artifact as the primary artifact into the repository
-          </li>
-          <li>
-            <b>Attached artifact mode</b>: The plugin is running in attached mode when the project is executing the
-            one of the <code>package-FOO-attached</code> goals. The plugin will install a package in addition to
-            the primary artifact which will be delivered by another plugin.
-          </li>
-        </ul>
-      </subsection>
+    <section name="Documentation">
+      <p>
+        The documentation for the plugin is available in the handbook in three formats:
+      </p>
+      <ul>
+        <li><a href="unix-handbook/handbook.pdf">PDF</a></li>
+        <li><a href="unix-handbook/handbook.html">Single-page HTML</a></li>
+        <li><a href="unix-handbook/handbook">Multi-page HTML</a></li>
+      </ul>
     </section>
   </body>
 </document>

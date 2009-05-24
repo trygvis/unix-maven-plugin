@@ -165,9 +165,6 @@ public class PackageFileSystem<A>
      * Applies the <code>f</code> to all objects in this filesystem.
      *
      * TODO: Shouldn't it just return a new UnixFsObject?
-     *
-     * @param f
-     * @return
      */
     public PackageFileSystem<A> apply( final F2<UnixFsObject, FileAttributes, FileAttributes> f )
     {
@@ -262,7 +259,6 @@ public class PackageFileSystem<A>
     /**
      * @param parent A zipper focused on the closest, existing parent
      * @param node   The node to insert
-     * @return
      */
     public TreeZipper<PackageFileSystemObject<A>> addChild( TreeZipper<PackageFileSystemObject<A>> parent, Tree<PackageFileSystemObject<A>> node )
     {

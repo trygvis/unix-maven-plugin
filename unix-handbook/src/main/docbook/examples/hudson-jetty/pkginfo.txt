@@ -1,0 +1,17 @@
+START SNIPPET: pkginfo
+$ pkginfo -l -d target/hudson-jetty-pkg-*.pkg
+   PKGINST:  hudson-jetty-pkg
+      NAME:  Hudson Solaris Package
+  CATEGORY:  application
+      ARCH:  all
+   VERSION:  1.0-20090501.224326
+    PSTAMP:  20090501.224326
+     EMAIL:  support@acme.org
+    STATUS:  spooled
+     FILES:      142 spooled pathnames
+                  30 directories
+                   1 setuid/setgid executables
+                   2 package information files
+               63038 blocks used (approx)
+
+END SNIPPET: pkginfo

@@ -1,0 +1,22 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Hudson Solaris Package
+[INFO]    task-segment: [clean, install]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean]
+[INFO] Deleting directory /home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/basic-pkg/target
+[INFO] [resources:resources]
+[WARNING] Using platform encoding (ISO646-US actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/basic-pkg/src/main/resources
+[INFO] [unix:package-rpm]
+defaultFileAttributes = user=nobody, group=nogroup, mode=rw-r--r--
+defaultDirectoryAttributes = user=nobody, group=nogroup, mode=rwxr-xr-x
+[INFO] [install:install]
+[INFO] Installing /home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/basic-pkg/target/basic-1.0-SNAPSHOT.rpm to /home/trygvis/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.rpm
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 9 seconds
+[INFO] Finished at: Wed May 13 21:27:41 CEST 2009
+[INFO] Final Memory: 14M/218M
+[INFO] ------------------------------------------------------------------------

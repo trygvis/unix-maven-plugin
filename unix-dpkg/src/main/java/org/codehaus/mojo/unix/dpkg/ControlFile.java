@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven.dpkg;
+package org.codehaus.mojo.unix.dpkg;
 
 /*
  * The MIT License
@@ -26,16 +26,17 @@ package org.codehaus.mojo.unix.maven.dpkg;
 
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class ControlFile
+    implements LineProducer
 {
     private static final String EOL = System.getProperty( "line.separator" );
 
@@ -45,7 +46,7 @@ public class ControlFile
 
     public PackageVersion version;
 
-    public Set<DebianDependency> dependencies;
+//    public Set<DebianDependency> dependencies;
 
     // Generic
 
@@ -70,39 +71,39 @@ public class ControlFile
     //
     // -----------------------------------------------------------------------
 
-    public String getDepends()
-    {
-        if ( dependencies == null || dependencies.size() <= 0 )
-        {
-            return null;
-        }
-
-        String depends = "";
-
-        for ( DebianDependency debianDependency : dependencies )
-        {
-            if ( depends.length() > 0 )
-            {
-                depends += ", ";
-            }
-
-            // This will happen if this is an extra dependency
-            if ( StringUtils.isNotEmpty( debianDependency.getGroupId() ) )
-            {
-                depends += debianDependency.getGroupId() + "-";
-            }
-
-            depends += debianDependency.getArtifactId() + " ";
-
-            // This will happen if this is an extra dependency
-            if ( StringUtils.isNotEmpty( debianDependency.getVersion() ) )
-            {
-                depends += "(" + debianDependency.getVersion() + ")";
-            }
-        }
-
-        return depends;
-    }
+//    public String getDepends()
+//    {
+//        if ( dependencies == null || dependencies.size() <= 0 )
+//        {
+//            return null;
+//        }
+//
+//        String depends = "";
+//
+//        for ( DebianDependency debianDependency : dependencies )
+//        {
+//            if ( depends.length() > 0 )
+//            {
+//                depends += ", ";
+//            }
+//
+//            // This will happen if this is an extra dependency
+//            if ( StringUtils.isNotEmpty( debianDependency.getGroupId() ) )
+//            {
+//                depends += debianDependency.getGroupId() + "-";
+//            }
+//
+//            depends += debianDependency.getArtifactId() + " ";
+//
+//            // This will happen if this is an extra dependency
+//            if ( StringUtils.isNotEmpty( debianDependency.getVersion() ) )
+//            {
+//                depends += "(" + debianDependency.getVersion() + ")";
+//            }
+//        }
+//
+//        return depends;
+//    }
 
     public String getPackage()
     {
@@ -127,35 +128,21 @@ public class ControlFile
     //
     // -----------------------------------------------------------------------
 
-    public void toFile( File basedir )
-        throws IOException, MissingSettingException
+    public void streamTo( LineStreamWriter control )
     {
-        File debian = new File( basedir, "DEBIAN" );
-
-        if ( !debian.exists() && !debian.mkdirs() )
-        {
-            throw new IOException( "Could not make directory: " + debian.getAbsolutePath() );
-        }
-
-        File control = new File( debian, "control" );
-
-        StringWriter string = new StringWriter();
-        PrintWriter output = new PrintWriter( string );
-
-        output.println( "Section: " + UnixUtil.getField( "section", section ) );
-        output.println( "Priority: " + UnixUtil.getFieldOrDefault( priority, "standard" ) );
-        output.println( "Maintainer: " + UnixUtil.getField( "maintainer", maintainer ) );
-        output.println( "Package: " + getPackage() );
-        output.println( "Version: " + getDebianVersion( version ) );
-        output.println( "Architecture: " + UnixUtil.getField( "architecture", architecture ) );
-        String depends = getDepends();
-        if ( depends != null )
-        {
-            output.println( "Depends: " + depends );
-        }
-        output.println( "Description: " + getDebianDescription() );
-
-        FileUtils.fileWrite( control.getAbsolutePath(), string.toString() );
+        control.
+            add( "Section: " + UnixUtil.getField( "section", section ) ).
+            add( "Priority: " + UnixUtil.getFieldOrDefault( priority, "standard" ) ).
+            add( "Maintainer: " + UnixUtil.getField( "maintainer", maintainer ) ).
+            add( "Package: " + getPackage() ).
+            add( "Version: " + getDebianVersion( version ) ).
+            add( "Architecture: " + UnixUtil.getField( "architecture", architecture ) ).
+//        String depends = getDepends();
+//        if ( depends != null )
+//        {
+//            output.println( "Depends: " + depends );
+//        }
+            add( "Description: " + getDebianDescription() );
     }
 
     public static String getDebianVersion( PackageVersion version )

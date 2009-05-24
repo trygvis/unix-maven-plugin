@@ -1,0 +1,1318 @@
+START SNIPPET: pkgchk
+$ pkgchk -l -d target/hudson-jetty-pkg-*.pkg all
+Checking uninstalled stream format package <hudson-jetty-pkg> from <../target/hudson-jetty-pkg-1.0-SNAPSHOT.pkg>
+## Checking control scripts.
+## Checking package objects.
+Pathname: /opt
+Type: directory
+Expected mode: 17777777777
+Expected owner: ?
+Expected group: ?
+Current status: installed
+
+Pathname: /opt/hudson
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/etc
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/etc/jetty-context.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 398
+Expected sum(1) of contents: 33409
+Expected last modification: May 02 00:39:38 2009
+Current status: installed
+
+Pathname: /opt/hudson/jetty
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/jetty/contexts
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/jetty/contexts/hudson.xml
+Type: symbolic link
+Source of link: /opt/hudson/etc/jetty-context.xml
+Current status: installed
+
+Pathname: /opt/hudson/lib
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/hudson.war
+Type: regular file
+Expected mode: 0644
+Expected owner: hudson
+Expected group: hudson
+Expected file size (bytes): 20623413
+Expected sum(1) of contents: 3301
+Expected last modification: Oct 24 23:08:16 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/CDDLv1.0.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 16782
+Expected sum(1) of contents: 59272
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/LICENSE.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 11358
+Expected sum(1) of contents: 60331
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/NOTICE.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1382
+Expected sum(1) of contents: 54651
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/ccla-exist.pdf
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 27721
+Expected sum(1) of contents: 13559
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/ccla-simulalabs.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7668
+Expected sum(1) of contents: 27501
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/ccla-template.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 8105
+Expected sum(1) of contents: 3128
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-gregw.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7045
+Expected sum(1) of contents: 40474
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-janb.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7006
+Expected sum(1) of contents: 37252
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-jesse.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7061
+Expected sum(1) of contents: 41117
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-jfarcand.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7092
+Expected sum(1) of contents: 43468
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-jstrachan.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7101
+Expected sum(1) of contents: 45409
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-jules.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7099
+Expected sum(1) of contents: 45014
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-ngonzalez.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7073
+Expected sum(1) of contents: 42728
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-sbordet.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7004
+Expected sum(1) of contents: 38090
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-template.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 6731
+Expected sum(1) of contents: 16785
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/cla-tvernum.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7054
+Expected sum(1) of contents: 41305
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/ccla-sabre.pdf
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 725209
+Expected sum(1) of contents: 56115
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/cla-dexter.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7072
+Expected sum(1) of contents: 42907
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/cla-dyu.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7215
+Expected sum(1) of contents: 45116
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/cla-gnodet.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7008
+Expected sum(1) of contents: 36880
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/cla-jocsch.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7144
+Expected sum(1) of contents: 39617
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/cla-jvz.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7056
+Expected sum(1) of contents: 41230
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/cla-lorban.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7153
+Expected sum(1) of contents: 39322
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/cla-mpurland.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7305
+Expected sum(1) of contents: 62129
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/cla-potterru.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7065
+Expected sum(1) of contents: 41743
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/LICENSES/contrib/cla-sbordet.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7004
+Expected sum(1) of contents: 38090
+Expected last modification: Aug 09 09:12:48 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/README.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 4889
+Expected sum(1) of contents: 18386
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/VERSION.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 151383
+Expected sum(1) of contents: 38716
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/bin
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/bin/Jetty-Service.exe
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 204800
+Expected sum(1) of contents: 47770
+Expected last modification: Aug 09 09:21:14 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/bin/build_release_bundles.sh
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 488
+Expected sum(1) of contents: 36915
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/bin/jetty-service.conf
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1053
+Expected sum(1) of contents: 31289
+Expected last modification: Aug 09 09:21:14 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/bin/jetty.sh
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 17127
+Expected sum(1) of contents: 57091
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/contexts
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/contexts-available
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jdbcRealm.properties
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 2101
+Expected sum(1) of contents: 37860
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-ajp.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 603
+Expected sum(1) of contents: 39898
+Expected last modification: Aug 09 09:19:14 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-bio-ssl.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1241
+Expected sum(1) of contents: 29988
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-bio.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 903
+Expected sum(1) of contents: 63409
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-grizzly.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1168
+Expected sum(1) of contents: 21904
+Expected last modification: Aug 09 09:20:38 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-jaas.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1440
+Expected sum(1) of contents: 37534
+Expected last modification: Aug 09 09:19:56 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-jmx.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 2408
+Expected sum(1) of contents: 42361
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-logging.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1448
+Expected sum(1) of contents: 46230
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-plus.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 3777
+Expected sum(1) of contents: 10259
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-proxy.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 2757
+Expected sum(1) of contents: 53591
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-rewrite.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 2468
+Expected sum(1) of contents: 47899
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-ssl.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1419
+Expected sum(1) of contents: 44355
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-stats.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 880
+Expected sum(1) of contents: 60826
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty-win32-service.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1094
+Expected sum(1) of contents: 8382
+Expected last modification: Aug 09 09:21:14 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/jetty.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 8997
+Expected sum(1) of contents: 12193
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/keystore
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1361
+Expected sum(1) of contents: 12969
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/login.conf
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 130
+Expected sum(1) of contents: 12259
+Expected last modification: Aug 09 09:19:56 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/login.properties
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 15
+Expected sum(1) of contents: 1288
+Expected last modification: Aug 09 09:19:56 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/realm.properties
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 741
+Expected sum(1) of contents: 63997
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/etc/webdefault.xml
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 24643
+Expected sum(1) of contents: 12630
+Expected last modification: Aug 09 09:15:26 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/javadoc
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/javadoc/contents.html
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 85
+Expected sum(1) of contents: 6879
+Expected last modification: Aug 09 09:12:30 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/annotations
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/annotations/asm-3.1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 43033
+Expected sum(1) of contents: 55889
+Expected last modification: Aug 09 09:17:54 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/annotations/asm-commons-3.1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 32693
+Expected sum(1) of contents: 46301
+Expected last modification: Aug 09 09:17:54 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/annotations/asm-tree-3.1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 21879
+Expected sum(1) of contents: 45998
+Expected last modification: Aug 09 09:17:54 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/annotations/geronimo-annotation_1.0_spec-1.0.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 12085
+Expected sum(1) of contents: 12041
+Expected last modification: Aug 09 09:17:54 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/annotations/geronimo-jta_1.1_spec-1.1.1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 16030
+Expected sum(1) of contents: 50364
+Expected last modification: Aug 09 09:17:54 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/annotations/jetty-annotations-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 31199
+Expected sum(1) of contents: 10297
+Expected last modification: Aug 09 09:17:54 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/annotations/servlet-annotation-spec-3.0.pre0.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 8278
+Expected sum(1) of contents: 55341
+Expected last modification: Aug 09 09:17:54 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/cometd
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/cometd/cometd-api-1.0.beta1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7186
+Expected sum(1) of contents: 47614
+Expected last modification: Aug 09 09:19:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/cometd/cometd-jetty-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 83050
+Expected sum(1) of contents: 12536
+Expected last modification: Aug 09 09:19:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ext
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ext/jetty-ajp-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 31405
+Expected sum(1) of contents: 44264
+Expected last modification: Aug 09 09:19:14 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ext/jetty-client-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 63996
+Expected sum(1) of contents: 35213
+Expected last modification: Aug 09 09:18:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ext/jetty-html-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 37695
+Expected sum(1) of contents: 28818
+Expected last modification: Aug 09 09:18:46 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ext/jetty-rewrite-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 21205
+Expected sum(1) of contents: 21496
+Expected last modification: Aug 09 09:18:04 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ext/jetty-servlet-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 44928
+Expected sum(1) of contents: 62661
+Expected last modification: Aug 09 09:19:10 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ext/jetty-servlet-tester-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 10252
+Expected sum(1) of contents: 17572
+Expected last modification: Aug 09 09:17:58 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ext/jetty-threadpool-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 6071
+Expected sum(1) of contents: 2227
+Expected last modification: Aug 09 09:19:16 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/grizzly
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/grizzly/grizzly-framework-1.7.0.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 212272
+Expected sum(1) of contents: 9359
+Expected last modification: Aug 09 09:20:40 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/grizzly/jetty-grizzly-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 14768
+Expected sum(1) of contents: 24577
+Expected last modification: Aug 09 09:20:38 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jetty-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 532332
+Expected sum(1) of contents: 14669
+Expected last modification: Aug 09 09:15:26 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jetty-util-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 133073
+Expected sum(1) of contents: 61558
+Expected last modification: Aug 09 09:14:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jmx
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jmx/jetty-jmx-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 34358
+Expected sum(1) of contents: 8315
+Expected last modification: Aug 09 09:17:36 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jndi
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jndi/activation-1.1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 62983
+Expected sum(1) of contents: 38991
+Expected last modification: Aug 09 09:17:40 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jndi/jetty-jndi-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 29089
+Expected sum(1) of contents: 42704
+Expected last modification: Aug 09 09:17:40 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jndi/mail-1.4.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 388864
+Expected sum(1) of contents: 27980
+Expected last modification: Aug 09 09:17:40 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jsp-2.1
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jsp-2.1/ant-1.6.5.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1034049
+Expected sum(1) of contents: 25846
+Expected last modification: Aug 09 09:17:32 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jsp-2.1/core-3.1.1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 3566844
+Expected sum(1) of contents: 23522
+Expected last modification: Aug 09 09:17:32 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jsp-2.1/jsp-2.1-glassfish-9.1.02.B04.p0.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1023436
+Expected sum(1) of contents: 30906
+Expected last modification: Aug 09 09:17:32 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jsp-2.1/jsp-2.1-jetty-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 6339
+Expected sum(1) of contents: 15197
+Expected last modification: Aug 09 09:17:32 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/jsp-2.1/jsp-api-2.1-glassfish-9.1.02.B04.p0.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 133567
+Expected sum(1) of contents: 49011
+Expected last modification: Aug 09 09:17:32 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/plus
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/plus/jetty-plus-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 71387
+Expected sum(1) of contents: 61801
+Expected last modification: Aug 09 09:17:50 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/servlet-api-3.0.pre1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 150823
+Expected sum(1) of contents: 7127
+Expected last modification: Aug 09 09:15:26 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ssl
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/ssl/jetty-ssl-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 31373
+Expected sum(1) of contents: 17334
+Expected last modification: Aug 09 09:17:26 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/aspectjrt-1.5.2a.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 115002
+Expected sum(1) of contents: 38136
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/backport-util-concurrent-2.2.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 326319
+Expected sum(1) of contents: 33637
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/cglib-nodep-2.1_3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 324238
+Expected sum(1) of contents: 23530
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/commons-codec-1.2.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 30085
+Expected sum(1) of contents: 1683
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/commons-httpclient-3.0.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 279383
+Expected sum(1) of contents: 45438
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/concurrent-1.3.4.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 189284
+Expected sum(1) of contents: 60663
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/jcl104-over-slf4j-1.0.1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 6340
+Expected sum(1) of contents: 5994
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/jetty-wadi-session-manager-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 21836
+Expected sum(1) of contents: 3732
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/juli-6.0.13.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 17508
+Expected sum(1) of contents: 32756
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/regexp-1.3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 25429
+Expected sum(1) of contents: 52854
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/slf4j-simple-1.0.1.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 13873
+Expected sum(1) of contents: 39299
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/tribes-6.0.13.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 220005
+Expected sum(1) of contents: 10160
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/wadi-aop-2.0-M10.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 87051
+Expected sum(1) of contents: 52318
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/wadi-core-2.0-M10.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 422738
+Expected sum(1) of contents: 45895
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/wadi-group-2.0-M10.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 62325
+Expected sum(1) of contents: 7566
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/wadi/wadi-tribes-2.0-M10.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 19158
+Expected sum(1) of contents: 2460
+Expected last modification: Aug 09 09:21:02 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/win32
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/win32/jetty-win32-service-java-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7020
+Expected sum(1) of contents: 60477
+Expected last modification: Aug 09 09:21:14 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/win32/wrapper.dll
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 81920
+Expected sum(1) of contents: 8891
+Expected last modification: Aug 09 09:21:14 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/win32/wrapper.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 83820
+Expected sum(1) of contents: 15031
+Expected last modification: Aug 09 09:21:14 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/xbean
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/lib/xbean/jetty-xbean-7.0.0pre3.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 7132
+Expected sum(1) of contents: 39815
+Expected last modification: Aug 09 09:21:22 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/logs
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/resources
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/resources/log4j.properties
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 289
+Expected sum(1) of contents: 25830
+Expected last modification: Aug 09 09:12:44 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/start.jar
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 17873
+Expected sum(1) of contents: 8129
+Expected last modification: Aug 09 09:17:28 2008
+Current status: installed
+
+Pathname: /opt/hudson/lib/jetty/webapps
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: pkginfo
+Type: installation file
+Expected file size (bytes): 172
+Expected sum(1) of contents: 13227
+Expected last modification: May 02 00:43:27 2009
+
+## Checking is complete.
+END SNIPPET: pkgchk

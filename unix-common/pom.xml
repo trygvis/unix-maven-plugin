@@ -50,7 +50,6 @@
     <dependency>
       <groupId>org.functionaljava</groupId>
       <artifactId>fj</artifactId>
-      <version>2.19</version>
     </dependency>
     <dependency>
       <groupId>joda-time</groupId>

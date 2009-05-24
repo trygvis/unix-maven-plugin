@@ -1,0 +1,81 @@
+$ pkgchk -l -d target/basic-*.pkg all
+Checking uninstalled stream format package <basic> fromn <../target/basic-1.0-SNAPSHOT.pkg>
+## Checking control scripts.
+## Checking package objects.
+Pathname: /opt
+Type: directory
+Expected mode: 17777777777
+Expected owner: ?
+Expected group: ?
+Current status: installed
+
+Pathname: /opt/hudson
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/doc
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /opt/hudson/doc/atom-license.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 49
+Expected sum(1) of contents: 4473
+Expected last modification: Oct 02 02:07:36 2008
+Current status: installed
+
+Pathname: /opt/hudson/doc/dc-license.txt
+Type: regular file
+Expected mode: 0644
+Expected owner: nobody
+Expected group: nogroup
+Expected file size (bytes): 1544
+Expected sum(1) of contents: 59072
+Expected last modification: Oct 02 02:07:36 2008
+Current status: installed
+
+Pathname: /opt/hudson/hudson.war
+Type: regular file
+Expected mode: 0666
+Expected owner: hudson
+Expected group: hudson
+Expected file size (bytes): 20623413
+Expected sum(1) of contents: 3301
+Expected last modification: Oct 24 23:08:16 2008
+Current status: installed
+
+Pathname: /var
+Type: directory
+Expected mode: 17777777777
+Expected owner: ?
+Expected group: ?
+Current status: installed
+
+Pathname: /var/log
+Type: directory
+Expected mode: 0755
+Expected owner: nobody
+Expected group: nogroup
+Current status: installed
+
+Pathname: /var/log/hudson
+Type: symbolic link
+Source of link: /var/opt/hudson/log
+Current status: installed
+
+Pathname: pkginfo
+Type: installation file
+Expected file size (bytes): 161
+Expected sum(1) of contents: 12122
+Expected last modification: May 13 21:31:26 2009
+
+## Checking is complete.

@@ -52,11 +52,9 @@ import java.util.*;
 public class SpecFile
     implements LineProducer
 {
-//    public String groupId;
-//
-//    public String artifactId;
+    public String version;
 
-    public PackageVersion version;
+    public Option<String> release = none();
 
     // Will be generated if not set
     public String name;
@@ -144,8 +142,8 @@ public class SpecFile
 
         spec.
             add( "Name: " + name ).
-            add( "Version: " + getRpmVersion( version ) ).
-            add( "Release: " + getRpmRelease( version ).orSome( "1" ) ).
+            add( "Version: " + version ).
+            add( "Release: " + release.orSome( "1" ) ).
             add( "Summary: " + UnixUtil.getField( "summary", summary ) ).
             add( "License: " + UnixUtil.getField( "license", license ) ).
             addIfNotEmpty( "Distribution: ", distribution ).
@@ -190,23 +188,6 @@ public class SpecFile
         }
 
         spec.addIf( dump, "%dump" );
-    }
-
-    public static String getRpmVersion( PackageVersion version )
-    {
-        String rpmVersionString = version.version;
-
-        if ( version.snapshot )
-        {
-            rpmVersionString += "_" + version.timestamp;
-        }
-
-        return rpmVersionString.replace( '-', '_' );
-    }
-
-    public static Option<String> getRpmRelease( PackageVersion version )
-    {
-        return version.revision;
     }
 
     // -----------------------------------------------------------------------

@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.util.*;
 
@@ -52,71 +51,7 @@ public abstract class UnixPackage
         this.packageFileExtension = packageFileExtension;
     }
 
-    // -----------------------------------------------------------------------
-    // Maven Meta Data
-    // -----------------------------------------------------------------------
-
-    public UnixPackage mavenCoordinates( String groupId, String artifactId )
-    {
-        return this;
-    }
-
-//    public UnixPackage dependencies( Set dependencies )
-//    {
-//        return this;
-//    }
-
-    // -----------------------------------------------------------------------
-    // Generic Meta Data
-    // -----------------------------------------------------------------------
-
-    public final UnixPackage version( PackageVersion version )
-    {
-        this.version = version;
-
-        return this;
-    }
-
-    public UnixPackage id( String id )
-    {
-        return this;
-    }
-
-    /**
-     * A single-line description of the package.
-     */
-    public UnixPackage name( Option<String> name )
-    {
-        return this;
-    }
-
-    /**
-     * A multi-line description of the package.
-     */
-    public UnixPackage description( Option<String> description )
-    {
-        return this;
-    }
-
-    public UnixPackage license( String license )
-    {
-        return this;
-    }
-
-    public UnixPackage contact( Option<String> contact )
-    {
-        return this;
-    }
-
-    public UnixPackage contactEmail( Option<String> contactEmail )
-    {
-        return this;
-    }
-
-    public UnixPackage architecture( String architecture )
-    {
-        return this;
-    }
+    public abstract UnixPackage parameters( PackageParameters parameters );
 
     // -----------------------------------------------------------------------
     //
@@ -134,14 +69,9 @@ public abstract class UnixPackage
         return this;
     }
 
-    public File getBasedir()
-    {
-        return basedir;
-    }
-
     public File getScripts()
     {
-        return new File( getBasedir(), "src/main/unix/scripts" );
+        return new File( basedir, "src/main/unix/scripts" );
     }
 
     public UnixPackage debug( boolean debug )
@@ -154,6 +84,12 @@ public abstract class UnixPackage
 
     public abstract void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception;
+
+    public UnixPackage setVersion( PackageVersion version )
+    {
+        this.version = version;
+        return this;
+    }
 
     public final PackageVersion getVersion()
     {

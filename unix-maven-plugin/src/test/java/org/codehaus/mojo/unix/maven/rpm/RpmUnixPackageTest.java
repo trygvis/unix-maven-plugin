@@ -25,9 +25,7 @@ package org.codehaus.mojo.unix.maven.rpm;
  */
 
 import fj.data.*;
-import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
-import org.codehaus.mojo.unix.FileAttributes;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageVersion.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
@@ -70,13 +68,15 @@ public class RpmUnixPackageTest
         FileObject packageRoot = rpmTest.resolveFile( "root" );
         File packageFile = getTestFile( "target/rpm-test/file.rpm" );
 
-        UnixPackage unixPackage = RpmPackagingFormat.cast( packagingFormat.start().
-            mavenCoordinates( "mygroup", "myartifact" ).
-            version( packageVersion( "1.0-1", "123", false, Option.<String>none() ) ).
-            contact( some( "Kurt Cobain" ) ).
+        PackageVersion version = packageVersion( "1.0-1", "123", false, Option.<String>none() );
+        PackageParameters parameters = PackageParameters.packageParameters( "mygroup", "myartifact", version, "id" ).
+            contact( "Kurt Cobain" ).
             architecture( "all" ).
-            name( some( "Yo!" ) ).
-            license( "BSD" ).
+            name( "Yo!" ).
+            license( "BSD" );
+
+        UnixPackage unixPackage = RpmPackagingFormat.cast( packagingFormat.start().
+            parameters( parameters ).
             workingDirectory( packageRoot ) ).
             group( "Fun" );
 

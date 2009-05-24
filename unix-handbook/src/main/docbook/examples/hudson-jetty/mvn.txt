@@ -1,0 +1,292 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Hudson Solaris Package
+[INFO]    task-segment: [clean, install]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean]
+[INFO] Deleting directory /home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target
+[INFO] [resources:resources]
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/src/main/resources
+[INFO] [unix:package-pkg]
+defaultFileAttributes = user=nobody, group=nogroup, mode=rw-r--r--
+defaultDirectoryAttributes = user=nobody, group=nogroup, mode=rwxr-xr-x
+.
+    opt
+        hudson
+            etc
+                jetty-context.xml
+            jetty
+                contexts
+                    hudson.xml
+            lib
+                hudson.war
+                jetty
+                    LICENSES
+                        CDDLv1.0.txt
+                        LICENSE.txt
+                        NOTICE.txt
+                        ccla-exist.pdf
+                        ccla-simulalabs.txt
+                        ccla-template.txt
+                        cla-gregw.txt
+                        cla-janb.txt
+                        cla-jesse.txt
+                        cla-jfarcand.txt
+                        cla-jstrachan.txt
+                        cla-jules.txt
+                        cla-ngonzalez.txt
+                        cla-sbordet.txt
+                        cla-template.txt
+                        cla-tvernum.txt
+                        contrib
+                            ccla-sabre.pdf
+                            cla-dexter.txt
+                            cla-dyu.txt
+                            cla-gnodet.txt
+                            cla-jocsch.txt
+                            cla-jvz.txt
+                            cla-lorban.txt
+                            cla-mpurland.txt
+                            cla-potterru.txt
+                            cla-sbordet.txt
+                    README.txt
+                    VERSION.txt
+                    bin
+                        Jetty-Service.exe
+                        build_release_bundles.sh
+                        jetty-service.conf
+                        jetty.sh
+                    contexts
+                    contexts-available
+                    etc
+                        jdbcRealm.properties
+                        jetty-ajp.xml
+                        jetty-bio-ssl.xml
+                        jetty-bio.xml
+                        jetty-grizzly.xml
+                        jetty-jaas.xml
+                        jetty-jmx.xml
+                        jetty-logging.xml
+                        jetty-plus.xml
+                        jetty-proxy.xml
+                        jetty-rewrite.xml
+                        jetty-ssl.xml
+                        jetty-stats.xml
+                        jetty-win32-service.xml
+                        jetty.xml
+                        keystore
+                        login.conf
+                        login.properties
+                        realm.properties
+                        webdefault.xml
+                    javadoc
+                        contents.html
+                    lib
+                        annotations
+                            asm-3.1.jar
+                            asm-commons-3.1.jar
+                            asm-tree-3.1.jar
+                            geronimo-annotation_1.0_spec-1.0.jar
+                            geronimo-jta_1.1_spec-1.1.1.jar
+                            jetty-annotations-7.0.0pre3.jar
+                            servlet-annotation-spec-3.0.pre0.jar
+                        cometd
+                            cometd-api-1.0.beta1.jar
+                            cometd-jetty-7.0.0pre3.jar
+                        ext
+                            jetty-ajp-7.0.0pre3.jar
+                            jetty-client-7.0.0pre3.jar
+                            jetty-html-7.0.0pre3.jar
+                            jetty-rewrite-7.0.0pre3.jar
+                            jetty-servlet-7.0.0pre3.jar
+                            jetty-servlet-tester-7.0.0pre3.jar
+                            jetty-threadpool-7.0.0pre3.jar
+                        grizzly
+                            grizzly-framework-1.7.0.jar
+                            jetty-grizzly-7.0.0pre3.jar
+                        jetty-7.0.0pre3.jar
+                        jetty-util-7.0.0pre3.jar
+                        jmx
+                            jetty-jmx-7.0.0pre3.jar
+                        jndi
+                            activation-1.1.jar
+                            jetty-jndi-7.0.0pre3.jar
+                            mail-1.4.jar
+                        jsp-2.1
+                            ant-1.6.5.jar
+                            core-3.1.1.jar
+                            jsp-2.1-glassfish-9.1.02.B04.p0.jar
+                            jsp-2.1-jetty-7.0.0pre3.jar
+                            jsp-api-2.1-glassfish-9.1.02.B04.p0.jar
+                        plus
+                            jetty-plus-7.0.0pre3.jar
+                        servlet-api-3.0.pre1.jar
+                        ssl
+                            jetty-ssl-7.0.0pre3.jar
+                        wadi
+                            aspectjrt-1.5.2a.jar
+                            backport-util-concurrent-2.2.jar
+                            cglib-nodep-2.1_3.jar
+                            commons-codec-1.2.jar
+                            commons-httpclient-3.0.jar
+                            concurrent-1.3.4.jar
+                            jcl104-over-slf4j-1.0.1.jar
+                            jetty-wadi-session-manager-7.0.0pre3.jar
+                            juli-6.0.13.jar
+                            regexp-1.3.jar
+                            slf4j-simple-1.0.1.jar
+                            tribes-6.0.13.jar
+                            wadi-aop-2.0-M10.jar
+                            wadi-core-2.0-M10.jar
+                            wadi-group-2.0-M10.jar
+                            wadi-tribes-2.0-M10.jar
+                        win32
+                            jetty-win32-service-java-7.0.0pre3.jar
+                            wrapper.dll
+                            wrapper.jar
+                        xbean
+                            jetty-xbean-7.0.0pre3.jar
+                    logs
+                    resources
+                        log4j.properties
+                    start.jar
+                    webapps
+
+Command completed: pkgmk, exit value: 0
+------------------------------------------------------
+pkgmk output:
+## Building pkgmap from package prototype file.
+## Processing pkginfo file.
+WARNING: parameter <CLASSES> set to "none"
+## Attempting to volumize 140 entries in pkgmap.
+part  1 -- 64678 blocks, 863 entries
+## Packaging one part.
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/pkgmap
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/pkginfo
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/etc/jetty-context.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/hudson.war
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/CDDLv1.0.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/LICENSE.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/NOTICE.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/ccla-exist.pdf
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/ccla-simulalabs.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/ccla-template.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-gregw.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-janb.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-jesse.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-jfarcand.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-jstrachan.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-jules.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-ngonzalez.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-sbordet.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-template.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/cla-tvernum.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/ccla-sabre.pdf
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/cla-dexter.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/cla-dyu.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/cla-gnodet.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/cla-jocsch.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/cla-jvz.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/cla-lorban.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/cla-mpurland.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/cla-potterru.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/LICENSES/contrib/cla-sbordet.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/README.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/VERSION.txt
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/bin/Jetty-Service.exe
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/bin/build_release_bundles.sh
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/bin/jetty-service.conf
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/bin/jetty.sh
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jdbcRealm.properties
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-ajp.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-bio-ssl.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-bio.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-grizzly.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-jaas.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-jmx.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-logging.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-plus.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-proxy.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-rewrite.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-ssl.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-stats.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty-win32-service.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/jetty.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/keystore
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/login.conf
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/login.properties
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/realm.properties
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/etc/webdefault.xml
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/javadoc/contents.html
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/annotations/asm-3.1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/annotations/asm-commons-3.1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/annotations/asm-tree-3.1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/annotations/geronimo-annotation_1.0_spec-1.0.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/annotations/geronimo-jta_1.1_spec-1.1.1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/annotations/jetty-annotations-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/annotations/servlet-annotation-spec-3.0.pre0.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/cometd/cometd-api-1.0.beta1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/cometd/cometd-jetty-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/ext/jetty-ajp-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/ext/jetty-client-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/ext/jetty-html-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/ext/jetty-rewrite-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/ext/jetty-servlet-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/ext/jetty-servlet-tester-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/ext/jetty-threadpool-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/grizzly/grizzly-framework-1.7.0.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/grizzly/jetty-grizzly-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jetty-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jetty-util-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jmx/jetty-jmx-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jndi/activation-1.1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jndi/jetty-jndi-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jndi/mail-1.4.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jsp-2.1/ant-1.6.5.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jsp-2.1/core-3.1.1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jsp-2.1/jsp-2.1-glassfish-9.1.02.B04.p0.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jsp-2.1/jsp-2.1-jetty-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/jsp-2.1/jsp-api-2.1-glassfish-9.1.02.B04.p0.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/plus/jetty-plus-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/servlet-api-3.0.pre1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/ssl/jetty-ssl-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/aspectjrt-1.5.2a.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/backport-util-concurrent-2.2.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/cglib-nodep-2.1_3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/commons-codec-1.2.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/commons-httpclient-3.0.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/concurrent-1.3.4.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/jcl104-over-slf4j-1.0.1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/jetty-wadi-session-manager-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/juli-6.0.13.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/regexp-1.3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/slf4j-simple-1.0.1.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/tribes-6.0.13.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/wadi-aop-2.0-M10.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/wadi-core-2.0-M10.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/wadi-group-2.0-M10.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/wadi/wadi-tribes-2.0-M10.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/win32/jetty-win32-service-java-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/win32/wrapper.dll
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/win32/wrapper.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/lib/xbean/jetty-xbean-7.0.0pre3.jar
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/resources/log4j.properties
+/home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/unix/root-pkg/hudson-jetty-pkg/root/opt/hudson/lib/jetty/start.jar
+## Validating control scripts.
+## Packaging complete.
+
+Command completed: pkgtrans, exit value: 0
+------------------------------------------------------
+pkgtrans output:
+Transferring <hudson-jetty-pkg> package instance
+
+[INFO] [install:install]
+[INFO] Installing /home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/hudson-jetty-pkg/target/hudson-jetty-pkg-1.0-SNAPSHOT.pkg to /home/trygvis/.m2/repository/org/codehaus/mojo/unix/example/hudson-jetty-pkg/1.0-SNAPSHOT/hudson-jetty-pkg-1.0-SNAPSHOT.pkg
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 5 seconds
+[INFO] Finished at: Sat May 02 00:43:29 CEST 2009
+[INFO] Final Memory: 12M/219M
+[INFO] ------------------------------------------------------------------------

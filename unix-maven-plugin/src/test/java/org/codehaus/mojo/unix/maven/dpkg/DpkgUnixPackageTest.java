@@ -26,11 +26,12 @@ package org.codehaus.mojo.unix.maven.dpkg;
 
 import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageVersion.*;
 import org.codehaus.mojo.unix.dpkg.*;
 import org.codehaus.mojo.unix.maven.*;
-import org.codehaus.mojo.unix.util.vfs.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.vfs.*;
 import org.codehaus.plexus.*;
 
 import java.io.*;
@@ -56,13 +57,15 @@ public class DpkgUnixPackageTest
         FileObject packageRoot = dpkgTest.resolveFile( "root" );
         File packageFile = VfsUtil.asFile( dpkgTest.resolveFile( "file.deb" ) );
 
-        DpkgUnixPackage.cast( packagingFormat.start() ).
+        PackageVersion version = packageVersion( "1.0", "123", false, some( "1" ) );
+        PackageParameters parameters = PackageParameters.packageParameters( "mygroup", "myartifact", version, "id" ).
+            contact( "Kurt Cobain" ).
+            architecture( "all" );
+
+        packagingFormat.start().
+            parameters( parameters ).
             section( "devel" ).
             debug( true ).
-            mavenCoordinates( "mygroup", "myartifact" ).
-            version( packageVersion( "1.0", "123", false, some( "1" ) ) ).
-            contact( some( "Kurt Cobain" ) ).
-            architecture( "all" ).
             workingDirectory( packageRoot ).
             packageToFile( packageFile, ScriptUtil.Strategy.SINGLE );
 

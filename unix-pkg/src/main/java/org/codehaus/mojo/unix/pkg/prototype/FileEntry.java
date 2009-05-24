@@ -43,7 +43,7 @@ public class FileEntry
     private final Option<File> realPath;
 
     /**
-     * The same as calling {@link #FileEntry(Option, Option, RegularFile, Option)}
+     * The same as calling {@link #FileEntry(Option, Option, UnixFsObject.RegularFile, Option)}
      * with <code>relative=false</code> and <code>realPath=null</code>.
      */
     public FileEntry( Option<String> pkgClass, RegularFile file )

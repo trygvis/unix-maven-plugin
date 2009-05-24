@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.maven.rpm;
  */
 
 import fj.*;
+import static fj.P.*;
 import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
@@ -62,31 +63,25 @@ public class RpmUnixPackage
     public RpmUnixPackage()
     {
         super( "rpm" );
+    }
+
+    public RpmUnixPackage parameters( PackageParameters parameters )
+    {
+        if ( parameters.license.isNone() )
+        {
+            throw new MissingSettingException( "The project has to specify at a license." );
+        }
 
         specFile = new SpecFile();
-    }
+        specFile.name = parameters.id;
+        specFile.summary = parameters.name.orSome( "" ); // TODO: This is not right
+        specFile.description = parameters.description.orSome( "" ); // TODO: This is not right
+        specFile.license = parameters.license.some();
 
-    public UnixPackage id( String id )
-    {
-        specFile.name = id;
-        return this;
-    }
+        P2<String, Option<String>> rpmVersion = getRpmVersion( parameters.version );
+        specFile.version = rpmVersion._1();
+        specFile.release = rpmVersion._2();
 
-    public UnixPackage name( Option<String> name )
-    {
-        specFile.summary = name.orSome( "" ); // TODO: This is not right
-        return this;
-    }
-
-    public UnixPackage description( Option<String> description )
-    {
-        specFile.description = description.orSome( "" ); // TODO: This is not right
-        return this;
-    }
-
-    public UnixPackage license( String license )
-    {
-        specFile.license = license;
         return this;
     }
 
@@ -186,7 +181,6 @@ public class RpmUnixPackage
         specFile.includePost = result.postInstall;
         specFile.includePreun = result.preRemove;
         specFile.includePostun = result.postRemove;
-        specFile.version = getVersion();
         specFile.buildRoot = VfsUtil.asFile( fileCollector.getFsRoot() );
 
         LineStreamUtil.toFile( specFile, specFilePath );
@@ -203,8 +197,24 @@ public class RpmUnixPackage
             buildBinary();
     }
 
+    // -----------------------------------------------------------------------
+    // Static
+    // -----------------------------------------------------------------------
+
     public static RpmUnixPackage cast( UnixPackage unixPackage )
     {
         return (RpmUnixPackage) unixPackage;
+    }
+
+    public static P2<String, Option<String>> getRpmVersion( PackageVersion version )
+    {
+        String rpmVersionString = version.version;
+
+        if ( version.snapshot )
+        {
+            rpmVersionString += "_" + version.timestamp;
+        }
+
+        return p( rpmVersionString.replace( '-', '_' ), version.revision );
     }
 }

@@ -38,5 +38,5 @@ public interface PackagingFormat
 
     boolean licenseRequired();
 
-    String defaultArchitecture();
+//    String defaultArchitecture();
 }

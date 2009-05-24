@@ -1,0 +1,32 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Hudson Solaris Package
+[INFO]    task-segment: [clean, install]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean]
+[INFO] Deleting directory /home/tla/dev/unix/src/examples/basic-pkg/target
+[INFO] [resources:resources]
+[INFO] Using default encoding to copy filtered resources.
+[INFO] [unix:package-pkg]
+defaultFileAttributes = user=nobody, group=nogroup, mode=rw-r--r--
+defaultDirectoryAttributes = user=nobody, group=nogroup, mode=rwxr-xr-x
+.
+    opt
+        hudson
+            doc
+                atom-license.txt
+                dc-license.txt
+            hudson.war
+    var
+        log
+            hudson
+
+[INFO] [install:install]
+[INFO] Installing /home/tla/dev/unix/src/examples/basic-pkg/target/basic-pkg-1.0-SNAPSHOT.pkg to /home/tla/.m2/repository/org/codehaus/mojo/unix/example/basic-pkg/1.0-SNAPSHOT/basic-pkg-1.0-SNAPSHOT.pkg
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 4 seconds
+[INFO] Finished at: Thu Apr 30 18:15:28 CEST 2009
+[INFO] Final Memory: 10M/18M
+[INFO] ------------------------------------------------------------------------

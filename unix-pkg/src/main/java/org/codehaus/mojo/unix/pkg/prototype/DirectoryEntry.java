@@ -38,7 +38,7 @@ public class DirectoryEntry
     extends PrototypeEntry<Directory>
 {
     /**
-     * The same as calling {@link #DirectoryEntry(Option, Option, Directory)}
+     * The same as calling {@link #DirectoryEntry(Option, Option, UnixFsObject.Directory)}
      * with <code>relative=none()</code>.
      */
     public DirectoryEntry( Option<String> pkgClass, Directory directory )

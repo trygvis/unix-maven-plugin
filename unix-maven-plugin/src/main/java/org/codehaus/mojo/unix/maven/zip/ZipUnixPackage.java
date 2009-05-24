@@ -57,6 +57,11 @@ public class ZipUnixPackage
         super( "zip" );
     }
 
+    public UnixPackage parameters( PackageParameters parameters )
+    {
+        return this;
+    }
+
     // -----------------------------------------------------------------------
     // FileCollector Implementation
     // -----------------------------------------------------------------------

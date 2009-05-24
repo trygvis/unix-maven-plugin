@@ -155,9 +155,6 @@ public class RelativePath
      * <li>"/foo/bar".isBelowOrSame( "/foo") -> true</li>
      * <li>"/foo".isBelowOrSame( "/foo/bar") -> false</li>
      * </ul>
-     *
-     * @param parent
-     * @return
      */
     public boolean isBelowOrSame( RelativePath parent )
     {

@@ -24,10 +24,10 @@ package org.codehaus.mojo.unix.pkg;
  * SOFTWARE.
  */
 
+import static fj.data.List.*;
+import static fj.data.Option.*;
 import junit.framework.*;
 import org.codehaus.mojo.unix.util.line.*;
-import fj.data.*;
-import static fj.data.List.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -55,7 +55,7 @@ public class PkginfoFileTest
         expected.packageName = "project-pkg-1";
         expected.name = "Hudson";
         expected.category = "application";
-        expected.arch = "all";
+        expected.arch = some( "all" );
         expected.version = "1.1-2";
         expected.pstamp = "20090129.134909";
         expected.email = "trygvis@codehaus.org";

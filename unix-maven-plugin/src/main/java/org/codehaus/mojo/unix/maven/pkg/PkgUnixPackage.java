@@ -78,42 +78,25 @@ public class PkgUnixPackage
         super( "pkg" );
     }
 
+    public UnixPackage parameters( PackageParameters parameters )
+    {
+        pkginfoFile.packageName = parameters.id;
+        pkginfoFile.name = parameters.name.orSome( "" ); // TODO: This is not right
+        pkginfoFile.desc = parameters.description.orSome( "" ); // TODO: This is not right
+        if ( parameters.contactEmail.isSome() )
+        {
+            pkginfoFile.email = parameters.contactEmail.some();
+        }
+        pkginfoFile.arch = parameters.architecture;
+        pkginfoFile.version = getPkgVersion( parameters.version );
+        pkginfoFile.pstamp = parameters.version.timestamp;
+
+        return this;
+    }
+
     // -----------------------------------------------------------------------
     // Common Settings
     // -----------------------------------------------------------------------
-
-    public UnixPackage id( String id )
-    {
-        pkginfoFile.packageName = id;
-        return this;
-    }
-
-    public UnixPackage name( Option<String> name )
-    {
-        pkginfoFile.name = name.orSome( "" ); // TODO: This is not right
-        return this;
-    }
-
-    public UnixPackage description( Option<String> description )
-    {
-        pkginfoFile.desc = description.orSome( "" ); // TODO: This is not right
-        return this;
-    }
-
-    public UnixPackage contactEmail( Option<String> contactEmail )
-    {
-        if ( contactEmail.isSome() )
-        {
-            pkginfoFile.email = contactEmail.some();
-        }
-        return this;
-    }
-
-    public UnixPackage architecture( String architecture )
-    {
-        pkginfoFile.arch = architecture;
-        return this;
-    }
 
     public UnixPackage workingDirectory( FileObject workingDirectory )
         throws FileSystemException
@@ -190,8 +173,6 @@ public class PkgUnixPackage
             createExecution( pkginfoFile.packageName, "pkg", getScripts(), workingDirectoryF, strategy ).
             execute();
 
-        pkginfoFile.version = getPkgVersion( getVersion() );
-        pkginfoFile.pstamp = getVersion().timestamp;
         LineStreamUtil.toFile( pkginfoFile, pkginfoF );
 
         String pkg = pkginfoFile.getPkgName( pkginfoF );

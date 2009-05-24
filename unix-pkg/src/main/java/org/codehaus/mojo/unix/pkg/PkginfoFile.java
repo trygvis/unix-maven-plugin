@@ -26,6 +26,8 @@ package org.codehaus.mojo.unix.pkg;
 
 import fj.data.List;
 import static fj.data.List.*;
+import fj.data.*;
+import static fj.data.Option.*;
 import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.plexus.util.*;
@@ -48,7 +50,7 @@ public class PkginfoFile
     public String name;
     public String desc;
     public String email;
-    public String arch;
+    public Option<String> arch = none();
     public List<String> classes = nil();
     public String category = "application";
 
@@ -64,8 +66,7 @@ public class PkginfoFile
             add( "VERSION=" + version ).
             add( "PSTAMP=" + pstamp ).
             addIf( this.classes.isNotEmpty(), "CLASSES=" + classes ).
-            addIf( StringUtils.isNotEmpty( arch ), "ARCH=" + (StringUtils.isNotEmpty( arch ) ? arch : "all") ).
-            addIf( StringUtils.isEmpty( arch ), "ARCH=all" ).
+            add( "ARCH=" + arch.orSome( "all" ) ).
             add( "CATEGORY=" + StringUtils.clean( category ) );
     }
 
@@ -100,7 +101,7 @@ public class PkginfoFile
                 }
                 else if ( "ARCH".equals( field ) )
                 {
-                    pkginfoFile.arch = value;
+                    pkginfoFile.arch = some( value );
                 }
                 else if ( "VERSION".equals( field ) )
                 {

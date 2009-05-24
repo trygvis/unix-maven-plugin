@@ -158,7 +158,7 @@ public class SpecFileTest
 
         SpecFile specFile = new SpecFile();
         specFile.name = "groupid-artifactid";
-        specFile.version = PackageVersion.packageVersion( "1.0", "now", false, Option.<String>none() );
+        specFile.version = "1.0";
         specFile.summary = "My summary";
         specFile.license = "License";
         specFile.group = "My Group";

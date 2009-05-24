@@ -45,7 +45,7 @@ public class SymlinkEntry
 
     public String generatePrototypeLine()
     {
-        return "s " + pkgClass + " " + getPath() + "=" + object;
+        return "s " + pkgClass + " " + getPath() + "=" + object.value;
     }
 
     public FileAttributes getFileAttributes()

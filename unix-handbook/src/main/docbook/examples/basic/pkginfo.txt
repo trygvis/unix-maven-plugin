@@ -1,0 +1,15 @@
+$ pkginfo -l -d target/basic-*.pkg
+   PKGINST:  basic
+      NAME:  Hudson Solaris Package
+  CATEGORY:  application
+      ARCH:  all
+   VERSION:  1.0-20090513.193125
+    PSTAMP:  20090513.193125
+     EMAIL:  support@acme.org
+    STATUS:  spooled
+     FILES:       11 spooled pathnames
+                   5 directories
+                   2 setuid/setgid executables
+                   2 package information files
+               40286 blocks used (approx)
+

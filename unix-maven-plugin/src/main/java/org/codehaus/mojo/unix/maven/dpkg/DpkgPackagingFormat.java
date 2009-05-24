@@ -34,7 +34,7 @@ import org.codehaus.mojo.unix.maven.*;
 public class DpkgPackagingFormat
     implements PackagingFormat
 {
-    public UnixPackage start()
+    public DpkgUnixPackage start()
     {
         return new DpkgUnixPackage();
     }
@@ -42,10 +42,5 @@ public class DpkgPackagingFormat
     public boolean licenseRequired()
     {
         return false;
-    }
-
-    public String defaultArchitecture()
-    {
-        return "all";
     }
 }

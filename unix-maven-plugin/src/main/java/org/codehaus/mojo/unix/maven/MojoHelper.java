@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.maven;
  */
 
 import fj.*;
+import static fj.Function.*;
 import fj.data.List;
 import static fj.data.List.*;
 import static fj.data.List.single;
@@ -40,6 +41,7 @@ import org.apache.maven.plugin.*;
 import org.apache.maven.plugin.logging.*;
 import org.apache.maven.project.*;
 import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.util.*;
@@ -47,13 +49,20 @@ import org.codehaus.plexus.util.*;
 import java.io.*;
 import java.util.*;
 import java.util.TreeMap;
+import static java.lang.String.*;
 
 /**
+ * Utility class encapsulating how to create a package. Used by all packaging Mojos.
+ *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public abstract class MojoHelper
 {
+    public static final String ATTACHED_NO_ARTIFACTS_CONFIGURED = "When running in attached mode at least one package has to be configured.";
+    public static final String DUPLICATE_CLASSIFIER = "Duplicate package classifier: '%s'.";
+    public static final String DUPLICATE_UNCLASSIFIED = "There can only be one package without an classifier.";
+
     public static Execution create( Map formats,
                                     String formatType,
                                     SnapshotTransformation snapshotTransformation,
@@ -101,18 +110,11 @@ public abstract class MojoHelper
                 FileObject packageRoot = buildDirectory.resolveFile( name );
                 packageRoot.createFolder();
 
-                PackageParameters parameters = calculatePackageParameters( format, project, version, mojoParameters, pakke );
+                PackageParameters parameters = calculatePackageParameters( project, version, mojoParameters, pakke );
 
                 UnixPackage unixPackage = format.start().
-                    mavenCoordinates( parameters.groupId, parameters.artifactId ).
-                    version( parameters.version ).
-                    id( parameters.id ).
-                    name( parameters.name ).
-                    description( parameters.description ).
-                    contact( parameters.contact ).
-                    contactEmail( parameters.contactEmail ).
-                    license( parameters.license ).
-                    architecture( parameters.architecture ).
+                    parameters( parameters ).
+                    setVersion( version ).                      // TODO: This should go away
                     workingDirectory( packageRoot ).
                     debug( debug ).
                     basedir( project.basedir );
@@ -222,7 +224,8 @@ public abstract class MojoHelper
                     unixPackage.
                         packageToFile( packageFile, strategy );
 
-                    attach( pakke, artifactType, packageFile, mavenProject, mavenProjectHelper, attachedMode );
+                    attach( pakke.classifier, artifactType, packageFile, mavenProject, mavenProjectHelper,
+                            attachedMode );
                 }
                 catch ( MojoExecutionException e )
                 {
@@ -239,80 +242,48 @@ public abstract class MojoHelper
             }
         }
 
-        private void attach( Package pakke, String artifactType, File packageFile,
+        private void attach( Option<String> classifier, String artifactType, File packageFile,
                              MavenProject project, MavenProjectHelper mavenProjectHelper, boolean attachedMode )
         {
             if ( attachedMode )
             {
                 // In attached mode all the packages are required to have an classifier
-                mavenProjectHelper.attachArtifact( project, artifactType, pakke.classifier.some(),
-                                                   packageFile );
+                mavenProjectHelper.attachArtifact( project, artifactType, classifier.some(), packageFile );
             }
             else
             {
-                if ( pakke.classifier.isNone() )
+                if ( classifier.isNone() )
                 {
                     project.getArtifact().setFile( packageFile );
                 }
                 else
                 {
-                    mavenProjectHelper.attachArtifact( project, formatType, pakke.classifier.some(), packageFile );
+                    mavenProjectHelper.attachArtifact( project, formatType, classifier.some(), packageFile );
                 }
             }
         }
     }
 
-    public static class PackageParameters
-    {
-        public final String groupId;
-        public final String artifactId;
-        public final PackageVersion version;
-        public final String id;
-        public final Option<String> name;
-        public final Option<String> description;
-        public final Option<String> contact;
-        public final Option<String> contactEmail;
-        public final String license;
-        public final String architecture;
-
-        public PackageParameters( String groupId, String artifactId, PackageVersion version, String id,
-                                  Option<String> name, Option<String> description, Option<String> contact,
-                                  Option<String> contactEmail, String license, String architecture )
-        {
-            this.groupId = groupId;
-            this.artifactId = artifactId;
-            this.version = version;
-            this.id = id;
-            this.name = name;
-            this.description = description;
-            this.contact = contact;
-            this.contactEmail = contactEmail;
-            this.license = license;
-            this.architecture = architecture;
-        }
-    }
-
-    public static PackageParameters calculatePackageParameters( PackagingFormat format, MavenProjectWrapper project,
+    public static PackageParameters calculatePackageParameters( MavenProjectWrapper project,
                                                                 PackageVersion version,
                                                                 PackagingMojoParameters mojoParameters,
                                                                 Package pakke )
     {
-        String defaultId = project.groupId + "-" + project.artifactId;
+        // This used to be ${groupId}-${artifactId}, but it was too long for pkg so this is a more sane default
+        String defaultId = project.artifactId;
 
         if ( pakke.classifier.isSome() )
         {
             defaultId += "-" + pakke.classifier.some();
         }
 
-        return new PackageParameters( project.groupId, project.artifactId,
-                                      version,
-                                      pakke.id.orSome( defaultId.toLowerCase() ),
-                                      pakke.name.orElse( mojoParameters.name ).orElse( project.name ),
-                                      pakke.description.orElse( project.description ),
-                                      mojoParameters.contact,
-                                      mojoParameters.contactEmail,
-                                      getLicense( format, project ),
-                                      mojoParameters.architecture.orSome( format.defaultArchitecture() ) );
+        return PackageParameters.packageParameters( project.groupId, project.artifactId, version, pakke.id.orSome( defaultId.toLowerCase() ) ).
+                                      name( pakke.name.orElse( mojoParameters.name ).orElse( project.name ) ).
+                                      description( pakke.description.orElse( mojoParameters.description ).orElse( project.description ) ).
+                                      contact( mojoParameters.contact ).
+                                      contactEmail( mojoParameters.contactEmail ).
+                                      license( getLicense( project ) ).
+                                      architecture( mojoParameters.architecture );
     }
 
     public static List<AssemblyOperation> createAssemblyOperations( MavenProjectWrapper project,
@@ -360,14 +331,17 @@ public abstract class MojoHelper
 
         for ( Package pakke : packages )
         {
-            if ( pakke.classifier.isNone() || pakke.classifier.some().equals( "default" ) )
+            if ( pakke.classifier.exists( curry( StringF.equals, "default" ) ) )
+            {
+                pakke.classifier = none();
+            }
+
+            if ( pakke.classifier.isNone() )
             {
                 if ( defaultPackage.isSome() )
                 {
-                    throw new MojoFailureException( "There can only be one package without an classifier." );
+                    throw new MojoFailureException( DUPLICATE_UNCLASSIFIED );
                 }
-
-                pakke.classifier = none();
 
                 defaultPackage = some( pakke );
             }
@@ -375,7 +349,7 @@ public abstract class MojoHelper
             {
                 if ( names.member( pakke.classifier.some() ) )
                 {
-                    throw new MojoFailureException( "Duplicate package classifier: '" + pakke.classifier + "'." );
+                    throw new MojoFailureException( format( DUPLICATE_CLASSIFIER, pakke.classifier ) );
                 }
 
                 names = names.insert( pakke.classifier.some() );
@@ -385,9 +359,11 @@ public abstract class MojoHelper
 
         if ( attachedMode )
         {
-            if ( defaultPackage.isSome() )
+            outPackages = defaultPackage.toList().append( outPackages );
+
+            if ( outPackages.isEmpty() )
             {
-                throw new MojoFailureException( "When running in attached mode all packages are required to have an classifier." );
+                throw new MojoFailureException( ATTACHED_NO_ARTIFACTS_CONFIGURED );
             }
 
             return outPackages;
@@ -395,7 +371,7 @@ public abstract class MojoHelper
 
         if ( defaultPackage.isNone() )
         {
-            throw new MojoFailureException( "When running in 'primary artifact mode' exactly one package is required to have 'default' or none classifier." );
+            throw new MojoFailureException( "When running in 'primary artifact mode' either one package has to have 'default' as classifier or there has to be one without any classifier." );
         }
 
         return defaultPackage.toList().append( outPackages );
@@ -406,19 +382,14 @@ public abstract class MojoHelper
         return StringUtils.isNotEmpty( value ) ? value : defaultValue;
     }
 
-    private static String getLicense( PackagingFormat format, MavenProjectWrapper project )
+    private static Option<String> getLicense( MavenProjectWrapper project )
     {
         if ( project.licenses.size() == 0 )
         {
-            if ( format.licenseRequired() )
-            {
-                throw new RuntimeException( "At least one license is required" );
-            }
-
-            return null;
+            return none();
         }
 
-        return project.licenses.get( 0 ).getName();
+        return some( project.licenses.get( 0 ).getName() );
     }
 
     static F<String, String> dashString = new F<String, String>()

@@ -25,8 +25,8 @@ package org.codehaus.mojo.unix.maven;
  */
 
 import fj.data.*;
-import static fj.data.Option.*;
 import static fj.data.List.*;
+import static fj.data.Option.*;
 
 /**
  * A utility class to contain all configuration settings for a packaging mojo.
@@ -62,7 +62,7 @@ public class PackagingMojoParameters
         this.contact = fromNull( contact );
         this.contactEmail = fromNull( contactEmail );
         this.architecture = fromNull( architecture );
-        this.defaults = Option.fromNull( defaults );
+        this.defaults = fromNull( defaults );
         this.assembly = assembly == null ? List.<AssemblyOp>nil() : list( assembly );
         this.packages = packages == null ? List.<Package>nil() : list( packages );
     }

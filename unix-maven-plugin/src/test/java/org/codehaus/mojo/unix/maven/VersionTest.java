@@ -26,12 +26,13 @@ package org.codehaus.mojo.unix.maven;
 
 import fj.data.*;
 import static fj.data.Option.*;
+import fj.*;
 import junit.framework.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageVersion.*;
-import static org.codehaus.mojo.unix.maven.dpkg.ControlFile.*;
+import static org.codehaus.mojo.unix.dpkg.ControlFile.*;
 import static org.codehaus.mojo.unix.maven.pkg.PkgUnixPackage.*;
-import static org.codehaus.mojo.unix.rpm.SpecFile.*;
+import org.codehaus.mojo.unix.maven.rpm.*;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
 
 /**
@@ -114,8 +115,9 @@ public class VersionTest
         {
             public void verify( PackageVersion packageVersion )
             {
-                assertEquals( "rpm", expected, getRpmVersion( packageVersion ) );
-                assertTrue( optionEquals( revision, getRpmRelease( packageVersion ) ) );
+                P2<String,Option<String>> rpmVersion = RpmUnixPackage.getRpmVersion( packageVersion );
+                assertEquals( "rpm", expected, rpmVersion._1() );
+                assertTrue( optionEquals( revision, rpmVersion._2() ) );
             }
         };
     }

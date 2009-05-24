@@ -25,12 +25,12 @@ package org.codehaus.mojo.unix.maven.dpkg;
  */
 
 import fj.*;
-import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.dpkg.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
 import java.io.*;
@@ -42,7 +42,7 @@ import java.io.*;
 public class DpkgUnixPackage
     extends UnixPackage
 {
-    private final ControlFile controlFile = new ControlFile();
+    private ControlFile controlFile;
 
     private FileObject workingDirectory;
 
@@ -61,45 +61,20 @@ public class DpkgUnixPackage
         super( "deb" );
     }
 
-    public UnixPackage mavenCoordinates( String groupId, String artifactId )
+    public DpkgUnixPackage parameters( PackageParameters parameters )
     {
-        controlFile.groupId = groupId;
-        controlFile.artifactId = artifactId;
-
-        return this;
-    }
-
-    public UnixPackage id( String id )
-    {
-        this.id = id;
-        return this;
-    }
-
-    public UnixPackage name( Option<String> name )
-    {
-//        controlFile._package = name;
-        controlFile.shortDescription = name.orSome( "" ); // TODO: This is not right
-        return this;
-    }
-
-    public UnixPackage description( Option<String> description )
-    {
-        controlFile.description = description.orSome( "" ); // TODO: This is not right
-        return this;
-    }
-
-    public UnixPackage contact( Option<String> contact )
-    {
-        if ( contact.isSome() )
+        controlFile = new ControlFile();
+        controlFile.groupId = parameters.groupId;
+        controlFile.artifactId = parameters.artifactId;
+        this.id = parameters.id;
+        controlFile.shortDescription = parameters.name.orSome( "" ); // TODO: This is not right
+        controlFile.description = parameters.description.orSome( "" ); // TODO: This is not right
+        if ( parameters.contact.isSome() )
         {
-            controlFile.maintainer = contact.some();
+            controlFile.maintainer = parameters.contact.some();
         }
-        return this;
-    }
-
-    public UnixPackage architecture( String architecture )
-    {
-        controlFile.architecture = architecture;
+        controlFile.architecture = parameters.architecture.orSome("all");
+        controlFile.version = parameters.version;
         return this;
     }
 
@@ -183,14 +158,17 @@ public class DpkgUnixPackage
     public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception
     {
-        File assembly = asFile( fileCollector.getFsRoot() );
-        controlFile.version = getVersion();
-        controlFile.toFile( assembly );
+        FileObject fsRoot = fileCollector.getFsRoot();
+        FileObject debian = fsRoot.resolveFile( "DEBIAN" );
+        FileObject controlFilePath = debian.resolveFile( "control" );
+
+        debian.createFolder();
+        LineStreamUtil.toFile( controlFile, asFile( controlFilePath ) );
 
         fileCollector.collect();
 
         ScriptUtil.Result result = scriptUtil.
-            createExecution( id, "dpkg", getScripts(), new File( assembly, "DEBIAN" ), strategy ).
+            createExecution( id, "dpkg", getScripts(), asFile( debian ), strategy ).
             execute();
 
         UnixUtil.chmodIf( result.preInstall, "0755" );
@@ -200,7 +178,7 @@ public class DpkgUnixPackage
 
         new Dpkg().
             setDebug( debug ).
-            setPackageRoot( assembly ).
+            setPackageRoot( asFile( fsRoot ) ).
             setDebFile( packageFile ).
             setDpkgDebPath( dpkgDebPath ).
             execute();
