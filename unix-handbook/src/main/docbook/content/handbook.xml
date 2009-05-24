@@ -1220,6 +1220,183 @@
     </chapter>
 
     <chapter>
+      <title>Action Scripts</title>
+
+      <para>All the native packaging formats support running programs when the
+      packages are installed and removed. The plugin has automatic support for
+      picking up scripts from the source folders.</para>
+
+      <para>The plugin will automatically pick up scripts from the
+      <filename>src/main/unix/scripts</filename> directory. The plugin uses
+      two different strategies for naming the scripts based on the operation
+      mode as described below.</para>
+
+      <para>If a build is generating more than one artifact, it is possible to
+      share common parts of the script between the packages based on the
+      package id.</para>
+
+      <section>
+        <title>Action Scripts in Primary Artifact Mode</title>
+
+        <para>In the primary artifact mode the scripts are named using the
+        naming convention of the current format:</para>
+
+        <table>
+          <title>Naming convention for action scripts per format</title>
+
+          <tgroup cols="4">
+            <colspec colwidth="2*" />
+
+            <thead>
+              <row>
+                <entry align="center">Action</entry>
+
+                <entry align="center">Deb</entry>
+
+                <entry align="center">Pkg</entry>
+
+                <entry align="center">Rpm</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>Before installation</entry>
+
+                <entry><filename>preinst</filename></entry>
+
+                <entry><filename>preinstall</filename></entry>
+
+                <entry><filename>pre</filename></entry>
+              </row>
+
+              <row>
+                <entry>After installation</entry>
+
+                <entry><filename>postinst</filename></entry>
+
+                <entry><filename>postinstall</filename></entry>
+
+                <entry><filename>post</filename></entry>
+              </row>
+
+              <row>
+                <entry>Before removal</entry>
+
+                <entry><filename>prerm</filename></entry>
+
+                <entry><filename>preremove</filename></entry>
+
+                <entry><filename>preun</filename></entry>
+              </row>
+
+              <row>
+                <entry>After removal</entry>
+
+                <entry><filename>postrm</filename></entry>
+
+                <entry><filename>postremove</filename></entry>
+
+                <entry><filename>postun</filename></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <para>Using the "after installation" script for the Deb format as an
+        example, the plugin will generate a <literal>postinst</literal> file
+        based on the concatination of these two files:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><filename>src/main/unix/scripts/postinst</filename></para>
+          </listitem>
+
+          <listitem>
+            <para><filename>src/main/unix/scripts/postinst-&lt;package
+            id&gt;</filename></para>
+          </listitem>
+        </itemizedlist>
+
+        <para>If one of the files are missing it will be skipped.</para>
+      </section>
+
+      <section>
+        <title>Action Scripts in Attached Artifact Mode</title>
+
+        <para>In the attached artifact mode the scripts are named after both
+        the package id and the format of the current package. The action
+        script files uses a generic naming convention.</para>
+
+        <table>
+          <title>Naming convention for generic action scripts</title>
+
+          <tgroup cols="2">
+            <colspec colwidth="2*" />
+
+            <colspec colwidth="5*" />
+
+            <thead>
+              <row>
+                <entry align="center">Action</entry>
+
+                <entry align="center">Generic</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>Before installation</entry>
+
+                <entry><filename>pre-install</filename></entry>
+              </row>
+
+              <row>
+                <entry>After installation</entry>
+
+                <entry><filename>post-install</filename></entry>
+              </row>
+
+              <row>
+                <entry>Before removal</entry>
+
+                <entry><filename>pre-remove</filename></entry>
+              </row>
+
+              <row>
+                <entry>After removal</entry>
+
+                <entry><filename>post-remove</filename></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <para>Againg using the "after installation" for the deb format as an
+        example, the plugin will generate a postinst file based on the
+        concatination of these files:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><filename>src/main/unix/scripts/post-install</filename></para>
+          </listitem>
+
+          <listitem>
+            <para><filename>src/main/unix/scripts/post-install-&lt;package
+            id&gt;</filename></para>
+          </listitem>
+
+          <listitem>
+            <para><filename>src/main/unix/scripts/post-install-&lt;package
+            id&gt;-dpkg</filename></para>
+          </listitem>
+        </itemizedlist>
+
+        <para>If one of the files are missing it will be skipped.</para>
+      </section>
+    </chapter>
+
+    <chapter>
       <title>Operating Requirements</title>
 
       <warning>
