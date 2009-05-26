@@ -27,6 +27,9 @@ package org.codehaus.mojo.unix.core;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.Validate.*;
+import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
 import java.io.*;
 
@@ -45,6 +48,8 @@ public class CopyFileOperation
 
     public CopyFileOperation( FileAttributes attributes, FileObject fromFile, RelativePath toFile )
     {
+        validateNotNull( attributes, fromFile, toFile );
+
         this.attributes = attributes;
         this.fromFile = fromFile;
         this.toFile = toFile;
@@ -53,6 +58,14 @@ public class CopyFileOperation
     public void perform( FileCollector fileCollector )
         throws IOException
     {
-        fileCollector.addFile( fromFile, fromFileObject( toFile, fromFile, attributes ) );
+        fileCollector.addFile( fromFile, AssemblyOperationUtil.fromFileObject( toFile, fromFile, attributes ) );
+    }
+
+    public void streamTo( LineStreamWriter streamWriter )
+    {
+        streamWriter.add( "Copy file" );
+        streamWriter.add( " From: " + asFile( fromFile ).getAbsolutePath() );
+        streamWriter.add( " To: " + toFile );
+        streamWriter.add( " Attributes: " + attributes );
     }
 }

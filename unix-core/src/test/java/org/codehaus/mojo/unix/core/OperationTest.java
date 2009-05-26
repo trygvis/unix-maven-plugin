@@ -27,7 +27,6 @@ package org.codehaus.mojo.unix.core;
 import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
-import static org.codehaus.mojo.unix.core.AssemblyOperation.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.relativePath;
 import org.codehaus.plexus.*;
@@ -198,7 +197,7 @@ public class OperationTest
     {
         try
         {
-            return dirFromFileObject( relativePath( path ), files.resolveFile( path ), directoryAttributes );
+            return AssemblyOperationUtil.dirFromFileObject( relativePath( path ), files.resolveFile( path ), directoryAttributes );
         }
         catch ( FileSystemException e )
         {
@@ -211,7 +210,7 @@ public class OperationTest
     {
         try
         {
-            return AssemblyOperation.fromFileObject( path, file, attributes );
+            return AssemblyOperationUtil.fromFileObject( path, file, attributes );
         }
         catch ( FileSystemException e )
         {

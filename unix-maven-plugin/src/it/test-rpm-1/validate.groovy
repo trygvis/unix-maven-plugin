@@ -25,7 +25,7 @@ success &= assertRpmEntries(rpm, [
 ])
 
 success &= assertRelaxed(
-        new SpecFile( "bar-project-rpm-1", "1.1", 2, "Unnamed - bar:project-rpm-1:rpm:1.1-2", "BSD", "Application/Collectors", "", []),
+        new SpecFile( "project-rpm-1", "1.1", 2, "Unnamed - bar:project-rpm-1:rpm:1.1-2", "BSD", "Application/Collectors", "", []),
         RpmUtil.getSpecFileFromRpm(rpm));
 
 return success

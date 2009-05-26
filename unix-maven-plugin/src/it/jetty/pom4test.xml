@@ -75,7 +75,7 @@
             <section>devel</section>
           </dpkg>
           <rpm>
-            <softwareGroup>Application/Collectors</softwareGroup>
+            <group>Application/Collectors</group>
           </rpm>
           <assembly>
             <!-- This will exclude all the main licenses, but not the ones in the contrib/ directory -->

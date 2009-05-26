@@ -27,7 +27,7 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>21-SNAPSHOT</version>
+    <version>21</version>
   </parent>
   <groupId>org.codehaus.mojo.unix</groupId>
   <artifactId>unix</artifactId>
@@ -175,6 +175,31 @@
     <module>unix-pkg</module>
     <module>unix-rpm</module>
   </modules>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links>
+            <link>http://java.sun.com/j2se/1.4.2/docs/api</link>
+            <link>http://java.sun.com/j2ee/1.4/docs/api</link>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+            <link>http://junit.sourceforge.net/javadoc/</link>
+            <link>http://functionaljava.googlecode.com/svn/artifacts/${functionaljava.version}/javadoc</link>
+          </links>
+          <source>1.5</source>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <targetJdk>1.5</targetJdk>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
   <profiles>
     <profile>
       <id>reporting-aggregate</id>
@@ -185,30 +210,22 @@
            mvn site -Preporting-aggregate
            mvn -N site:deploy
 
-time mvn site -Preporting && time mvn site:deploy && time mvn site -Preporting-aggregate && time mvn -N site:deploy
+           All in one:
+           time mvn site -Preporting && time mvn site:deploy && time mvn site -Preporting-aggregate && time mvn -N site:deploy
       -->
       <reporting>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jxr-plugin</artifactId>
-            <version>2.1</version>
+            <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
               <aggregate>true</aggregate>
             </configuration>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.4</version>
+            <artifactId>maven-jxr-plugin</artifactId>
             <configuration>
-              <links>
-                <link>http://java.sun.com/j2se/1.4.2/docs/api</link>
-                <link>http://java.sun.com/j2ee/1.4/docs/api</link>
-                <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-                <link>http://junit.sourceforge.net/javadoc/</link>
-                <link>http://functionaljava.googlecode.com/svn/artifacts/${functionaljava.version}/javadoc</link>
-              </links>
               <aggregate>true</aggregate>
             </configuration>
           </plugin>

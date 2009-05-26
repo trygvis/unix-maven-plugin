@@ -29,6 +29,7 @@ import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
 import java.io.*;
@@ -38,33 +39,8 @@ import java.io.*;
  * @version $Id$
  */
 public abstract class AssemblyOperation
+    implements LineProducer
 {
     public abstract void perform( FileCollector fileCollector )
         throws IOException;
-
-    public static UnixFsObject.RegularFile fromFileObject( RelativePath toFile, FileObject fromFile,
-                                                           FileAttributes attributes )
-        throws FileSystemException
-    {
-        FileContent content = fromFile.getContent();
-
-        return regularFile( toFile, new LocalDateTime( content.getLastModifiedTime() ), content.getSize(),
-                            fromNull( attributes ) );
-
-    }
-
-    public static UnixFsObject.Directory dirFromFileObject( RelativePath toFile, FileObject fromFile,
-                                                            FileAttributes attributes )
-        throws FileSystemException
-    {
-        if ( !fromFile.getType().equals( FileType.FOLDER ) )
-        {
-            throw new FileSystemException(
-                "Not a directory: " + fromFile.getName().getPath() + ", was: " + fromFile.getType() );
-        }
-
-        FileContent content = fromFile.getContent();
-
-        return directory( toFile, new LocalDateTime( content.getLastModifiedTime() ), attributes );
-    }
 }

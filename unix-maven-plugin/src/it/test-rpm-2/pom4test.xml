@@ -60,7 +60,7 @@
             </file-attributes>
           </defaults>
           <rpm>
-            <softwareGroup>Application/Collectors</softwareGroup>
+            <group>Application/Collectors</group>
           </rpm>
           <assembly>
             <extract-artifact>

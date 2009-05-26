@@ -23,13 +23,13 @@ success &= assertPkgEntries(main, [
         directory("/usr", "17777777777", "?", "?", none()),
         directory("/usr/share", "0755", "nobody", "nogroup", none()),
         directory("/usr/share/hudson", "0755", "root", "bin", none()),
-        directory("/usr/share/hudson/lib", "0755", "root", "bin", none()),
+        directory("/usr/share/hudson/lib", "0755", "nobody", "nogroup", none()),
         regularFile("/usr/share/hudson/lib/hudson.war", "0644", "hudson", "hudson", 20623413, 3301, none()),
-        directory("/usr/share/hudson/license", "0755", "nobody", "nogroup", none()),
+        directory("/usr/share/hudson/license", "0755", "root", "bin", none()),
         regularFile("/usr/share/hudson/license/atom-license.txt", "0644", "root", "bin", 49, 4473, none()),
         regularFile("/usr/share/hudson/license/dc-license.txt", "0644", "root", "bin", 1544, 59072, none()),
 //        new PkgchkUtil.RegularFile("/usr/share/hudson/server/README.txt", "0644", "root", "bin", 1544, 59072, null),
-        installationFile("pkginfo", 150 0, none()),
+        installationFile("pkginfo", 150, 0, none()),
 ])
 
 println "************************************************************************"
@@ -45,9 +45,9 @@ success &= assertPkgEntries(slave, [
         directory("/usr", "17777777777", "?", "?", none()),
         directory("/usr/share", "0755", "nobody", "nogroup", none()),
         directory("/usr/share/hudson", "0755", "root", "bin", none()),
-        directory("/usr/share/hudson/lib", "0755", "root", "bin", none()),
+        directory("/usr/share/hudson/lib", "0755", "nobody", "nogroup", none()),
         regularFile("/usr/share/hudson/lib/slave.jar", "0644", "nobody", "nogroup", 158615, 48565, none()),
-        directory("/usr/share/hudson/license", "0755", "nobody", "nogroup", none()),
+        directory("/usr/share/hudson/license", "0755", "root", "bin", none()),
         regularFile("/usr/share/hudson/license/atom-license.txt", "0644", "root", "bin", 49, 4473, none()),
         regularFile("/usr/share/hudson/license/dc-license.txt", "0644", "root", "bin", 1544, 59072, none()),
         installationFile("pkginfo", 172, 0, none()),

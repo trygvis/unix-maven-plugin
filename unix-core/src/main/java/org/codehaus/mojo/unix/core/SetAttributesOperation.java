@@ -26,10 +26,14 @@ package org.codehaus.mojo.unix.core;
 
 import fj.Effect;
 import fj.F2;
+import fj.pre.*;
 import fj.data.*;
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
 import org.codehaus.mojo.unix.util.vfs.*;
 
@@ -48,10 +52,22 @@ public class SetAttributesOperation
     public final Option<F2<UnixFsObject, FileAttributes, FileAttributes>> applyFileAttributes;
     public final Option<F2<UnixFsObject, FileAttributes, FileAttributes>> applyDirectoryAttributes;
 
+    private final RelativePath basedir;
+    private final List<String> includes;
+    private final List<String> excludes;
+    private final Option<FileAttributes> fileAttributes;
+    private final Option<FileAttributes> directoryAttributes;
+
     public SetAttributesOperation( RelativePath basedir, List<String> includes, List<String> excludes,
                                    Option<FileAttributes> fileAttributes, Option<FileAttributes> directoryAttributes )
     {
         validateNotNull( basedir, includes, excludes, fileAttributes, directoryAttributes );
+
+        this.basedir = basedir;
+        this.includes = includes;
+        this.excludes = excludes;
+        this.fileAttributes = fileAttributes;
+        this.directoryAttributes = directoryAttributes;
 
         selector = IncludeExcludeFileSelector.build( null ).
             addStringIncludes( includes ).
@@ -82,7 +98,7 @@ public class SetAttributesOperation
     public void perform( final FileCollector fileCollector )
         throws IOException
     {
-        Effect<F2<UnixFsObject, FileAttributes, FileAttributes>> apply = new Effect<F2<UnixFsObject, FileAttributes, FileAttributes>>()
+        Effect<F2<UnixFsObject, FileAttributes, FileAttributes>> effect = new Effect<F2<UnixFsObject, FileAttributes, FileAttributes>>()
         {
             public void e( F2<UnixFsObject, FileAttributes, FileAttributes> applyAttributes )
             {
@@ -90,8 +106,36 @@ public class SetAttributesOperation
             }
         };
 
-        applyFileAttributes.foreach( apply );
-        applyDirectoryAttributes.foreach( apply );
+        applyFileAttributes.foreach( effect );
+        applyDirectoryAttributes.foreach( effect );
+    }
+
+    public void streamTo( LineStreamWriter streamWriter )
+    {
+        streamWriter.add( "Set attributes:" );
+        streamWriter.add( " Basedir: " + basedir );
+        if ( !includes.isEmpty() )
+        {
+            streamWriter.add( " Includes: ");
+            streamWriter.addAllLines( prefix( includes, "  " ) );
+        }
+        else
+        {
+            streamWriter.add( " No includes set" );
+        }
+
+        if ( !excludes.isEmpty() )
+        {
+            streamWriter.add( " Excludes: " );
+            streamWriter.addAllLines( prefix( excludes, "  " ) );
+        }
+        else
+        {
+            streamWriter.add( " No excludes set" );
+        }
+        streamWriter.add( " Attributes: ");
+        streamWriter.add( "  File     : " + fileAttributes.map( singleLineShow.showS_() ).orSome( "None" ) );
+        streamWriter.add( "  Directory: " + directoryAttributes.map( singleLineShow.showS_() ).orSome( "None" ) );
     }
 
     private final class ApplyAttributes
@@ -138,6 +182,8 @@ public class SetAttributesOperation
                 return currentAttributes;
             }
 
+            // Use 'currentAttributes' as a default, which means that any attribute that is set in 'attributes'
+            // will override any currently set attribute
             return currentAttributes.useAsDefaultsFor( attributes );
         }
     }

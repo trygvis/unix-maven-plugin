@@ -28,6 +28,7 @@ import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
 import org.joda.time.*;
 
@@ -58,5 +59,13 @@ public class SymlinkOperation
         throws IOException
     {
         fileCollector.addSymlink( symlink( path, new LocalDateTime(), some( attributes ), target ) );
+    }
+
+    public void streamTo( LineStreamWriter streamWriter )
+    {
+        streamWriter.add( "Symlink:" );
+        streamWriter.add( " Path: " + path );
+        streamWriter.add( " Target: " + target );
+        streamWriter.add( " Attributes: " + attributes );
     }
 }

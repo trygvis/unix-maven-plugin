@@ -25,10 +25,14 @@ package org.codehaus.mojo.unix.core;
  */
 
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
+import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
 import org.joda.time.*;
 
 import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -50,9 +54,17 @@ public class CreateDirectoriesOperation
     public void perform( FileCollector fileCollector )
         throws IOException
     {
-        for (String path : paths)
+        for ( String path : paths )
         {
-            fileCollector.addDirectory( UnixFsObject.directory( relativePath( path ), new LocalDateTime(), attributes ) );
+            fileCollector.addDirectory( directory( relativePath( path ), new LocalDateTime(), attributes ) );
         }
+    }
+
+    public void streamTo( LineStreamWriter streamWriter )
+    {
+        streamWriter.add( "Create directories:" );
+        streamWriter.add( " Paths: " );
+        streamWriter.addAllLines( prefix( Arrays.asList( paths ), "  " ) );
+        streamWriter.add( " Attributes: " + attributes );
     }
 }

@@ -27,8 +27,11 @@ package org.codehaus.mojo.unix.core;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.vfs.*;
+import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
 import java.io.*;
 import java.util.*;
@@ -104,12 +107,42 @@ public class CopyDirectoryOperation
 
             if ( f.getType() == FileType.FILE )
             {
-                fileCollector.addFile( f, fromFileObject( to.add( relativeName ), f, fileAttributes ) );
+                fileCollector.addFile( f, AssemblyOperationUtil.fromFileObject( to.add( relativeName ), f, fileAttributes ) );
             }
             else if ( f.getType() == FileType.FOLDER )
             {
-                fileCollector.addDirectory( dirFromFileObject( to.add( relativeName ), f, directoryAttributes ) );
+                fileCollector.addDirectory( AssemblyOperationUtil.dirFromFileObject( to.add( relativeName ), f, directoryAttributes ) );
             }
         }
+    }
+
+    public void streamTo( LineStreamWriter streamWriter )
+    {
+        streamWriter.add( "Copy directory:" );
+        streamWriter.add( " From: " + asFile( from ).getAbsolutePath() );
+        streamWriter.add( " To: " + to );
+        if ( !includes.isEmpty() )
+        {
+            streamWriter.add( " Includes: ");
+            streamWriter.addAllLines( prefix( includes, "  " ) );
+        }
+        else
+        {
+            streamWriter.add( " No includes set" );
+        }
+
+        if ( !excludes.isEmpty() )
+        {
+            streamWriter.add( " Excludes: " );
+            streamWriter.addAllLines( prefix( excludes, "  " ) );
+        }
+        else
+        {
+            streamWriter.add( " No excludes set" );
+        }
+        streamWriter.add( " Pattern: " + patternString + ", replacement: " + replacement );
+        streamWriter.add( " Attributes:" );
+        streamWriter.add( " File     : " + fileAttributes );
+        streamWriter.add( " Directory: " + directoryAttributes );
     }
 }

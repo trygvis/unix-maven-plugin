@@ -1,7 +1,6 @@
-import static fj.data.Option.none;
-import org.codehaus.mojo.unix.maven.ShittyUtil
-import org.codehaus.mojo.unix.pkg.PkgchkUtil
-import org.codehaus.mojo.unix.pkg.PkginfoUtil
+import static fj.data.Option.none
+import org.codehaus.mojo.unix.maven.*
+import org.codehaus.mojo.unix.pkg.*
 import org.codehaus.mojo.unix.pkg.PkginfoUtil.PackageInfo
 
 String userHome = System.getProperty("user.home")
@@ -18,8 +17,9 @@ boolean success = true
 success &= ShittyUtil.assertRelaxed(
         new PackageInfo( "project-uber-1", "Uber Project", "application", "all", "1.1-2", none(), none() ),
         PkginfoUtil.getPackageInforForDevice(pkg).some());
-
 success &= ShittyUtil.assertPkgEntries(pkg, [
+        PkgchkUtil.directory("/usr", "17777777777", "?", "?", none()),
+        PkgchkUtil.directory("/usr/share", "0755", "nobody", "nogroup", none()),
         PkgchkUtil.directory("/usr/share/hello", "0755", "nobody", "nogroup", none()),
         PkgchkUtil.directory("/usr/share/hello/bin", "0755", "nobody", "nogroup", none()),
         PkgchkUtil.regularFile("/usr/share/hello/bin/hello", "0755", "bah", "bah", 3092, 32472, none()),
@@ -31,9 +31,12 @@ success &= ShittyUtil.assertPkgEntries(pkg, [
         // Do not assert size or checksum on the JAR file, it varied between each build (it is built at the same time as the package)
         PkgchkUtil.regularFile("/usr/share/hello/repo/bar/project-uber-1/1.1-2/project-uber-1-1.1-2.jar", "0044", "hudson", "hudson", 0, 0, none()),
         PkgchkUtil.regularFile("/usr/share/hello/repo/bar/project-uber-1/maven-metadata-appassembler.xml", "0044", "hudson", "hudson", 0, 0, none()),
+        PkgchkUtil.directory("/usr/share/hudson", "0755", "nobody", "nogroup", none()),
+        PkgchkUtil.directory("/usr/share/hudson/lib", "0755", "nobody", "nogroup", none()),
         PkgchkUtil.regularFile("/usr/share/hudson/lib/hudson.war", "0044", "hudson", "hudson", 20623413, 3301, none()),
         PkgchkUtil.regularFile("/usr/share/hudson/lib/my-native.so", "0044", "hudson", "hudson", 21, 1712, none()),
         PkgchkUtil.installationFile("pkginfo", 150, 0, none()),
 ])
+
 
 return jar.canRead() && success

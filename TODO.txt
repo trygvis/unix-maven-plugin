@@ -185,10 +185,14 @@ o Subversion properties
 o MUNIX-13: Support 'tar' format
   Create integration tests similar to the existing tests
 o MUNIX-14: Rename "pkg" to "sysv-pkg"
+o MUNIX-23: Rename "dpkg" to "deb"
+  "deb" is the format that is supported, "dpkg" is the name of the tool set to create it.
 o Document how to use the u-m-p in a development process. Explain the goals for creating index files, and how to
   run these tools automatically on commit hooks etc.
-o Replace "dpkg" with "deb" where appropriate.
-  "deb" is the format that is supported, "dpkg" is the name of the tool set to create it.
+o Documentation:
+  - Document 'tags' feature
+   - %doc and %config for RPM
+   - class for PKG
 
 === Nits ===
 

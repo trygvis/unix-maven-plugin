@@ -44,6 +44,7 @@ import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
@@ -71,7 +72,7 @@ public abstract class MojoHelper
                                     boolean attachedMode,
                                     F<UnixPackage, UnixPackage> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage,
                                     PackagingMojoParameters mojoParameters,
-                                    Log log )
+                                    final Log log )
         throws MojoFailureException, MojoExecutionException
     {
         PackagingFormat format = (PackagingFormat) formats.get( formatType );
@@ -136,6 +137,21 @@ public abstract class MojoHelper
 
                 List<AssemblyOperation> assemblyOperations =
                     createAssemblyOperations( project, mojoParameters, pakke, unixPackage, buildDirectory );
+
+                if ( debug )
+                {
+                    log.info( "Showing assembly operations for package: " + parameters.id );
+                    for ( AssemblyOperation operation : assemblyOperations )
+                    {
+                        operation.streamTo( new AbstractLineStreamWriter()
+                        {
+                            protected void onLine( String line )
+                            {
+                                log.info( line );
+                            }
+                        } );
+                    }
+                }
 
                 packages = packages.cons( P.p(unixPackage, pakke, assemblyOperations ) );
             }
@@ -247,8 +263,17 @@ public abstract class MojoHelper
         {
             if ( attachedMode )
             {
-                // In attached mode all the packages are required to have an classifier
-                mavenProjectHelper.attachArtifact( project, artifactType, classifier.some(), packageFile );
+                // In attached mode all the packages are required to have an classifier - this used to be correct - trygve
+                // For some reason it is allowed to have attached artifacts without classifier as long as the types differ
+
+                if ( classifier.isSome() )
+                {
+                    mavenProjectHelper.attachArtifact( project, artifactType, classifier.some(), packageFile );
+                }
+                else
+                {
+                    mavenProjectHelper.attachArtifact( project, artifactType, null, packageFile );
+                }
             }
             else
             {
@@ -302,15 +327,21 @@ public abstract class MojoHelper
 
         unixPackage.beforeAssembly( defaultDirectoryAttributes );
 
-        for ( AssemblyOp assemblyOperation : mojoParameters.assembly.append( pakke.assembly ) )
-        {
-            assemblyOperation.setArtifactMap( project.artifactConflictIdMap );
+        // The pakke parameters come after the mojo ones
+        List<AssemblyOp> assemblyOps = mojoParameters.assembly.append( pakke.assembly );
 
-            operations = operations.cons( assemblyOperation.createOperation( basedir, defaultFileAttributes,
-                                                                             defaultDirectoryAttributes ) );
+        for ( AssemblyOp assemblyOp : assemblyOps )
+        {
+            assemblyOp.setArtifactMap( project.artifactConflictIdMap );
+
+            AssemblyOperation operation = assemblyOp.createOperation( basedir,
+                defaultFileAttributes,
+                defaultDirectoryAttributes );
+
+            operations = operations.cons( operation );
         }
 
-        return operations;
+        return operations.reverse();
     }
 
     public static List<Package> validatePackages( List<Package> packages, boolean attachedMode )

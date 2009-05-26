@@ -53,7 +53,7 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <rpm>
-            <softwareGroup>Application/Collectors</softwareGroup>
+            <group>Application/Collectors</group>
           </rpm>
           <assembly>
             <mkdirs>

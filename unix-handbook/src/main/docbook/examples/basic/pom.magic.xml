@@ -59,7 +59,7 @@
           <contact>Acme</contact>
           <contactEmail>support@acme.org</contactEmail>
           <rpm unix:format="rpm">
-            <softwareGroup>Application/Collectors</softwareGroup>
+            <group>Application/Collectors</group>
           </rpm>
           <assembly>
             <copy-artifact>

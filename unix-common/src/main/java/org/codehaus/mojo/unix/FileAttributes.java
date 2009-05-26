@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix;
  */
 
 import fj.*;
+import fj.pre.*;
 import fj.data.*;
 import static fj.data.Option.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
@@ -44,6 +45,8 @@ public class FileAttributes
     public final Option<UnixFileMode> mode;
 
     public final List<String> tags;
+
+    public final static Show<FileAttributes> singleLineShow = Show.anyShow();
 
     /**
      * A file object with all none fields. Use this when creating template objects.

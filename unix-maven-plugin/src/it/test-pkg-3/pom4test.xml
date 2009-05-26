@@ -64,6 +64,7 @@
                 <group>bin</group>
               </file-attributes>
             </extract-artifact>
+            <!-- This will run before the one defined in the <package> definiton -->
             <set-attributes>
               <basedir>/usr/share/hudson</basedir>
               <directory-attributes>

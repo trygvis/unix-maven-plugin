@@ -54,7 +54,7 @@
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <!-- Include the license in both packages -->
           <rpm>
-            <softwareGroup>Application/Collectors</softwareGroup>
+            <group>Application/Collectors</group>
           </rpm>
           <assembly>
             <extract-artifact>

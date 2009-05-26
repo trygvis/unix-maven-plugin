@@ -81,10 +81,14 @@
         <executions>
           <execution>
             <goals>
+<!--
               <goal>package-dpkg-attached</goal>
+-->
               <goal>package-pkg-attached</goal>
+<!--
               <goal>package-rpm-attached</goal>
               <goal>package-zip-attached</goal>
+-->
             </goals>
           </execution>
         </executions>
@@ -102,7 +106,7 @@
             <section>devel</section>
           </dpkg>
           <rpm>
-            <softwareGroup>Application/Collectors</softwareGroup>
+            <group>Application/Collectors</group>
           </rpm>
           <assembly>
             <copy-artifact>
