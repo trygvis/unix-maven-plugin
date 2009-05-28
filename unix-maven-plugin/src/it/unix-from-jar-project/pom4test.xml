@@ -81,14 +81,10 @@
         <executions>
           <execution>
             <goals>
-<!--
               <goal>package-dpkg-attached</goal>
--->
               <goal>package-pkg-attached</goal>
-<!--
               <goal>package-rpm-attached</goal>
               <goal>package-zip-attached</goal>
--->
             </goals>
           </execution>
         </executions>
@@ -96,11 +92,11 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <defaults>
-            <file-attributes>
+            <fileAttributes>
               <user>hudson</user>
               <group>hudson</group>
               <mode>044</mode>
-            </file-attributes>
+            </fileAttributes>
           </defaults>
           <dpkg>
             <section>devel</section>
@@ -109,26 +105,26 @@
             <group>Application/Collectors</group>
           </rpm>
           <assembly>
-            <copy-artifact>
+            <copyArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/usr/share/hudson/lib/hudson.war</toFile>
-            </copy-artifact>
-            <copy-artifact>
+            </copyArtifact>
+            <copyArtifact>
               <artifact>org.codehaus.mojo.unix.it:my-native:so:${os.name}-${os.version}-${os.arch}</artifact>
               <toFile>/usr/share/hudson/lib/my-native.so</toFile>
-            </copy-artifact>
-            <copy-directory>
+            </copyArtifact>
+            <copyDirectory>
               <from>target/appassembler</from>
               <to>/usr/share/hello</to>
-            </copy-directory>
-            <set-attributes>
+            </copyDirectory>
+            <setAttributes>
               <basedir>/usr/share/hello/bin</basedir>
-              <file-attributes>
+              <fileAttributes>
                 <user>bah</user>
                 <group>bah</group>
                 <mode>0755</mode>
-              </file-attributes>
-            </set-attributes>
+              </fileAttributes>
+            </setAttributes>
           </assembly>
         </configuration>
       </plugin>

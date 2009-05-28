@@ -114,32 +114,51 @@
         <para>This section is a high level explanation of how the plugin
         work.</para>
 
-        <para>The plugin has two major phases that it goes through:</para>
+        <para>The plugin goes through two major phases:</para>
 
-        <variablelist>
-          <varlistentry>
-            <term>Meta data generation</term>
+        <itemizedlist>
+          <listitem>
+            <para>Meta data generation: Each package format contain some form
+            of meta data that it uses when the package is being installed or
+            removed. The plugin will pick up as much meta data as possible
+            from the Maven POM as possible, but there are certain options that
+            might have to be filled in, depending on the package
+            format.</para>
+          </listitem>
+
+          <listitem>
+            <para>Assembly operation execution: For each package that is to be
+            created, a virtual package file system is created with pointers to
+            the original file or which file in and archive the file came from.
+            The assembled file system will be used when the physical package
+            is created.</para>
+          </listitem>
+        </itemizedlist>
+
+        <section>
+          <title>Meta Data Generation</title>
+
+          <para>The first thing that happens is that the plugin starts to
+          gather all the information it needs to build the package. It has
+          main sources it uses:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>The general information in the POM</para>
+            </listitem>
 
             <listitem>
-              <para>Each package format contain some form of meta data that it
-              uses when the package is being installed or removed. The plugin
-              will pick up as much meta data as possible from the Maven POM as
-              possible, but there are certain options that might have to be
-              filled in, depending on the package format.</para>
+              <para>The <tag>&lt;configuration&gt;</tag> of the plugin is used
+              to set up defaults and contain, amongst other settings, a shared
+              list of assembly operations</para>
             </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Assembly operation execution</term>
 
             <listitem>
-              <para>For each package that is to be created, a virtual package
-              file system is created with pointers to the original file or
-              which file in and archive the file came from. The assembled file
-              system will be used when the physical package is created.</para>
+              <para>The per-package configuration <tag>&lt;package&gt;</tag>
+              entry</para>
             </listitem>
-          </varlistentry>
-        </variablelist>
+          </itemizedlist>
+        </section>
 
         <section>
           <title>Assembly Operation Execution</title>
@@ -357,13 +376,13 @@
         </listitem>
 
         <listitem>
-          <para><link linkend="copy-artifact">
-          <tag>&lt;copy-artifact&gt;</tag> </link></para>
+          <para><link linkend="copy-artifact"> <tag>&lt;copyArtifact&gt;</tag>
+          </link></para>
         </listitem>
 
         <listitem>
           <para><link linkend="extract-artifact">
-          <tag>&lt;extract-artifact&gt;</tag> </link></para>
+          <tag>&lt;extractArtifact&gt;</tag> </link></para>
         </listitem>
 
         <listitem>
@@ -1627,9 +1646,8 @@
           <note>
             <para>Some assembly operations support both per-directory and
             per-file attributes. If so the outer tag will be named
-            <tag>&lt;file-attributes&gt;</tag> and
-            &lt;directory-attributes&gt;, but they contain exactly the same
-            set of elements.</para>
+            <tag>&lt;fileAttributes&gt;</tag> and &lt;directoryAttributes&gt;,
+            but they contain exactly the same set of elements.</para>
           </note>
 
           <table>
@@ -1696,7 +1714,7 @@
         <para>Purpose: to copy a single file from the file system.</para>
 
         <table>
-          <title>Supported parameters for <tag>&lt;copy-file&gt;</tag></title>
+          <title>Supported parameters for <tag>&lt;copyFile&gt;</tag></title>
 
           <tgroup cols="2">
             <colspec colnum="2" colwidth="3*" />
@@ -1729,9 +1747,9 @@
         </table>
 
         <example>
-          <title>Example usage of <tag>&lt;copy-file&gt;</tag></title>
+          <title>Example usage of <tag>&lt;copyFile&gt;</tag></title>
 
-          <programlisting>&lt;copy-file&gt;
+          <programlisting>&lt;copyFile&gt;
   &lt;file&gt;src/main/native/myapp.so&lt;/file&gt;
   &lt;toFile&gt;/opt/myapp/myapp.so&lt;/toFile&gt;
   &lt;attributes&gt;
@@ -1739,7 +1757,7 @@
     &lt;group&gt;myapp&lt;/group&gt;
     &lt;mode&gt;0644&lt;/mode&gt;
   &lt;/attributes&gt;
-&lt;/copy-file&gt;</programlisting>
+&lt;/copyFile&gt;</programlisting>
         </example>
       </section>
 
@@ -1752,7 +1770,7 @@
 
         <table>
           <title>Supported parameters for
-          <tag>&lt;copy-artifact&gt;</tag></title>
+          <tag>&lt;copyArtifact&gt;</tag></title>
 
           <tgroup cols="2">
             <colspec colnum="2" colwidth="3*" />
@@ -1787,9 +1805,9 @@
         </table>
 
         <example>
-          <title>Example usage of <tag>&lt;copy-artifact&gt;</tag></title>
+          <title>Example usage of <tag>&lt;copyArtifact&gt;</tag></title>
 
-          <programlisting>&lt;copy-artifact&gt;
+          <programlisting>&lt;copyArtifact&gt;
   &lt;artifact&gt;org.jvnet.hudson.main:hudson-war:war&lt;/artifact&gt;
   &lt;toFile&gt;/opt/hudson/hudson.war&lt;/toFile&gt;
   &lt;attributes&gt;
@@ -1797,7 +1815,7 @@
     &lt;group&gt;hudson&lt;/group&gt;
     &lt;mode&gt;0644&lt;/mode&gt;
   &lt;/attributes&gt;
-&lt;/copy-artifact&gt;</programlisting>
+&lt;/copyArtifact&gt;</programlisting>
         </example>
       </section>
 
@@ -1807,8 +1825,7 @@
         <para>Purpose: to create one or more directories</para>
 
         <table>
-          <title>Supported parameters
-          <tag>&lt;make-directory&gt;</tag></title>
+          <title>Supported parameters <tag>&lt;makeDirectory&gt;</tag></title>
 
           <tgroup cols="2">
             <colspec colnum="2" colwidth="3*" />
@@ -1856,8 +1873,7 @@
         files</para>
 
         <table>
-          <title>Supported parameters
-          <tag>&lt;set-attributes&gt;</tag></title>
+          <title>Supported parameters <tag>&lt;setAttributes&gt;</tag></title>
 
           <tgroup cols="2">
             <colspec colnum="2" colwidth="3*" />
@@ -1871,7 +1887,7 @@
               </row>
 
               <row>
-                <entry><literal>file-attributes</literal></entry>
+                <entry><literal>fileAttributes</literal></entry>
 
                 <entry>The attributes to set on the matched
                 <emphasis>files</emphasis>. See <xref
@@ -1879,7 +1895,7 @@
               </row>
 
               <row>
-                <entry><literal>directory-attributes</literal></entry>
+                <entry><literal>directoryAttributes</literal></entry>
 
                 <entry>The attributes to set on the matched
                 <emphasis>directories</emphasis>. See <xref
@@ -1898,16 +1914,16 @@
         </table>
 
         <example>
-          <title>Example usage of <tag>&lt;set-attributes&gt;</tag></title>
+          <title>Example usage of <tag>&lt;setAttributes&gt;</tag></title>
 
-          <programlisting>&lt;set-attributes&gt;
+          <programlisting>&lt;setAttributes&gt;
   &lt;basedir&gt;/usr/share/hello/bin&lt;/basedir&gt;
-  &lt;file-attributes&gt;
+  &lt;fileAttributes&gt;
     &lt;user&gt;foo&lt;/user&gt;
     &lt;group&gt;bar&lt;/group&gt;
     &lt;mode&gt;0755&lt;/mode&gt;
-  &lt;/file-attributes&gt;
-&lt;/set-attributes&gt;</programlisting>
+  &lt;/fileAttributes&gt;
+&lt;/setAttributes&gt;</programlisting>
         </example>
       </section>
 
@@ -1989,7 +2005,7 @@
               </row>
 
               <row>
-                <entry><literal>file-attributes</literal></entry>
+                <entry><literal>fileAttributes</literal></entry>
 
                 <entry>The attributes to set on the matched
                 <emphasis>files</emphasis>. See <xref
@@ -1997,7 +2013,7 @@
               </row>
 
               <row>
-                <entry><literal>directory-attributes</literal></entry>
+                <entry><literal>directoryAttributes</literal></entry>
 
                 <entry>The attributes to set on the matched
                 <emphasis>directories</emphasis>. See <xref
@@ -2014,7 +2030,7 @@
 
           <table>
             <title>Additional parameters for
-            <tag>&lt;copy-directory&gt;</tag></title>
+            <tag>&lt;copyDirectory&gt;</tag></title>
 
             <tgroup cols="2">
               <colspec colnum="2" colwidth="3*" />
@@ -2030,12 +2046,12 @@
           </table>
 
           <example>
-            <title>Example usage of <tag>&lt;copy-directory&gt;</tag></title>
+            <title>Example usage of <tag>&lt;copyDirectory&gt;</tag></title>
 
-            <programlisting>&lt;copy-directory&gt;
+            <programlisting>&lt;copyDirectory&gt;
   &lt;from&gt;target/appassembler&lt;/from&gt;
   &lt;to&gt;/usr/share/hello&lt;/to&gt;
-&lt;/copy-directory&gt;</programlisting>
+&lt;/copyDirectory&gt;</programlisting>
           </example>
         </section>
 
@@ -2047,7 +2063,7 @@
 
           <table>
             <title>Additional parameters for
-            <tag>&lt;extract-artifacrt&gt;</tag></title>
+            <tag>&lt;extractArtifacrt&gt;</tag></title>
 
             <tgroup cols="2">
               <colspec colnum="2" colwidth="3*" />
@@ -2070,13 +2086,12 @@
           </warning>
 
           <example>
-            <title>Example usage of
-            <tag>&lt;extract-artifact&gt;</tag></title>
+            <title>Example usage of <tag>&lt;extractArtifact&gt;</tag></title>
 
-            <programlisting>&lt;extract-artifact&gt;
+            <programlisting>&lt;extractArtifact&gt;
   &lt;artifact&gt;org.mortbay.jetty:jetty-assembly:zip&lt;/artifact&gt;
   &lt;to&gt;/opt/jetty&lt;/to&gt;
-&lt;/extract-artifact&gt;</programlisting>
+&lt;/extractArtifact&gt;</programlisting>
           </example>
         </section>
 
@@ -2093,7 +2108,7 @@
 
           <table>
             <title>Additional parameters for
-            <tag>&lt;extract-file&gt;</tag></title>
+            <tag>&lt;extractDile&gt;</tag></title>
 
             <tgroup cols="2">
               <colspec colnum="2" colwidth="3*" />
@@ -2111,13 +2126,12 @@
           </table>
 
           <example>
-            <title>Example usage of
-            <tag>&lt;extract-artifact&gt;</tag></title>
+            <title>Example usage of <tag>&lt;extractArtifact&gt;</tag></title>
 
-            <programlisting>&lt;extract-file&gt;
+            <programlisting>&lt;extractFile&gt;
   &lt;archive&gt;src/main/extras.zip&lt;/archive&gt;
   &lt;to&gt;/opt/share/myapp/extras&lt;/to&gt;
-&lt;/extract-file&gt;</programlisting>
+&lt;/extractFile&gt;</programlisting>
           </example>
         </section>
       </section>
@@ -2153,9 +2167,13 @@
       <section>
         <title>Debugging</title>
 
-        <para>Run with -X to see what the plugin does.</para>
-
-        <para>Explain -Dmaven.unix.debug</para>
+        <para>The plugin has its own mechanism to be more verbose to make it
+        easier to just debug the plugin. By running Maven with the
+        <command>-Dmaven.unix.debug=true</command> flag you will get a lot of
+        extra debugging information. In particular you will get information
+        about all the assembly operations it has collected per package and all
+        output from any external command it will use while building the
+        package.</para>
       </section>
     </chapter>
 
@@ -2165,7 +2183,7 @@
       <section>
         <title>Upgrading from 1.0-alpha-1</title>
         
-        <copy> => <copy-file>, <copy-directory>
+        <copy> => <copyFile>, <copyDirectory>
         <defaults>
           <fileUser>..</fileUser>
           <fileGroup>..</fileGroup>
@@ -2176,13 +2194,120 @@
         =>
         
         <defaults>
-          <file-attributes>
+          <fileAttributes>
             <user>..</user>
             <group>..</group>
-          <file-attributes>
+          </fileAttributes>
         </defaults>
       </section>
     </chapter>
     -->
+  </part>
+
+  <part>
+    <title>Version History and Upgrading</title>
+
+    <preface>
+      <title>About</title>
+
+      <para>This part document the major features that was introduced in the
+      different versions and instructions on how to upgrade between the
+      different alpha and beta releases.</para>
+
+      <para>Once the plugin stabilizes expect the upgrade instructions to be
+      removed as the pre releases will be unsupported.</para>
+    </preface>
+
+    <chapter>
+      <title>1.0-alpha-4</title>
+
+      <section>
+        <title>Change Log</title>
+
+        <para>Major features added:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Support for creating "zip" archives</para>
+          </listitem>
+
+          <listitem>
+            <para>Added support for classes for PKG</para>
+          </listitem>
+
+          <listitem>
+            <para>%doc and %config for RPM</para>
+          </listitem>
+
+          <listitem>
+            <para>Lots of documentation, including a PDF</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>JIRA issues fixed:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>MUNIX-18: Simplify the script mechanism</para>
+          </listitem>
+
+          <listitem>
+            <para>MUNIX-17: Document how versions and revisions are
+            calculated</para>
+          </listitem>
+
+          <listitem>
+            <para>MUNIX-16: Document how the scripts directories work</para>
+          </listitem>
+
+          <listitem>
+            <para>MUNIX-15: Improve error message when an artifact is not
+            found</para>
+          </listitem>
+
+          <listitem>
+            <para>MUNIX-12: Add support for creating zip files</para>
+          </listitem>
+
+          <listitem>
+            <para>MUNIX-6: set-attributes doesn't pick up paths that aren't
+            explicitly created with mkdirs</para>
+          </listitem>
+
+          <listitem>
+            <para>MUNIX-4: Add support for the %doc directive for RPM</para>
+          </listitem>
+
+          <listitem>
+            <para>MUNIX-3: Add support for the %config directive for
+            RPM</para>
+          </listitem>
+
+          <listitem>
+            <para>MUNIX-1: the "release" portion of the rpm does not have to
+            be an int</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Upgrading from 1.0-alpha-3</title>
+
+        <para>The <tag>&lt;softwareGroup&gt;</tag> element within the RPM
+        configuration tag (<tag>&lt;rpm&gt;</tag>) has been renamed to
+        <tag>&lt;group&gt;</tag> to match the field in the RPM spec file more
+        closely.</para>
+
+        <para>The tag <tag>&lt;id&gt;</tag> has been renamed to
+        <tag>&lt;classifier&gt;</tag> to be closer to the existing Maven
+        nomenclature.</para>
+
+        <para>All examples use hyphened elements instead of camel casing to be
+        more consistent with how Maven POMs normally are written. This will
+        not break any builds as Maven interpret both version the same way. For
+        example <tag>&lt;fileAttributes&gt;</tag> is now used instead of
+        <tag>&lt;file-attribues&gt;</tag>.</para>
+      </section>
+    </chapter>
   </part>
 </book>

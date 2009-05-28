@@ -63,7 +63,7 @@
           <contact>Acme</contact>
           <contactEmail>support@acme.org</contactEmail>
           <assembly>
-            <copy-artifact>
+            <copyArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/opt/hudson/lib/hudson.war</toFile>
               <attributes>
@@ -71,11 +71,11 @@
                 <group>hudson</group>
                 <mode>0644</mode>
               </attributes>
-            </copy-artifact>
-            <copy-directory>
+            </copyArtifact>
+            <copyDirectory>
               <from>src/main/unix/files</from>
-            </copy-directory>
-            <extract-artifact>
+            </copyDirectory>
+            <extractArtifact>
               <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
               <to>/opt/hudson/lib/jetty</to>
               <!-- Remove the first directory from the path -->
@@ -87,7 +87,7 @@
                 <exclude>*/contexts-available/**</exclude>
                 <exclude>*/webapps/**</exclude>
               </excludes>
-            </extract-artifact>
+            </extractArtifact>
             <symlink>
               <path>/opt/hudson/jetty/contexts/hudson.xml</path>
               <value>/opt/hudson/etc/jetty-context.xml</value>

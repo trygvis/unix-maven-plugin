@@ -52,7 +52,7 @@
           </dpkg>
           <assembly>
             <!-- TODO: As this want to copy only a single file, add a "extract-file" version -->
-            <extract-artifact>
+            <extractArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <to>/usr/share/hudson/lib</to>
               <includes>
@@ -61,8 +61,8 @@
               </includes>
               <pattern>WEB-INF/(slave.jar)</pattern>
               <replacement>$1</replacement>
-            </extract-artifact>
-            <extract-artifact>
+            </extractArtifact>
+            <extractArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <to>/usr/share/hudson/license</to>
               <includes>
@@ -71,7 +71,7 @@
               </includes>
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>
-            </extract-artifact>
+            </extractArtifact>
           </assembly>
         </configuration>
       </plugin>

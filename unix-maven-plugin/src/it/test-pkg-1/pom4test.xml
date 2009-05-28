@@ -49,7 +49,7 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <assembly>
-            <copy-artifact>
+            <copyArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/opt/hudson/hudson.war</toFile>
               <attributes>
@@ -57,14 +57,14 @@
                 <group>hudson</group>
                 <mode>0666</mode>
               </attributes>
-            </copy-artifact>
-            <copy-file>
+            </copyArtifact>
+            <copyFile>
               <path>goals.txt</path>
               <toFile>/usr/share/hudson/README.txt</toFile>
               <attributes>
                 <tags>class:doc</tags>
               </attributes>
-            </copy-file>
+            </copyFile>
             <symlink>
               <path>/var/log/hudson</path>
               <value>/var/opt/hudson/log</value>

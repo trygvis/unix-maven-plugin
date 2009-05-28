@@ -57,7 +57,7 @@
             <group>Application/Collectors</group>
           </rpm>
           <assembly>
-            <extract-artifact>
+            <extractArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <includes>
                 <!-- TODO: this should work without the leading stars -->
@@ -66,17 +66,17 @@
               <to>/usr/share/hudson/license</to>
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>
-              <file-attributes>
+              <fileAttributes>
                 <user>root</user>
                 <group>bin</group>
-              </file-attributes>
-            </extract-artifact>
+              </fileAttributes>
+            </extractArtifact>
           </assembly>
           <packages>
             <package>
               <name>Hudson Master</name>
               <assembly>
-                <copy-artifact>
+                <copyArtifact>
                   <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
                   <toFile>/usr/share/hudson/lib/hudson.war</toFile>
                   <attributes>
@@ -84,7 +84,7 @@
                     <group>hudson</group>
                     <mode>0644</mode>
                   </attributes>
-                </copy-artifact>
+                </copyArtifact>
               </assembly>
             </package>
             <package>
@@ -93,7 +93,7 @@
               <description>Hudson slave node</description>
               <assembly>
                 <!-- TODO: As this want to copy only a single file, add a "extract-file" version -->
-                <extract-artifact>
+                <extractArtifact>
                   <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
                   <to>/usr/share/hudson/lib</to>
                   <includes>
@@ -102,7 +102,7 @@
                   </includes>
                   <pattern>WEB-INF/(slave.jar)</pattern>
                   <replacement>$1</replacement>
-                </extract-artifact>
+                </extractArtifact>
               </assembly>
             </package>
           </packages>

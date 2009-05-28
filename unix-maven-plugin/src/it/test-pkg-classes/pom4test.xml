@@ -52,17 +52,17 @@
             <classes>none, smf</classes>
           </pkg>
           <assembly>
-            <copy-artifact>
+            <copyArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/opt/hudson/hudson.war</toFile>
-            </copy-artifact>
-            <copy-directory>
+            </copyArtifact>
+            <copyDirectory>
               <from>src/main/unix/files-smf</from>
               <to>/var/lib</to>
-              <file-attributes>
+              <fileAttributes>
                 <tags>class:smf</tags>
-              </file-attributes>
-            </copy-directory>
+              </fileAttributes>
+            </copyDirectory>
           </assembly>
         </configuration>
       </plugin>

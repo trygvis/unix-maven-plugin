@@ -62,7 +62,7 @@
             <group>Application/Collectors</group>
           </rpm>
           <assembly>
-            <copy-artifact>
+            <copyArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/opt/hudson/hudson.war</toFile>
               <attributes>
@@ -70,8 +70,8 @@
                 <group>hudson</group>
                 <mode>0666</mode>
               </attributes>
-            </copy-artifact>
-            <extract-artifact>
+            </copyArtifact>
+            <extractArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <to>/opt/hudson/doc</to>
               <includes>
@@ -79,7 +79,7 @@
               </includes>
               <pattern>.*/(.*.txt)</pattern>
               <replacement>$1</replacement>
-            </extract-artifact>
+            </extractArtifact>
             <symlink>
               <path>/var/log/hudson</path>
               <value>/var/opt/hudson/log</value>

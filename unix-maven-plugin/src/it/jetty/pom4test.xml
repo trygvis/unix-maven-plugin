@@ -55,6 +55,7 @@
               <goal>package-dpkg-attached</goal>
               <goal>package-pkg-attached</goal>
               <goal>package-rpm-attached</goal>
+              <goal>package-zip-attached</goal>
             </goals>
           </execution>
         </executions>
@@ -62,14 +63,14 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <defaults>
-            <file-attributes>
+            <fileAttributes>
               <user>jetty</user>
               <group>jetty</group>
-            </file-attributes>
-            <directory-attributes>
+            </fileAttributes>
+            <directoryAttributes>
               <user>jetty</user>
               <group>jetty</group>
-            </directory-attributes>
+            </directoryAttributes>
           </defaults>
           <dpkg>
             <section>devel</section>
@@ -79,7 +80,7 @@
           </rpm>
           <assembly>
             <!-- This will exclude all the main licenses, but not the ones in the contrib/ directory -->
-            <extract-artifact>
+            <extractArtifact>
               <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
               <to>/opt/jetty</to>
               <excludes>
@@ -87,9 +88,9 @@
               </excludes>
               <pattern>/jetty-7.0.0pre3(.*)</pattern>
               <replacement>$1</replacement>
-            </extract-artifact>
+            </extractArtifact>
             <!-- TODO: This can be optimized with a set-attributes -->
-            <extract-artifact>
+            <extractArtifact>
               <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
               <to>/opt/jetty</to>
               <includes>
@@ -97,12 +98,12 @@
               </includes>
               <pattern>/jetty-7.0.0pre3/bin/(.*)</pattern>
               <replacement>bin/$1</replacement>
-              <file-attributes>
+              <fileAttributes>
                 <mode>0755</mode>
-              </file-attributes>
-            </extract-artifact>
+              </fileAttributes>
+            </extractArtifact>
             <!-- This will copy *all* licenses into the share/licenses/* directory -->
-            <extract-artifact>
+            <extractArtifact>
               <artifact>org.mortbay.jetty:jetty-assembly:zip</artifact>
               <to>/opt/jetty</to>
               <includes>
@@ -110,7 +111,7 @@
               </includes>
               <pattern>/jetty-7.0.0pre3/LICENSES/(.*)</pattern>
               <replacement>share/licenses/$1</replacement>
-            </extract-artifact>
+            </extractArtifact>
             <mkdirs>
               <paths>
                 <path>/var/opt/jetty</path>

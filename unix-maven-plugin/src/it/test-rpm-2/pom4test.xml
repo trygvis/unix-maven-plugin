@@ -53,17 +53,17 @@
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <defaults>
-            <file-attributes>
+            <fileAttributes>
               <user>hudson</user>
               <group>hudson</group>
               <mode>0444</mode>
-            </file-attributes>
+            </fileAttributes>
           </defaults>
           <rpm>
             <group>Application/Collectors</group>
           </rpm>
           <assembly>
-            <extract-artifact>
+            <extractArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <to>/usr/share/hudson/lib</to>
               <includes>
@@ -72,8 +72,8 @@
               </includes>
               <pattern>WEB-INF/(slave.jar)</pattern>
               <replacement>$1</replacement>
-            </extract-artifact>
-            <extract-artifact>
+            </extractArtifact>
+            <extractArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <to>/usr/share/hudson/license</to>
               <includes>
@@ -82,12 +82,12 @@
               </includes>
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>
-              <file-attributes>
+              <fileAttributes>
                 <user>nobody</user>
                 <group>nobody</group>
                 <mode>0444</mode>
-              </file-attributes>
-            </extract-artifact>
+              </fileAttributes>
+            </extractArtifact>
           </assembly>
         </configuration>
       </plugin>

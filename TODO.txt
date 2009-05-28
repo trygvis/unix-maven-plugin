@@ -4,10 +4,7 @@ o Support group, user and modes on files and directories in all formats
  - Default values for user, group and mode: part 1 done, need to be implemented in the mojo
  - Dpkg: Won't be done until replaced with Java
  - Pkg: ok
- - RPM: files ok, need to check directories
-
-o Defaults
- - target/unix/scripts/<modulation>
+ - RPM: OK
 
 o Dependency generation
 
@@ -32,22 +29,8 @@ o Replace the binaries with Java implementations
  - Pkg:
  - Rpm:
 
-o Support chmod assembly operation
- - Has to support includes/excludes
-
-o Support "ln -s" operations
-
-o Validate all (source) file paths before starting to copy.
- - If the last of a whole bunch of files are to be extracted, it would be nice to be reminded that you've forgotten a
-   <dependency> on something that you're going to extract.
-
 o Scripts:
- - Support per <package> scripts in addition to the common ones
  - Filtering. Both of project.* elements and package.* elements
-
-o Split out the code that is in ..maven.util into a core module.
-  Might be a bit too much, but would make the core more clean. Would be good as the "UnixPackage" concepts would be
-  throughout the code. "MissingSettingExceptions" will always relate to the fields in the unix package.
 
 o Support Defaults per platform. The Defaults object should probably be in the common project
 
@@ -92,9 +75,6 @@ o Make sure that timestamps are preserved for all assembly operations
 
 == Refactorings ==
 
-o Move all common objects to unix-common or unix-core
- - Move stuff to core unless it has dependencies
-
 == Functional Java ==
 
 o Add Option.someE(String msg) like Either.XProjection.valueE();
@@ -103,18 +83,11 @@ o Add Hash.keySet() that return a Set
 o Figure out why there is no parMap(Stream). If reasonable, document it on Stream.
 o P.identity{1,8}
 
-o Submit FjIterator
- - MappingIterator
- - FilteringIterator
- - Add FjIterator.toOption()
- - Add FjIterator.toList()
 o Create FjFile:
- - Iterator<File> listFiles
- - Iterator<File> findFiles(includes, excludes)
+ - Iterable<File> listFiles
+ - Iterable<File> findFiles(includes, excludes)
 
 == Pkg ==
-
-o Support custom class installation files (like i.deamon, r.daemon)
 
 o Support "i" and "e" files
 

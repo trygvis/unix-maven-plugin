@@ -54,7 +54,7 @@
                 <path>/opt/hudson</path>
               </paths>
             </mkdirs>
-            <copy-artifact>
+            <copyArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <toFile>/opt/hudson/hudson.war</toFile>
               <attributes>
@@ -62,7 +62,7 @@
                 <group>hudson</group>
                 <mode>0666</mode>
               </attributes>
-            </copy-artifact>
+            </copyArtifact>
             <!-- Not supported
             <symlink>
               <path>/var/log/hudson</path>

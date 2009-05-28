@@ -50,7 +50,7 @@
           <contactEmail>trygvis@codehaus.org</contactEmail>
           <!-- Include the license in both packages -->
           <assembly>
-            <extract-artifact>
+            <extractArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
               <includes>
                 <!-- TODO: this should work without the leading stars -->
@@ -59,27 +59,27 @@
               <to>/usr/share/hudson/license</to>
               <pattern>.*/(.*license.*)</pattern>
               <replacement>$1</replacement>
-              <file-attributes>
+              <fileAttributes>
                 <user>root</user>
                 <group>bin</group>
-              </file-attributes>
-            </extract-artifact>
+              </fileAttributes>
+            </extractArtifact>
             <!-- This will run before the one defined in the <package> definiton -->
-            <set-attributes>
+            <setAttributes>
               <basedir>/usr/share/hudson</basedir>
-              <directory-attributes>
+              <directoryAttributes>
                 <user>root</user>
                 <group>bin</group>
                 <mode>755</mode>
-              </directory-attributes>
-            </set-attributes>
+              </directoryAttributes>
+            </setAttributes>
           </assembly>
           <packages>
             <package>
               <classifier>default</classifier>
               <name>Hudson Master</name>
               <assembly>
-                <copy-artifact>
+                <copyArtifact>
                   <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
                   <toFile>/usr/share/hudson/lib/hudson.war</toFile>
                   <attributes>
@@ -87,7 +87,7 @@
                     <group>hudson</group>
                     <mode>0644</mode>
                   </attributes>
-                </copy-artifact>
+                </copyArtifact>
               </assembly>
             </package>
             <package>
@@ -96,7 +96,7 @@
               <description>Hudson slave node</description>
               <assembly>
                 <!-- TODO: As this want to copy only a single file, add a "extract-file" version -->
-                <extract-artifact>
+                <extractArtifact>
                   <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
                   <to>/usr/share/hudson/lib</to>
                   <includes>
@@ -105,7 +105,7 @@
                   </includes>
                   <pattern>WEB-INF/(slave.jar)</pattern>
                   <replacement>$1</replacement>
-                </extract-artifact>
+                </extractArtifact>
               </assembly>
             </package>
           </packages>
