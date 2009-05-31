@@ -9,8 +9,6 @@
 
   <xsl:import href="handbook-common.xsl"/>
 
-<!--
-  <xsl:param name="base.dir" select="target/docbook/handbook-single.html"/>
--->
+  <xsl:param name="html.stylesheet" select="'css/mojo-docbook.css'"/>
 
 </xsl:stylesheet>

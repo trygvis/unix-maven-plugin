@@ -1,0 +1,82 @@
+body, td, select, input, li{
+ font-family: Verdana, Helvetica, Arial, sans-serif;
+ font-size: 13px;
+}
+
+code {
+ font-family: Courier, monospace;
+ font-size: 13px;
+}
+
+/* Copied from .source from maven-theme.css:109 and maven-base.css:136 */
+.programlisting, .screen, .literallayout {
+    border: 1px solid #999999;
+    margin: 1em 7px;
+    padding: 12px;
+}
+
+div.literallayout > p {
+    margin: 0;
+}
+
+.part, .preface > table {
+    border: 0;
+}
+
+.part, .preface > td {
+    border: 0;
+}
+
+.part, .preface > th {
+    background-color: #BBBBBB;
+    color: white;
+    font-weight: bold;
+    border: 0;
+/*    text-align: left; */
+}
+
+/* Copies the 'a' table row class */
+.part, .preface > tr {
+    background-color: #DDDDDD;
+}
+
+/* 
+ * These are taken from maven-theme
+ */
+
+/* Docbook: added h1 here, used for <part> */
+h1, h2 {
+    background-color:#DDDDDD;
+    border:1px solid #999999;
+    color:#990000;
+    font-size:x-large;
+    font-weight:900;
+    padding:4px 4px 4px 6px;
+}
+
+h3 {
+    background-color:#EEEEEE;
+    border:1px solid #AAAAAA;
+    color:#990000;
+    font-size:large;
+    font-weight:normal;
+    padding:4px 4px 4px 6px;
+}
+h4 {
+    background-color:#FFFFFF;
+    border:1px solid #BBBBBB;
+    color:#990000;
+    font-size:large;
+    font-weight:normal;
+    padding:4px 4px 4px 6px;
+}
+h5 {
+    color:#990000;
+    padding:4px 4px 4px 6px;
+}
+
+p {
+    font-size:small;
+    line-height:1.3em;
+}
+

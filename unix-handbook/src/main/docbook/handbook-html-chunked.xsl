@@ -12,5 +12,6 @@
   <xsl:param name="base.dir" select="'target/site/handbook/'"/>
   <xsl:param name="chunk.section.depth" select="0"/>
   <xsl:param name="use.id.as.filename" select="1"/>
+  <xsl:param name="html.stylesheet" select="'../css/mojo-docbook.css'"/>
 
 </xsl:stylesheet>
