@@ -68,6 +68,47 @@
     </itemizedlist>
   </acknowledgements>
 
+  <preface>
+    <title>Preface</title>
+
+    <para>This handbook is the complete documentation of the Unix Maven
+    Plugin. It has four major parts:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Part I - Guide: An introduction and overview over the plugin.
+        This part is the first you should read if you're looking into using
+        the plugin or is getting started. </para>
+      </listitem>
+
+      <listitem>
+        <para>Part II - Examples: This part is contains a set of practical
+        examples showing different aspects of the plugin.</para>
+      </listitem>
+
+      <listitem>
+        <para>Part III - Reference: This is the reference manual for the
+        plugin. Documents all available options and assembly
+        operations.</para>
+      </listitem>
+
+      <listitem>
+        <para>Part IV - Version History and Upgrading: This part contains a
+        list of all major features added in the different versions and
+        explanations on how to upgrade between the different versions.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The book is under continous development and is written in parallel
+    with the plugin. It will only document the current version until a stable
+    release is done. See <xref linkend="version-history-and-upgrading" /> on
+    how to upgrade from one version to the next version.</para>
+
+    <para>Currently there are chapters and sections that serve as placeholders
+    and there are warnings which serve as TODO entries. These will be filled
+    in and resolved before a final 1.0 release.</para>
+  </preface>
+
   <part xml:id="guide">
     <title>Guide</title>
 
@@ -818,40 +859,6 @@
           </varlistentry>
         </variablelist>
 
-        <example>
-          <title>Examples on how the version fields are calculated</title>
-
-          <itemizedlist>
-            <listitem>
-              <para>1.0-SNAPSHOT</para>
-
-              <itemizedlist>
-                <listitem>
-                  <para><literal>version=1.0</literal></para>
-                </listitem>
-
-                <listitem>
-                  <para><literal>revision=</literal>&lt;none&gt;</para>
-                </listitem>
-              </itemizedlist>
-            </listitem>
-
-            <listitem>
-              <para>1.0-3-SNAPSHOT</para>
-
-              <itemizedlist>
-                <listitem>
-                  <para><literal>version=1.0</literal></para>
-                </listitem>
-
-                <listitem>
-                  <para><literal>revision=3</literal></para>
-                </listitem>
-              </itemizedlist>
-            </listitem>
-          </itemizedlist>
-        </example>
-
         <para>The overall strategy for SNAPSHOT versions is to make the
         version field in the package as specific as possible. This means that
         the build timestamp will be appended to the version string where
@@ -1550,8 +1557,10 @@
             </variablelist>
           </example>
 
-          <para>If the plugin can't find the artifact that's referred to it
-          will list all available artifacts.</para>
+          <tip>
+            <para>If the plugin can't find the artifact that's referred to it
+            will list all available artifacts.</para>
+          </tip>
         </section>
 
         <section xml:base="" xml:id="file-renaming">
@@ -1654,7 +1663,7 @@
             <title>Available attributes</title>
 
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="3*" />
+              <colspec colnum="2" colwidth="2*" />
 
               <tbody>
                 <row>
@@ -1717,7 +1726,7 @@
           <title>Supported parameters for <tag>&lt;copyFile&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*" />
+            <colspec colnum="2" colwidth="2*" />
 
             <tbody>
               <row>
@@ -1773,7 +1782,7 @@
           <tag>&lt;copyArtifact&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*" />
+            <colspec colnum="2" colwidth="2*" />
 
             <tbody>
               <row>
@@ -1828,7 +1837,7 @@
           <title>Supported parameters <tag>&lt;makeDirectory&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*" />
+            <colspec colnum="2" colwidth="2*" />
 
             <tbody>
               <row>
@@ -1876,7 +1885,7 @@
           <title>Supported parameters <tag>&lt;setAttributes&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*" />
+            <colspec colnum="2" colwidth="2*" />
 
             <tbody>
               <row>
@@ -1936,7 +1945,7 @@
           <title>Supported parameters <tag>&lt;symlink&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*" />
+            <colspec colnum="2" colwidth="2*" />
 
             <tbody>
               <row>
@@ -1979,7 +1988,7 @@
           and extract file operations</title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="3*" />
+            <colspec colnum="2" colwidth="2*" />
 
             <tbody>
               <row>
@@ -2033,7 +2042,7 @@
             <tag>&lt;copyDirectory&gt;</tag></title>
 
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="3*" />
+              <colspec colnum="2" colwidth="2*" />
 
               <tbody>
                 <row>
@@ -2066,7 +2075,7 @@
             <tag>&lt;extractArtifacrt&gt;</tag></title>
 
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="3*" />
+              <colspec colnum="2" colwidth="2*" />
 
               <tbody>
                 <row>
@@ -2111,7 +2120,7 @@
             <tag>&lt;extractDile&gt;</tag></title>
 
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="3*" />
+              <colspec colnum="2" colwidth="2*" />
 
               <tbody>
                 <row>
@@ -2204,11 +2213,11 @@
     -->
   </part>
 
-  <part>
+  <part xml:id="version-history-and-upgrading">
     <title>Version History and Upgrading</title>
 
     <preface>
-      <title>About</title>
+      <title>Preface to Part IV</title>
 
       <para>This part document the major features that was introduced in the
       different versions and instructions on how to upgrade between the
