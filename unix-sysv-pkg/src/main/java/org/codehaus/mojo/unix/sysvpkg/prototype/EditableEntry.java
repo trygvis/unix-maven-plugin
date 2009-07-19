@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.pkg.prototype;
+package org.codehaus.mojo.unix.sysvpkg.prototype;
 
 /*
  * The MIT License
@@ -31,49 +31,41 @@ import org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
 
 import java.io.*;
-import static java.lang.Boolean.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class FileEntry
+public class EditableEntry
     extends PrototypeEntry<RegularFile>
 {
     private final Option<File> realPath;
 
-    /**
-     * The same as calling {@link #FileEntry(Option, Option, UnixFsObject.RegularFile, Option)}
-     * with <code>relative=false</code> and <code>realPath=null</code>.
-     */
-    public FileEntry( Option<String> pkgClass, RegularFile file )
+    public EditableEntry( Option<String> pkgClass, Option<Boolean> relative, RegularFile object, Option<File> realPath  )
     {
-        this( pkgClass, some( FALSE ), file, Option.<File>none() );
-    }
-
-    public FileEntry( Option<String> pkgClass, Option<Boolean> relative, RegularFile file, Option<File> realPath )
-    {
-        super( pkgClass, relative, file );
+        super( pkgClass, relative, object );
         this.realPath = realPath;
     }
 
     public String generatePrototypeLine()
     {
-        return "f " + pkgClass + " " + getProcessedPath( realPath ) + " " + toString( object.getFileAttributes() );
+        return "e " + pkgClass +
+            " " + getProcessedPath( realPath ) +
+            " " + toString( object.getFileAttributes() );
     }
 
     public FileAttributes getFileAttributes()
     {
-        return object.getFileAttributes();
+        throw new RuntimeException( "Not implemented" );
     }
 
-    public FileEntry setFileAttributes( FileAttributes attributes )
+    public EditableEntry setFileAttributes( FileAttributes attributes )
     {
-        return new FileEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ), realPath );
+        return new EditableEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ), realPath );
     }
 
-    public FileEntry setPath( RelativePath path )
+    public EditableEntry setPath( RelativePath path )
     {
-        return new FileEntry( some( pkgClass ), relative, object.setPath( path ), realPath );
+        return new EditableEntry( some( pkgClass ), relative, object.setPath( path ), realPath );
     }
 }

@@ -1,0 +1,33 @@
+Package: bash
+Essential: yes
+Priority: required
+Section: base
+Installed-Size: 1316
+Maintainer: Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: Matthias Klose <doko@debian.org>
+Architecture: amd64
+Version: 3.2-0ubuntu16
+Replaces: bash-completion (<< 20060301), bash-doc (<= 2.05-1)
+Depends: base-files (>= 2.1.12), debianutils (>= 2.15)
+Pre-Depends: libc6 (>= 2.4), libncurses5 (>= 5.6+20071006-3)
+Recommends: bash-completion (>= 20060301)
+Suggests: bash-doc
+Conflicts: bash-completion (<< 20060301)
+Filename: pool/main/b/bash/bash_3.2-0ubuntu16_amd64.deb
+Size: 614892
+MD5sum: 36ebbaf67a8cc3b02ed702862b8211b8
+SHA1: 135042a328e48f662e6a96adb22622ce36313202
+SHA256: c252e624e62a3e3cc253972a909308ec24b5ea282e1602a9c81b140c4f5af998
+Description: The GNU Bourne Again SHell
+ Bash is an sh-compatible command language interpreter that executes
+ commands read from the standard input or from a file.  Bash also
+ incorporates useful features from the Korn and C shells (ksh and csh).
+ .
+ Bash is ultimately intended to be a conformant implementation of the
+ IEEE POSIX Shell and Tools specification (IEEE Working Group 1003.2).
+ .
+ The Programmable Completion Code, by Ian Macdonald, is now found in
+ the bash-completion package.
+Bugs: mailto:ubuntu-users@lists.ubuntu.com
+Origin: Ubuntu
+Task: minimal

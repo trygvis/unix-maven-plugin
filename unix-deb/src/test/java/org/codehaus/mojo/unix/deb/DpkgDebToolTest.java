@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.dpkg;
+package org.codehaus.mojo.unix.deb;
 
 /*
  * The MIT License

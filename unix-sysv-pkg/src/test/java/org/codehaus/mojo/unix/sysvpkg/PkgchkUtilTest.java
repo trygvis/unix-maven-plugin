@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.pkg;
+package org.codehaus.mojo.unix.sysvpkg;
 
 /*
  * The MIT License
@@ -28,7 +28,7 @@ import fj.*;
 import fj.Function;
 import fj.data.*;
 import junit.framework.*;
-import static org.codehaus.mojo.unix.pkg.PkgchkUtil.*;
+import static org.codehaus.mojo.unix.sysvpkg.PkgchkUtil.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;

@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.pkg.prototype;
+package org.codehaus.mojo.unix.sysvpkg.prototype;
 
 /*
  * The MIT License
@@ -24,51 +24,56 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
-import static fj.Bottom.*;
 import fj.data.*;
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
-import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.joda.time.LocalDateTime.*;
 
 import java.io.*;
-import java.util.*;
+import static java.lang.Boolean.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class IEntry
-    extends PrototypeEntry<UnixFsObject>
+public class FileEntry
+    extends PrototypeEntry<RegularFile>
 {
-    private final File realPath;
+    private final Option<File> realPath;
 
-    public IEntry( Option<String> pkgClass, RelativePath path, File realPath )
+    /**
+     * The same as calling {@link #FileEntry(Option, Option, UnixFsObject.RegularFile, Option)}
+     * with <code>relative=false</code> and <code>realPath=null</code>.
+     */
+    public FileEntry( Option<String> pkgClass, RegularFile file )
     {
-        super( pkgClass, Option.<Boolean>none(),
-               regularFile( path, fromDateFields( new Date( realPath.lastModified() ) ), realPath.length(),
-                            Option.<FileAttributes>none() ) );
+        this( pkgClass, some( FALSE ), file, Option.<File>none() );
+    }
+
+    public FileEntry( Option<String> pkgClass, Option<Boolean> relative, RegularFile file, Option<File> realPath )
+    {
+        super( pkgClass, relative, file );
         this.realPath = realPath;
     }
 
     public String generatePrototypeLine()
     {
-        return "i " + getProcessedPath( some( realPath ) );
+        return "f " + pkgClass + " " + getProcessedPath( realPath ) + " " + toString( object.getFileAttributes() );
     }
 
     public FileAttributes getFileAttributes()
     {
-        throw error( "Not applicable" );
+        return object.getFileAttributes();
     }
 
-    public PrototypeEntry<UnixFsObject> setFileAttributes( FileAttributes attributes )
+    public FileEntry setFileAttributes( FileAttributes attributes )
     {
-        throw error( "Not applicable" );
+        return new FileEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ), realPath );
     }
 
-    public PackageFileSystemObject<PrototypeEntry> setPath( RelativePath path )
+    public FileEntry setPath( RelativePath path )
     {
-        throw error( "Not applicable" );
+        return new FileEntry( some( pkgClass ), relative, object.setPath( path ), realPath );
     }
 }

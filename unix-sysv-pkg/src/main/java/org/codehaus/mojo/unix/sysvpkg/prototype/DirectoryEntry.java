@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.pkg.prototype;
+package org.codehaus.mojo.unix.sysvpkg.prototype;
 
 /*
  * The MIT License

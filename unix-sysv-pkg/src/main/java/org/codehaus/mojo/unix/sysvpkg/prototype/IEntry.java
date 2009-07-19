@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.pkg.prototype;
+package org.codehaus.mojo.unix.sysvpkg.prototype;
 
 /*
  * The MIT License
@@ -24,48 +24,51 @@ package org.codehaus.mojo.unix.pkg.prototype;
  * SOFTWARE.
  */
 
+import static fj.Bottom.*;
 import fj.data.*;
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.UnixFsObject.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
+import static org.joda.time.LocalDateTime.*;
 
 import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class EditableEntry
-    extends PrototypeEntry<RegularFile>
+public class IEntry
+    extends PrototypeEntry<UnixFsObject>
 {
-    private final Option<File> realPath;
+    private final File realPath;
 
-    public EditableEntry( Option<String> pkgClass, Option<Boolean> relative, RegularFile object, Option<File> realPath  )
+    public IEntry( Option<String> pkgClass, RelativePath path, File realPath )
     {
-        super( pkgClass, relative, object );
+        super( pkgClass, Option.<Boolean>none(),
+               regularFile( path, fromDateFields( new Date( realPath.lastModified() ) ), realPath.length(),
+                            Option.<FileAttributes>none() ) );
         this.realPath = realPath;
     }
 
     public String generatePrototypeLine()
     {
-        return "e " + pkgClass +
-            " " + getProcessedPath( realPath ) +
-            " " + toString( object.getFileAttributes() );
+        return "i " + getProcessedPath( some( realPath ) );
     }
 
     public FileAttributes getFileAttributes()
     {
-        throw new RuntimeException( "Not implemented" );
+        throw error( "Not applicable" );
     }
 
-    public EditableEntry setFileAttributes( FileAttributes attributes )
+    public PrototypeEntry<UnixFsObject> setFileAttributes( FileAttributes attributes )
     {
-        return new EditableEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ), realPath );
+        throw error( "Not applicable" );
     }
 
-    public EditableEntry setPath( RelativePath path )
+    public PackageFileSystemObject<PrototypeEntry> setPath( RelativePath path )
     {
-        return new EditableEntry( some( pkgClass ), relative, object.setPath( path ), realPath );
+        throw error( "Not applicable" );
     }
 }

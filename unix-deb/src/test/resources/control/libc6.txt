@@ -1,0 +1,25 @@
+Package: libc6
+Priority: required
+Section: base
+Installed-Size: 11348
+Maintainer: Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: GNU Libc Maintainers <debian-glibc@lists.debian.org>
+Architecture: amd64
+Source: glibc
+Version: 2.7-10ubuntu3
+Provides: glibc-2.7-1
+Depends: libgcc1
+Suggests: locales, glibc-doc
+Conflicts: libterm-readline-gnu-perl (<< 1.15-2), tzdata (<< 2007k-1)
+Filename: pool/main/g/glibc/libc6_2.7-10ubuntu3_amd64.deb
+Size: 4754108
+MD5sum: fe033464b288284d4031a3de64da4567
+SHA1: 402ab2c33aa59af6a4802de6340dd32be2229dce
+SHA256: 18dfd2ba99f95bae7778520afa1b4e86deff490aaa04d08da3e1b3100c999f45
+Description: GNU C Library: Shared libraries
+ Contains the standard libraries that are used by nearly all programs on
+ the system. This package includes shared versions of the standard C library
+ and the standard math library, as well as many others.
+Bugs: mailto:ubuntu-users@lists.ubuntu.com
+Origin: Ubuntu
+Task: minimal

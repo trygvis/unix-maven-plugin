@@ -1,0 +1,26 @@
+Package: ant
+Priority: optional
+Section: devel
+Installed-Size: 1460
+Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Architecture: all
+Version: 1.7.0-3
+Replaces: libant1.6-java, ant-doc (<= 1.6.5-1)
+Depends: java-gcj-compat-dev | java-virtual-machine, java-gcj-compat | java1-runtime | java2-runtime, libxerces2-java
+Recommends: ant-optional, ant-gcj
+Suggests: ant-doc
+Conflicts: libant1.6-java, ant-doc (<= 1.6.5-1)
+Filename: pool/main/a/ant/ant_1.7.0-3_all.deb
+Size: 1281048
+MD5sum: bc3ae0ff50241b4ec81f109a04feb114
+SHA1: eda619ce5d6ad97742b2f6abcc6cb30316aec1fa
+SHA256: 6f8c71b09bfb2df2b7ac0e5cebe85a733a06a3f61226413b3913460c81ea777d
+Description: Java based build tool like make
+ A system independent (i.e. not shell based) build tool that uses XML
+ files as "Makefiles". This package contains the scripts and the core
+ tasks libraries.
+ .
+Homepage: http://ant.apache.org/
+Bugs: mailto:ubuntu-users@lists.ubuntu.com
+Origin: Ubuntu

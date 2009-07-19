@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.dpkg;
+package org.codehaus.mojo.unix.deb;
 
 /*
  * The MIT License
@@ -97,8 +97,8 @@ public class Dpkg
             dumpCommandIf( debug ).
             withNoStderrConsumerUnless( debug ).
             withNoStdoutConsumerUnless( debug ).
-            addArgument( "-b" ).
             addArgumentIf( useFakeroot, dpkgDebPath ).
+            addArgument( "-b" ).
             addArgument( packageRoot.getAbsolutePath() ).
             addArgument( debFile.getAbsolutePath() ).
             execute().

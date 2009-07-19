@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.pkg;
+package org.codehaus.mojo.unix.sysvpkg;
 
 /*
  * The MIT License
@@ -26,8 +26,10 @@ package org.codehaus.mojo.unix.pkg;
 
 import static fj.data.List.*;
 import static fj.data.Option.*;
+import fj.data.*;
 import junit.framework.*;
 import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.sysvpkg.PkginfoFile.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -38,7 +40,7 @@ public class PkginfoFileTest
 {
     public void testParsing()
     {
-        LineFile pkginfoStrings = (LineFile) ( new LineFile().
+        Iterable<String> pkginfoStrings = (LineFile) ( new LineFile().
             add( "        PKGINST:  project-pkg-1" ).
             add( "           NAME:  Hudson" ).
             add( "       CATEGORY:  application" ).
@@ -51,59 +53,49 @@ public class PkginfoFileTest
             add( "                        2 package information files" ).
             add( "                    40281 blocks used (approx)" ) );
 
-        PkginfoFile expected = new PkginfoFile();
-        expected.packageName = "project-pkg-1";
-        expected.name = "Hudson";
-        expected.category = "application";
-        expected.arch = some( "all" );
-        expected.version = "1.1-2";
-        expected.pstamp = "20090129.134909";
-        expected.email = "trygvis@codehaus.org";
-        assertEquals( expected.toString(), PkginfoFile.factory.fromStream( pkginfoStrings ).toString() );
+        PkginfoFile expected = new PkginfoFile( "all", "application", "Hudson", "project-pkg-1", "1.1-2",
+                                                some( "20090129.134909" ), Option.<String>none(),
+                                                some( "trygvis@codehaus.org" ), List.<String>nil() );
+
+        assertEquals( expected.toString(), fromStream( pkginfoStrings ).some().toString() );
     }
 
     public void testClasses()
     {
-        PkginfoFile pkginfoFile = new PkginfoFile();
+        PkginfoFile pkginfoFile = new PkginfoFile( "all", "application", "name", "mypackage", "1.0" );
 
         assertEquals( new LineFile().
-            add( "PKG=null").
-            add( "NAME=").
-            add( "DESC=").
-            add( "VERSION=null").
-            add( "PSTAMP=null").
+            add( "ARCH=all").
+            add( "CATEGORY=application").
+            add( "NAME=name").
+            add( "PKG=mypackage").
+            add( "VERSION=1.0").
 //            add( "CLASSES=none"). I think this is the right behaviou.
 //  If pkgmk always insert *and* warn about the class it should be commented back in
-            add( "ARCH=all").
-            add( "CATEGORY=application").
             toString(), pkginfoFile.toString() );
 
-        pkginfoFile = new PkginfoFile();
-        pkginfoFile.classes = single( "smf" );
+        pkginfoFile = pkginfoFile.
+            classes( list( "smf" ) );
 
         assertEquals( new LineFile().
-            add( "PKG=null").
-            add( "NAME=").
-            add( "DESC=").
-            add( "VERSION=null").
-            add( "PSTAMP=null").
+            add( "ARCH=all").
+            add( "CATEGORY=application").
+            add( "NAME=name").
+            add( "PKG=mypackage").
+            add( "VERSION=1.0").
             add( "CLASSES=smf").
-            add( "ARCH=all").
-            add( "CATEGORY=application").
             toString(), pkginfoFile.toString() );
 
-        pkginfoFile = new PkginfoFile();
-        pkginfoFile.classes = list( "none", "smf" );
+        pkginfoFile = pkginfoFile.
+            classes( list( "none", "smf" ) );
 
         assertEquals( new LineFile().
-            add( "PKG=null").
-            add( "NAME=").
-            add( "DESC=").
-            add( "VERSION=null").
-            add( "PSTAMP=null").
-            add( "CLASSES=none smf").
             add( "ARCH=all").
             add( "CATEGORY=application").
+            add( "NAME=name").
+            add( "PKG=mypackage").
+            add( "VERSION=1.0").
+            add( "CLASSES=none smf").
             toString(), pkginfoFile.toString() );
     }
 }
