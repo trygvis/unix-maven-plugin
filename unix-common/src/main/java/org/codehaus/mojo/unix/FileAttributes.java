@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix;
 import fj.*;
 import fj.pre.*;
 import fj.data.*;
+import static fj.data.List.*;
 import static fj.data.Option.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
@@ -100,12 +101,12 @@ public class FileAttributes
 
     public FileAttributes addTag( String tag )
     {
-        return new FileAttributes( user, group, mode, tags.cons( tag ) );
+        return new FileAttributes( user, group, mode, tags.append( single( tag ) ) );
     }
 
     public FileAttributes tags( List<String> tags )
     {
-        return new FileAttributes( user, group, mode, tags.append( tags ) );
+        return new FileAttributes( user, group, mode, this.tags.append( tags ) );
     }
 
     // -----------------------------------------------------------------------

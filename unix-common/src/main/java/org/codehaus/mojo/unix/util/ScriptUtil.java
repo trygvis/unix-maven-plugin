@@ -32,6 +32,7 @@ import static fj.data.Option.*;
 import fj.pre.*;
 import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.java.FileF.*;
+import static org.codehaus.mojo.unix.util.FileModulator.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
@@ -61,10 +62,11 @@ import java.util.concurrent.*;
  * scripts/
  * |-- post-install                 Common for all packages, all formats
  * |-- post-install-a               Common for package "a" in all formats
- * |-- post-install-a-dpkg
+ * |-- post-install-a-deb
  * |-- post-install-a-pkg
  * |-- post-install-a-rpm
- * |-- post-install-b-dpkg
+ * |-- post-install-rpm             Common for all packages in "rpm" format
+ * |-- post-install-b-deb
  * |-- post-install-b-pkg
  * `-- post-install-b-rpm
  * </pre>
@@ -84,8 +86,10 @@ public final class ScriptUtil
 
     private final List<String> customScripts;
 
-    public enum Strategy {
-        SINGLE(ScriptFile.specificNameF), MULTIPLE(ScriptFile.commonNameF);
+    public enum Strategy
+    {
+        SINGLE( ScriptFile.specificNameF ),
+        MULTIPLE( ScriptFile.commonNameF );
 
         private final F<ScriptFile, String> accessor;
 
@@ -218,28 +222,21 @@ public final class ScriptUtil
         }
     }
 
-    public Execution createExecution( final String id, final String format, final File scripts, final File toDir, Strategy strategy )
+    public Execution createExecution( String id, String format, File scripts, File toDir, Strategy strategy )
     {
-        return doIt( id, scripts, toDir, format, strategy.accessor );
-    }
-
-    private Execution doIt( String id, File scripts, File toDir, String format, F<ScriptFile, String> accessor )
-    {
+        F<String, List<String>> expand = curry( modulatePath, id, format );
+        F<ScriptFile, List<String>> f = compose( expand, strategy.accessor );
         F<String, File> newScriptsFile = curry( FileF.newFile, scripts );
 
-        F2<F<ScriptFile, String>, ScriptFile, List<String>> strategy =
-            uncurryF2( curry( expand, id, format, scripts ) );
-        F<ScriptFile, List<String>> toFiles = curry( strategy, accessor );
+        List<File> preInstallFiles = f.f( preInstall ).map( newScriptsFile ).filter( canRead );
+        List<File> postInstallFiles = f.f( postInstall ) .map( newScriptsFile ).filter( canRead );
+        List<File> preRemoveFiles = f.f( preRemove ).map( newScriptsFile ).filter( canRead );
+        List<File> postRemoveFiles = f.f( postRemove ).map( newScriptsFile ).filter( canRead );
 
-        List<File> preInstallFiles = toFiles.f( preInstall ).map( newScriptsFile ).filter( canRead );
-        List<File> postInstallFiles = toFiles.f( postInstall ).map( newScriptsFile ).filter( canRead );
-        List<File> preRemoveFiles = toFiles.f( preRemove ).map( newScriptsFile ).filter( canRead );
-        List<File> postRemoveFiles = toFiles.f( postRemove ).map( newScriptsFile ).filter( canRead );
         List<Callable<File>> customFiles = nil();
-
         for ( String customScript : customScripts )
         {
-            F<ScriptFile, List<String>> toFilesCustom = curry( strategy, ScriptFile.specificNameF );
+            F<ScriptFile, List<String>> toFilesCustom = compose( expand, ScriptFile.specificNameF );
             List<File> list = toFilesCustom.f( new ScriptFile( null, customScript ) ).
                 map( newScriptsFile ).
                 filter( canRead );
@@ -254,21 +251,8 @@ public final class ScriptUtil
             iif( List.<File>isNotEmpty_(), preInstallFiles ).map( curry( copyFiles, preInstall.toFile( toDir ) ) ),
             iif( List.<File>isNotEmpty_(), postInstallFiles ).map( curry( copyFiles, postInstall.toFile( toDir ) ) ),
             iif( List.<File>isNotEmpty_(), preRemoveFiles ).map( curry( copyFiles, preRemove.toFile( toDir ) ) ),
-            iif( List.<File>isNotEmpty_(), postRemoveFiles ).map( curry( copyFiles, postRemove.toFile( toDir ) ) ),
-            customFiles );
+            iif( List.<File>isNotEmpty_(), postRemoveFiles ).map( curry( copyFiles, postRemove.toFile( toDir ) ) ), customFiles );
     }
-
-    F5<String, String, File, F<ScriptFile, String>, ScriptFile, List<String>> expand =
-        new F5<String, String, File, F<ScriptFile, String>, ScriptFile, List<String>>()
-        {
-            public List<String> f( String id, String format, File scripts, F<ScriptFile, String> accessor,
-                                 ScriptFile scriptFile )
-            {
-                return list( accessor.f( scriptFile ),
-                             accessor.f( scriptFile ) + "-" + id ,
-                             accessor.f( scriptFile ) + "-" + id + "-" + format );
-            }
-        };
 
     F2<File, File, Callable<File>> customToCallable = new F2<File, File, Callable<File>>()
     {

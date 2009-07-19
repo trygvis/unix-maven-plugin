@@ -63,9 +63,9 @@ public class CopyFileOperation
 
     public void streamTo( LineStreamWriter streamWriter )
     {
-        streamWriter.add( "Copy file" );
-        streamWriter.add( " From: " + asFile( fromFile ).getAbsolutePath() );
-        streamWriter.add( " To: " + toFile );
-        streamWriter.add( " Attributes: " + attributes );
+        streamWriter.add( "Copy file" ).
+            add( " From: " + asFile( fromFile ).getAbsolutePath() ).
+            add( " To: " + toFile ).
+            add( " Attributes: " + attributes );
     }
 }

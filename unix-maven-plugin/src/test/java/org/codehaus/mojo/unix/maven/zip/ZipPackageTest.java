@@ -30,7 +30,6 @@ import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.core.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.plexus.*;
 
 import java.io.*;
 
@@ -44,7 +43,7 @@ public class ZipPackageTest
     {
         FileSystemManager fileSystemManager = VFS.getManager();
 
-        File zip1 = PlexusTestCase.getTestFile( "src/it/test-zip-1" );
+        File zip1 = new TestUtil( this ).getTestFile( "src/it/test-zip-1" );
         File zip = new File( zip1, "target/zip/test.zip" );
         if ( !zip.getParentFile().isDirectory() )
         {

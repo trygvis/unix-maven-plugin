@@ -40,12 +40,17 @@ public class PackageParameters
 
     public final PackageVersion version;
 
+    /**
+     * A quasi-unique id. Typically artifact id (+ classifier).
+     */
     public final String id;
 
     /**
      * A single-line description of the package.
      */
-    public final Option<String> name;
+    public final String name;
+
+    public final Option<String> classifier;
 
     /**
      * A multi-line description of the package.
@@ -60,23 +65,31 @@ public class PackageParameters
 
     public final Option<String> architecture;
 
-    public PackageParameters( String groupId, String artifactId, PackageVersion version, String id, Option<String> name,
-                              Option<String> description, Option<String> contact, Option<String> contactEmail,
-                              Option<String> license, Option<String> architecture )
+    public final FileAttributes defaultFileAttributes;
+
+    public final FileAttributes defaultDirectoryAttributes;
+
+    public PackageParameters( String groupId, String artifactId, PackageVersion version, String id, String name,
+                              FileAttributes defaultFileAttributes, FileAttributes defaultDirectoryAttributes,
+                              Option<String> classifier, Option<String> description, Option<String> contact,
+                              Option<String> contactEmail, Option<String> license, Option<String> architecture )
     {
-        validateNotNull( groupId, artifactId, version, id, name, description, contact, contactEmail, license,
-                         architecture );
+        validateNotNull( groupId, artifactId, version, id, name, defaultFileAttributes, defaultDirectoryAttributes,
+            classifier, description, contact, contactEmail, license, architecture );
 
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
         this.id = id;
         this.name = name;
+        this.classifier = classifier;
         this.description = description;
         this.contact = contact;
         this.contactEmail = contactEmail;
         this.license = license;
         this.architecture = architecture;
+        this.defaultFileAttributes = defaultFileAttributes;
+        this.defaultDirectoryAttributes = defaultDirectoryAttributes;
     }
 
     // -----------------------------------------------------------------------
@@ -84,21 +97,20 @@ public class PackageParameters
     // -----------------------------------------------------------------------
 
     public static PackageParameters packageParameters( String groupId, String artifactId, PackageVersion version,
-                                                       String id )
+                                                       String id, String name, Option<String> classifier,
+                                                       FileAttributes defaultFileAttributes,
+                                                       FileAttributes defaultDirectoryAttributes)
     {
-        return new PackageParameters( groupId, artifactId, version, id, Option.<String>none(), Option.<String>none(),
-                                      Option.<String>none(), Option.<String>none(), Option.<String>none(),
-                                      Option.<String>none() );
+        return new PackageParameters( groupId, artifactId, version, id, name, defaultFileAttributes,
+                                      defaultDirectoryAttributes, classifier, Option.<String>none(), Option.<String>none(),
+                                      Option.<String>none(), Option.<String>none(), Option.<String>none() );
     }
 
     public PackageParameters name( String name )
     {
-        return name( fromNull( name ) );
-    }
-
-    public PackageParameters name( Option<String> name )
-    {
-        return new PackageParameters( groupId, artifactId, version, id, name, description, contact, contactEmail, license, architecture );
+        return new PackageParameters( groupId, artifactId, version, id, name, defaultFileAttributes,
+                                      defaultDirectoryAttributes, classifier, description, contact, contactEmail,
+                                      license, architecture );
     }
 
     public PackageParameters description( String description )
@@ -108,7 +120,9 @@ public class PackageParameters
 
     public PackageParameters description( Option<String> description )
     {
-        return new PackageParameters( groupId, artifactId, version, id, name, description, contact, contactEmail, license, architecture );
+        return new PackageParameters( groupId, artifactId, version, id, name, defaultFileAttributes,
+                                      defaultDirectoryAttributes, classifier, description, contact, contactEmail,
+                                      license, architecture );
     }
 
     public PackageParameters contact( String contact )
@@ -118,7 +132,9 @@ public class PackageParameters
 
     public PackageParameters contact( Option<String> contact )
     {
-        return new PackageParameters( groupId, artifactId, version, id, name, description, contact, contactEmail, license, architecture );
+        return new PackageParameters( groupId, artifactId, version, id, name, defaultFileAttributes,
+                                      defaultDirectoryAttributes, classifier, description, contact, contactEmail,
+                                      license, architecture );
     }
 
     public PackageParameters contactEmail( String contactEmail )
@@ -128,7 +144,9 @@ public class PackageParameters
 
     public PackageParameters contactEmail( Option<String> contactEmail )
     {
-        return new PackageParameters( groupId, artifactId, version, id, name, description, contact, contactEmail, license, architecture );
+        return new PackageParameters( groupId, artifactId, version, id, name, defaultFileAttributes,
+                                      defaultDirectoryAttributes, classifier, description, contact, contactEmail,
+                                      license, architecture );
     }
 
     public PackageParameters license( String license )
@@ -138,7 +156,9 @@ public class PackageParameters
 
     public PackageParameters license( Option<String> license )
     {
-        return new PackageParameters( groupId, artifactId, version, id, name, description, contact, contactEmail, license, architecture );
+        return new PackageParameters( groupId, artifactId, version, id, name, defaultFileAttributes,
+                                      defaultDirectoryAttributes, classifier, description, contact, contactEmail,
+                                      license, architecture );
     }
 
     public PackageParameters architecture( String architecture )
@@ -148,6 +168,8 @@ public class PackageParameters
 
     public PackageParameters architecture( Option<String> architecture )
     {
-        return new PackageParameters( groupId, artifactId, version, id, name, description, contact, contactEmail, license, architecture );
+        return new PackageParameters( groupId, artifactId, version, id, name, defaultFileAttributes,
+                                      defaultDirectoryAttributes, classifier, description, contact, contactEmail,
+                                      license, architecture );
     }
 }

@@ -25,6 +25,11 @@
 
 <project>
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.codehaus.mojo.unix</groupId>
+    <artifactId>unix</artifactId>
+    <version>1.0-alpha-5-SNAPSHOT</version>
+  </parent>
   <groupId>bar</groupId>
   <artifactId>project-uber-1</artifactId>
   <version>1.1-2</version>
@@ -81,7 +86,7 @@
         <executions>
           <execution>
             <goals>
-              <goal>package-dpkg-attached</goal>
+              <goal>package-deb-attached</goal>
               <goal>package-pkg-attached</goal>
               <goal>package-rpm-attached</goal>
               <goal>package-zip-attached</goal>
@@ -98,9 +103,9 @@
               <mode>044</mode>
             </fileAttributes>
           </defaults>
-          <dpkg>
+          <deb>
             <section>devel</section>
-          </dpkg>
+          </deb>
           <rpm>
             <group>Application/Collectors</group>
           </rpm>

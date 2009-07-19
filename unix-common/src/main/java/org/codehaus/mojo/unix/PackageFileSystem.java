@@ -38,7 +38,7 @@ import fj.pre.*;
 import static fj.pre.Ord.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.fj.FunctionF.flip;
+import static org.codehaus.mojo.unix.util.fj.FunctionF.flip2;
 import org.codehaus.mojo.unix.util.fj.*;
 
 /**
@@ -107,16 +107,11 @@ public class PackageFileSystem<A>
             return some( root.getLabel() );
         }
 
-        F<TreeZipper<PackageFileSystemObject<A>>, Option<PackageFileSystemObject<A>>> f =
-            compose( compose( Option.<PackageFileSystemObject<A>>some_(), Tree.<PackageFileSystemObject<A>>root_() ),
-                     TreeZipperF.<PackageFileSystemObject<A>>toTree() );
-
         return find( root, path.toList() ).right().
-            map( f ).right().
-            orValue( p( Option.<PackageFileSystemObject<A>>none() ) );
+            map( TreeZipperF.<PackageFileSystemObject<A>>getLabel_() ).right().toOption();
     }
 
-    public PackageFileSystem<A> addDirectory( PackageFileSystemObject<A> object)
+    public PackageFileSystem<A> addDirectory( PackageFileSystemObject<A> object )
     {
         List<String> names = object.getUnixFsObject().path.toList();
 //        String name = names.isEmpty() ? root.getLabel().name : names.reverse().head();
@@ -127,7 +122,7 @@ public class PackageFileSystem<A>
         Either<TreeZipper<PackageFileSystemObject<A>>, TreeZipper<PackageFileSystemObject<A>>> either = findAndCreateParentsFor( names );
 
         return either.
-            either( compose( fs.navigateToRootAndCreatePackageFileSystem, curry( flip( fs.addChild ), newChild ) ),
+            either( compose( fs.navigateToRootAndCreatePackageFileSystem, curry( flip2( fs.addChild ), newChild ) ),
                     compose( fs.navigateToRootAndCreatePackageFileSystem, curry( fs.mutateExisting, object ) ) );
     }
 
@@ -142,7 +137,7 @@ public class PackageFileSystem<A>
         Tree<PackageFileSystemObject<A>> newChild = leaf( file );
 
         return findAndCreateParentsFor( names ).
-            either( compose( fs.navigateToRootAndCreatePackageFileSystem, curry( flip( fs.addChild ), newChild ) ),
+            either( compose( fs.navigateToRootAndCreatePackageFileSystem, curry( flip2( fs.addChild ), newChild ) ),
                     compose( fs.navigateToRootAndCreatePackageFileSystem, curry( fs.mutateExisting, file ) ) );
     }
 
@@ -157,7 +152,7 @@ public class PackageFileSystem<A>
         Tree<PackageFileSystemObject<A>> newChild = leaf( symlink );
 
         return findAndCreateParentsFor( names ).
-            either( compose( fs.navigateToRootAndCreatePackageFileSystem, curry( flip( fs.addChild ), newChild ) ),
+            either( compose( fs.navigateToRootAndCreatePackageFileSystem, curry( flip2( fs.addChild ), newChild ) ),
                     compose( fs.navigateToRootAndCreatePackageFileSystem, curry( fs.mutateExisting, symlink ) ) );
     }
 

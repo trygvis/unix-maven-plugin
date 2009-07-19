@@ -29,6 +29,8 @@ import org.codehaus.plexus.util.*;
 import java.io.*;
 import java.util.*;
 
+import fj.*;
+
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -70,18 +72,6 @@ public class LineStreamUtil
     // -----------------------------------------------------------------------
     // LineProducer
     // -----------------------------------------------------------------------
-
-    public static Iterator<String> toIterator( LineProducer lineProducer )
-    {
-        LineFile lines = new LineFile();
-        lineProducer.streamTo( lines );
-        return lines.iterator();
-    }
-
-    public static Iterator<String> toIterator( Iterable<LineProducer> lineProducers )
-    {
-        return toIterator( lineProducers.iterator() );
-    }
 
     public static Iterator<String> toIterator( final Iterator<LineProducer> lineProducers )
     {
@@ -127,6 +117,29 @@ public class LineStreamUtil
             fileWriter = new FileWriter( file );
             LineWriterWriter writer = new LineWriterWriter( fileWriter );
             lineProducer.streamTo( writer );
+            writer.close();
+        }
+        finally
+        {
+            IOUtil.close( fileWriter );
+        }
+    }
+
+    public static void toFile( fj.data.List<String> lines, File file )
+        throws IOException
+    {
+        FileWriter fileWriter = null;
+        try
+        {
+            fileWriter = new FileWriter( file );
+            final LineWriterWriter writer = new LineWriterWriter( fileWriter );
+            lines.foreach( new Effect<String>()
+            {
+                public void e( String s )
+                {
+                    writer.add( s );
+                }
+            } );
             writer.close();
         }
         finally

@@ -35,11 +35,11 @@
 
     <component>
       <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-      <role-hint>dpkg</role-hint>
+      <role-hint>deb</role-hint>
       <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
       <configuration>
         <extension>deb</extension>
-        <type>dpkg</type>
+        <type>deb</type>
         <language>none</language>
         <addedToClasspath>false</addedToClasspath>
       </configuration>
@@ -86,12 +86,12 @@
 
     <component>
       <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
-      <role-hint>dpkg</role-hint>
+      <role-hint>deb</role-hint>
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-          <package>org.codehaus.mojo:unix-maven-plugin:package-dpkg</package>
+          <package>org.codehaus.mojo:unix-maven-plugin:package-deb</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
         </phases>
@@ -99,12 +99,12 @@
     </component>
     <component>
       <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
-      <role-hint>pkg</role-hint>
+      <role-hint>sysvpkg</role-hint>
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-          <package>org.codehaus.mojo:unix-maven-plugin:package-pkg</package>
+          <package>org.codehaus.mojo:unix-maven-plugin:package-sysvpkg</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
         </phases>
@@ -145,13 +145,13 @@
 
     <component>
       <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>
-      <role-hint>dpkg</role-hint>
-      <implementation>org.codehaus.mojo.unix.maven.dpkg.DpkgPackagingFormat</implementation>
+      <role-hint>deb</role-hint>
+      <implementation>org.codehaus.mojo.unix.maven.deb.DebPackagingFormat</implementation>
     </component>
     <component>
       <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>
-      <role-hint>pkg</role-hint>
-      <implementation>org.codehaus.mojo.unix.maven.pkg.PkgPackagingFormat</implementation>
+      <role-hint>sysvpkg</role-hint>
+      <implementation>org.codehaus.mojo.unix.maven.sysvpkg.SysvPkgPackagingFormat</implementation>
     </component>
     <component>
       <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>

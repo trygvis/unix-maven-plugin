@@ -1,7 +1,7 @@
 import static fj.data.Option.none
 import org.codehaus.mojo.unix.maven.*
-import org.codehaus.mojo.unix.pkg.*
-import org.codehaus.mojo.unix.pkg.PkginfoUtil.PackageInfo
+import org.codehaus.mojo.unix.sysvpkg.*
+import org.codehaus.mojo.unix.sysvpkg.PkginfoUtil.PackageInfo
 
 String userHome = System.getProperty("user.home")
 File jar = new File(userHome, ".m2/repository/bar/project-uber-1/1.1-2/project-uber-1-1.1-2.jar")
@@ -16,8 +16,8 @@ boolean success = true
 
 success &= ShittyUtil.assertRelaxed(
         new PackageInfo( "project-uber-1", "Uber Project", "application", "all", "1.1-2", none(), none() ),
-        PkginfoUtil.getPackageInforForDevice(pkg).some());
-success &= ShittyUtil.assertPkgEntries(pkg, [
+        PkginfoUtil.getPackageInfoForDevice(pkg).some());
+success &= ShittyUtil.assertSysvPkgEntries(pkg, [
         PkgchkUtil.directory("/usr", "17777777777", "?", "?", none()),
         PkgchkUtil.directory("/usr/share", "0755", "nobody", "nogroup", none()),
         PkgchkUtil.directory("/usr/share/hello", "0755", "nobody", "nogroup", none()),

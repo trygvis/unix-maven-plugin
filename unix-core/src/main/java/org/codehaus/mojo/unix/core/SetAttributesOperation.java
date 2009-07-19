@@ -112,12 +112,12 @@ public class SetAttributesOperation
 
     public void streamTo( LineStreamWriter streamWriter )
     {
-        streamWriter.add( "Set attributes:" );
-        streamWriter.add( " Basedir: " + basedir );
+        streamWriter.add( "Set attributes:" ).
+            add( " Basedir: " + basedir );
         if ( !includes.isEmpty() )
         {
-            streamWriter.add( " Includes: ");
-            streamWriter.addAllLines( prefix( includes, "  " ) );
+            streamWriter.add( " Includes: ").
+                addAllLines( prefix( includes, "  " ) );
         }
         else
         {
@@ -126,16 +126,16 @@ public class SetAttributesOperation
 
         if ( !excludes.isEmpty() )
         {
-            streamWriter.add( " Excludes: " );
-            streamWriter.addAllLines( prefix( excludes, "  " ) );
+            streamWriter.add( " Excludes: " ).
+                addAllLines( prefix( excludes, "  " ) );
         }
         else
         {
             streamWriter.add( " No excludes set" );
         }
-        streamWriter.add( " Attributes: ");
-        streamWriter.add( "  File     : " + fileAttributes.map( singleLineShow.showS_() ).orSome( "None" ) );
-        streamWriter.add( "  Directory: " + directoryAttributes.map( singleLineShow.showS_() ).orSome( "None" ) );
+        streamWriter.add( " Attributes: ").
+            add( "  File     : " + fileAttributes.map( singleLineShow.showS_() ).orSome( "None" ) ).
+            add( "  Directory: " + directoryAttributes.map( singleLineShow.showS_() ).orSome( "None" ) );
     }
 
     private final class ApplyAttributes

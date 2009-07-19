@@ -86,11 +86,16 @@ public class SpecFileTest
         specFile.addDirectory( bin );
         specFile.addFile( regularFile( relativePath( "/extract.jar" ), lastModified, 10, some( fileAttributes ) ) );
         specFile.addFile( regularFile( extract2Jar, lastModified, 10, some( fileAttributes ) ) );
-        specFile.addFile( regularFile( relativePath( "/a" ), lastModified, 10, some( fileAttributes.addTag( "doc" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/b" ), lastModified, 10, some( fileAttributes.addTag( "config" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/c" ), lastModified, 10, some( fileAttributes.addTag( "rpm:missingok" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/d" ), lastModified, 10, some( fileAttributes.addTag( "rpm:noreplace" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/e" ), lastModified, 10, some( fileAttributes.addTag( "rpm:ghost" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/a" ), lastModified, 10, some( fileAttributes.addTag(
+            "doc" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/b" ), lastModified, 10, some( fileAttributes.addTag(
+            "config" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/c" ), lastModified, 10, some( fileAttributes.addTag(
+            "rpm:missingok" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/d" ), lastModified, 10, some( fileAttributes.addTag(
+            "rpm:noreplace" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/e" ), lastModified, 10, some( fileAttributes.addTag(
+            "rpm:ghost" ) ) ) );
         specFile.apply( filter( extract2Jar, extract2JarAttributes ) );
 
         assertEquals( header.
@@ -111,7 +116,7 @@ public class SpecFileTest
             toString(), toString( specFile ) );
     }
 
-    public void testDescription()
+    public void testDescriptionGeneration()
         throws Exception
     {
         SpecFile specFile = testSpecFile();
@@ -144,6 +149,62 @@ public class SpecFileTest
             add( "%include " + specFile.includePost.some().getAbsolutePath() ).toString(), toString( specFile ) );
     }
 
+    public void testParseRpm()
+    {
+        LineFile dumpOutput = new LineFile();
+        // This dump was generated from Centos 5.3 bind-sdb-9.3.4-10-P1.el5.i386.rpm
+        // Some md5 sums has beed shortened to not mess up the formatting
+        dumpOutput.
+            add( "/etc/openldap/schema/dnszone.schema 5114 1232540847 2294a35240760043 0100644 root root 1 0 0 X" ).
+            add( "/usr/sbin/ldap2zone 13620 1232540860 a9ac9badbe029be47132a5becb9e1f8b 0100755 root named 0 0 0 X" ).
+            add( "/usr/sbin/named_sdb 390116 1232540860 0613cc2f0367554726b57ab03ba365db 0100755 root named 0 0 0 X" ).
+            add( "/usr/sbin/zone2ldap 17832 1232540860 cb4b9d6e17e65ef88d0185a74d74f63b 0100755 root named 0 0 0 X" ).
+            add( "/usr/sbin/zonetodb 13620 1232540860 fbc0ef188d07d448137d4c8f7f23c81c 0100755 root named 0 0 0 X" ).
+            add( "/usr/share/doc/bind-sdb-9.3.4 4096 1232540861 0000000000000000000 040755 root named 0 0 0 X" ).
+            add( "/usr/share/doc/bind-sdb-9.3.4/INSTALL.ldap 3792 1093565578 b0e1f35 0100644 root named 0 1 0 X" ).
+            add( "/usr/share/doc/bind-sdb-9.3.4/README.ldap 2419 1093565579 45fbd89e246 0100644 root named 0 1 0 X" ).
+            add( "/usr/share/doc/bind-sdb-9.3.4/README.sdb_pgsql 2590 1129753368 cffa8cf 0100644 root named 0 1 0 X" ).
+            add( "/usr/share/man/man1/zone2ldap.1.gz 1168 1232540846 6e3f7430678f7 0100644 root named 0 1 0 X" ).
+            toString();
+
+        SpecFile specFile = new SpecFile();
+        Directory defaultDirectory = UnixFsObject.directory( BASE, new LocalDateTime(), EMPTY );
+        specFile.beforeAssembly( defaultDirectory );
+        RpmUtil.RpmDumpParser parser = new RpmUtil.RpmDumpParser( specFile );
+
+        for ( String line : dumpOutput )
+        {
+            parser.onLine( line );
+        }
+
+        PackageFileSystem<Object> fileSystem = specFile.getFileSystem();
+        // Add the intermediate paths
+        // BASE, etc, etc/openldap, etc/openldap/schema, usr, usr/bin, usr/share, usr/share/doc, usr/share/man, usr/share/man/man1
+        assertEquals( dumpOutput.size() + 10, fileSystem.toList().toCollection().size() );
+        assertTrue( fileSystem.hasPath( relativePath( "/etc/openldap/schema/dnszone.schema" ) ) );
+        assertTrue( fileSystem.hasPath( relativePath( "/usr/sbin/ldap2zone" ) ) );
+        assertTrue( fileSystem.hasPath( relativePath( "/usr/sbin/named_sdb" ) ) );
+        assertTrue( fileSystem.hasPath( relativePath( "/usr/sbin/zone2ldap" ) ) );
+        assertTrue( fileSystem.hasPath( relativePath( "/usr/sbin/zonetodb" ) ) );
+        assertTrue( fileSystem.hasPath( relativePath( "/usr/share/doc/bind-sdb-9.3.4" ) ) );
+        assertTrue( fileSystem.hasPath( relativePath( "/usr/share/doc/bind-sdb-9.3.4/INSTALL.ldap" ) ) );
+        assertTrue( fileSystem.hasPath( relativePath( "/usr/share/doc/bind-sdb-9.3.4/README.ldap" ) ) );
+        assertTrue( fileSystem.hasPath( relativePath( "/usr/share/doc/bind-sdb-9.3.4/README.sdb_pgsql" ) ) );
+        assertTrue( fileSystem.hasPath( relativePath( "/usr/share/man/man1/zone2ldap.1.gz" ) ) );
+
+        RelativePath zone2ldap = relativePath( "/usr/share/man/man1/zone2ldap.1.gz" );
+        PackageFileSystemObject<Object> o = fileSystem.getObject( zone2ldap ).some();
+
+        assertEquals( "root", o.getUnixFsObject().getFileAttributes().user.some() );
+        assertEquals( "named", o.getUnixFsObject().getFileAttributes().group.some() );
+        //noinspection OctalInteger
+        assertEquals( fromInt( 0100644 ), o.getUnixFsObject().getFileAttributes().mode.some() );
+    }
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
+
     private String toString( SpecFile specFile )
         throws Exception
     {
@@ -168,7 +229,8 @@ public class SpecFileTest
         return specFile;
     }
 
-    private F2<UnixFsObject, FileAttributes, FileAttributes> filter( final RelativePath path, final FileAttributes newAttributes )
+    private F2<UnixFsObject, FileAttributes, FileAttributes> filter( final RelativePath path,
+                                                                     final FileAttributes newAttributes )
     {
         return new F2<UnixFsObject, FileAttributes, FileAttributes>()
         {

@@ -39,7 +39,7 @@
         </p>
         <ul>
           <li>
-            <code>dpkg</code> - Debian and Debian-based platforms like Ubuntu
+            <code>deb</code> - Debian and Debian-based platforms like Ubuntu
           </li>
           <li>
             <code>pkg</code> - Platforms with System V packaging tools like Solaris and HP-UX. Only Solaris is tested.

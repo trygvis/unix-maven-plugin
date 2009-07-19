@@ -26,7 +26,7 @@ package org.codehaus.mojo.unix.util.vfs;
 
 import junit.framework.*;
 import org.apache.commons.vfs.*;
-import org.codehaus.plexus.*;
+import org.codehaus.mojo.unix.util.*;
 
 import java.util.*;
 
@@ -40,7 +40,7 @@ public class IncludeExcludeTest
     public void testBasic()
         throws Exception
     {
-        String myProjectPath = PlexusTestCase.getTestPath( "src/test/resources/my-project" );
+        String myProjectPath = new TestUtil( this ).getTestPath( "src/test/resources/my-project" );
 
         FileSystemManager fsManager = VFS.getManager();
         FileObject myProject = fsManager.resolveFile( myProjectPath );
@@ -59,7 +59,7 @@ public class IncludeExcludeTest
         System.out.println( "Included:" );
         for ( FileObject fileObject : selection )
         {
-            System.out.println(myProject.getName().getRelativeName(fileObject.getName()));
+            System.out.println( myProject.getName().getRelativeName( fileObject.getName() ) );
         }
 
         assertEquals( 2, selection.size() );

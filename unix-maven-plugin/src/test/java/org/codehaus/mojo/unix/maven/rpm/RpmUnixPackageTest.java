@@ -27,9 +27,11 @@ package org.codehaus.mojo.unix.maven.rpm;
 import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
+import static org.codehaus.mojo.unix.PackageParameters.*;
 import static org.codehaus.mojo.unix.PackageVersion.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
-import org.codehaus.mojo.unix.maven.*;
+import org.codehaus.mojo.unix.maven.plugin.*;
 import org.codehaus.mojo.unix.rpm.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
@@ -69,7 +71,8 @@ public class RpmUnixPackageTest
         File packageFile = getTestFile( "target/rpm-test/file.rpm" );
 
         PackageVersion version = packageVersion( "1.0-1", "123", false, Option.<String>none() );
-        PackageParameters parameters = PackageParameters.packageParameters( "mygroup", "myartifact", version, "id" ).
+        PackageParameters parameters = packageParameters( "mygroup", "myartifact", version, "id", "default-name",
+                                                          Option.<String>none(), EMPTY, EMPTY ).
             contact( "Kurt Cobain" ).
             architecture( "all" ).
             name( "Yo!" ).

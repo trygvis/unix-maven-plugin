@@ -63,9 +63,9 @@ public class SymlinkOperation
 
     public void streamTo( LineStreamWriter streamWriter )
     {
-        streamWriter.add( "Symlink:" );
-        streamWriter.add( " Path: " + path );
-        streamWriter.add( " Target: " + target );
-        streamWriter.add( " Attributes: " + attributes );
+        streamWriter.add( "Symlink:" ).
+            add( " Path: " + path ).
+            add( " Target: " + target ).
+            add( " Attributes: " + attributes );
     }
 }

@@ -87,6 +87,23 @@ public class UnixFileMode
         return mode;
     }
 
+    @Override
+    public boolean equals( Object o )
+    {
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        UnixFileMode that = (UnixFileMode) o;
+
+        return mode == that.mode;
+    }
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer( "         " );
@@ -132,6 +149,7 @@ public class UnixFileMode
 
     public static UnixFileMode fromString( String string )
     {
+        // TODO: it really should support all bits and be able to parse them. Lots of figuring out to do here...
         if ( string.length() != 9 )
         {
             throw new RuntimeException( "Illegal string format; string.length has to be 9 characters" );

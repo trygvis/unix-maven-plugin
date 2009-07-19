@@ -34,12 +34,12 @@
   <dependencies>
     <dependency>
       <groupId>org.codehaus.mojo.unix</groupId>
-      <artifactId>unix-dpkg</artifactId>
+      <artifactId>unix-deb</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.mojo.unix</groupId>
-      <artifactId>unix-pkg</artifactId>
+      <artifactId>unix-sysv-pkg</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

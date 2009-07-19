@@ -24,12 +24,17 @@ package org.codehaus.mojo.unix.rpm;
  * SOFTWARE.
  */
 
+import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
-import org.codehaus.plexus.util.*;
+import org.joda.time.*;
 
 import java.io.*;
+import static java.lang.Long.*;
 import java.text.*;
 import java.util.*;
 
@@ -40,6 +45,7 @@ import java.util.*;
 public class RpmUtil
 {
     public static final SimpleDateFormat DATE_FORMAT_SHORTER = new SimpleDateFormat( "MMM dd HH:mm" );
+
     public static final SimpleDateFormat DATE_FORMAT_LONGER = new SimpleDateFormat( "MMM dd yyyy" );
 
     public static final class FileInfo
@@ -110,61 +116,6 @@ public class RpmUtil
         }
     }
 
-    public static final class SpecFile
-        implements EqualsIgnoreNull<SpecFile>, LineProducer
-    {
-        public String name;
-        public String version;
-        public int release;
-        public String summary;
-        public String license;
-        public String group;
-        public String description;
-        public List configFiles;
-
-        public SpecFile( String name, String version, int release, String summary, String license, String group,
-                         String description, List configFiles )
-        {
-            this.name = name;
-            this.version = version;
-            this.release = release;
-            this.summary = summary;
-            this.license = license;
-            this.group = group;
-            this.description = description;
-            this.configFiles = configFiles;
-        }
-
-        public boolean equalsIgnoreNull( SpecFile that )
-        {
-            return name.equals( that.name ) &&
-                version.equals( that.version ) &&
-                release == that.release &&
-                summary.equals( that.summary ) &&
-                license.equals( that.license ) &&
-                group.equals( that.group ) &&
-                ( description == null || description.equals( that.description ) );
-        }
-
-        public String toString()
-        {
-            return LineStreamUtil.toString( this );
-        }
-
-        public void streamTo( LineStreamWriter stream )
-        {
-            stream.add( "Name: " + name ).
-                add( "Version: " + version ).
-                add( "Release: " + release ).
-                add( "Summary: " + summary ).
-                add( "License: " + license ).
-                add( "Group: " + group ).
-                add().
-                add( "%description " ).
-                add( StringUtils.clean( description ) );
-        }
-    }
-
     public static List<FileInfo> queryPackageForFileInfo( File rpm )
         throws IOException
     {
@@ -188,7 +139,9 @@ public class RpmUtil
     {
         // rpm -q --queryformat "%{NAME}\n%{SIZE}" -p ./unix-maven-plugin/src/it/jetty/target/jetty-1.1-2.rpm
 
-        RpmSpecParser parser = new RpmSpecParser();
+        SpecFile specFile = new SpecFile();
+
+        RpmSpecParser parser = new RpmSpecParser( specFile );
         new SystemCommand().
             dumpCommandIf( true ).
             withStdoutConsumer( parser ).
@@ -217,21 +170,20 @@ public class RpmUtil
             execute().
             assertSuccess();
 
-        final List<String> configFiles = new LinkedList<String>();
-
+        RpmDumpParser rpmDumpParser = new RpmDumpParser( specFile );
         new SystemCommand().
             dumpCommandIf( true ).
-            withStdoutConsumer( new SystemCommand.StringListLineConsumer( configFiles ) ).
+            withStdoutConsumer( rpmDumpParser ).
             setCommand( "rpm" ).
             addArgument( "--query" ).
-            addArgument( "--configfiles" ).
+            addArgument( "--dump" ).
             addArgument( "--package" ).
             addArgument( rpm.getAbsolutePath() ).
             execute().
             assertSuccess();
 
-        return new SpecFile( parser.name, parser.version, parser.release, parser.summary, parser.license, parser.group,
-            description.toString(), configFiles );
+        specFile.description = description.toString();
+        return specFile;
     }
 
     private static class RpmQueryParser
@@ -264,11 +216,8 @@ public class RpmUtil
                 }
             }
 
-            list.add( new FileInfo( parts[8].trim(),
-                parts[2].trim(),
-                parts[3].trim(),
-                parts[0].trim(),
-                Integer.parseInt( parts[4].trim() ), date ) );
+            list.add( new FileInfo( parts[8].trim(), parts[2].trim(), parts[3].trim(), parts[0].trim(),
+                                    Integer.parseInt( parts[4].trim() ), date ) );
         }
 
         public List<FileInfo> getList()
@@ -280,13 +229,14 @@ public class RpmUtil
     private static class RpmSpecParser
         implements SystemCommand.LineConsumer
     {
-        public String name;
-        public String version;
-        public int release;
-        public String summary;
-        public String license;
-        public String group;
+        private final SpecFile specFile;
+
         private int count;
+
+        public RpmSpecParser( SpecFile specFile )
+        {
+            this.specFile = specFile;
+        }
 
         public void onLine( String line )
             throws IOException
@@ -294,23 +244,84 @@ public class RpmUtil
             switch ( count++ )
             {
                 case 0:
-                    name = line;
+                    specFile.name = line;
                     break;
                 case 1:
-                    version = line;
+                    specFile.version = line;
                     break;
                 case 2:
-                    release = Integer.parseInt( line );
+                    specFile.release = line;
                     break;
                 case 3:
-                    summary = line;
+                    specFile.summary = line;
                     break;
                 case 4:
-                    license = line;
+                    specFile.license = line;
                     break;
                 case 5:
-                    group = line;
+                    specFile.group = line;
                     break;
+            }
+        }
+    }
+
+    public static class RpmDumpParser
+        implements SystemCommand.LineConsumer
+    {
+        private final SpecFile specFile;
+
+        public RpmDumpParser( SpecFile specFile )
+        {
+            this.specFile = specFile;
+        }
+
+        public void onLine( String line )
+        {
+            // Each of these lines look like this:
+            // /etc/openldap/schema/dnszone.schema 5114 1232540847 2294a352407600431f736427587345e2 0100644 root root 1 0 0 X
+            // path size time md5 mode user group config? doc? wtf? symlink (not "X" if symlink)
+            //  0    1    2    3    4   5    6     7       8    9     10
+
+            String[] parts = line.split( " " );
+
+            RelativePath path = relativePath( parts[0] );
+
+            long size = parseLong( parts[1] );
+
+            LocalDateTime lastModified = new LocalDateTime( parseLong( parts[2] ) );
+
+            // #4 is the md5
+
+            int mode = Integer.parseInt( parts[4], 8 );
+            FileAttributes attributes = EMPTY.
+                user( parts[5] ).
+                group( parts[6] ).
+                mode( UnixFileMode.fromInt( mode ) );
+
+            if ( "1".equals( parts[7] ) )
+            {
+                attributes = attributes.addTag( "config" );
+            }
+
+            if ( "1".equals( parts[8] ) )
+            {
+                attributes = attributes.addTag( "doc" );
+            }
+
+            if ( (mode & 0x4000) != 0 )
+            {
+                specFile.addDirectory( directory( path, lastModified, attributes ) );
+            }
+            else
+            {
+                if ( "X".equals( parts[10] ) )
+                {
+                    specFile.addFile( regularFile( path, lastModified, size, some( attributes ) ) );
+                }
+                else
+                {
+                    specFile.addSymlink( symlink( path, lastModified, some( attributes ), parts[10] ) );
+                }
             }
         }
     }

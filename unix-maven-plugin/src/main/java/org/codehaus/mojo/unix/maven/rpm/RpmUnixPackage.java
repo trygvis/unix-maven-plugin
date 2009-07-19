@@ -68,12 +68,12 @@ public class RpmUnixPackage
     {
         if ( parameters.license.isNone() )
         {
-            throw new MissingSettingException( "The project has to specify at a license." );
+            throw new MissingSettingException( "The project has to specify a license." );
         }
 
         specFile = new SpecFile();
         specFile.name = parameters.id;
-        specFile.summary = parameters.name.orSome( "" ); // TODO: This is not right
+        specFile.summary = parameters.name;
         specFile.description = parameters.description.orSome( "" ); // TODO: This is not right
         specFile.license = parameters.license.some();
 

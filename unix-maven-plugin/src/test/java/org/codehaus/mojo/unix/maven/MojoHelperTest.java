@@ -33,7 +33,10 @@ import org.apache.maven.artifact.*;
 import org.apache.maven.model.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.core.*;
 import static org.codehaus.mojo.unix.maven.MojoHelper.*;
+import org.codehaus.mojo.unix.maven.plugin.*;
+import org.codehaus.mojo.unix.maven.plugin.Package;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
 
@@ -188,13 +191,8 @@ public class MojoHelperTest
         String packageName = "Package Name";
 
         assertName( some( packageName ), projectName, mojoName, packageName );
-        assertName( some( packageName ), null, mojoName, packageName );
-        assertName( some( packageName ), projectName, null, packageName );
-        assertName( some( packageName ), null, null, packageName );
-
         assertName( some( mojoName ), projectName, mojoName, null );
-        assertName( some( mojoName ), null, mojoName, null );
-
+        assertName( some( packageName ), projectName, null, packageName );
         assertName( some( projectName ), projectName, null, null );
     }
 
@@ -217,6 +215,7 @@ public class MojoHelperTest
         Package pakke = new Package();
         pakke.id = fromNull( packageName );
         PackageParameters parameters = calculatePackageParameters( mavenProject, version,
+                                                                   new SolarisUnixPlatform(),
                                                                    mojoParameters, pakke );
 
         UnixUtil.optionEquals( expectedName, parameters.name );

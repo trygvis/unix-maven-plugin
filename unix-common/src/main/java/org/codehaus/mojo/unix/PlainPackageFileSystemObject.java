@@ -24,8 +24,6 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-/**
- */
 public class PlainPackageFileSystemObject
     extends BasicPackageFileSystemObject<Object>
 {

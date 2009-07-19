@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.java;
 
 import fj.*;
 import fj.data.*;
+import static fj.data.List.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -38,6 +39,14 @@ public class StringF
         public Boolean f( final String a, final String b )
         {
             return a.equals( b );
+        }
+    };
+
+    public static final F2<String, String, String> concat = new F2<String, String, String>()
+    {
+        public String f( final String a, final String b )
+        {
+            return a.concat( b );
         }
     };
 
@@ -57,11 +66,17 @@ public class StringF
         }
     };
 
-    public static final F2<String, String, List<String>> split = new F2<String, String, List<String>>()
+    public static final F<String, F<String, List<String>>> split = new F<String, F<String, List<String>>>()
     {
-        public List<String> f( final String string, final String regex )
+        public F<String, List<String>> f( final String string )
         {
-            return List.list( string.split( regex ) );
+            return new F<String, List<String>>()
+            {
+                public List<String> f( String regex )
+                {
+                    return list( string.split( regex ) );
+                }
+            };
         }
     };
 
@@ -85,15 +100,21 @@ public class StringF
     // Extra
     // -----------------------------------------------------------------------
 
-    public static final F<String, F2<String, String, String>> joiner = new F<String, F2<String, String, String>>()
+    public static final F<String, F<String, F<String, String>>> joiner = new F<String, F<String, F<String, String>>>()
     {
-        public F2<String, String, String> f( final String separator )
+        public F<String, F<String, String>> f( final String separator )
         {
-            return new F2<String, String, String>()
+            return new F<String, F<String, String>>()
             {
-                public String f( String s, String o )
+                public F<String, String> f( final String a )
                 {
-                    return s + separator + o;
+                    return new F<String, String>()
+                    {
+                        public String f( String b )
+                        {
+                            return a + separator + b;
+                        }
+                    };
                 }
             };
         }

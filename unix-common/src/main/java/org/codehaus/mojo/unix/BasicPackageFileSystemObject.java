@@ -26,8 +26,6 @@ package org.codehaus.mojo.unix;
 
 import org.codehaus.mojo.unix.util.*;
 
-/**
- */
 public class BasicPackageFileSystemObject<E>
     implements PackageFileSystemObject<E>
 {

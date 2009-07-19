@@ -26,7 +26,9 @@ package org.codehaus.mojo.unix.maven;
 
 import fj.*;
 import static fj.Function.*;
+import static fj.P.*;
 import fj.data.List;
+import static fj.data.List.join;
 import static fj.data.List.*;
 import static fj.data.List.single;
 import fj.data.*;
@@ -34,23 +36,29 @@ import static fj.data.Option.*;
 import fj.data.Set;
 import static fj.data.Set.*;
 import static fj.pre.Ord.*;
+import org.apache.commons.logging.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.artifact.*;
 import org.apache.maven.artifact.transform.*;
 import org.apache.maven.plugin.*;
-import org.apache.maven.plugin.logging.*;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.*;
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.java.*;
+import static org.codehaus.mojo.unix.PackageParameters.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.java.*;
+import static org.codehaus.mojo.unix.java.StringF.*;
+import org.codehaus.mojo.unix.maven.logging.*;
+import org.codehaus.mojo.unix.maven.plugin.*;
+import org.codehaus.mojo.unix.maven.plugin.Package;
+import static org.codehaus.mojo.unix.util.FileModulator.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
-import org.codehaus.plexus.util.*;
 
 import java.io.*;
+import static java.lang.String.*;
 import java.util.*;
 import java.util.TreeMap;
-import static java.lang.String.*;
 
 /**
  * Utility class encapsulating how to create a package. Used by all packaging Mojos.
@@ -64,7 +72,14 @@ public abstract class MojoHelper
     public static final String DUPLICATE_CLASSIFIER = "Duplicate package classifier: '%s'.";
     public static final String DUPLICATE_UNCLASSIFIED = "There can only be one package without an classifier.";
 
-    public static Execution create( Map formats,
+    static
+    {
+        System.setProperty( LogFactory.class.getName(), MavenCommonLoggingLogFactory.class.getName() );
+    }
+
+    public static Execution create( Map platforms,
+                                    String platformType,
+                                    Map formats,
                                     String formatType,
                                     SnapshotTransformation snapshotTransformation,
                                     MavenProjectWrapper project,
@@ -75,11 +90,20 @@ public abstract class MojoHelper
                                     final Log log )
         throws MojoFailureException, MojoExecutionException
     {
+        MavenCommonLoggingLogFactory.setMavenLogger( log );
+
         PackagingFormat format = (PackagingFormat) formats.get( formatType );
 
         if ( format == null )
         {
-            throw new MojoFailureException( "INTERNAL ERROR: could not find format for type '" + formatType + "'." );
+            throw new MojoFailureException( "INTERNAL ERROR: could not find format: '" + formatType + "'." );
+        }
+
+        UnixPlatform platform = (UnixPlatform) platforms.get( platformType );
+
+        if ( platform == null )
+        {
+            throw new MojoFailureException( "INTERNAL ERROR: could not find platform: '" + platformType + "'." );
         }
 
         // TODO: This is using a private Maven API that might change. Perhaps use some reflection magic here.
@@ -90,6 +114,7 @@ public abstract class MojoHelper
         try
         {
             FileSystemManager fileSystemManager = VFS.getManager();
+
             buildDirectory = fileSystemManager.resolveFile( project.buildDirectory.getAbsolutePath() );
         }
         catch ( FileSystemException e )
@@ -111,7 +136,11 @@ public abstract class MojoHelper
                 FileObject packageRoot = buildDirectory.resolveFile( name );
                 packageRoot.createFolder();
 
-                PackageParameters parameters = calculatePackageParameters( project, version, mojoParameters, pakke );
+                PackageParameters parameters = calculatePackageParameters( project,
+                                                                           version,
+                                                                           platform,
+                                                                           mojoParameters,
+                                                                           pakke );
 
                 UnixPackage unixPackage = format.start().
                     parameters( parameters ).
@@ -126,21 +155,32 @@ public abstract class MojoHelper
 
                 unixPackage = validateMojoSettingsAndApplyFormatSpecificSettingsToPackage.f( unixPackage );
 
-                // -----------------------------------------------------------------------
-                // DO IT
-                // -----------------------------------------------------------------------
-
                 // TODO: here the logic should be different if many packages are to be created.
                 // Example: name should be taken from mojoParameters if there is only a single package, if not
                 //          it should come from the Pakke object. This should also be validated, at least for
                 //          name
 
-                List<AssemblyOperation> assemblyOperations =
-                    createAssemblyOperations( project, mojoParameters, pakke, unixPackage, buildDirectory );
+                List<AssemblyOperation> assemblyOperations = createAssemblyOperations( project,
+                                                                                       parameters,
+                                                                                       unixPackage,
+                                                                                       project.basedir,
+                                                                                       buildDirectory,
+                                                                                       mojoParameters.assembly,
+                                                                                       pakke.assembly );
+
+                // -----------------------------------------------------------------------
+                // Dump the execution
+                // -----------------------------------------------------------------------
 
                 if ( debug )
                 {
-                    log.info( "Showing assembly operations for package: " + parameters.id );
+                    log.info( "=======================================================================" );
+                    log.info( "Package parameters: " + parameters.id );
+                    log.info( "Default file attributes: " );
+                    log.info( " File      : " + parameters.defaultFileAttributes );
+                    log.info( " Directory : " + parameters.defaultDirectoryAttributes );
+
+                    log.info( "Assembly operations: " );
                     for ( AssemblyOperation operation : assemblyOperations )
                     {
                         operation.streamTo( new AbstractLineStreamWriter()
@@ -153,7 +193,7 @@ public abstract class MojoHelper
                     }
                 }
 
-                packages = packages.cons( P.p(unixPackage, pakke, assemblyOperations ) );
+                packages = packages.cons( p(unixPackage, pakke, assemblyOperations ) );
             }
             catch ( UnknownArtifactException e )
             {
@@ -289,54 +329,106 @@ public abstract class MojoHelper
         }
     }
 
-    public static PackageParameters calculatePackageParameters( MavenProjectWrapper project,
+    public static PackageParameters calculatePackageParameters( final MavenProjectWrapper project,
                                                                 PackageVersion version,
+                                                                UnixPlatform platform,
                                                                 PackagingMojoParameters mojoParameters,
-                                                                Package pakke )
+                                                                final Package pakke )
     {
-        // This used to be ${groupId}-${artifactId}, but it was too long for pkg so this is a more sane default
-        String defaultId = project.artifactId;
-
-        if ( pakke.classifier.isSome() )
+        String id = pakke.id.orSome( new P1<String>()
         {
-            defaultId += "-" + pakke.classifier.some();
-        }
+            public String _1()
+            {
+                // This used to be ${groupId}-${artifactId}, but it was too long for pkg so this is a more sane default
+                return project.artifactId + pakke.classifier.map( dashString ).orSome( "" );
+            }
+        } );
 
-        return PackageParameters.packageParameters( project.groupId, project.artifactId, version, pakke.id.orSome( defaultId.toLowerCase() ) ).
-                                      name( pakke.name.orElse( mojoParameters.name ).orElse( project.name ) ).
-                                      description( pakke.description.orElse( mojoParameters.description ).orElse( project.description ) ).
-                                      contact( mojoParameters.contact ).
-                                      contactEmail( mojoParameters.contactEmail ).
-                                      license( getLicense( project ) ).
-                                      architecture( mojoParameters.architecture );
+        P2<FileAttributes, FileAttributes> defaultFileAttributes =
+            calculateDefaultFileAttributes( platform,
+                                            mojoParameters.defaults,
+                                            pakke.defaults );
+
+        String name = pakke.name.orElse( mojoParameters.name ).orSome( project.name );
+        return packageParameters( project.groupId, project.artifactId, version, id, name, pakke.classifier, defaultFileAttributes._1(), defaultFileAttributes._2() ).
+            description( pakke.description.orElse( mojoParameters.description ).orElse( project.description ) ).
+            contact( mojoParameters.contact ).
+            contactEmail( mojoParameters.contactEmail ).
+            license( getLicense( project ) ).
+            architecture( mojoParameters.architecture );
+    }
+
+    public static P2<FileAttributes, FileAttributes> calculateDefaultFileAttributes( UnixPlatform platform,
+                                                                                     Defaults mojo,
+                                                                                     Defaults pakke )
+    {
+        return p(calculateFileAttributes( platform.getDefaultFileAttributes(),
+                                          mojo.fileAttributes.create(),
+                                          pakke.fileAttributes.create() ),
+                 calculateFileAttributes( platform.getDefaultDirectoryAttributes(),
+                                          mojo.directoryAttributes.create(),
+                                          pakke.directoryAttributes.create() ) );
+    }
+
+    public static FileAttributes calculateFileAttributes( FileAttributes platform,
+                                                          FileAttributes mojo,
+                                                          FileAttributes pakke )
+    {
+        // Calculate default file and directory attributes.
+        // Priority order (last one wins): platform -> mojo defaults -> package defaults
+
+        return platform.
+            useAsDefaultsFor( mojo ).
+            useAsDefaultsFor( pakke );
     }
 
     public static List<AssemblyOperation> createAssemblyOperations( MavenProjectWrapper project,
-                                                                    PackagingMojoParameters mojoParameters,
-                                                                    Package pakke, UnixPackage unixPackage,
-                                                                    FileObject basedir )
+                                                                    PackageParameters parameters,
+                                                                    UnixPackage unixPackage,
+                                                                    File basedir,
+                                                                    FileObject buildDirectory,
+                                                                    List<AssemblyOp> mojoAssembly,
+                                                                    List<AssemblyOp> packageAssembly )
         throws IOException, MojoFailureException, UnknownArtifactException
     {
-        Defaults defaults = mojoParameters.defaults.orSome( new Defaults() );
+        unixPackage.beforeAssembly( parameters.defaultDirectoryAttributes );
+
+        // Create the default set of assembly operations
+        String unix = new File( basedir, "src/main/unix/files" ).getAbsolutePath();
+
+        String classifierOrDefault = parameters.classifier.orSome( "default" );
+
+        List<AssemblyOp> defaultAssemblyOp = nil();
+
+        // It would be possible to use the AssemblyOperations here but this just make it easier to document
+        // as it has a one-to-one relationship with what the user would configure in a POM
+        for ( String s : modulatePath( classifierOrDefault, unixPackage.getPackageFileExtension(), unix ) )
+        {
+            File file = new File( s );
+
+            if ( !file.isDirectory() )
+            {
+                continue;
+            }
+
+            CopyDirectory op = new CopyDirectory();
+            op.setFrom( file );
+            defaultAssemblyOp = defaultAssemblyOp.cons( op );
+        }
+
+        // Create the complete list of assembly operations.
+        // Order: defaults -> mojo -> pakke
+        List<AssemblyOp> assemblyOps = join( list( defaultAssemblyOp.reverse(), mojoAssembly, packageAssembly ) );
 
         List<AssemblyOperation> operations = nil();
-
-        // TODO: Add defaults from the package
-        FileAttributes defaultFileAttributes = defaults.getFileAttributes();
-        FileAttributes defaultDirectoryAttributes = defaults.getDirectoryAttributes();
-
-        unixPackage.beforeAssembly( defaultDirectoryAttributes );
-
-        // The pakke parameters come after the mojo ones
-        List<AssemblyOp> assemblyOps = mojoParameters.assembly.append( pakke.assembly );
 
         for ( AssemblyOp assemblyOp : assemblyOps )
         {
             assemblyOp.setArtifactMap( project.artifactConflictIdMap );
 
-            AssemblyOperation operation = assemblyOp.createOperation( basedir,
-                defaultFileAttributes,
-                defaultDirectoryAttributes );
+            AssemblyOperation operation = assemblyOp.createOperation( buildDirectory,
+                parameters.defaultFileAttributes,
+                parameters.defaultDirectoryAttributes );
 
             operations = operations.cons( operation );
         }
@@ -405,11 +497,6 @@ public abstract class MojoHelper
         return defaultPackage.toList().append( outPackages );
     }
 
-    protected static String defaultValue( String value, String defaultValue )
-    {
-        return StringUtils.isNotEmpty( value ) ? value : defaultValue;
-    }
-
     private static Option<String> getLicense( MavenProjectWrapper project )
     {
         if ( project.licenses.size() == 0 )
@@ -420,11 +507,5 @@ public abstract class MojoHelper
         return some( project.licenses.get( 0 ).getName() );
     }
 
-    static F<String, String> dashString = new F<String, String>()
-    {
-        public String f( String s )
-        {
-            return "-" + s;
-        }
-    };
+    static F<String, String> dashString = curry( concat, "-" );
 }

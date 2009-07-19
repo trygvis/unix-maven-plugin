@@ -2,6 +2,7 @@ package org.codehaus.mojo.unix.core;
 
 import fj.data.*;
 import static fj.data.Option.*;
+import fj.*;
 import junit.framework.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
@@ -54,8 +55,8 @@ public class SetAttributesOperationTest
         control.setMatcher( new AlwaysMatcher() );
         control.replay();
 
-        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, null, null, fileAttributes,
-            directoryAttributes ).perform( fileCollector );
+        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, Option.<P2<String, String>>none(),
+                                    fileAttributes, directoryAttributes ).perform( fileCollector );
 
         new SetAttributesOperation( RelativePath.BASE, Collections.<String>emptyList(), Collections.<String>emptyList(),
             Option.<FileAttributes>none(), Option.<FileAttributes>none() ).perform( fileCollector );

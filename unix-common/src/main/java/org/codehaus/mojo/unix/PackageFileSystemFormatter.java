@@ -67,6 +67,7 @@ public class PackageFileSystemFormatter<A>
         return new PackageFileSystemFormatter<A>();
     }
 
+    // TODO: This should be streaming instead of creating an entire collection
     public LineFile print( PackageFileSystem<A> fs )
     {
         LineFile lines = new LineFile();

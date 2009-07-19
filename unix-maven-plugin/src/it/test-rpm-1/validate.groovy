@@ -1,6 +1,6 @@
-import static org.codehaus.mojo.unix.maven.ShittyUtil.*
+import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.*
 import org.codehaus.mojo.unix.rpm.RpmUtil
-import org.codehaus.mojo.unix.rpm.RpmUtil.SpecFile
+import org.codehaus.mojo.unix.rpm.SpecFile
 
 boolean success = true
 
@@ -11,21 +11,27 @@ hudsonWar.setLastModified(System.currentTimeMillis())
 File rpm = findArtifact("bar", "project-rpm-1", "1.1-2", "rpm")
 
 success &= assertRpmEntries(rpm, [
-        new RpmUtil.FileInfo("/opt", "nobody", "nogroup", "drwxr-xr-x", 0, null),
-        new RpmUtil.FileInfo("/opt/hudson", "nobody", "nogroup", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/opt", "root", "root", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/opt/hudson", "root", "root", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/opt/hudson/hudson.war", "hudson", "hudson", "-rw-r--r--", 20623413, null),
-        new RpmUtil.FileInfo("/usr", "nobody", "nogroup", "drwxr-xr-x", 0, null),
-        new RpmUtil.FileInfo("/usr/share", "nobody", "nogroup", "drwxr-xr-x", 0, null),
-        new RpmUtil.FileInfo("/usr/share/hudson", "nobody", "nogroup", "drwxr-xr-x", 0, null),
-        new RpmUtil.FileInfo("/usr/share/hudson/README.txt", "nobody", "nogroup", "-rw-r--r--", 38, null),
-        new RpmUtil.FileInfo("/var", "nobody", "nogroup", "drwxr-xr-x", 0, null),
-        new RpmUtil.FileInfo("/var/log", "nobody", "nogroup", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/usr", "root", "root", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/usr/share", "root", "root", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/usr/share/hudson", "root", "root", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/usr/share/hudson/README.txt", "root", "root", "-rw-r--r--", 38, null),
+        new RpmUtil.FileInfo("/var", "root", "root", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/var/log", "root", "root", "drwxr-xr-x", 0, null),
         // TODO: This should assert the target
-        new RpmUtil.FileInfo("/var/log/hudson", "nobody", "nogroup", "lrwxrwxrwx", 19, null),
+        new RpmUtil.FileInfo("/var/log/hudson", "root", "root", "lrwxrwxrwx", 19, null),
 ])
 
-success &= assertRelaxed(
-        new SpecFile( "project-rpm-1", "1.1", 2, "Unnamed - bar:project-rpm-1:rpm:1.1-2", "BSD", "Application/Collectors", "", []),
-        RpmUtil.getSpecFileFromRpm(rpm));
+specFile = new SpecFile()
+specFile.name = "project-rpm-1"
+specFile.version = "1.1"
+specFile.release = 2
+specFile.summary = "Unnamed - bar:project-rpm-1:rpm:1.1-2"
+specFile.license = "BSD"
+specFile.group = "Application/Collectors"
+
+success &= assertRelaxed(specFile, RpmUtil.getSpecFileFromRpm(rpm), specFileEqual);
 
 return success

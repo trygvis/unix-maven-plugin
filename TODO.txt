@@ -2,29 +2,29 @@
 
 o Support group, user and modes on files and directories in all formats
  - Default values for user, group and mode: part 1 done, need to be implemented in the mojo
- - Dpkg: Won't be done until replaced with Java
+ - Deb: Won't be done until replaced with Java
  - Pkg: ok
  - RPM: OK
 
 o Dependency generation
 
 o Signing support
- - Dpkg:
+ - Deb:
  - Pkg:
  - Rpm:
 
 o Add repository index creation
- - Dpkg: dpkg-scanpackages wrapper implemented. Should be re-implemented in Java..
+ - Deb: dpkg-scanpackages wrapper implemented. Should be re-implemented in Java..
  - Pkg: buildcat from pkgutil (?)
  - Rpm: (?) - sherriff had some notes on how to do this
 
 o Package compression:
- - Dpkg: Built-in (the data.tar.gz file is already gzipped).
+ - Deb: Built-in (the data.tar.gz file is already gzipped).
  - Pkg:
  - Rpm: are there any tools that support this?
 
 o Replace the binaries with Java implementations
- - Dpkg:
+ - Deb:
    DONE: dpkg -c
  - Pkg:
  - Rpm:
@@ -50,9 +50,9 @@ o Add a "platform" concept.
     - Defaults for file and directory security
   - Current platforms (should be pre-defined):
     - platform=debian
-      - format=dpkg
+      - format=deb
     - platform=ubuntu
-      - format=dpkg
+      - format=deb
     - platform=solaris
       - format=pkg
     - platform=fedora
@@ -62,14 +62,14 @@ o Add a "platform" concept.
   - Possible platforms
     - ArchLinux
     - OpenBSD packages
+    - OpenSolaris
+      - format=ipkg
 
 o Add a "modulation" contept. (one modulation per <package> defined)
   Much like 'classifiers' in Maven, might be smart to use the same concept.
   - Support src/main/files per classifier
 
 o Make sure the result of setLastModified is asserted
-
-o Get commons-vfs to log to Maven or just ignore it
 
 o Make sure that timestamps are preserved for all assembly operations
 
@@ -110,15 +110,13 @@ o Need *lots* of includes/excludes examples, with regexp rewriting
 
 == Integration Test ==
 
-o Make sure that all the validate scripts are using the latest Dpkg/Pkg/Rpm tools to verify all the contents of the
+o Make sure that all the validate scripts are using the latest Deb/Pkg/Rpm tools to verify all the contents of the
 generated packages.
-
-o Test having a .bash_profile file in a <copy> task.
 
 == Use cases supported ==
 
 o Building single packages as a standalone project.
- - Use packaging={dpkg,rpm,pkg}
+ - Use packaging={deb,rpm,pkg}
 
 o Building the same package with different format as a separate project.
  - Figure out how to handle the "primary" artifact.
@@ -127,19 +125,10 @@ o Building the same package with different format as a separate project.
   - Would it be possible to use "tar.gz" as a form of "generic package"
 
 o Building packages as a part of a JAR project.
- - Use package-{dpkg,rpm,pkg}-attached
+ - Use package-{deb,rpm,pkg}-attached
 
 o Support building multiple packages as a standalone project
  - This should be implemented
-
-o Support building multiple packages as a standalone project
- - This might be implemented
-
-=== Order of execution ===
-
-When an assembly operation is executed this is the order of which the parts of the operation is executed:
-
- - First the source file is located
 
 = Release Procedure =
 
@@ -150,6 +139,7 @@ o Update change log on site from this file.
 o Subversion properties
  - Expand keywords: find . -name \*.java|grep -v target|xargs svn propset svn:keywords "Id"
  - Set svn:eol-style: find . -name \*.java|grep -v target|xargs svn ps svn:eol-style native
+o Make sure the handbook is build. Consider moving it out to a separate trunk.
 
 = Change Log =
 
@@ -157,15 +147,22 @@ o Subversion properties
 
 o MUNIX-13: Support 'tar' format
   Create integration tests similar to the existing tests
-o MUNIX-14: Rename "pkg" to "sysv-pkg"
-o MUNIX-23: Rename "dpkg" to "deb"
+o DONE: MUNIX-14: Rename "pkg" to "sysv-pkg"
+o DONE: MUNIX-23: Rename "dpkg" to "deb"
   "deb" is the format that is supported, "dpkg" is the name of the tool set to create it.
+o DONE: MUNIX-19: default copy-directory
+o DONE: MUNIX-26: Make commons-logging log to the Maven logger.
 o Document how to use the u-m-p in a development process. Explain the goals for creating index files, and how to
   run these tools automatically on commit hooks etc.
 o Documentation:
   - Document 'tags' feature
    - %doc and %config for RPM
    - class for PKG
+o DONE: Consider moving all of the plugin classes into "o.c.m.u.maven.plugin" and move the files in ".maven.core"
+  back into the "maven" package.
+o MUNIX-27: The pkg tools has to assert that the file was created
+o DONE: MUNIX-28: The "pkg" format uses the pkginfo NAME to locate scripts, should use the classifier of the package
+o DONE: MUNIX-20: Support per-package defaults too
 
 === Nits ===
 
@@ -202,7 +199,6 @@ o DONE: MUNIX-17: Go over how versions and revisions are handles.
  - In pkginfo a SNAPSHOT is not resolved to a specific timestamp.
  - Document how version, revision etc are calculated. For both releases and snapshots
 o DONE: MUNIX-18: Simplify the script mechanism
-o DONE: MUNIX-20: Support per-package defaults too
 o DONE: Update mapping.xml, it is outdated now
 
 == For 1.0-alpha-3 ==

@@ -37,6 +37,8 @@ public interface LineStreamWriter
 
     LineStreamWriter add( String line );
 
+    LineStreamWriter addIfNotEmpty( String value );
+
     LineStreamWriter addIfNotEmpty( String field, String value );
 
     LineStreamWriter addIfNotNull( File file );

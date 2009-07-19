@@ -3,18 +3,18 @@ import org.codehaus.mojo.unix.FileAttributes
 import org.codehaus.mojo.unix.UnixFileMode
 import static org.codehaus.mojo.unix.UnixFsObject.directory
 import static org.codehaus.mojo.unix.UnixFsObject.regularFile
-import org.codehaus.mojo.unix.dpkg.Dpkg
-import org.codehaus.mojo.unix.dpkg.DpkgDebUtil
-import org.codehaus.mojo.unix.dpkg.DpkgDebUtil.ControlFile
-import static org.codehaus.mojo.unix.maven.ShittyUtil.assertDpkgEntries
+import org.codehaus.mojo.unix.deb.Dpkg
+import org.codehaus.mojo.unix.deb.DpkgDebUtil
+import org.codehaus.mojo.unix.deb.DpkgDebUtil.ControlFile
+import static org.codehaus.mojo.unix.maven.ShittyUtil.assertDebEntries
 import static org.codehaus.mojo.unix.maven.ShittyUtil.assertFormat
 import static org.codehaus.mojo.unix.maven.ShittyUtil.assertPkgEntries
 import static org.codehaus.mojo.unix.maven.ShittyUtil.assertRelaxed
 import static org.codehaus.mojo.unix.maven.ShittyUtil.r
-import org.codehaus.mojo.unix.pkg.PkgchkUtil
-import org.codehaus.mojo.unix.pkg.PkginfoUtil
-import org.codehaus.mojo.unix.pkg.PkginfoCommand
-import org.codehaus.mojo.unix.pkg.PkginfoUtil.PackageInfo
+import org.codehaus.mojo.unix.sysvpkg.PkgchkUtil
+import org.codehaus.mojo.unix.sysvpkg.PkginfoUtil
+import org.codehaus.mojo.unix.sysvpkg.PkginfoCommand
+import org.codehaus.mojo.unix.sysvpkg.PkginfoUtil.PackageInfo
 import org.codehaus.mojo.unix.rpm.RpmUtil
 import org.codehaus.mojo.unix.rpm.RpmUtil.SpecFile
 import org.codehaus.mojo.unix.rpm.Rpmbuild
@@ -22,10 +22,10 @@ import org.codehaus.mojo.unix.rpm.Rpmbuild
 boolean success = true
 
 // -----------------------------------------------------------------------
-// Dpkg
+// Deb
 // -----------------------------------------------------------------------
 
-assertFormat "DPKG", "dpkg", Dpkg.available(), {
+assertFormat "deb", "dpkg", Dpkg.available(), {
   File deb = new File((File) basedir, "target/jetty-1.1-2.deb")
 
   ControlFile controlFile = new ControlFile("devel", "standard", "Trygve Laugstol", "jetty", "1.1-2", "all",
@@ -37,7 +37,7 @@ assertFormat "DPKG", "dpkg", Dpkg.available(), {
   FileAttributes dirAttributes = new FileAttributes(none(), none(), UnixFileMode.fromInt(0755));
   FileAttributes fileAttributes = new FileAttributes(none(), none(), UnixFileMode.fromString("rw-r--r--"));
 
-  success &= assertDpkgEntries(deb, [
+  success &= assertDebEntries(deb, [
           directory(r("."), none(), dirAttributes),
           directory(r("opt"), none(), dirAttributes),
           directory(r("opt/jetty"), none(), dirAttributes),
@@ -344,10 +344,10 @@ File pkg = new File ((File) basedir, "target/jetty-1.1-2.pkg")
 
 success &= assertRelaxed(
         new PackageInfo("jetty", "Jetty Servlet Container", "application", "all", "1.1-2", "Open-source, standards-based, full-featured web server implemented entirely in Java.", none()),
-        PkginfoUtil.getPackageInforForDevice(pkg));
+        PkginfoUtil.getPackageInfoForDevice(pkg));
 
 // Ignore dates for now
-success &= assertPkgEntries(pkg, [
+success &= assertSysvPkgEntries(pkg, [
         directory("/", "17777777777", "?", "?", none()),
         directory("/opt", "17777777777", "?", "?", none()),
         regularFile("/opt/jetty/README-unix.txt", "0644", "jetty", "jetty", 29, 2190, none()),

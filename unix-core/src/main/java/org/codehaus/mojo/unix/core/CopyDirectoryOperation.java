@@ -35,7 +35,11 @@ import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.regex.*;
+
+import fj.*;
+import fj.data.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -52,24 +56,21 @@ public class CopyDirectoryOperation
 
     private final List<String> excludes;
 
-    private final String patternString;
-
-    private final String replacement;
+    private final Option<P2<String, String>> pattern;
 
     private final FileAttributes fileAttributes;
 
     private final FileAttributes directoryAttributes;
 
     public CopyDirectoryOperation( FileObject from, RelativePath to, List<String> includes, List<String> excludes,
-                                   String patternString, String replacement, FileAttributes fileAttributes,
+                                   Option<P2<String, String>> pattern, FileAttributes fileAttributes,
                                    FileAttributes directoryAttributes )
     {
         this.from = from;
         this.to = to;
         this.includes = includes;
         this.excludes = excludes;
-        this.patternString = patternString;
-        this.replacement = replacement;
+        this.pattern = pattern;
         this.fileAttributes = fileAttributes;
         this.directoryAttributes = directoryAttributes;
     }
@@ -77,7 +78,7 @@ public class CopyDirectoryOperation
     public void perform( FileCollector fileCollector )
         throws IOException
     {
-        Pattern pattern = patternString != null ? Pattern.compile( patternString ) : null;
+        Pattern pattern = this.pattern.isSome() ? Pattern.compile( this.pattern.some()._1() ) : null;
 
         IncludeExcludeFileSelector selector = IncludeExcludeFileSelector.build( from.getName() ).
             addStringIncludes( includes ).
@@ -102,7 +103,7 @@ public class CopyDirectoryOperation
             if ( pattern != null )
             {
                 String path = relativePath( relativeName ).asAbsolutePath( "/" );
-                relativeName = pattern.matcher( path ).replaceAll( replacement );
+                relativeName = pattern.matcher( path ).replaceAll( this.pattern.some()._2() );
             }
 
             if ( f.getType() == FileType.FILE )
@@ -118,13 +119,13 @@ public class CopyDirectoryOperation
 
     public void streamTo( LineStreamWriter streamWriter )
     {
-        streamWriter.add( "Copy directory:" );
-        streamWriter.add( " From: " + asFile( from ).getAbsolutePath() );
-        streamWriter.add( " To: " + to );
+        streamWriter.add( "Copy directory:" ).
+            add( " From: " + asFile( from ).getAbsolutePath() ).
+            add( " To: " + to );
         if ( !includes.isEmpty() )
         {
-            streamWriter.add( " Includes: ");
-            streamWriter.addAllLines( prefix( includes, "  " ) );
+            streamWriter.add( " Includes: ").
+                addAllLines( prefix( includes, "  " ) );
         }
         else
         {
@@ -133,16 +134,24 @@ public class CopyDirectoryOperation
 
         if ( !excludes.isEmpty() )
         {
-            streamWriter.add( " Excludes: " );
-            streamWriter.addAllLines( prefix( excludes, "  " ) );
+            streamWriter.add( " Excludes: " ).
+                addAllLines( prefix( excludes, "  " ) );
         }
         else
         {
             streamWriter.add( " No excludes set" );
         }
-        streamWriter.add( " Pattern: " + patternString + ", replacement: " + replacement );
-        streamWriter.add( " Attributes:" );
-        streamWriter.add( " File     : " + fileAttributes );
-        streamWriter.add( " Directory: " + directoryAttributes );
+
+        streamWriter.add( pattern.map(new F<P2<String, String>, String>()
+        {
+            public String f( P2<String, String> pattern )
+            {
+                return " Pattern: " + pattern._1() + ", replacement: " + pattern._2();
+            }
+        } ).orSome( " Pattern: not set" ) );
+
+        streamWriter.add( " Attributes:" ).
+            add( " File     : " + fileAttributes ).
+            add( " Directory: " + directoryAttributes );
     }
 }

@@ -25,8 +25,7 @@ package org.codehaus.mojo.unix.maven.zip;
  */
 
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.*;
-import org.codehaus.mojo.unix.maven.rpm.*;
+import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

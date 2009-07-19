@@ -25,10 +25,9 @@ package org.codehaus.mojo.unix.util;
  */
 
 import junit.framework.*;
-import static org.codehaus.mojo.unix.util.UnixUtil.*;
 import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.*;
-import org.codehaus.plexus.*;
-import org.codehaus.plexus.util.*;
+import static org.codehaus.mojo.unix.util.UnixUtil.*;
+import static org.codehaus.plexus.util.FileUtils.*;
 
 import java.io.*;
 
@@ -39,6 +38,8 @@ import java.io.*;
 public class ScriptUtilTest
     extends TestCase
 {
+    private final TestUtil testUtil = new TestUtil( this );
+
     private final ScriptUtil scriptUtil = new ScriptUtil( "preinstall", "postinstall", "preremove", "postremove" ).
         customScript( "i.daemon" ).
         customScript( "r.daemon" );
@@ -46,13 +47,13 @@ public class ScriptUtilTest
     public void testMultipleFormatsMultiplePackages()
         throws Exception
     {
-        File basedir = PlexusTestCase.getTestFile( "src/test/resources/script-util/multiple-formats_multiple-packages" );
+        File basedir = testUtil.getTestFile( "src/test/resources/script-util/multiple-formats_multiple-packages" );
 
-        File toDir = PlexusTestCase.getTestFile( "target/script-util/multiple-formats_multiple-packages" );
+        File toDir = testUtil.getTestFile( "target/script-util/multiple-formats_multiple-packages" );
 
         if ( toDir.exists() )
         {
-            FileUtils.deleteDirectory( toDir );
+            deleteDirectory( toDir );
         }
 
         File toDirAPkg = new File( toDir, "a/pkg" );
@@ -88,13 +89,13 @@ public class ScriptUtilTest
     public void testSingleFormatMultiplePackages()
         throws Exception
     {
-        File basedir = PlexusTestCase.getTestFile( "src/test/resources/script-util/single-format_multiple-packages" );
+        File basedir = testUtil.getTestFile( "src/test/resources/script-util/single-format_multiple-packages" );
 
-        File toDir = PlexusTestCase.getTestFile( "target/script-util/single-format_multiple-packages" );
+        File toDir = testUtil.getTestFile( "target/script-util/single-format_multiple-packages" );
 
         if ( toDir.exists() )
         {
-            FileUtils.deleteDirectory( toDir );
+            deleteDirectory( toDir );
         }
 
         File toDirA = new File( toDir, "a" );
@@ -116,13 +117,13 @@ public class ScriptUtilTest
     public void testSingleFormatSinglePackage()
         throws Exception
     {
-        File basedir = PlexusTestCase.getTestFile( "src/test/resources/script-util/single-format_single-package" );
+        File basedir = testUtil.getTestFile( "src/test/resources/script-util/single-format_single-package" );
 
-        File toDir = PlexusTestCase.getTestFile( "target/script-util/single-format_single-package" );
+        File toDir = testUtil.getTestFile( "target/script-util/single-format_single-package" );
 
         if ( toDir.exists() )
         {
-            FileUtils.deleteDirectory( toDir );
+            deleteDirectory( toDir );
         }
 
         scriptUtil.createExecution( "test", "foo", basedir, toDir, SINGLE ).execute();

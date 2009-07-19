@@ -25,6 +25,9 @@ package org.codehaus.mojo.unix.core;
  */
 
 import static fj.data.Option.*;
+import fj.data.*;
+import fj.*;
+import static fj.P.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.util.*;
@@ -133,8 +136,8 @@ public class OperationTest
         control.expectAndReturn( fileCollector.addDirectory( objects.base ), fileCollector );
         control.replay();
 
-        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, null, null, fileAttributes,
-                                    directoryAttributes ).
+        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, Option.<P2<String, String>>none(),
+                                    fileAttributes, directoryAttributes ).
             perform( fileCollector );
 
         control.verify();
@@ -166,7 +169,7 @@ public class OperationTest
         control.replay();
 
         new CopyDirectoryOperation( archive, relativePath( "licenses" ), asList( "**/*license.txt" ), null,
-                                    ".*/(.*license.*)", "$1", fileAttributes, directoryAttributes ).
+                                    some( p(".*/(.*license.*)", "$1")), fileAttributes, directoryAttributes ).
             perform( fileCollector );
 
         control.verify();

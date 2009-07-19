@@ -52,6 +52,11 @@ public class LineFile
         return unmodifiableList( lines );
     }
 
+    public int size()
+    {
+        return lines.size();
+    }
+
     public Iterator<String> iterator()
     {
         return unmodifiableList( new ArrayList<String>( lines ) ).iterator();
@@ -94,6 +99,13 @@ public class LineFile
         {
             IOUtil.close( reader );
         }
+    }
+
+    public static LineFile fromList( fj.data.List<String> lines )
+    {
+        LineFile lineFile = new LineFile();
+        lineFile.lines.addAll( lines.toCollection() );
+        return lineFile;
     }
 
     public void writeTo( File file )

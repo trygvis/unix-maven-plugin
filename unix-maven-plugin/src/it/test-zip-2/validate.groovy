@@ -1,5 +1,4 @@
-import org.codehaus.mojo.unix.maven.ShittyUtil
-import static org.codehaus.mojo.unix.maven.ShittyUtil.*
+import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.*
 import static org.codehaus.mojo.unix.FileAttributes.*
 import static org.codehaus.mojo.unix.UnixFsObject.*
 import static fj.data.Option.*;
@@ -8,7 +7,7 @@ boolean success = true
 
 File zip = findArtifact("bar", "project-zip-2", "1.1-2", "zip")
 
-success &= ShittyUtil.assertZipEntries(zip, [
+success &= assertZipEntries(zip, [
         directory(r("/usr"), START_OF_TIME, EMPTY),
         directory(r("/usr/share"), START_OF_TIME, EMPTY),
         directory(r("/usr/share/hudson"), START_OF_TIME, EMPTY),

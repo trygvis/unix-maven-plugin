@@ -62,8 +62,7 @@
       </listitem>
 
       <listitem>
-        <para>Arktekk for giving me a payed month to work on the
-        plugin.</para>
+        <para>Arktekk for sponsoring me to work on the plugin.</para>
       </listitem>
     </itemizedlist>
   </acknowledgements>
@@ -822,7 +821,7 @@
 
         <tip>
           <para>This information is derived from <link
-          xlink:href="http://mojo.codehaus.org/unix/xref-test/org/codehaus/mojo/unix/maven/VersionTest.html">org.codehaus.mojo.unix.maven.VersionTest</link>.</para>
+          xlink:href="http://mojo.codehaus.org/unix/xref-test/org/codehaus/mojo/unix/maven/core/VersionTest.html">org.codehaus.mojo.unix.maven.core.VersionTest</link>.</para>
         </tip>
 
         <para>When the plugin is creating a unix package it also create a
@@ -1412,7 +1411,7 @@
 
           <listitem>
             <para><filename>src/main/unix/scripts/post-install-&lt;package
-            id&gt;-dpkg</filename></para>
+            id&gt;-deb</filename></para>
           </listitem>
         </itemizedlist>
 

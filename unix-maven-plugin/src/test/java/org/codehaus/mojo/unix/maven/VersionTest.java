@@ -24,18 +24,20 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
+import fj.*;
 import fj.data.*;
 import static fj.data.Option.*;
-import fj.*;
 import junit.framework.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageVersion.*;
-import static org.codehaus.mojo.unix.dpkg.ControlFile.*;
-import static org.codehaus.mojo.unix.maven.pkg.PkgUnixPackage.*;
+import static org.codehaus.mojo.unix.maven.deb.DebUnixPackage.*;
 import org.codehaus.mojo.unix.maven.rpm.*;
-import static org.codehaus.mojo.unix.util.UnixUtil.*;
+import static org.codehaus.mojo.unix.maven.sysvpkg.PkgUnixPackage.*;
 
 /**
+ * This test is here and not in unix-common because it depend on the actual implementations.
+ *
+ * The purpose is to assert that the version parsing/generation is similar across all formats.
  */
 public class VersionTest
     extends TestCase
@@ -44,14 +46,14 @@ public class VersionTest
     {
         verify( packageVersion( "1.2-SNAPSHOT", "20090423095107", true, Option.<String>none() ),
             pkg( "1.2-20090423095107" ),
-            dpkg( "1.2-20090423095107" ),
+            deb( "1.2-20090423095107" ),
             rpm( "1.2_20090423095107", "1" ) );
     }
 
     public void testSnapshotWithConfiguredRevision()
     {
         verify( packageVersion( "1.2-SNAPSHOT", "20090423095107", true, some( "3" ) ),
-            dpkg( "1.2-3-20090423095107" ),
+            deb( "1.2-3-20090423095107" ),
             pkg( "1.2-3-20090423095107" ),
             rpm( "1.2_20090423095107", "3" ) );
     }
@@ -59,7 +61,7 @@ public class VersionTest
     public void testSnapshotWithEmbeddedRevision()
     {
         verify( packageVersion( "1.2-3-SNAPSHOT", "20090423095107", true, Option.<String>none() ),
-            dpkg( "1.2-3-20090423095107" ),
+            deb( "1.2-3-20090423095107" ),
             pkg( "1.2-3-20090423095107" ),
             rpm( "1.2_20090423095107", "3" ) );
     }
@@ -67,7 +69,7 @@ public class VersionTest
     public void testSnapshotWithEmbeddedAndConfiguredRevision()
     {
         verify( packageVersion( "1.2-3-SNAPSHOT", "20090423095107", true, some( "3" ) ),
-            dpkg( "1.2-3-3-20090423095107" ),
+            deb( "1.2-3-3-20090423095107" ),
             pkg( "1.2-3-3-20090423095107" ),
             rpm( "1.2_3_20090423095107", "3" ) );
     }
@@ -79,7 +81,7 @@ public class VersionTest
     public void testReleaseWithoutRevision()
     {
         verify( packageVersion( "1.2", "20090423095107", false, Option.<String>none() ),
-            dpkg( "1.2" ),
+            deb( "1.2" ),
             pkg( "1.2" ),
             rpm( "1.2", "1" ) );
     }
@@ -87,7 +89,7 @@ public class VersionTest
     public void testReleaseWithConfiguredRevision()
     {
         verify( packageVersion( "1.2", "20090423095107", false, some( "3" ) ),
-            dpkg( "1.2-3" ),
+            deb( "1.2-3" ),
             pkg( "1.2-3" ),
             rpm( "1.2", "3" ) );
     }
@@ -95,7 +97,7 @@ public class VersionTest
     public void testReleaseWithEmbeddedRevision()
     {
         verify( packageVersion( "1.2-3", "20090423095107", false, Option.<String>none() ),
-            dpkg( "1.2-3" ),
+            deb( "1.2-3" ),
             pkg( "1.2-3" ),
             rpm( "1.2", "3" ) );
     }
@@ -103,38 +105,38 @@ public class VersionTest
     public void testReleaseWithConfiguredAndEmbeddedRevision()
     {
         verify( packageVersion( "1.2-3", "20090423095107", false, some( "3" ) ),
-            dpkg( "1.2-3-3" ),
+            deb( "1.2-3-3" ),
             pkg( "1.2-3-3" ),
             rpm( "1.2_3", "3" ) );
     }
 
-    public static <A> void verify( A a, Verifyer<A>... verifyers )
+    public static <A> void verify( A a, Verifier<A>... verifiers )
     {
-        for ( Verifyer<A> verifyer : verifyers )
+        for ( Verifier<A> verifier : verifiers )
         {
-            verifyer.verify( a );
+            verifier.verify( a );
         }
     }
 
-    private interface Verifyer<A>
+    private interface Verifier<A>
     {
         void verify( A a );
     }
 
-    private Verifyer<PackageVersion> dpkg( final String expected )
+    private Verifier<PackageVersion> deb( final String expected )
     {
-        return new Verifyer<PackageVersion>()
+        return new Verifier<PackageVersion>()
         {
             public void verify( PackageVersion packageVersion )
             {
-                assertEquals( "dpkg", expected, getDebianVersion( packageVersion ) );
+                assertEquals( "deb", expected, getDebianVersion( packageVersion ) );
             }
         };
     }
 
-    private Verifyer<PackageVersion> pkg( final String expected )
+    private Verifier<PackageVersion> pkg( final String expected )
     {
-        return new Verifyer<PackageVersion>()
+        return new Verifier<PackageVersion>()
         {
             public void verify( PackageVersion packageVersion )
             {
@@ -143,9 +145,9 @@ public class VersionTest
         };
     }
 
-    private Verifyer<PackageVersion> rpm( final String expected, final String revision )
+    private Verifier<PackageVersion> rpm( final String expected, final String revision )
     {
-        return new Verifyer<PackageVersion>()
+        return new Verifier<PackageVersion>()
         {
             public void verify( PackageVersion packageVersion )
             {

@@ -62,9 +62,9 @@ public class CreateDirectoriesOperation
 
     public void streamTo( LineStreamWriter streamWriter )
     {
-        streamWriter.add( "Create directories:" );
-        streamWriter.add( " Paths: " );
-        streamWriter.addAllLines( prefix( Arrays.asList( paths ), "  " ) );
-        streamWriter.add( " Attributes: " + attributes );
+        streamWriter.add( "Create directories:" ).
+            add( " Paths: " ).
+            addAllLines( prefix( Arrays.asList( paths ), "  " ) ).
+            add( " Attributes: " + attributes );
     }
 }

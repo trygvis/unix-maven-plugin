@@ -56,6 +56,15 @@ public abstract class AbstractLineStreamWriter
         return this;
     }
 
+    public LineStreamWriter addIfNotEmpty( String value )
+    {
+        if ( StringUtils.isNotEmpty( value ) )
+        {
+            onLine( value );
+        }
+        return this;
+    }
+
     public LineStreamWriter add( LineProducer lineProducer )
     {
         lineProducer.streamTo( this );
@@ -66,7 +75,7 @@ public abstract class AbstractLineStreamWriter
     {
         if ( StringUtils.isNotEmpty( value ) )
         {
-            onLine( value );
+            onLine( field + " " + value );
         }
         return this;
     }

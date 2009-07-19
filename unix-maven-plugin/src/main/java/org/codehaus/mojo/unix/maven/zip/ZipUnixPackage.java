@@ -29,10 +29,9 @@ import static fj.Function.*;
 import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
-import static org.codehaus.mojo.unix.UnixFsObject.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
-import static org.codehaus.mojo.unix.PackageFileSystemFormatter.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
@@ -74,11 +73,10 @@ public class ZipUnixPackage
     public FileCollector addDirectory( final UnixFsObject.Directory directory )
         throws IOException
     {
-        System.out.println( "Adding " + directory.path );
+        BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>> o =
+            new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( directory, this.directory );
 
-        fileSystem = fileSystem.addDirectory(
-            new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( directory,
-                                                                                           this.directory ) );
+        fileSystem = fileSystem.addDirectory( o );
 
         return this;
     }
@@ -86,12 +84,12 @@ public class ZipUnixPackage
     public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
         throws IOException
     {
-        System.out.println( "Adding " + file.path );
-
         F2<UnixFsObject, ZipOutputStream, Callable> f = uncurryF2( curry( this.file, fromFile ) );
 
-        fileSystem = fileSystem.addFile(
-            new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( file, f ) );
+        BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>> o =
+            new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( file, f );
+
+        fileSystem = fileSystem.addFile( o );
 
         return this;
     }
@@ -123,32 +121,20 @@ public class ZipUnixPackage
     {
         Directory rootDirectory = directory( BASE, new LocalDateTime( System.currentTimeMillis() ), EMPTY );
 
-        BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>> fileSystemObject = new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( rootDirectory, directory );
+        BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>> fileSystemObject =
+            new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( rootDirectory, directory );
         fileSystem = create( fileSystemObject, fileSystemObject );
     }
 
     public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception
     {
-        PackageFileSystemFormatter<F2<UnixFsObject, ZipOutputStream, Callable>> packageFileSystemFormatter =
-            flatFormatter();
         F2<RelativePath, PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>, Boolean> pathFilter =
             ZipUnixPackage.pathFilter();
-
-        System.out.println( "-------------------------------------------------" );
-        packageFileSystemFormatter.print( fileSystem );
-        System.out.println( "-------------------------------------------------" );
-        System.out.println( "Items" );
-        System.out.println( "-------------------------------------------------" );
 
         List<PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>> items = fileSystem.
             toList().
             filter( compose( BooleanF.invert, curry( pathFilter, BASE ) ) );
-        for ( PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>> o : fileSystem.toList() )
-        {
-            System.out.println( "o.getUnixFsObject().path = " + o.getUnixFsObject().path );
-        }
-        System.out.println( "-------------------------------------------------" );
 
         ZipOutputStream zos = null;
         try
@@ -157,7 +143,6 @@ public class ZipUnixPackage
 
             for ( PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>> fileSystemObject : items )
             {
-                System.out.println( "o.getUnixFsObject().path = " + fileSystemObject.getUnixFsObject().path );
                 fileSystemObject.getExtension().f( fileSystemObject.getUnixFsObject(), zos ).call();
             }
         }
