@@ -1,0 +1,7 @@
+.svn
+*.iml
+*.iws
+*.ipr
+target
+*.swp
+*.un~
