@@ -103,17 +103,16 @@
             <configuration>
               <addTestClassPath>true</addTestClassPath>
               <pomIncludes>
-                <!--
+<!--
                 <pomInclude>jetty/pom4test.xml</pomInclude>
+-->
                 <pomInclude>test-deb-*/pom4test.xml</pomInclude>
+<!--
                 <pomInclude>test-rpm-*/pom4test.xml</pomInclude>
-                <pomInclude>test-zip-*/pom4test.xml</pomInclude>
-                <pomInclude>test-sysvpkg-1/pom4test.xml</pomInclude>
-                -->
-                <!--
                 <pomInclude>test-sysvpkg-*/pom4test.xml</pomInclude>
+                <pomInclude>test-zip-*/pom4test.xml</pomInclude>
                 <pomInclude>unix-from-jar-project/pom4test.xml</pomInclude>
-                -->
+-->
               </pomIncludes>
             </configuration>
           </plugin>
