@@ -67,7 +67,6 @@ public abstract class AbstractPackageMojo
                            platformType,
                            formats,
                            formatType,
-                           snapshotTransformation,
                            MavenProjectWrapper.mavenProjectWrapper( project ),
                            debug,
                            false,

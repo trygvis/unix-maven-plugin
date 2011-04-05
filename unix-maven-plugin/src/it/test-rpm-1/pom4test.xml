@@ -28,11 +28,12 @@
   <parent>
     <groupId>org.codehaus.mojo.unix</groupId>
     <artifactId>unix</artifactId>
-    <version>1.0-alpha-5-SNAPSHOT</version>
+    <version>@project.version@</version>
   </parent>
   <groupId>bar</groupId>
   <artifactId>project-rpm-1</artifactId>
   <version>1.1-2</version>
+  <name>RPM 1</name>
   <packaging>rpm</packaging>
   <licenses>
     <license>
@@ -52,7 +53,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>unix-maven-plugin</artifactId>
-        <version>testing</version>
+        <version>@project.version@</version>
         <extensions>true</extensions>
         <configuration>
           <contact>Trygve Laugstol</contact>

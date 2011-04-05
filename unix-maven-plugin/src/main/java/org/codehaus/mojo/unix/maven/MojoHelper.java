@@ -39,7 +39,6 @@ import static fj.pre.Ord.*;
 import org.apache.commons.logging.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.artifact.*;
-import org.apache.maven.artifact.transform.*;
 import org.apache.maven.plugin.*;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.*;
@@ -57,6 +56,8 @@ import org.codehaus.mojo.unix.util.line.*;
 
 import java.io.*;
 import static java.lang.String.*;
+
+import java.text.*;
 import java.util.*;
 import java.util.TreeMap;
 
@@ -81,7 +82,6 @@ public abstract class MojoHelper
                                     String platformType,
                                     Map formats,
                                     String formatType,
-                                    SnapshotTransformation snapshotTransformation,
                                     MavenProjectWrapper project,
                                     boolean debug,
                                     boolean attachedMode,
@@ -106,8 +106,16 @@ public abstract class MojoHelper
             throw new MojoFailureException( "INTERNAL ERROR: could not find platform: '" + platformType + "'." );
         }
 
+        /*
         // TODO: This is using a private Maven API that might change. Perhaps use some reflection magic here.
         String timestamp = snapshotTransformation.getDeploymentTimestamp();
+        */
+
+        // This chunk replaces the above getDeploymentTimestamp. However, it not ensure that all files get the
+        // same timestamp. Need to look into how this is done with Maven 3
+        DateFormat utcDateFormatter = new SimpleDateFormat( "yyyyMMdd.HHmmss" );
+        utcDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ));
+        String timestamp = utcDateFormatter.format(new Date());
 
         FileObject buildDirectory;
 

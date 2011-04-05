@@ -59,7 +59,7 @@
       <type>zip</type>
     </dependency>
     <dependency>
-      <groupId>net.sourceforge.xslthl</groupId>
+      <groupId>net.sf.xslthl</groupId>
       <artifactId>xslthl</artifactId>
       <version>2.0.1</version>
     </dependency>

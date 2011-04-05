@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven;
+package org.codehaus.mojo.unix.maven.plugin;
 
 /*
  * The MIT License

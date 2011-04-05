@@ -167,7 +167,7 @@
       <classpath>
         <pathelement location="${saxon:saxon:jar}"/>
         <pathelement location="${xerces:xercesImpl:jar}"/>
-        <pathelement location="${net.sourceforge.xslthl:xslthl:jar}"/>
+        <pathelement location="${net.sf.xslthl:xslthl:jar}"/>
         <pathelement location="${docbook-xsl}/extensions/saxon65.jar"/>
       </classpath>
       <arg value="-o"/>

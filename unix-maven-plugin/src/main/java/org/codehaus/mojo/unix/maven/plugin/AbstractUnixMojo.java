@@ -106,14 +106,9 @@ public abstract class AbstractUnixMojo
     protected Map platforms;
 
     /**
-     * @component role="org.codehaus.mojo.unix.maven.PackagingFormat"
+     * @component role="org.codehaus.mojo.unix.maven.plugin.PackagingFormat"
      */
     protected Map formats;
-
-    /**
-     * @component role="org.apache.maven.artifact.transform.ArtifactTransformation" roleHint="snapshot"
-     */
-    protected SnapshotTransformation snapshotTransformation;
 
     /**
      * @component

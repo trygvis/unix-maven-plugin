@@ -34,6 +34,9 @@
   <packaging>maven-plugin</packaging>
   <name>Maven Unix Plug-In</name>
   <inceptionYear>2003</inceptionYear>
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -75,8 +78,8 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all-minimal</artifactId>
-      <version>1.5.6</version>
+      <artifactId>groovy</artifactId>
+      <version>1.7.5</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -86,37 +89,35 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>shitty-maven-plugin</artifactId>
-            <version>1.0-alpha-3</version>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <version>1.6-SNAPSHOT</version>
             <executions>
               <execution>
+                <id>integration-test</id>
                 <goals>
-                  <goal>clean</goal>
                   <goal>install</goal>
-                  <goal>test</goal>
+                  <goal>run</goal>
                 </goals>
               </execution>
             </executions>
             <configuration>
-              <projects>
-                <project>
-                  <directory>src/it</directory>
-                  <includes>
-                    <include>${its}</include>
-                  </includes>
-                </project>
-              </projects>
-              <threadCount>${threadCount}</threadCount>
-              <parallel>true</parallel>
+              <addTestClassPath>true</addTestClassPath>
+              <pomIncludes>
+<!--
+                <pomInclude>jetty/pom4test.xml</pomInclude>
+-->
+                <pomInclude>test-deb-*/pom4test.xml</pomInclude>
+<!--
+                <pomInclude>test-rpm-*/pom4test.xml</pomInclude>
+                <pomInclude>test-sysvpkg-*/pom4test.xml</pomInclude>
+                <pomInclude>test-zip-*/pom4test.xml</pomInclude>
+                <pomInclude>unix-from-jar-project/pom4test.xml</pomInclude>
+-->
+              </pomIncludes>
             </configuration>
           </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
-  <properties>
-    <its>*/pom4test.xml</its>
-    <threadCount>2</threadCount>
-  </properties>
 </project>
