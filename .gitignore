@@ -5,5 +5,7 @@
 target
 *.swp
 *.un~
+*.xml~
+
 
 unix-maven-plugin/src/it/*/build.log

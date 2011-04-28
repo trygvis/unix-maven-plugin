@@ -57,6 +57,11 @@ public class ExtractArtifact
 
         FileSystemManager fsManager = VFS.getManager();
         FileObject archiveObject = fsManager.resolveFile( artifactFile.getAbsolutePath() );
+        System.out.println("archiveObject.getType().getName() = " + archiveObject.getType().getName());
+        for (String s : fsManager.getSchemes()) {
+            System.out.println("s = " + s);
+        }
+        fsManager.addOperationProvider("tar.gz", fsManager.getOperationProviders("tgz")[0]);
         FileObject archive = fsManager.createFileSystem( archiveObject );
 
         return createOperationInternal( archive, defaultFileAttributes, defaultDirectoryAttributes );
