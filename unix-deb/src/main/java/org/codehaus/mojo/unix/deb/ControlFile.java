@@ -25,15 +25,19 @@ package org.codehaus.mojo.unix.deb;
  */
 
 import fj.*;
-import fj.Function;
-import static fj.Function.*;
-import fj.data.*;
-import static fj.data.List.*;
-import static fj.data.List.join;
-import static fj.data.Option.*;
-import static fj.pre.Ord.*;
-import org.codehaus.mojo.unix.java.*;
-import static org.codehaus.mojo.unix.java.StringF.*;
+import fj.data.List;
+import fj.data.Option;
+import fj.data.TreeMap;
+import org.codehaus.mojo.unix.java.StringF;
+
+import static fj.Function.compose;
+import static fj.Function.curry;
+import static fj.data.List.nil;
+import static fj.data.List.single;
+import static fj.data.Option.some;
+import static fj.data.Option.somes;
+import static fj.pre.Ord.stringOrd;
+import static org.codehaus.mojo.unix.java.StringF.concat;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -199,18 +203,48 @@ public class ControlFile
             cons( architecture.map( curry( concat, "Architecture: " ) ) ).
             cons( description.map( curry( concat, "Description: " ) ) );
 
-        F<List<String>, Boolean> isNotEmpty = isNotEmpty_();
+        F<String, F<List<String>, List<String>>> f = listToHeader.f(80);
 
-        List<Option<List<String>>> lists = List.<Option<List<String>>>nil().
-            cons( iif( isNotEmpty, this.depends ).map( transformList.f( "Depends" ) ) ).
-            cons( iif( isNotEmpty, this.recommends ).map( transformList.f( "Recommends: " ) ) ).
-            cons( iif( isNotEmpty, this.suggests ).map( transformList.f( "Suggests: " ) ) ).
-            cons( iif( isNotEmpty, this.preDepends ).map( transformList.f( "Pre-Depends: " ) ) ).
-            cons( iif( isNotEmpty, this.provides ).map( transformList.f( "Provides: " ) ) ).
-            cons( iif( isNotEmpty, this.replaces ).map( transformList.f( "Replaces: " ) ) ).
-            cons( iif( isNotEmpty, this.conflicts ).map( transformList.f( "Conflicts: " ) ) );
+        List<String> lines = f.f("Depends").f(this.depends).
+                append(f.f("Depends").f(this.recommends)).
+                append(f.f("Recommends").f(this.suggests)).
+                append(f.f("Pre-Depends").f(this.preDepends)).
+                append(f.f("Provides").f(this.provides)).
+                append(f.f("Replaces").f(this.replaces)).
+                append(f.f("Conflicts").f(this.conflicts));
 
-        return somes( optionList ).reverse().append( join( somes( lists ) ) );
+        return somes( optionList ).reverse().append( lines.filter( StringF.isNotEmpty ) );
+    }
+
+    public static F<Integer, F<String, F<List<String>, List<String>>>> listToHeader = curry(new F3<Integer, String, List<String>, List<String>>() {
+        public List<String> f(Integer lineLength, String headerName, List<String> values) {
+            return listToHeader(lineLength, headerName, values);
+        }
+    });
+
+    public static List<String> listToHeader(int lineLength, String headerName, List<String> values) {
+        if(values.isEmpty()) {
+            return nil();
+        }
+
+        List<String> strings = nil();
+
+        String line = headerName + ": " + values.head();
+
+        values = values.tail();
+
+        for (String s : values) {
+            if(line.length() + s.length() > lineLength ) {
+                strings = strings.cons(line + ", ");
+                line = " " + s;
+            }
+            else {
+                line += ", " + s;
+            }
+        }
+
+        strings = strings.cons(line);
+        return strings.reverse();
     }
 
     F2<String, String, String> folder = new F2<String, String, String>()
@@ -221,101 +255,8 @@ public class ControlFile
         }
     };
 
-    F<String, F<List<String>, List<String>>> transformList = new F<String, F<List<String>, List<String>>>()
-    {
-        F<List<String>, String> foldLeft = List.<String, String>foldLeft().f( curry( folder ) ).f( "" );
-
-        public F<List<String>, List<String>> f( final String fieldName )
-        {
-            return new F<List<String>, List<String>>()
-            {
-                public List<String> f( List<String> stringList )
-                {
-                    String head = fieldName + stringList.head();
-
-                    return single( head ).append( stringList.tail() );
-                }
-            };
-        }
-    };
-
-//    public final F<String, List<String>> formatField = new F<String, List<String>>()
-//    {
-//        public List<String> f( String value )
-//        {
-//            return formatField( value );
-//        }
-//    };
-//
-//    public List<String> formatField( String value )
-//    {
-//        System.out.println( "value = " + value );
-//        System.out.println( "value.length() = " + value.length() );
-//
-//        return List.unfold( new F<P2<String, Boolean>, Option<P2<String, P2<String, Boolean>>>>()
-//        {
-//            public Option<P2<String, P2<String, Boolean>>> f( P2<String, Boolean> state )
-//            {
-//                String value = state._1();
-//
-//                if ( value.length() == 0 )
-//                {
-//                    return none();
-//                }
-//
-//                int cut = value.indexOf( System.getProperty( "line.separator" ) );
-//
-//                // If a EOL is found before 77 chars, return it
-//                if ( cut < 77 )
-//                {
-//                    return some( p( value.substring( 0, cut ), p( value.substring( cut ), false ) ) );
-//                }
-//
-//                cut = value.lastIndexOf( ' ', cut );
-//
-//                String v = state._2() ? "" : " " + value.substring( 0, cut - 1 ).trim();
-//
-//                return some( p( v, p( value.substring( cut ), false ) ) );
-//            }
-//        }, P.<String, Boolean>p( value, true ) );
-//    }
-
-//    public static final F<String, List<String>> toList = new F<String, List<String>>()
-//    {
-//        public List<String> f( String value )
-//        {
-//            return List.list( value.split( "," ) );
-//        }
-//    };
-
     public static final F<String, List<String>> toList = compose( List.<String, String>map_().f( StringF.trim ),
                                                                   Function.flip( StringF.split ).f( "," ) );
-
-//    public void streamTo( LineStreamWriter control )
-//    {
-//        F2<String, String, String> folder = new F2<String, String, String>()
-//        {
-//            public String f( String a, String b )
-//            {
-//                return a + ", " + b;
-//            }
-//        };
-//
-//        control.
-//            add( "Section: " + UnixUtil.getField( "section", section ) ).
-//            add( "Priority: " + priority.orSome( "standard" ) ).
-//            add( "Maintainer: " + UnixUtil.getField( "maintainer", maintainer ) ).
-//            add( "Package: " + packageName ).
-//            add( "Version: " + version ).
-//            add( "Architecture: " + UnixUtil.getField( "architecture", architecture ) ).
-//            addIf( depends.isNotEmpty(), "Depends: " + depends.foldRight( folder,  "" ) ).
-//            addIf( recommends.isNotEmpty(), "Recommends: " + recommends.foldRight( folder,  "" ) ).
-//            addIf( suggests.isNotEmpty(), "Suggests: " + suggests.foldRight( folder,  "" ) ).
-//            addIf( preDepends.isNotEmpty(), "Pre-Depends: " + preDepends.foldRight( folder,  "" ) ).
-//            addIf( provides.isNotEmpty(), "Provides: " + provides.foldRight( folder,  "" ) ).
-//            addIf( replaces.isNotEmpty(), "Replaces: " + replaces.foldRight( folder,  "" ) ).
-//            add( "Description: " + description );
-//    }
 
     public static ControlFile controlFileFromList( List<P2<String, String>> values )
     {

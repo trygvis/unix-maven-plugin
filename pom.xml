@@ -27,7 +27,7 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>21</version>
+    <version>29-SNAPSHOT</version>
   </parent>
   <groupId>org.codehaus.mojo.unix</groupId>
   <artifactId>unix</artifactId>

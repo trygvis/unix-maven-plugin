@@ -58,6 +58,14 @@ public class StringF
         }
     };
 
+    public static final F<String, Boolean> isNotEmpty = new F<String, Boolean>()
+    {
+        public Boolean f( final String string )
+        {
+            return string.length() != 0;
+        }
+    };
+
     public static final F3<String, String, String, String> replaceAll = new F3<String, String, String, String>()
     {
         public String f( final String string, final String regex, final String replacement )

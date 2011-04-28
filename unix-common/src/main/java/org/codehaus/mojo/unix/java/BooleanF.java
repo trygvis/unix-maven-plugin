@@ -26,8 +26,6 @@ package org.codehaus.mojo.unix.java;
 
 import fj.*;
 
-/**
- */
 public class BooleanF
 {
     public static F<Boolean, Boolean> invert = new F<Boolean, Boolean>()
