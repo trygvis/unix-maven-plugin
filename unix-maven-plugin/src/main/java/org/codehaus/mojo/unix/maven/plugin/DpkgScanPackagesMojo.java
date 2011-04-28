@@ -29,6 +29,8 @@ import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Executes "dpkg-scanpackages".
@@ -71,6 +73,8 @@ public class DpkgScanPackagesMojo
     protected boolean debug;
 
     /**
+     * The name of the output file. If the filename ends with ".gz" it will be gzipped automatically.
+     *
      * @parameter expression="${maven.unix.dpkg-scanpackages.output}" default-value="target/Packages"
      */
     protected File outputFile;
@@ -112,7 +116,14 @@ public class DpkgScanPackagesMojo
 
         try
         {
-            output = new FileOutputStream( outputFile );
+            if( outputFile.getName().endsWith( ".gz" ) )
+            {
+                output = new GZIPOutputStream( new FileOutputStream( outputFile ) );
+            }
+            else
+            {
+                output = new FileOutputStream( outputFile );
+            }
 
             new SystemCommand().
                 dumpCommandIf( debug ).
