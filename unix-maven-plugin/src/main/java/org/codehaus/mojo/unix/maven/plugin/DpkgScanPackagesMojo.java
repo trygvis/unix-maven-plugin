@@ -38,6 +38,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  * @goal dpkg-scanpackages
+ * @requiresProject false
  */
 public class DpkgScanPackagesMojo
     extends AbstractMojo
