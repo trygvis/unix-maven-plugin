@@ -136,6 +136,7 @@
       <param name="style.output" value="target/handbook-chunked.woot"/>
       <param name="style.xsl" value="src/main/docbook/handbook-html-chunked.xsl"/>
     </antcall>
+    <mkdir dir="target/site/handbook"/>
     <copy todir="target/site/unix-maven-handbook-${project.version}">
       <fileset dir="target/site/handbook"/>
     </copy>
