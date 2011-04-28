@@ -1,0 +1,1 @@
+$ pkgchk -l -d target/basic-*.pkg all

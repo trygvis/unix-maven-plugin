@@ -1,0 +1,10 @@
+$ rpm -q -v -l -p target/basic-*.rpm
+drwxr-xr-x    2 nobody  nogroup             0 May 13 21:27 /opt
+drwxr-xr-x    2 nobody  nogroup             0 May 13 21:27 /opt/hudson
+drwxr-xr-x    2 nobody  nogroup             0 May 13 21:27 /opt/hudson/doc
+-rw-r--r--    1 nobody  nogroup            49 Oct  2  2008 /opt/hudson/doc/atom-license.txt
+-rw-r--r--    1 nobody  nogroup          1544 Oct  2  2008 /opt/hudson/doc/dc-license.txt
+-rw-rw-rw-    1 hudson  hudson       20623413 Oct 24  2008 /opt/hudson/hudson.war
+drwxr-xr-x    2 nobody  nogroup             0 May 13 21:27 /var
+drwxr-xr-x    2 nobody  nogroup             0 May 13 21:27 /var/log
+lrwxrwxrwx    1 nobody  nogroup            19 May 13 21:27 /var/log/hudson -> /var/opt/hudson/log

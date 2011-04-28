@@ -1,0 +1,10 @@
+$ rpm -q -l -p target/basic-*.rpm
+/opt
+/opt/hudson
+/opt/hudson/doc
+/opt/hudson/doc/atom-license.txt
+/opt/hudson/doc/dc-license.txt
+/opt/hudson/hudson.war
+/var
+/var/log
+/var/log/hudson

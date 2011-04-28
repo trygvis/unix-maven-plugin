@@ -78,6 +78,7 @@
     <!-- Pick out the relevant stuff for the specified format -->
     <xslt style="src/main/docbook/process.xsl" in="src/main/docbook/examples/${example.project}/pom.magic.xml" out="target/tmp.xml">
       <param name="format" expression="${example.format}"/>
+      <param name="version" expression="${project.version}"/>
     </xslt>
 
     <!-- Format the XML -->
@@ -93,6 +94,11 @@
     <antcall target="process-pom">
       <param name="example.project" value="basic"/>
       <param name="example.format" value="rpm"/>
+    </antcall>
+
+    <antcall target="process-pom">
+      <param name="example.project" value="basic"/>
+      <param name="example.format" value="zip"/>
     </antcall>
   </target>
 

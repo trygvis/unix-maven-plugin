@@ -32,11 +32,17 @@
 -->
 
   <xsl:param name="format"/>
+  <xsl:param name="version"/>
 
   <xsl:template match="*">
     <xsl:element name="{name()}" namespace="{namespace-uri()}">
       <xsl:apply-templates/>
     </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="//unix:version">
+    <xsl:message>in version <xsl:value-of select="$version"/></xsl:message>
+    <xsl:element name="version"><xsl:value-of select="$version"/></xsl:element>
   </xsl:template>
 
   <xsl:template match="*[@unix:format]">

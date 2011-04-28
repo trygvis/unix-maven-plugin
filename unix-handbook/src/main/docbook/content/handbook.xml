@@ -77,7 +77,7 @@
       <listitem>
         <para>Part I - Guide: An introduction and overview over the plugin.
         This part is the first you should read if you're looking into using
-        the plugin or is getting started. </para>
+        the plugin or is getting started.</para>
       </listitem>
 
       <listitem>
@@ -92,7 +92,12 @@
       </listitem>
 
       <listitem>
-        <para>Part IV - Version History and Upgrading: This part contains a
+        <para>Part IV - Package Command Reference: A list of commands useful
+        for looking into and debugging assembled packages.</para>
+      </listitem>
+
+      <listitem>
+        <para>Part V - Version History and Upgrading: This part contains a
         list of all major features added in the different versions and
         explanations on how to upgrade between the different versions.</para>
       </listitem>
@@ -469,6 +474,18 @@
         <para>The package will contain these files:</para>
 
         <screen><xi:include href="../examples/basic/rpm-qlp.txt" parse="text" /></screen>
+      </section>
+
+      <section>
+        <title>Resulting ZIP</title>
+
+        <para>After running <command>mvn install</command> on the rpm version
+        of the project, the package is packaged into
+        <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+
+        <para>The zip will contain these files:</para>
+
+        <screen><xi:include href="../examples/unzip-l.txt" parse="text" /></screen>
       </section>
     </chapter>
 
@@ -2210,6 +2227,113 @@
       </section>
     </chapter>
     -->
+  </part>
+
+  <part>
+    <title>Useful Tips For Making Useful Packages</title>
+
+    <chapter>
+      <title>Package Command Reference</title>
+
+      <para>This part describes a set of commands that are useful for looking
+      into and disassembling packages.</para>
+
+      <section>
+        <title>RP</title>
+
+        <section>
+          <title>List All Files In a Package</title>
+
+          <example>
+            <title>Output of <code>rpm -q -l -p</code></title>
+
+            <screen><?dbfo-font-size 75%?><xi:include
+                href="command-reference/rpm-qlp.txt" parse="text" /></screen>
+          </example>
+        </section>
+
+        <section>
+          <title>List All Files In a Package With File Permissions</title>
+
+          <example>
+            <title>Output of <code>rpm -q -l -p -v</code></title>
+
+            <screen><?dbfo-font-size 75%?><xi:include
+                href="command-reference/rpm-qvlp.txt" parse="text" /></screen>
+          </example>
+        </section>
+
+        <section>
+          <title>Listing All Available Software Groups</title>
+
+          <para>This is useful select an appropriate category when configuring
+          the Group setting for RPMs.</para>
+
+          <example>
+            <title>Listing all available software groups</title>
+
+            <screen><?dbfo-font-size 75%?><xi:include
+                href="command-reference/cat-GROUPS.txt" parse="text" /></screen>
+          </example>
+        </section>
+      </section>
+
+      <section>
+        <title>Zip</title>
+
+        <para>Note that there are no standard for the utilities used to handle
+        zip files. However, most platforms support this command.</para>
+
+        <example>
+          <title>Listing all files in a ZIP file</title>
+
+          <screen><?dbfo-font-size 75%?><xi:include
+              href="command-reference/unzip-l.txt" parse="text" /></screen>
+        </example>
+      </section>
+    </chapter>
+
+    <chapter>
+      <title>Snippets for Scripts</title>
+
+      <section>
+        <title>RedHat/Fedora</title>
+
+        <section>
+          <title>Making your server start on boot</title>
+
+          <para>If you want your application to start when the machine starts
+          you can use the <code>chkconfig</code>. Your script has to be
+          chkconfig-compatible and installed under
+          <code>/etc/init.d/foo</code>. The script has to include this line:
+          <screen># chkconfig: 345 10 90</screen>This will make the system
+          start the application in runlevels 3, 4 and 6 with the priority 10
+          and 90 at shutdown and start, respectively. To install such a
+          script, simply run</para>
+
+          <screen>chkconfig --add foo</screen>
+
+          <para>Similary, if you want to remove it when the package is
+          uninstalled simply run:</para>
+
+          <screen>chkconfig --del foo</screen>
+
+          <section>
+            <title>See Also</title>
+
+            <itemizedlist>
+              <listitem>
+                <para>http://docs.fedoraproject.org/en-US/Fedora/12/html/Deployment_Guide/s1-services-chkconfig.html</para>
+              </listitem>
+
+              <listitem>
+                <para>http://linux.die.net/man/8/chkconfig</para>
+              </listitem>
+            </itemizedlist>
+          </section>
+        </section>
+      </section>
+    </chapter>
   </part>
 
   <part xml:id="version-history-and-upgrading">
