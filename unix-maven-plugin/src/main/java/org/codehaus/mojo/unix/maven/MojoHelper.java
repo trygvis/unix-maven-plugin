@@ -229,7 +229,7 @@ public abstract class MojoHelper
             }
             catch ( IOException e )
             {
-                throw new MojoExecutionException( "Error creating package '" + pakke.classifier + "', format '" + formatType + "'.", e );
+                throw new MojoExecutionException( "Error creating package " + (pakke.classifier.isSome() ? "classifier '" + pakke.classifier + "'" : "") + ", format '" + formatType + "'.", e );
             }
         }
 
