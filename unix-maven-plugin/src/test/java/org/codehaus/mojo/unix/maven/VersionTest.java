@@ -39,15 +39,16 @@ import static org.codehaus.mojo.unix.maven.sysvpkg.PkgUnixPackage.*;
  *
  * The purpose is to assert that the version parsing/generation is similar across all formats.
  */
+@SuppressWarnings({"unchecked"})
 public class VersionTest
     extends TestCase
 {
     public void testSnapshotWithoutRevision()
     {
-        verify( packageVersion( "1.2-SNAPSHOT", "20090423095107", true, Option.<String>none() ),
-            pkg( "1.2-20090423095107" ),
-            deb( "1.2-20090423095107" ),
-            rpm( "1.2_20090423095107", "1" ) );
+        verify(packageVersion("1.2-SNAPSHOT", "20090423095107", true, Option.<String>none()),
+                pkg("1.2-20090423095107"),
+                deb("1.2-20090423095107"),
+                rpm("1.2_20090423095107", "1"));
     }
 
     public void testSnapshotWithConfiguredRevision()

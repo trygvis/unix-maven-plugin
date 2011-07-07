@@ -36,11 +36,11 @@ import static fj.data.Option.*;
 import fj.data.Set;
 import static fj.data.Set.*;
 import static fj.pre.Ord.*;
-import org.apache.commons.logging.*;
+import static java.lang.String.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.artifact.*;
 import org.apache.maven.plugin.*;
-import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.*;
 import org.apache.maven.project.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
@@ -55,8 +55,6 @@ import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
 
 import java.io.*;
-import static java.lang.String.*;
-
 import java.text.*;
 import java.util.*;
 import java.util.TreeMap;
@@ -75,7 +73,9 @@ public abstract class MojoHelper
 
     static
     {
-        System.setProperty( LogFactory.class.getName(), MavenCommonLoggingLogFactory.class.getName() );
+        System.setProperty(
+                org.apache.commons.logging.LogFactory.class.getName(),
+                MavenCommonLoggingLogFactory.class.getName() );
     }
 
     public static Execution create( Map platforms,

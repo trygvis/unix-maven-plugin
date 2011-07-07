@@ -163,8 +163,8 @@ public class Rpm
         throws IOException
     {
         SystemCommand command = new SystemCommand().
-                withClosedStderrUnless(generalOptions.debug).
-                withClosedStdoutUnless(generalOptions.debug).
+            withClosedStderrUnless( generalOptions.debug ).
+            withClosedStdoutUnless( generalOptions.debug ).
             setBasedir( generalOptions.basedir ).
             setCommand( "rpm" ).
             addArgument( "--" + operation );

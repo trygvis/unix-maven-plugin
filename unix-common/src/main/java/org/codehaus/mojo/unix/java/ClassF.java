@@ -36,9 +36,9 @@ public class ClassF
     {
         return new F<A, B>()
         {
+            @SuppressWarnings({"unchecked"})
             public B f( A a )
             {
-                //noinspection unchecked
                 return (B) a;
             }
         };

@@ -29,8 +29,7 @@ import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.util.zip.*;
 
 /**
  * Executes "dpkg-scanpackages".

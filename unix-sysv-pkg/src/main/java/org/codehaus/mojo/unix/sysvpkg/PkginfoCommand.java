@@ -204,8 +204,8 @@ public class PkginfoCommand
         SystemCommand command = new SystemCommand().
             setCommand( "pkginfo" ).
             setBasedir( basedir ).
-                withClosedStderrUnless(debug).
-                withClosedStdoutUnless(debug);
+            withClosedStderrUnless( debug ).
+            withClosedStdoutUnless( debug );
 
         if ( StringUtils.isNotEmpty( arch ) )
         {
