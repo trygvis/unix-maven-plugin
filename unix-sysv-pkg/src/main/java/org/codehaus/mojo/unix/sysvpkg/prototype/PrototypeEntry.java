@@ -36,7 +36,6 @@ import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public abstract class PrototypeEntry<U extends UnixFsObject>
     implements LineProducer, PackageFileSystemObject<PrototypeEntry>, HasFileAttributes<PrototypeEntry<U>>

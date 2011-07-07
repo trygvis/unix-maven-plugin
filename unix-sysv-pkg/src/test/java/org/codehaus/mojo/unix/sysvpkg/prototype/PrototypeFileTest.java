@@ -41,7 +41,6 @@ import org.joda.time.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class PrototypeFileTest
     extends TestCase

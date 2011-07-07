@@ -41,7 +41,6 @@ import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class SpecFileTest
     extends TestCase
@@ -86,16 +85,11 @@ public class SpecFileTest
         specFile.addDirectory( bin );
         specFile.addFile( regularFile( relativePath( "/extract.jar" ), lastModified, 10, some( fileAttributes ) ) );
         specFile.addFile( regularFile( extract2Jar, lastModified, 10, some( fileAttributes ) ) );
-        specFile.addFile( regularFile( relativePath( "/a" ), lastModified, 10, some( fileAttributes.addTag(
-            "doc" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/b" ), lastModified, 10, some( fileAttributes.addTag(
-            "config" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/c" ), lastModified, 10, some( fileAttributes.addTag(
-            "rpm:missingok" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/d" ), lastModified, 10, some( fileAttributes.addTag(
-            "rpm:noreplace" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/e" ), lastModified, 10, some( fileAttributes.addTag(
-            "rpm:ghost" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/a" ), lastModified, 10, some( fileAttributes.addTag( "doc" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/b" ), lastModified, 10, some( fileAttributes.addTag( "config" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/c" ), lastModified, 10, some( fileAttributes.addTag( "rpm:missingok" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/d" ), lastModified, 10, some( fileAttributes.addTag( "rpm:noreplace" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/e" ), lastModified, 10, some( fileAttributes.addTag( "rpm:ghost" ) ) ) );
         specFile.apply( filter( extract2Jar, extract2JarAttributes ) );
 
         assertEquals( header.

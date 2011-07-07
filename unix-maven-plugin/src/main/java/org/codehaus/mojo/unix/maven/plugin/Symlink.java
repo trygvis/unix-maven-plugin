@@ -33,7 +33,6 @@ import static org.codehaus.mojo.unix.util.RelativePath.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class Symlink
     extends AssemblyOp

@@ -72,7 +72,6 @@ import java.util.concurrent.*;
  * </pre>
  *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public final class ScriptUtil
 {

@@ -36,7 +36,6 @@ import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id: MojoHelper.java 9221 2009-03-15 22:52:14Z trygvis $
  */
 public class MojoHelperDefaultsTest
     extends TestCase

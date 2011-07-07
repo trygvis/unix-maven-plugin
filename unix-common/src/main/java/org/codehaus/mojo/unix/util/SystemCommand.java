@@ -51,7 +51,6 @@ import java.util.*;
  * TODO: Create FileLineConsumer that puts all the output to a file.
  *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class SystemCommand
 {

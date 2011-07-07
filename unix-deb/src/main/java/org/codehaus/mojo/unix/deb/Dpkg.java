@@ -35,7 +35,6 @@ import java.io.*;
  * assumes that stageDir is going to be a direct descendant of buildDir.
  *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class Dpkg
 {

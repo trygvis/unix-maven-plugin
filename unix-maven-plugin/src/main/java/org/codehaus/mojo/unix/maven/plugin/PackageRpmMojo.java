@@ -31,7 +31,6 @@ import org.codehaus.mojo.unix.maven.rpm.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  * @goal package-rpm
  * @phase package
  * @requiresDependencyResolution runtime

@@ -44,7 +44,6 @@ import java.util.*;
  * TODO: Assert the creation of parent directories.
  *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class PackageFileSystemTest
     extends TestCase

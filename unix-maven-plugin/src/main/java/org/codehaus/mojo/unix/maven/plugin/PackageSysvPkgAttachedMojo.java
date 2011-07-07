@@ -31,7 +31,6 @@ import org.codehaus.mojo.unix.maven.sysvpkg.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  * @goal package-sysvpkg-attached
  * @phase package
  * @requiresDependencyResolution runtime

@@ -30,7 +30,6 @@ import static org.codehaus.mojo.unix.util.Validate.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id: MojoHelper.java 9656 2009-04-29 20:36:37Z trygvis $
  */
 public class PackageParameters
 {
