@@ -31,7 +31,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Executes a system command in a similar fasion to backtick (`) in sh and ruby.
+ * Executes a system command in a similar fashion to back-tick (`) in sh and ruby.
  * <p>
  * Standard output and error will be send to System.out and System.err by default.
  * </p>
@@ -151,11 +151,11 @@ public class SystemCommand
         }
     }
 
-    private static final CommandOutputHandler nullOutputHandler = new NullCommandOutputHandler();
+    private static final CommandOutputHandler closingOutputHandler = new ClosingCommandOutputHandler();
 
     private static final CommandOutputHandler DEFAULT_STDERR_OUTPUT_HANDLER = new OutputStreamCommandOutputHandler( System.err );
 
-    private static final CommandOutputHandler DEFAULT_STDOUT_OUTPUT_HANDLER = new OutputStreamCommandOutputHandler(System.out );
+    private static final CommandOutputHandler DEFAULT_STDOUT_OUTPUT_HANDLER = new OutputStreamCommandOutputHandler( System.out );
 
     // -----------------------------------------------------------------------
     // Setup
@@ -200,7 +200,7 @@ public class SystemCommand
 
     public SystemCommand addArguments( List<String> strings )
     {
-        arguments.addAll(strings);
+        arguments.addAll( strings );
         return this;
     }
 
@@ -215,7 +215,7 @@ public class SystemCommand
         return this;
     }
 
-    public SystemCommand addArgumentIfNotEmpty(String stringToCheck, String argument)
+    public SystemCommand addArgumentIfNotEmpty( String stringToCheck, String argument )
     {
         return addArgumentIf( StringUtils.isEmpty( stringToCheck ), argument );
     }
@@ -231,7 +231,7 @@ public class SystemCommand
         return this;
     }
 
-    public SystemCommand addEnviroment( String variable )
+    public SystemCommand addEnvironment( String variable )
     {
         if ( environment == null )
         {
@@ -252,19 +252,34 @@ public class SystemCommand
     // Stderr
     // -----------------------------------------------------------------------
 
-    public SystemCommand withNoStderrConsumer()
+    public SystemCommand withClosedStderrConsumer()
     {
-        return setStderrCommandOutputHandler( nullOutputHandler );
+        return setStderrCommandOutputHandler( closingOutputHandler );
     }
 
-    public SystemCommand withNoStderrConsumerIf( boolean flag )
+    public SystemCommand withClosedStderrIf( boolean flag )
     {
-        return flag ? setStderrCommandOutputHandler( nullOutputHandler ) : this;
+        return flag ? setStderrCommandOutputHandler( closingOutputHandler ) : this;
     }
 
-    public SystemCommand withNoStderrConsumerUnless( boolean flag )
+    public SystemCommand withClosedStderrUnless( boolean flag )
     {
-        return withNoStderrConsumerIf( !flag );
+        return withClosedStderrIf( !flag );
+    }
+
+    public SystemCommand withIgnoringStderrConsumer()
+    {
+        return setStderrCommandOutputHandler( new IgnoringCommandOutputHandler() );
+    }
+
+    public SystemCommand withIgnoringStderrIf( boolean flag )
+    {
+        return flag ? setStderrCommandOutputHandler( new IgnoringCommandOutputHandler() ) : this;
+    }
+
+    public SystemCommand withIgnoringStderrUnless( boolean flag )
+    {
+        return withIgnoringStderrIf( !flag );
     }
 
     public SystemCommand withStderrConsumer( OutputStream consumer )
@@ -274,7 +289,7 @@ public class SystemCommand
 
     public SystemCommand withStderrConsumerUnless( OutputStream consumer, boolean flag )
     {
-        return !flag ? withStderrConsumer( consumer ) : setStderrCommandOutputHandler( nullOutputHandler );
+        return !flag ? withStderrConsumer( consumer ) : setStderrCommandOutputHandler( closingOutputHandler );
     }
 
     public SystemCommand withStderrConsumer( LineConsumer consumer )
@@ -284,26 +299,41 @@ public class SystemCommand
 
     public SystemCommand withStderrConsumerUnless( LineConsumer consumer, boolean flag )
     {
-        return !flag ? withStderrConsumer( consumer ) : setStderrCommandOutputHandler( nullOutputHandler );
+        return !flag ? withStderrConsumer( consumer ) : setStderrCommandOutputHandler( closingOutputHandler );
     }
 
     // -----------------------------------------------------------------------
     // Stdout
     // -----------------------------------------------------------------------
 
-    public SystemCommand withNoStdoutConsumer()
+    public SystemCommand withClosedStdout()
     {
-        return setStdoutCommandOutputHandler( nullOutputHandler );
+        return setStdoutCommandOutputHandler( closingOutputHandler );
     }
 
-    public SystemCommand withNoStdoutConsumerIf( boolean flag )
+    public SystemCommand withClosedConsumerIf( boolean flag )
     {
-        return flag ? setStdoutCommandOutputHandler( nullOutputHandler ) : this;
+        return flag ? setStdoutCommandOutputHandler( closingOutputHandler ) : this;
     }
 
-    public SystemCommand withNoStdoutConsumerUnless( boolean flag )
+    public SystemCommand withClosedStdoutUnless( boolean flag )
     {
-        return withNoStdoutConsumerIf( !flag );
+        return withClosedConsumerIf( !flag );
+    }
+
+    public SystemCommand withIgnoringStdoutConsumer()
+    {
+        return setStdoutCommandOutputHandler( new IgnoringCommandOutputHandler() );
+    }
+
+    public SystemCommand withIgnoringStdoutIf( boolean flag )
+    {
+        return flag ? setStdoutCommandOutputHandler( new IgnoringCommandOutputHandler() ) : this;
+    }
+
+    public SystemCommand withIgnoringStdoutUnless( boolean flag )
+    {
+        return withIgnoringStdoutIf( !flag );
     }
 
     public SystemCommand withStdoutConsumer( OutputStream consumer )
@@ -313,7 +343,7 @@ public class SystemCommand
 
     public SystemCommand withStdoutConsumerUnless( OutputStream consumer, boolean flag )
     {
-        return !flag ? withStdoutConsumer( consumer ) : setStdoutCommandOutputHandler( nullOutputHandler );
+        return !flag ? withStdoutConsumer( consumer ) : setStdoutCommandOutputHandler( closingOutputHandler );
     }
 
     public SystemCommand withStdoutConsumer( LineConsumer consumer )
@@ -323,7 +353,7 @@ public class SystemCommand
 
     public SystemCommand withStdoutConsumerUnless( LineConsumer consumer, boolean flag )
     {
-        return !flag ? withStdoutConsumer( consumer ) : setStdoutCommandOutputHandler( nullOutputHandler );
+        return !flag ? withStdoutConsumer( consumer ) : setStdoutCommandOutputHandler( closingOutputHandler );
     }
 
     private SystemCommand setStderrCommandOutputHandler( CommandOutputHandler outputHandler )
@@ -364,7 +394,8 @@ public class SystemCommand
         if ( debug )
         {
             System.err.println( "Executing '" + command + "' with arguments (one argument per line):" );
-            for ( String argument : arguments ) {
+            for ( String argument : arguments )
+            {
                 System.err.println( argument );
             }
             System.err.println( "Executing command in directory: " + basedir );
@@ -378,8 +409,8 @@ public class SystemCommand
         arguments.add( 0, command );
 
         return new Execution( command, arguments, environment, basedir, debug,
-                stderrHandler != null ? stderrHandler : DEFAULT_STDERR_OUTPUT_HANDLER,
-                stdoutHandler != null ? stdoutHandler : DEFAULT_STDOUT_OUTPUT_HANDLER).run();
+            stderrHandler != null ? stderrHandler : DEFAULT_STDERR_OUTPUT_HANDLER,
+            stdoutHandler != null ? stdoutHandler : DEFAULT_STDOUT_OUTPUT_HANDLER ).run();
     }
 
     // -----------------------------------------------------------------------
@@ -388,7 +419,7 @@ public class SystemCommand
 
     /**
      * Utility method to check if a command is available.
-     *
+     * <p/>
      * Executes "which" and asserts that the file exist. It does not check if the file is executable.
      */
     public static boolean available( String command )
@@ -490,7 +521,8 @@ public class SystemCommand
 
     private static abstract interface CommandOutputHandler
     {
-        void setup(String threadName, InputStream inputStream );
+        void setup( String threadName, InputStream inputStream );
+
         void join();
     }
 
@@ -502,9 +534,10 @@ public class SystemCommand
         abstract void handle( InputStream inputStream )
             throws IOException;
 
-        public void setup(String threadName, final InputStream inputStream )
+        public void setup( String threadName, final InputStream inputStream )
         {
-            thread = new Thread(new Runnable() {
+            thread = new Thread( new Runnable()
+            {
                 public void run()
                 {
                     try
@@ -520,7 +553,7 @@ public class SystemCommand
                         IOUtil.close( inputStream );
                     }
                 }
-            }, threadName);
+            }, threadName );
             thread.start();
         }
 
@@ -528,30 +561,54 @@ public class SystemCommand
         {
             try
             {
-                if(thread == null)
+                if ( thread == null )
                 {
                     return;
                 }
 
                 thread.join();
             }
-            catch (InterruptedException e)
+            catch ( InterruptedException e )
             {
                 // ignore
             }
         }
     }
 
-    private static class NullCommandOutputHandler
+    private static class ClosingCommandOutputHandler
         implements CommandOutputHandler
     {
-        public void setup(String threadName, InputStream inputStream)
+        public void setup( String threadName, InputStream inputStream )
         {
             IOUtil.close( inputStream );
         }
 
         public void join()
         {
+        }
+    }
+
+    private static class IgnoringCommandOutputHandler
+        extends ThreadCommandOutputHandler
+    {
+        private IgnoringCommandOutputHandler()
+        {
+        }
+
+        public void handle( InputStream inputStream )
+            throws IOException
+        {
+            byte[] buf = new byte[128 * 1024];
+
+            while ( true )
+            {
+                int read = inputStream.read( buf );
+
+                if ( read == -1 )
+                {
+                    break;
+                }
+            }
         }
     }
 

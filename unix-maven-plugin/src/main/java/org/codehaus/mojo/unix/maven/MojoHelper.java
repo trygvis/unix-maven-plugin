@@ -36,12 +36,11 @@ import static fj.data.Option.*;
 import fj.data.Set;
 import static fj.data.Set.*;
 import static fj.pre.Ord.*;
-import org.apache.commons.logging.*;
+import static java.lang.String.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.artifact.*;
-import org.apache.maven.artifact.transform.*;
 import org.apache.maven.plugin.*;
-import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.*;
 import org.apache.maven.project.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
@@ -56,7 +55,7 @@ import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
 
 import java.io.*;
-import static java.lang.String.*;
+import java.text.*;
 import java.util.*;
 import java.util.TreeMap;
 
@@ -74,14 +73,15 @@ public abstract class MojoHelper
 
     static
     {
-        System.setProperty( LogFactory.class.getName(), MavenCommonLoggingLogFactory.class.getName() );
+        System.setProperty(
+            org.apache.commons.logging.LogFactory.class.getName(),
+            MavenCommonLoggingLogFactory.class.getName() );
     }
 
     public static Execution create( Map platforms,
                                     String platformType,
                                     Map formats,
                                     String formatType,
-                                    SnapshotTransformation snapshotTransformation,
                                     MavenProjectWrapper project,
                                     boolean debug,
                                     boolean attachedMode,
@@ -106,8 +106,16 @@ public abstract class MojoHelper
             throw new MojoFailureException( "INTERNAL ERROR: could not find platform: '" + platformType + "'." );
         }
 
+        /*
         // TODO: This is using a private Maven API that might change. Perhaps use some reflection magic here.
         String timestamp = snapshotTransformation.getDeploymentTimestamp();
+        */
+
+        // This chunk replaces the above getDeploymentTimestamp. However, it not ensure that all files get the
+        // same timestamp. Need to look into how this is done with Maven 3
+        DateFormat utcDateFormatter = new SimpleDateFormat( "yyyyMMdd.HHmmss" );
+        utcDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+        String timestamp = utcDateFormatter.format( new Date() );
 
         FileObject buildDirectory;
 
@@ -119,7 +127,7 @@ public abstract class MojoHelper
         }
         catch ( FileSystemException e )
         {
-            throw new MojoExecutionException( "Error while initializing Commons VFS", e);
+            throw new MojoExecutionException( "Error while initializing Commons VFS", e );
         }
 
         PackageVersion version = PackageVersion.packageVersion( project.version, timestamp,
@@ -193,15 +201,15 @@ public abstract class MojoHelper
                     }
                 }
 
-                packages = packages.cons( p(unixPackage, pakke, assemblyOperations ) );
+                packages = packages.cons( p( unixPackage, pakke, assemblyOperations ) );
             }
             catch ( UnknownArtifactException e )
             {
                 Map map = new TreeMap<String, Artifact>( e.artifactMap );
 
                 // TODO: Do not log here, throw a CouldNotFindArtifactException with the map as an argument
-                log.warn("Could not find artifact:" + e.artifact );
-                log.warn("Available artifacts:");
+                log.warn( "Could not find artifact:" + e.artifact );
+                log.warn( "Available artifacts:" );
                 for ( Object o : map.keySet() )
                 {
                     log.warn( o.toString() );
@@ -221,7 +229,7 @@ public abstract class MojoHelper
             }
             catch ( IOException e )
             {
-                throw new MojoExecutionException( "Error creating package '" + pakke.classifier + "', format '" + formatType + "'.", e );
+                throw new MojoExecutionException( "Error creating package " + (pakke.classifier.isSome() ? "classifier '" + pakke.classifier + "'" : "") + ", format '" + formatType + "'.", e );
             }
         }
 
@@ -362,7 +370,7 @@ public abstract class MojoHelper
                                                                                      Defaults mojo,
                                                                                      Defaults pakke )
     {
-        return p(calculateFileAttributes( platform.getDefaultFileAttributes(),
+        return p( calculateFileAttributes( platform.getDefaultFileAttributes(),
                                           mojo.fileAttributes.create(),
                                           pakke.fileAttributes.create() ),
                  calculateFileAttributes( platform.getDefaultDirectoryAttributes(),

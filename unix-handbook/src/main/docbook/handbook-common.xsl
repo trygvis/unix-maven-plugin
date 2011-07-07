@@ -12,7 +12,7 @@
   <xsl:param name="section.label.includes.component.label" select="1"/>
   <xsl:param name="section.autolabel" select="1"/>
 
-<!-- FO?
+  <!-- FO?
   <xsl:attribute-set name="monospace.verbatim.properties">
     <xsl:attribute name="font-size">
       <xsl:choose>
@@ -23,13 +23,13 @@
       </xsl:choose>
     </xsl:attribute>
   </xsl:attribute-set>
--->
-<!--
+  -->
+  <!--
   <xsl:template match='xslthl:keyword'>
     <xsl:message>keyword</xsl:message>
     <b class="color: green">
       <xsl:apply-templates/>
     </b>
   </xsl:template>
--->
+  -->
 </xsl:stylesheet>

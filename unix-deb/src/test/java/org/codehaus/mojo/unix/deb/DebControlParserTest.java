@@ -53,7 +53,7 @@ public class DebControlParserTest
         file.
             add( "Field: 123" ).
             add( " 234" ).
-            add("Field2: abc");
+            add( "Field2: abc" );
 
         List<String> lines = iterableList( file );
         P2<String, List<String>> p = DebControlParser.parseField( lines );
@@ -69,7 +69,7 @@ public class DebControlParserTest
             add( "Field: 123" ).
             add( " ." ).
             add( " 234" ).
-            add("Field2: abc");
+            add( "Field2: abc" );
 
         List<String> lines = iterableList( file );
         P2<String, List<String>> p = DebControlParser.parseField( lines );
@@ -101,16 +101,16 @@ public class DebControlParserTest
                                      "java-gcj-compat | java1-runtime | java2-runtime",
                                      "libxerces2-java" );
 
-        ControlFile expectedControlFile = new ControlFile("ant").
-            version(some("1.7.0-3")).
-            maintainer(some("Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>")).
-            architecture(some("all")).
-            priority(some("optional")).
-            section(some("devel")).
-            description(some("Java based build tool like make\n" +
-            "A system independent (i.e. not shell based) build tool that uses XML\n" +
-            "files as \"Makefiles\". This package contains the scripts and the core\n" +
-            "tasks libraries.\n")).
+        ControlFile expectedControlFile = new ControlFile( "ant" ).
+            version( some( "1.7.0-3" ) ).
+            maintainer( some( "Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>" ) ).
+            architecture( some( "all" ) ).
+            priority( some( "optional" ) ).
+            section( some( "devel" ) ).
+            description( some( "Java based build tool like make\n" +
+                "A system independent (i.e. not shell based) build tool that uses XML\n" +
+                "files as \"Makefiles\". This package contains the scripts and the core\n" +
+                "tasks libraries.\n" ) ).
             depends( depends ).
             recommends( list( "ant-optional", "ant-gcj" ) ).
             suggests( list( "ant-doc" ) ).
@@ -123,13 +123,13 @@ public class DebControlParserTest
     public void testParseBash()
         throws Exception
     {
-        ControlFile expectedControlFile = new ControlFile("bash").
-            version(some("3.2-0ubuntu16")).
-            maintainer(some("Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>")).
-            architecture(some("amd64")).
-            priority(some("required")).
-            section(some("base")).
-            description(some("The GNU Bourne Again SHell\n" +
+        ControlFile expectedControlFile = new ControlFile( "bash" ).
+            version( some( "3.2-0ubuntu16" ) ).
+            maintainer( some( "Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>" ) ).
+            architecture( some( "amd64" ) ).
+            priority( some( "required" ) ).
+            section( some( "base" ) ).
+            description( some( "The GNU Bourne Again SHell\n" +
                 "Bash is an sh-compatible command language interpreter that executes\n" +
                 "commands read from the standard input or from a file.  Bash also\n" +
                 "incorporates useful features from the Korn and C shells (ksh and csh).\n" +
@@ -138,33 +138,33 @@ public class DebControlParserTest
                 "IEEE POSIX Shell and Tools specification (IEEE Working Group 1003.2).\n" +
                 "\n" +
                 "The Programmable Completion Code, by Ian Macdonald, is now found in\n" +
-                "the bash-completion package.")).
+                "the bash-completion package." ) ).
             depends( list( "base-files (>= 2.1.12)", "debianutils (>= 2.15)" ) ).
             recommends( single( "bash-completion (>= 20060301)" ) ).
             suggests( single( "bash-doc" ) );
 
         assertControlFile( "src/test/resources/control/" + expectedControlFile.packageName + ".txt",
-                           expectedControlFile );
+            expectedControlFile );
     }
 
     public void testParseLibc6()
         throws Exception
     {
-        ControlFile expectedControlFile = new ControlFile("libc6").
-            version(some("2.7-10ubuntu3")).
-            maintainer(some("Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>")).
-            architecture(some("amd64")).
-            priority(some("required")).
-            section(some("base")).
-            description(some("GNU C Library: Shared libraries\n" +
+        ControlFile expectedControlFile = new ControlFile( "libc6" ).
+            version( some( "2.7-10ubuntu3" ) ).
+            maintainer( some( "Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>" ) ).
+            architecture( some( "amd64" ) ).
+            priority( some( "required" ) ).
+            section( some( "base" ) ).
+            description( some( "GNU C Library: Shared libraries\n" +
                 "Contains the standard libraries that are used by nearly all programs on\n" +
                 "the system. This package includes shared versions of the standard C library\n" +
-                "and the standard math library, as well as many others.")).
+                "and the standard math library, as well as many others." ) ).
             depends( single( "libgcc1" ) ).
             suggests( list( "locales", "glibc-doc" ) );
 
         assertControlFile( "src/test/resources/control/" + expectedControlFile.packageName + ".txt",
-                           expectedControlFile );
+            expectedControlFile );
     }
 
     public void testGenerateA()
@@ -185,12 +185,12 @@ public class DebControlParserTest
 //                      LineFile.fromList( controlFile.toList() ).toString() );
 
         assertEquals( new LineFile().
-            add("Package: my-package").
-            add("Description: GNU C Library: Shared libraries").
+            add( "Package: my-package" ).
+            add( "Description: GNU C Library: Shared libraries" ).
             add( "Contains the standard libraries that are used by nearly all programs on the" +
-                 " system. This package includes shared versions of the standard C library and" +
-                 " the standard math library, as well as many others.").toString(),
-                      LineFile.fromList( controlFile.toList() ).toString() );
+                " system. This package includes shared versions of the standard C library and" +
+                " the standard math library, as well as many others." ).toString(),
+                LineFile.fromList( controlFile.toList() ).toString() );
     }
 
     private void assertControlFile( String path, ControlFile expectedControlFile )

@@ -31,5 +31,4 @@ package org.codehaus.mojo.unix.ar;
 public class NoSuchFileInArchiveException
     extends RuntimeException
 {
-
 }

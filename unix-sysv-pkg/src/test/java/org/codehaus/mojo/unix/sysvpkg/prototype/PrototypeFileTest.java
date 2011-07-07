@@ -35,7 +35,6 @@ import static org.codehaus.mojo.unix.UnixFileMode.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
-import static org.codehaus.mojo.unix.util.RelativePath.relativePath;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;

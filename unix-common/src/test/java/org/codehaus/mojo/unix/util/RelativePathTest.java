@@ -98,7 +98,7 @@ public class RelativePathTest
 
     public void testSubtract()
     {
-        assertEquals( relativePath( "." ), relativePath( "." ).subtract( relativePath( "." ) ).some());
+        assertEquals( relativePath( "." ), relativePath( "." ).subtract( relativePath( "." ) ).some() );
         assertTrue( relativePath( "." ).subtract( relativePath( "a" ) ).isNone() );
         assertEquals( relativePath( "a" ), relativePath( "a" ).subtract( relativePath( "." ) ).some() );
         assertEquals( relativePath( "a" ), relativePath( "a" ).subtract( relativePath( "a" ) ).some() );

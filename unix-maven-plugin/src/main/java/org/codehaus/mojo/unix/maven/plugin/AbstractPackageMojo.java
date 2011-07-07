@@ -40,7 +40,7 @@ public abstract class AbstractPackageMojo
     /**
      * @parameter
      */
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings( {"UnusedDeclaration"} )
     private Package[] packages;
 
     private final String platformType;
@@ -67,7 +67,6 @@ public abstract class AbstractPackageMojo
                            platformType,
                            formats,
                            formatType,
-                           snapshotTransformation,
                            MavenProjectWrapper.mavenProjectWrapper( project ),
                            debug,
                            false,

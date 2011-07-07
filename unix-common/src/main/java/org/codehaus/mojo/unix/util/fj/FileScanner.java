@@ -30,10 +30,10 @@ import fj.data.List;
 import fj.data.*;
 import static fj.data.Option.*;
 import static fj.data.Stream.*;
+import static java.util.Arrays.*;
 import org.codehaus.mojo.unix.util.vfs.*;
 
 import java.io.*;
-import static java.util.Arrays.*;
 import java.util.*;
 
 public class FileScanner
@@ -64,7 +64,8 @@ public class FileScanner
 
     public Stream<File> toStream()
     {
-        class State {
+        class State
+        {
             private List<File> stack;
 
             public State( File file )
@@ -104,12 +105,12 @@ public class FileScanner
 
                     if ( selector.matches( s ) )
                     {
-                        return some( p(next, state));
+                        return some( p( next, state ) );
                     }
                 }
 
                 return none();
             }
-        }, new State(file));
+        }, new State( file ) );
     }
 }

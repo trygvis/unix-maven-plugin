@@ -29,6 +29,7 @@ import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
+import java.util.zip.*;
 
 /**
  * Executes "dpkg-scanpackages".
@@ -38,6 +39,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  * @goal dpkg-scanpackages
+ * @requiresProject false
  */
 public class DpkgScanPackagesMojo
     extends AbstractMojo
@@ -70,6 +72,8 @@ public class DpkgScanPackagesMojo
     protected boolean debug;
 
     /**
+     * The name of the output file. If the filename ends with ".gz" it will be gzipped automatically.
+     *
      * @parameter expression="${maven.unix.dpkg-scanpackages.output}" default-value="target/Packages"
      */
     protected File outputFile;
@@ -111,7 +115,14 @@ public class DpkgScanPackagesMojo
 
         try
         {
-            output = new FileOutputStream( outputFile );
+            if ( outputFile.getName().endsWith( ".gz" ) )
+            {
+                output = new GZIPOutputStream( new FileOutputStream( outputFile ) );
+            }
+            else
+            {
+                output = new FileOutputStream( outputFile );
+            }
 
             new SystemCommand().
                 dumpCommandIf( debug ).
@@ -130,8 +141,9 @@ public class DpkgScanPackagesMojo
         {
             throw new MojoExecutionException( "Could not run dpkg-scanpackages.", e );
         }
-        finally {
-            IOUtil.close(output);
+        finally
+        {
+            IOUtil.close( output );
         }
     }
 }

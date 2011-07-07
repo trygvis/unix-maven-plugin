@@ -45,7 +45,7 @@ public class FileScannerTest
     public void testIncludes()
         throws IOException
     {
-        File base = new File( System.getProperty("user.home") + "/.m2/repository" );
+        File base = new File( System.getProperty( "user.home" ) + "/.m2/repository" );
         FileScanner scanner = new FileScanner( base, new String[]{"**/*.pkg"}, new String[0] );
 
         for ( File file : scanner.toStream() )

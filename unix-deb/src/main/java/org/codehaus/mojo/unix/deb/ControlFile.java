@@ -25,19 +25,14 @@ package org.codehaus.mojo.unix.deb;
  */
 
 import fj.*;
-import fj.data.List;
-import fj.data.Option;
-import fj.data.TreeMap;
-import org.codehaus.mojo.unix.java.StringF;
-
-import static fj.Function.compose;
-import static fj.Function.curry;
-import static fj.data.List.nil;
-import static fj.data.List.single;
-import static fj.data.Option.some;
-import static fj.data.Option.somes;
-import static fj.pre.Ord.stringOrd;
-import static org.codehaus.mojo.unix.java.StringF.concat;
+import fj.Function;
+import static fj.Function.*;
+import fj.data.*;
+import static fj.data.List.*;
+import static fj.data.Option.*;
+import static fj.pre.Ord.*;
+import org.codehaus.mojo.unix.java.*;
+import static org.codehaus.mojo.unix.java.StringF.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -81,9 +76,9 @@ public class ControlFile
     public ControlFile( String packageName )
     {
         this( packageName, Option.<String>none(), Option.<String>none(), Option.<String>none(), Option.<String>none(),
-              Option.<String>none(), Option.<String>none(), List.<String>nil(), List.<String>nil(), List.<String>nil(),
-              List.<String>nil(), List.<String>nil(), List.<String>nil(), List.<String>nil(),
-              TreeMap.<String, String>empty( stringOrd ) );
+            Option.<String>none(), Option.<String>none(), List.<String>nil(), List.<String>nil(), List.<String>nil(),
+            List.<String>nil(), List.<String>nil(), List.<String>nil(), List.<String>nil(),
+            TreeMap.<String, String>empty( stringOrd ) );
     }
 
     public ControlFile( String packageName, Option<String> version, Option<String> description,
@@ -203,27 +198,31 @@ public class ControlFile
             cons( architecture.map( curry( concat, "Architecture: " ) ) ).
             cons( description.map( curry( concat, "Description: " ) ) );
 
-        F<String, F<List<String>, List<String>>> f = listToHeader.f(80);
+        F<String, F<List<String>, List<String>>> f = listToHeader.f( 80 );
 
-        List<String> lines = f.f("Depends").f(this.depends).
-                append(f.f("Depends").f(this.recommends)).
-                append(f.f("Recommends").f(this.suggests)).
-                append(f.f("Pre-Depends").f(this.preDepends)).
-                append(f.f("Provides").f(this.provides)).
-                append(f.f("Replaces").f(this.replaces)).
-                append(f.f("Conflicts").f(this.conflicts));
+        List<String> lines = f.f( "Depends" ).f( this.depends ).
+            append( f.f( "Depends" ).f( this.recommends ) ).
+            append( f.f( "Recommends" ).f( this.suggests ) ).
+            append( f.f( "Pre-Depends" ).f( this.preDepends ) ).
+            append( f.f( "Provides" ).f( this.provides ) ).
+            append( f.f( "Replaces" ).f( this.replaces ) ).
+            append( f.f( "Conflicts" ).f( this.conflicts ) );
 
         return somes( optionList ).reverse().append( lines.filter( StringF.isNotEmpty ) );
     }
 
-    public static F<Integer, F<String, F<List<String>, List<String>>>> listToHeader = curry(new F3<Integer, String, List<String>, List<String>>() {
-        public List<String> f(Integer lineLength, String headerName, List<String> values) {
-            return listToHeader(lineLength, headerName, values);
+    public static F<Integer, F<String, F<List<String>, List<String>>>> listToHeader = curry( new F3<Integer, String, List<String>, List<String>>()
+    {
+        public List<String> f( Integer lineLength, String headerName, List<String> values )
+        {
+            return listToHeader( lineLength, headerName, values );
         }
-    });
+    } );
 
-    public static List<String> listToHeader(int lineLength, String headerName, List<String> values) {
-        if(values.isEmpty()) {
+    public static List<String> listToHeader( int lineLength, String headerName, List<String> values )
+    {
+        if ( values.isEmpty() )
+        {
             return nil();
         }
 
@@ -233,17 +232,20 @@ public class ControlFile
 
         values = values.tail();
 
-        for (String s : values) {
-            if(line.length() + s.length() > lineLength ) {
-                strings = strings.cons(line + ", ");
+        for ( String s : values )
+        {
+            if ( line.length() + s.length() > lineLength )
+            {
+                strings = strings.cons( line + ", " );
                 line = " " + s;
             }
-            else {
+            else
+            {
                 line += ", " + s;
             }
         }
 
-        strings = strings.cons(line);
+        strings = strings.cons( line );
         return strings.reverse();
     }
 
@@ -255,8 +257,9 @@ public class ControlFile
         }
     };
 
-    public static final F<String, List<String>> toList = compose( List.<String, String>map_().f( StringF.trim ),
-                                                                  Function.flip( StringF.split ).f( "," ) );
+    public static final F<String, List<String>> toList = compose(
+        List.<String, String>map_().f( StringF.trim ),
+        Function.flip( StringF.split ).f( "," ) );
 
     public static ControlFile controlFileFromList( List<P2<String, String>> values )
     {

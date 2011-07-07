@@ -28,8 +28,8 @@ import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.mojo.unix.util.line.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
+import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
 import java.io.*;

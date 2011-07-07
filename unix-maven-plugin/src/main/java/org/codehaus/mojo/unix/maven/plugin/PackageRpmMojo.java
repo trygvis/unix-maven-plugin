@@ -27,7 +27,6 @@ package org.codehaus.mojo.unix.maven.plugin;
 import fj.*;
 import static fj.Function.*;
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.maven.rpm.*;
 
 /**

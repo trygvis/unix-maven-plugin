@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix;
 import static fj.Bottom.*;
 import fj.*;
 import fj.Function;
+import static fj.Function.compose;
 import static fj.Function.*;
 import static fj.P.*;
 import fj.data.*;
@@ -38,7 +39,7 @@ import fj.pre.*;
 import static fj.pre.Ord.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.fj.FunctionF.flip2;
+import static org.codehaus.mojo.unix.util.fj.FunctionF.*;
 import org.codehaus.mojo.unix.util.fj.*;
 
 /**
@@ -153,12 +154,12 @@ public class PackageFileSystem<A>
 
         return findAndCreateParentsFor( names ).
             either( compose( fs.navigateToRootAndCreatePackageFileSystem, curry( flip2( fs.addChild ), newChild ) ),
-                    compose( fs.navigateToRootAndCreatePackageFileSystem, curry( fs.mutateExisting, symlink ) ) );
+                compose( fs.navigateToRootAndCreatePackageFileSystem, curry( fs.mutateExisting, symlink ) ) );
     }
 
     /**
      * Applies the <code>f</code> to all objects in this filesystem.
-     *
+     * <p/>
      * TODO: Shouldn't it just return a new UnixFsObject?
      */
     public PackageFileSystem<A> apply( final F2<UnixFsObject, FileAttributes, FileAttributes> f )
@@ -270,8 +271,9 @@ public class PackageFileSystem<A>
     /**
      * Returns right with the node, or left with the closest parent and the remaining path.
      */
-    private Either<P2<TreeZipper<PackageFileSystemObject<A>>, List<String>>, TreeZipper<PackageFileSystemObject<A>>> find( final TreeZipper<PackageFileSystemObject<A>> parent,
-                                                                                     final List<String> paths )
+    private Either<P2<TreeZipper<PackageFileSystemObject<A>>, List<String>>, TreeZipper<PackageFileSystemObject<A>>> find(
+        final TreeZipper<PackageFileSystemObject<A>> parent,
+        final List<String> paths )
     {
         String head = paths.head();
         List<String> tail = paths.tail();
@@ -409,7 +411,7 @@ public class PackageFileSystem<A>
             new F2<PackageFileSystemObject<A>, TreeZipper<PackageFileSystemObject<A>>, TreeZipper<PackageFileSystemObject<A>>>()
             {
                 public TreeZipper<PackageFileSystemObject<A>> f( PackageFileSystemObject<A> newSettings,
-                                                          TreeZipper<PackageFileSystemObject<A>> nodeTreeZipper )
+                                                                 TreeZipper<PackageFileSystemObject<A>> nodeTreeZipper )
                 {
                     return nodeTreeZipper.modifyLabel(
                         Function.<PackageFileSystemObject<A>, PackageFileSystemObject<A>>constant( newSettings ) );

@@ -28,7 +28,7 @@ specFile = new SpecFile()
 specFile.name = "project-rpm-1"
 specFile.version = "1.1"
 specFile.release = 2
-specFile.summary = "Unnamed - bar:project-rpm-1:rpm:1.1-2"
+specFile.summary = "RPM 1"
 specFile.license = "BSD"
 specFile.group = "Application/Collectors"
 

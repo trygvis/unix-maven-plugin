@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.apache.maven.artifact.transform.*;
 import org.apache.maven.plugin.*;
 import org.apache.maven.project.*;
 
@@ -106,14 +105,9 @@ public abstract class AbstractUnixMojo
     protected Map platforms;
 
     /**
-     * @component role="org.codehaus.mojo.unix.maven.PackagingFormat"
+     * @component role="org.codehaus.mojo.unix.maven.plugin.PackagingFormat"
      */
     protected Map formats;
-
-    /**
-     * @component role="org.apache.maven.artifact.transform.ArtifactTransformation" roleHint="snapshot"
-     */
-    protected SnapshotTransformation snapshotTransformation;
 
     /**
      * @component

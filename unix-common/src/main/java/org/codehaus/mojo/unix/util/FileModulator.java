@@ -24,13 +24,13 @@ package org.codehaus.mojo.unix.util;
  * SOFTWARE.
  */
 
+import fj.*;
 import fj.data.*;
 import static fj.data.List.*;
-import fj.*;
 
 /**
  * All right, this is a bad name. I know it.
- *
+ * <p/>
  * It create all variants of a path name for files and scripts.
  */
 public class FileModulator

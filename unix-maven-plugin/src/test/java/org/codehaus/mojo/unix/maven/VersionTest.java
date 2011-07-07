@@ -36,9 +36,10 @@ import static org.codehaus.mojo.unix.maven.sysvpkg.PkgUnixPackage.*;
 
 /**
  * This test is here and not in unix-common because it depend on the actual implementations.
- *
+ * <p/>
  * The purpose is to assert that the version parsing/generation is similar across all formats.
  */
+@SuppressWarnings( {"unchecked"} )
 public class VersionTest
     extends TestCase
 {

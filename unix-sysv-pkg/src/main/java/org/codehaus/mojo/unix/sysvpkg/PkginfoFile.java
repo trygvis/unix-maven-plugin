@@ -80,12 +80,12 @@ public class PkginfoFile
 
     public static final F5<String, String, String, String, String, PkginfoFile> constructor =
         new F5<String, String, String, String, String, PkginfoFile>()
-    {
-        public PkginfoFile f( String arch, String category, String name, String pkg, String version )
         {
-            return new PkginfoFile( arch, category, name, pkg, version );
-        }
-    };
+            public PkginfoFile f( String arch, String category, String name, String pkg, String version )
+            {
+                return new PkginfoFile( arch, category, name, pkg, version );
+            }
+        };
 
     public PkginfoFile category( String category )
     {

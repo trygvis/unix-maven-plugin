@@ -66,7 +66,7 @@ public class RpmUnixPackageTest
 
         RpmPackagingFormat packagingFormat = (RpmPackagingFormat) lookup( PackagingFormat.ROLE, "rpm" );
 
-        FileObject rpmTest = VFS.getManager().resolveFile( getTestPath("target/rpm-test") );
+        FileObject rpmTest = VFS.getManager().resolveFile( getTestPath( "target/rpm-test" ) );
         FileObject packageRoot = rpmTest.resolveFile( "root" );
         File packageFile = getTestFile( "target/rpm-test/file.rpm" );
 

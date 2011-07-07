@@ -64,14 +64,14 @@ public class ScriptUtilTest
         assertEquals( "59c348f93f45929ded194ea42eefa965", md5String( new File( toDirAPkg, "preremove" ) ) );
 
         File toDirARpm = new File( toDir, "a/rpm" );
-        scriptUtil.createExecution( "a", "rpm", basedir, toDirARpm, MULTIPLE  ).execute();
+        scriptUtil.createExecution( "a", "rpm", basedir, toDirARpm, MULTIPLE ).execute();
         assertEquals( 3, toDirARpm.listFiles().length );
         assertEquals( "5e1202090e1b6c33e1caa956dcef2cc5", md5String( new File( toDirARpm, "i.daemon" ) ) );
         assertEquals( "cb0385adef4b6e57ed311a21664cad8c", md5String( new File( toDirARpm, "postinstall" ) ) );
         assertEquals( "59c348f93f45929ded194ea42eefa965", md5String( new File( toDirARpm, "preremove" ) ) );
 
         File toDirBPkg = new File( toDir, "b/pkg" );
-        scriptUtil.createExecution( "b", "pkg", basedir, toDirBPkg, MULTIPLE  ).execute();
+        scriptUtil.createExecution( "b", "pkg", basedir, toDirBPkg, MULTIPLE ).execute();
         assertEquals( 4, toDirBPkg.listFiles().length );
         assertEquals( "5e1202090e1b6c33e1caa956dcef2cc5", md5String( new File( toDirBPkg, "i.daemon" ) ) );
         assertEquals( "da47470c91c9725960298b280ecf3747", md5String( new File( toDirBPkg, "postinstall" ) ) );
@@ -79,7 +79,7 @@ public class ScriptUtilTest
         assertEquals( "747a5f6b0f8a23403f6e4530fe626afd", md5String( new File( toDirBPkg, "r.daemon" ) ) );
 
         File toDirBRpm = new File( toDir, "b/rpm" );
-        scriptUtil.createExecution( "b", "rpm", basedir, toDirBRpm, MULTIPLE  ).execute();
+        scriptUtil.createExecution( "b", "rpm", basedir, toDirBRpm, MULTIPLE ).execute();
         assertEquals( 3, toDirBRpm.listFiles().length );
         assertEquals( "5e1202090e1b6c33e1caa956dcef2cc5", md5String( new File( toDirBRpm, "i.daemon" ) ) );
         assertEquals( "389da7874f36033d95fe5a42fe84af60", md5String( new File( toDirBRpm, "postinstall" ) ) );

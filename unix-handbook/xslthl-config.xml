@@ -23,22 +23,22 @@
   ~ SOFTWARE.
   -->
 <xslthl-config>
-<!--
-	<highlighter id="java" file="target/highlighters/java-hl.xml" />
-	<highlighter id="delphi" file="target/highlighters/delphi-hl.xml" />
-	<highlighter id="pascal" file="target/highlighters/delphi-hl.xml" />
-	<highlighter id="ini" file="target/highlighters/ini-hl.xml" />
-	<highlighter id="php" file="target/highlighters/php-hl.xml" />
-	<highlighter id="myxml" file="target/highlighters/myxml-hl.xml" />
-	<highlighter id="m2" file="target/highlighters/m2-hl.xml" />
-	<highlighter id="tcl" file="target/highlighters/tcl-hl.xml" />
-	<highlighter id="c" file="target/highlighters/c-hl.xml" />
-	<highlighter id="cpp" file="target/highlighters/cpp-hl.xml" />
-	<highlighter id="csharp" file="target/highlighters/csharp-hl.xml" />
-	<highlighter id="python" file="target/highlighters/python-hl.xml" />
-	<highlighter id="ruby" file="target/highlighters/ruby-hl.xml" />
-	<highlighter id="perl" file="target/highlighters/perl-hl.xml" />	
-	<highlighter id="javascript" file="target/highlighters/javascript-hl.xml" />
--->
-	<namespace prefix="xslthl" uri="http://xslthl.sf.net" />
+  <!--
+  <highlighter id="java" file="target/highlighters/java-hl.xml" />
+  <highlighter id="delphi" file="target/highlighters/delphi-hl.xml" />
+  <highlighter id="pascal" file="target/highlighters/delphi-hl.xml" />
+  <highlighter id="ini" file="target/highlighters/ini-hl.xml" />
+  <highlighter id="php" file="target/highlighters/php-hl.xml" />
+  <highlighter id="myxml" file="target/highlighters/myxml-hl.xml" />
+  <highlighter id="m2" file="target/highlighters/m2-hl.xml" />
+  <highlighter id="tcl" file="target/highlighters/tcl-hl.xml" />
+  <highlighter id="c" file="target/highlighters/c-hl.xml" />
+  <highlighter id="cpp" file="target/highlighters/cpp-hl.xml" />
+  <highlighter id="csharp" file="target/highlighters/csharp-hl.xml" />
+  <highlighter id="python" file="target/highlighters/python-hl.xml" />
+  <highlighter id="ruby" file="target/highlighters/ruby-hl.xml" />
+  <highlighter id="perl" file="target/highlighters/perl-hl.xml" />
+  <highlighter id="javascript" file="target/highlighters/javascript-hl.xml" />
+  -->
+  <namespace prefix="xslthl" uri="http://xslthl.sf.net"/>
 </xslthl-config>

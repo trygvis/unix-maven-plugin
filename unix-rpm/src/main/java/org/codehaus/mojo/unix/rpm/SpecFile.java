@@ -36,20 +36,20 @@ import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
 import static org.codehaus.mojo.unix.java.FileF.*;
 import static org.codehaus.mojo.unix.java.StringF.*;
-import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
 import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
 import org.codehaus.plexus.util.*;
-import static org.joda.time.LocalDateTime.*;
 import org.joda.time.*;
+import static org.joda.time.LocalDateTime.*;
 
 import java.io.*;
 import java.util.*;
 
 /**
  * TODO: Split this file into two parts; a part which has all the meta data and one that has all the file data.
- *
+ * <p/>
  * A purely meta data one is useful for parts of the code that just create SPEC files and testing.
  *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -217,7 +217,7 @@ public class SpecFile
         {
             public String f( PackageFileSystemObject p2 )
             {
-                @SuppressWarnings({"unchecked"}) UnixFsObject<A> unixFsObject = p2.getUnixFsObject();
+                @SuppressWarnings( {"unchecked"} ) UnixFsObject<A> unixFsObject = p2.getUnixFsObject();
                 Option<FileAttributes> attributes = unixFsObject.attributes;
 
                 String s = "";

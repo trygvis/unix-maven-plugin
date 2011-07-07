@@ -24,9 +24,9 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
+import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
-import static fj.data.Option.*;
 
 public class LinuxUnixPlatform
     implements UnixPlatform

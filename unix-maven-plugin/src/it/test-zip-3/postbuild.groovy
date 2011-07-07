@@ -1,7 +1,7 @@
 import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.*
 import static org.codehaus.mojo.unix.FileAttributes.*
 import static org.codehaus.mojo.unix.UnixFsObject.*
-import static fj.data.Option.*;
+import static fj.data.Option.*
 
 boolean success = true
 
@@ -20,6 +20,8 @@ success &= assertZipEntries(main, [
         regularFile(r("/usr/share/hudson/lib/hudson.war"), START_OF_TIME, 20623413, some(EMPTY)),
         regularFile(r("/usr/share/hudson/license/atom-license.txt"), START_OF_TIME, 49, some(EMPTY)),
         regularFile(r("/usr/share/hudson/license/dc-license.txt"), START_OF_TIME, 1544, some(EMPTY)),
+        directory(r("usr/share/hudson/server"), START_OF_TIME, EMPTY),
+        regularFile(r("usr/share/hudson/server/README.txt"), START_OF_TIME, 35, some(EMPTY)),
 ])
 
 println "************************************************************************"
@@ -36,6 +38,8 @@ success &= assertZipEntries(slave, [
         directory(r("/usr/share/hudson/license"), START_OF_TIME, EMPTY),
         regularFile(r("/usr/share/hudson/license/atom-license.txt"), START_OF_TIME, 49, some(EMPTY)),
         regularFile(r("/usr/share/hudson/license/dc-license.txt"), START_OF_TIME, 1544, some(EMPTY)),
+        directory(r("usr/share/hudson/slave"), START_OF_TIME, EMPTY),
+        regularFile(r("usr/share/hudson/slave/README.txt"), START_OF_TIME, 34, some(EMPTY)),
 ])
 
 

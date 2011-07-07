@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.maven;
+package org.codehaus.mojo.unix.maven.plugin;
 
 /*
  * The MIT License
@@ -24,9 +24,9 @@ package org.codehaus.mojo.unix.maven;
  * SOFTWARE.
  */
 
-import org.apache.commons.lang.builder.*;
 import fj.data.*;
 import static fj.data.Option.*;
+import org.apache.commons.lang.builder.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

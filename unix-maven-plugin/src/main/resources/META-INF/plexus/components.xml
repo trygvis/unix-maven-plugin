@@ -144,22 +144,22 @@
      |-->
 
     <component>
-      <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>
+      <role>org.codehaus.mojo.unix.maven.plugin.PackagingFormat</role>
       <role-hint>deb</role-hint>
       <implementation>org.codehaus.mojo.unix.maven.deb.DebPackagingFormat</implementation>
     </component>
     <component>
-      <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>
+      <role>org.codehaus.mojo.unix.maven.plugin.PackagingFormat</role>
       <role-hint>sysvpkg</role-hint>
       <implementation>org.codehaus.mojo.unix.maven.sysvpkg.SysvPkgPackagingFormat</implementation>
     </component>
     <component>
-      <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>
+      <role>org.codehaus.mojo.unix.maven.plugin.PackagingFormat</role>
       <role-hint>rpm</role-hint>
       <implementation>org.codehaus.mojo.unix.maven.rpm.RpmPackagingFormat</implementation>
     </component>
     <component>
-      <role>org.codehaus.mojo.unix.maven.PackagingFormat</role>
+      <role>org.codehaus.mojo.unix.maven.plugin.PackagingFormat</role>
       <role-hint>zip</role-hint>
       <implementation>org.codehaus.mojo.unix.maven.zip.ZipPackagingFormat</implementation>
     </component>

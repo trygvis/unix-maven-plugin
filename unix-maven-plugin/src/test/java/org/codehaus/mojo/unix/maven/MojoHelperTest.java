@@ -90,13 +90,13 @@ public class MojoHelperTest
     public void testPackageValidationNoClassifierPackageAPackagePrimaryArtifact()
         throws Exception
     {
-        assertPackages( list(  noClassifierPackage, packageA  ), list( noClassifierPackage, packageA ), false );
+        assertPackages( list( noClassifierPackage, packageA ), list( noClassifierPackage, packageA ), false );
     }
 
     public void testPackageValidationDefaultPackageAPackagePrimaryArtifact()
         throws Exception
     {
-        assertPackages( list(  noClassifierPackage, packageA  ), list( defaultPackage, packageA ), false );
+        assertPackages( list( noClassifierPackage, packageA ), list( defaultPackage, packageA ), false );
     }
 
     public void testPackageValidationPackageAPrimaryArtifact()

@@ -103,7 +103,7 @@ public class ArUtil
     {
         final byte[] buffer = new byte[bufferSize];
         int n;
-        while ( -1 != ( n = input.read( buffer ) ) )
+        while ( -1 != (n = input.read( buffer )) )
         {
             output.write( buffer, 0, n );
         }
@@ -125,9 +125,12 @@ public class ArUtil
     {
         if ( reader != null )
         {
-            try {
+            try
+            {
                 reader.close();
-            } catch (IOException e) {
+            }
+            catch ( IOException e )
+            {
                 // ignore
             }
         }

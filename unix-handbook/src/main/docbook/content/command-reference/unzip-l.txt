@@ -1,0 +1,12 @@
+$ unzip -l target/basic-*.zip
+Archive:  target/basic-1.0-SNAPSHOT.zip
+  Length     Date   Time    Name
+ --------    ----   ----    ----
+        0  04-07-11 13:33   ./opt/
+        0  04-07-11 13:33   ./opt/hudson/
+        0  04-07-11 13:33   ./opt/hudson/doc/
+       49  10-02-08 02:07   ./opt/hudson/doc/atom-license.txt
+     1544  10-02-08 02:07   ./opt/hudson/doc/dc-license.txt
+ 20623413  09-30-10 10:12   ./opt/hudson/hudson.war
+ --------                   -------
+ 20625006                   6 files

@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.codehaus.mojo.unix</groupId>
     <artifactId>unix</artifactId>
-    <version>1.0-alpha-5-SNAPSHOT</version>
+    <version>@project.version@</version>
   </parent>
   <groupId>bar</groupId>
   <artifactId>project-rpm-3</artifactId>
@@ -52,7 +52,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>unix-maven-plugin</artifactId>
-        <version>testing</version>
+        <version>@project.version@</version>
         <extensions>true</extensions>
         <configuration>
           <contact>Trygve Laugstol</contact>

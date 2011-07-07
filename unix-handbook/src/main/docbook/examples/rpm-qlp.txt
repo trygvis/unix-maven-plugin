@@ -1,0 +1,1 @@
+$ rpm -q -l -p target/basic-*.rpm

@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.rpm;
  */
 
 import static fj.data.Option.*;
+import static java.lang.Long.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
@@ -34,7 +35,6 @@ import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
 import java.io.*;
-import static java.lang.Long.*;
 import java.text.*;
 import java.util.*;
 
@@ -76,7 +76,7 @@ public class RpmUtil
         public boolean equalsIgnoreNull( FileInfo that )
         {
             return size == that.size &&
-                ( date == null || date.equals( that.date ) ) &&
+                (date == null || date.equals( that.date )) &&
                 group.equals( that.group ) &&
                 mode.equals( that.mode ) &&
                 path.equals( that.path ) &&
@@ -89,7 +89,7 @@ public class RpmUtil
             {
                 return true;
             }
-            if ( !( o instanceof FileInfo ) )
+            if ( !(o instanceof FileInfo) )
             {
                 return false;
             }

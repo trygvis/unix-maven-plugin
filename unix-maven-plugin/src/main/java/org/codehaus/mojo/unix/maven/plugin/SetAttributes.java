@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.maven.plugin;
 
 import fj.data.*;
 import static fj.data.Option.*;
+import static java.util.Arrays.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
@@ -33,7 +34,6 @@ import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 
-import static java.util.Arrays.*;
 import java.util.*;
 import java.util.List;
 

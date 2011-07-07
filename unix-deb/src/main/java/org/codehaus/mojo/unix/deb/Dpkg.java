@@ -32,7 +32,7 @@ import java.io.*;
 /**
  * Builds a DEB package using fakeroot dpkg-deb.  This command creates a DEB
  * package in buildDir using the contents of stageDir.  This classes
- * assumes that stageDir is going to be a direct descendent of buildDir.
+ * assumes that stageDir is going to be a direct descendant of buildDir.
  *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -95,8 +95,8 @@ public class Dpkg
         new SystemCommand().
             setCommand( useFakeroot ? "fakeroot" : dpkgDebPath ).
             dumpCommandIf( debug ).
-            withNoStderrConsumerUnless( debug ).
-            withNoStdoutConsumerUnless( debug ).
+            withIgnoringStderrUnless( debug ).
+            withIgnoringStdoutUnless( debug ).
             addArgumentIf( useFakeroot, dpkgDebPath ).
             addArgument( "-b" ).
             addArgument( packageRoot.getAbsolutePath() ).

@@ -59,7 +59,7 @@ public class PathExpressionTest
         for ( int i = 0; i < IncludeExcludeFileSelector.DEFAULT_EXCLUDES.length; i++ )
         {
             String pattern = IncludeExcludeFileSelector.DEFAULT_EXCLUDES[i].getPattern().pattern();
-            if(!pattern.equals( patterns[i] ))
+            if ( !pattern.equals( patterns[i] ) )
             {
                 System.out.println( i + ": ok=" + pattern.equals( patterns[i] ) + ", expression = " + IncludeExcludeFileSelector.DEFAULT_EXCLUDES[i].getExpression() + ", expected = " + patterns[i] + ", actual = " + pattern );
             }
@@ -67,6 +67,6 @@ public class PathExpressionTest
         }
 
         assertEquals( "^/[^/]*\\.java$", new PathExpression( "*.java" ).getPattern().pattern() );
-        assertEquals( "^/copyright$", new PathExpression("copyright").getPattern().pattern() );
+        assertEquals( "^/copyright$", new PathExpression( "copyright" ).getPattern().pattern() );
     }
 }

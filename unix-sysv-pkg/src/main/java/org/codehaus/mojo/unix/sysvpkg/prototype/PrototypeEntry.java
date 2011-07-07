@@ -26,13 +26,13 @@ package org.codehaus.mojo.unix.sysvpkg.prototype;
 
 import fj.*;
 import fj.data.*;
+import static java.lang.Boolean.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
 
 import java.io.*;
-import static java.lang.Boolean.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

@@ -1,8 +1,8 @@
 package org.codehaus.mojo.unix.core;
 
+import fj.*;
 import fj.data.*;
 import static fj.data.Option.*;
-import fj.*;
 import junit.framework.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
@@ -73,7 +73,7 @@ public class SetAttributesOperationTest
 
         SetAttributesOperation operation = new SetAttributesOperation( RelativePath.BASE,
             Collections.singletonList( "**/bin/*" ), Collections.<String>emptyList(),
-            some( EMPTY.user( "myuser" )), some( EMPTY ) );
+            some( EMPTY.user( "myuser" ) ), some( EMPTY ) );
 
         assertEquals( defaultAttributes, operation.applyFileAttributes.some().f( objects.optJettyReadmeUnix, defaultAttributes ) );
 

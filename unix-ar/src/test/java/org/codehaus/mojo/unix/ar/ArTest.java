@@ -52,7 +52,7 @@ public class ArTest
         writer.close();
 
         writer = new OutputStreamWriter( new FileOutputStream( file2 ), "UTF-16" );
-        writer.write("I'm going to be skipped!");
+        writer.write( "I'm going to be skipped!" );
         writer.close();
 
         writer = new OutputStreamWriter( new FileOutputStream( file3 ), "UTF-16" );

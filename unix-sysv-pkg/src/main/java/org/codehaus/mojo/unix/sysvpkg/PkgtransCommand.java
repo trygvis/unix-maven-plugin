@@ -193,14 +193,14 @@ public class PkgtransCommand
         }
 
         SystemCommand.ExecutionResult result = command.
-                addArgumentIf( newInstance, "-n" ).
-                addArgumentIf( overwrite, "-o" ).
-                addArgumentIfNotEmpty( password, "-P" ).addArgumentIfNotEmpty( password ).
-                addArgumentIf(  asDatastream, "-s" ).
-                addArgument(device1.getAbsolutePath() ).
-                addArgument( device2.getAbsolutePath() ).
-                addArgumentIfNotEmpty( pkginst ).
-                execute();
+            addArgumentIf( newInstance, "-n" ).
+            addArgumentIf( overwrite, "-o" ).
+            addArgumentIfNotEmpty( password, "-P" ).addArgumentIfNotEmpty( password ).
+            addArgumentIf( asDatastream, "-s" ).
+            addArgument( device1.getAbsolutePath() ).
+            addArgument( device2.getAbsolutePath() ).
+            addArgumentIfNotEmpty( pkginst ).
+            execute();
 
         if ( debug )
         {

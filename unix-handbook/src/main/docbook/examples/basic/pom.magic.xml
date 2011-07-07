@@ -29,6 +29,7 @@
   <version>1.0-SNAPSHOT</version>
   <packaging unix:format="pkg">pkg</packaging>
   <packaging unix:format="rpm">rpm</packaging>
+  <packaging unix:format="zip">unix-zip</packaging>
   <name>Hudson Solaris Package</name>
   <licenses unix:format="rpm">
     <license>
@@ -54,6 +55,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>unix-maven-plugin</artifactId>
+        <unix:version/>
         <extensions>true</extensions>
         <configuration>
           <contact>Acme</contact>

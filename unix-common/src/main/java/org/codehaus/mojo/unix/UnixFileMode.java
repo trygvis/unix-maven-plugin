@@ -36,25 +36,25 @@ public class UnixFileMode
     /**
      * Mode equal to <code>-rw-r--r--</code>.
      */
-    @SuppressWarnings({"OctalInteger"})
+    @SuppressWarnings( {"OctalInteger"} )
     public static final UnixFileMode _0644 = UnixFileMode.fromInt( 0644 );
 
     /**
      * Mode equal to <code>-rwxr-xr-x</code>.
      */
-    @SuppressWarnings({"OctalInteger"})
+    @SuppressWarnings( {"OctalInteger"} )
     public static final UnixFileMode _0755 = UnixFileMode.fromInt( 0755 );
 
     /**
      * Mode equal to <code>-rwxrwxrwx</code>.
      */
-    @SuppressWarnings({"OctalInteger"})
+    @SuppressWarnings( {"OctalInteger"} )
     public static final UnixFileMode _0777 = UnixFileMode.fromInt( 0777 );
 
     /**
      * Special file modes used for symbolic links (lrwxrwxrwx)
      */
-    @SuppressWarnings({"OctalInteger"})
+    @SuppressWarnings( {"OctalInteger"} )
     public static final UnixFileMode _SYMLINK = UnixFileMode.fromInt( 0777 );
 
     public static final Option<UnixFileMode> none = Option.none();
@@ -107,15 +107,15 @@ public class UnixFileMode
     public String toString()
     {
         StringBuffer buffer = new StringBuffer( "         " );
-        buffer.setCharAt( 0, ( mode & 0x100 ) > 0 ? 'r' : '-' );
-        buffer.setCharAt( 1, ( mode & 0x080 ) > 0 ? 'w' : '-' );
-        buffer.setCharAt( 2, ( mode & 0x040 ) > 0 ? 'x' : '-' );
-        buffer.setCharAt( 3, ( mode & 0x020 ) > 0 ? 'r' : '-' );
-        buffer.setCharAt( 4, ( mode & 0x010 ) > 0 ? 'w' : '-' );
-        buffer.setCharAt( 5, ( mode & 0x400 ) > 0 ? 's' : ( mode & 0x008 ) > 0 ? 'x' : '-' );
-        buffer.setCharAt( 6, ( mode & 0x004 ) > 0 ? 'r' : '-' );
-        buffer.setCharAt( 7, ( mode & 0x002 ) > 0 ? 'w' : '-' );
-        buffer.setCharAt( 8, ( mode & 0x001 ) > 0 ? 'x' : '-' );
+        buffer.setCharAt( 0, (mode & 0x100) > 0 ? 'r' : '-' );
+        buffer.setCharAt( 1, (mode & 0x080) > 0 ? 'w' : '-' );
+        buffer.setCharAt( 2, (mode & 0x040) > 0 ? 'x' : '-' );
+        buffer.setCharAt( 3, (mode & 0x020) > 0 ? 'r' : '-' );
+        buffer.setCharAt( 4, (mode & 0x010) > 0 ? 'w' : '-' );
+        buffer.setCharAt( 5, (mode & 0x400) > 0 ? 's' : (mode & 0x008) > 0 ? 'x' : '-' );
+        buffer.setCharAt( 6, (mode & 0x004) > 0 ? 'r' : '-' );
+        buffer.setCharAt( 7, (mode & 0x002) > 0 ? 'w' : '-' );
+        buffer.setCharAt( 8, (mode & 0x001) > 0 ? 'x' : '-' );
 
         return buffer.toString();
     }

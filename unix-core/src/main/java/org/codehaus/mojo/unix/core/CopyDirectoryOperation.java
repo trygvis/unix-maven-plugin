@@ -24,12 +24,14 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
+import fj.*;
+import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.mojo.unix.util.line.*;
-import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
+import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.mojo.unix.util.vfs.*;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
@@ -37,9 +39,6 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.regex.*;
-
-import fj.*;
-import fj.data.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -124,7 +123,7 @@ public class CopyDirectoryOperation
             add( " To: " + to );
         if ( !includes.isEmpty() )
         {
-            streamWriter.add( " Includes: ").
+            streamWriter.add( " Includes: " ).
                 addAllLines( prefix( includes, "  " ) );
         }
         else
@@ -142,7 +141,7 @@ public class CopyDirectoryOperation
             streamWriter.add( " No excludes set" );
         }
 
-        streamWriter.add( pattern.map(new F<P2<String, String>, String>()
+        streamWriter.add( pattern.map( new F<P2<String, String>, String>()
         {
             public String f( P2<String, String> pattern )
             {

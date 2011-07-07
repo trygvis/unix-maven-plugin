@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.codehaus.mojo.unix</groupId>
     <artifactId>unix</artifactId>
-    <version>1.0-alpha-5-SNAPSHOT</version>
+    <version>@project.version@</version>
   </parent>
   <groupId>bar</groupId>
   <artifactId>project-uber-1</artifactId>
@@ -62,9 +62,9 @@
         <version>1.0-beta-1</version>
         <executions>
           <execution>
-<!--
+            <!--
             <phase>generate-resources</phase>
--->
+            -->
             <goals>
               <goal>assemble</goal>
             </goals>
@@ -82,7 +82,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>unix-maven-plugin</artifactId>
-        <version>testing</version>
+        <version>@project.version@</version>
         <executions>
           <execution>
             <goals>
@@ -115,7 +115,8 @@
               <toFile>/usr/share/hudson/lib/hudson.war</toFile>
             </copyArtifact>
             <copyArtifact>
-              <artifact>org.codehaus.mojo.unix.it:my-native:so:${os.name}-${os.version}-${os.arch}</artifact>
+              <artifact>org.codehaus.mojo.unix.it:my-native:so:${os.name}-${os.version}-${os.arch}
+              </artifact>
               <toFile>/usr/share/hudson/lib/my-native.so</toFile>
             </copyArtifact>
             <copyDirectory>

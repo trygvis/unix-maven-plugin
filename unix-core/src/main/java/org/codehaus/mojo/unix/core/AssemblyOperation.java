@@ -24,13 +24,8 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import static fj.data.Option.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
-import static org.codehaus.mojo.unix.UnixFsObject.*;
-import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
-import org.joda.time.*;
 
 import java.io.*;
 

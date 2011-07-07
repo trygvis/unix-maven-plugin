@@ -24,20 +24,20 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import fj.Effect;
-import fj.F2;
-import fj.pre.*;
+import fj.*;
 import fj.data.*;
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.mojo.unix.util.line.*;
-import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
+import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.mojo.unix.util.vfs.*;
 
 import java.io.*;
+import java.lang.Class;
+import java.lang.String;
 import java.util.List;
 
 /**
@@ -116,7 +116,7 @@ public class SetAttributesOperation
             add( " Basedir: " + basedir );
         if ( !includes.isEmpty() )
         {
-            streamWriter.add( " Includes: ").
+            streamWriter.add( " Includes: " ).
                 addAllLines( prefix( includes, "  " ) );
         }
         else
@@ -133,7 +133,7 @@ public class SetAttributesOperation
         {
             streamWriter.add( " No excludes set" );
         }
-        streamWriter.add( " Attributes: ").
+        streamWriter.add( " Attributes: " ).
             add( "  File     : " + fileAttributes.map( singleLineShow.showS_() ).orSome( "None" ) ).
             add( "  Directory: " + directoryAttributes.map( singleLineShow.showS_() ).orSome( "None" ) );
     }

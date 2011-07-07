@@ -24,9 +24,9 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.*;
 import fj.*;
 import static fj.Function.*;
+import org.codehaus.mojo.unix.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

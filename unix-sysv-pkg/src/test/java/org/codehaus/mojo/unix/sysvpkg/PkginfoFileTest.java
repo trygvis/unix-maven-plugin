@@ -24,12 +24,12 @@ package org.codehaus.mojo.unix.sysvpkg;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
-import fj.data.*;
 import junit.framework.*;
-import org.codehaus.mojo.unix.util.line.*;
 import static org.codehaus.mojo.unix.sysvpkg.PkginfoFile.*;
+import org.codehaus.mojo.unix.util.line.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -40,7 +40,7 @@ public class PkginfoFileTest
 {
     public void testParsing()
     {
-        Iterable<String> pkginfoStrings = (LineFile) ( new LineFile().
+        Iterable<String> pkginfoStrings = (LineFile) (new LineFile().
             add( "        PKGINST:  project-pkg-1" ).
             add( "           NAME:  Hudson" ).
             add( "       CATEGORY:  application" ).
@@ -51,7 +51,7 @@ public class PkginfoFileTest
             add( "         STATUS:  spooled" ).
             add( "          FILES:        3 spooled pathnames" ).
             add( "                        2 package information files" ).
-            add( "                    40281 blocks used (approx)" ) );
+            add( "                    40281 blocks used (approx)" ));
 
         PkginfoFile expected = new PkginfoFile( "all", "application", "Hudson", "project-pkg-1", "1.1-2",
                                                 some( "20090129.134909" ), Option.<String>none(),
@@ -65,11 +65,11 @@ public class PkginfoFileTest
         PkginfoFile pkginfoFile = new PkginfoFile( "all", "application", "name", "mypackage", "1.0" );
 
         assertEquals( new LineFile().
-            add( "ARCH=all").
-            add( "CATEGORY=application").
-            add( "NAME=name").
-            add( "PKG=mypackage").
-            add( "VERSION=1.0").
+            add( "ARCH=all" ).
+            add( "CATEGORY=application" ).
+            add( "NAME=name" ).
+            add( "PKG=mypackage" ).
+            add( "VERSION=1.0" ).
 //            add( "CLASSES=none"). I think this is the right behaviou.
 //  If pkgmk always insert *and* warn about the class it should be commented back in
             toString(), pkginfoFile.toString() );
@@ -78,24 +78,24 @@ public class PkginfoFileTest
             classes( list( "smf" ) );
 
         assertEquals( new LineFile().
-            add( "ARCH=all").
-            add( "CATEGORY=application").
-            add( "NAME=name").
-            add( "PKG=mypackage").
-            add( "VERSION=1.0").
-            add( "CLASSES=smf").
+            add( "ARCH=all" ).
+            add( "CATEGORY=application" ).
+            add( "NAME=name" ).
+            add( "PKG=mypackage" ).
+            add( "VERSION=1.0" ).
+            add( "CLASSES=smf" ).
             toString(), pkginfoFile.toString() );
 
         pkginfoFile = pkginfoFile.
             classes( list( "none", "smf" ) );
 
         assertEquals( new LineFile().
-            add( "ARCH=all").
-            add( "CATEGORY=application").
-            add( "NAME=name").
-            add( "PKG=mypackage").
-            add( "VERSION=1.0").
-            add( "CLASSES=none smf").
+            add( "ARCH=all" ).
+            add( "CATEGORY=application" ).
+            add( "NAME=name" ).
+            add( "PKG=mypackage" ).
+            add( "VERSION=1.0" ).
+            add( "CLASSES=none smf" ).
             toString(), pkginfoFile.toString() );
     }
 }

@@ -231,8 +231,8 @@ public class PkgmkCommand
         }
 
         SystemCommand.ExecutionResult result = command.
-                addArguments(variables).
-                execute();
+            addArguments( variables ).
+            execute();
 
         if ( debug )
         {
@@ -242,6 +242,6 @@ public class PkgmkCommand
         }
 
         result.
-                assertSuccess();
+            assertSuccess();
     }
 }

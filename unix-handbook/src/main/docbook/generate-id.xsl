@@ -6,11 +6,11 @@
                 extension-element-prefixes="s6hl xslthl">
 
   <!--
-                xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
-   |
-   | Transformation that generate xml:id for all main elements that doesn't have one set.
-   |
-   |-->
+               xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
+  |
+  | Transformation that generate xml:id for all main elements that doesn't have one set.
+  |
+  |-->
 
   <xsl:template match="//db:part | //db:chapter | //db:section">
     <xsl:variable name="id">
@@ -23,9 +23,9 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-<!--
+    <!--
     <xsl:message>title: "<xsl:value-of select="$id"/>" name: <xsl:value-of select="name()"/></xsl:message>
--->
+    -->
 
     <xsl:element name="{local-name()}" namespace="{namespace-uri()}">
       <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">

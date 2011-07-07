@@ -99,7 +99,7 @@ public class PackageParameters
     public static PackageParameters packageParameters( String groupId, String artifactId, PackageVersion version,
                                                        String id, String name, Option<String> classifier,
                                                        FileAttributes defaultFileAttributes,
-                                                       FileAttributes defaultDirectoryAttributes)
+                                                       FileAttributes defaultDirectoryAttributes )
     {
         return new PackageParameters( groupId, artifactId, version, id, name, defaultFileAttributes,
                                       defaultDirectoryAttributes, classifier, Option.<String>none(), Option.<String>none(),

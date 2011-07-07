@@ -30,5 +30,5 @@ package org.codehaus.mojo.unix.util.line;
  */
 public interface LineProducer
 {
-    void streamTo( LineStreamWriter streamWriter);
+    void streamTo( LineStreamWriter streamWriter );
 }
