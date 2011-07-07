@@ -147,7 +147,7 @@ public class PackageFileSystemTest
     {
         PackageFileSystem<Object> fileSystem = create( root, root ).
             addDirectory( b ).
-            addFile(c_x_u );
+            addFile( c_x_u );
 
         fsShow.println( fileSystem.toList() );
 

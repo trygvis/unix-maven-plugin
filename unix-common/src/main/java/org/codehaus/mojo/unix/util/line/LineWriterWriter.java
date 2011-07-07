@@ -33,8 +33,8 @@ import java.io.*;
  * it will be stored and throw later on. If an exception is thrown while streaming <em>and</em> when the stream is
  * closed, the exception that was caught during streaming will be thrown from <code>close()</code>. The stream will
  * still be closed.
- *
- * There is no flushing during streaming. 
+ * <p/>
+ * There is no flushing during streaming.
  */
 public class LineWriterWriter
     extends AbstractLineStreamWriter

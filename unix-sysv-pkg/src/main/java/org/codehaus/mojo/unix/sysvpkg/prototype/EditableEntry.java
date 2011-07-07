@@ -41,7 +41,7 @@ public class EditableEntry
 {
     private final Option<File> realPath;
 
-    public EditableEntry( Option<String> pkgClass, Option<Boolean> relative, RegularFile object, Option<File> realPath  )
+    public EditableEntry( Option<String> pkgClass, Option<Boolean> relative, RegularFile object, Option<File> realPath )
     {
         super( pkgClass, relative, object );
         this.realPath = realPath;

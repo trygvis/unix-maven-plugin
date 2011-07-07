@@ -24,12 +24,11 @@ package org.codehaus.mojo.unix.util.line;
  * SOFTWARE.
  */
 
+import fj.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
 import java.util.*;
-
-import fj.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

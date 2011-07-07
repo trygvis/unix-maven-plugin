@@ -160,7 +160,7 @@ public class RpmUnixPackage
         File rpms = new File( workingDirectoryF, "RPMS" );
         File specsDir = new File( workingDirectoryF, "SPECS" );
         File tmp = new File( workingDirectoryF, "tmp" );
-        
+
         File specFilePath = new File( specsDir, specFile.name + ".spec" );
 
         FileUtils.forceMkdir( new File( workingDirectoryF, "BUILD" ) );

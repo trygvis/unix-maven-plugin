@@ -25,10 +25,10 @@ package org.codehaus.mojo.unix;
  */
 
 import fj.*;
-import fj.pre.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
+import fj.pre.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
@@ -191,8 +191,8 @@ public class FileAttributes
 
     public String toString()
     {
-        return "user=" + user.orSome( "<not set>" )+ ", " +
-            "group=" + group.orSome( "<not set>" )+ ", " +
+        return "user=" + user.orSome( "<not set>" ) + ", " +
+            "group=" + group.orSome( "<not set>" ) + ", " +
             "mode=" + mode.map( showLong ).orSome( "<not set>" );
     }
 }

@@ -24,7 +24,7 @@ package org.codehaus.mojo.unix.maven.logging;
  * SOFTWARE.
  */
 
-import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.*;
 
 public class CommonsLogAdapter
     implements org.apache.commons.logging.Log

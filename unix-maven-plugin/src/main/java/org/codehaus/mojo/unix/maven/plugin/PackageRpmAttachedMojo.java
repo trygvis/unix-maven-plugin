@@ -1,11 +1,5 @@
 package org.codehaus.mojo.unix.maven.plugin;
 
-import fj.*;
-import static fj.Function.*;
-import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.maven.*;
-import org.codehaus.mojo.unix.maven.rpm.*;
-
 /*
  * The MIT License
  *
@@ -29,6 +23,11 @@ import org.codehaus.mojo.unix.maven.rpm.*;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+import fj.*;
+import static fj.Function.*;
+import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.maven.rpm.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

@@ -24,18 +24,17 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import static fj.data.Option.*;
-import fj.data.*;
-import fj.*;
 import static fj.P.*;
+import fj.*;
+import fj.data.*;
+import static fj.data.Option.*;
+import static java.util.Arrays.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.RelativePath.relativePath;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.plexus.*;
 import org.easymock.*;
-
-import static java.util.Arrays.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
@@ -74,14 +73,16 @@ public class OperationTest
     public static final Files files = new Files();
     public static final Objects objects = new Objects();
 
-    public static class Paths {
+    public static class Paths
+    {
         RelativePath optJettyBin = relativePath( "/opt/jetty/bin" );
         RelativePath optJettyBinExtraApp = relativePath( "/opt/jetty/bin/extra-app" );
         RelativePath optJettyReadmeUnix = relativePath( "/opt/jetty/README-unix.txt" );
         RelativePath optJettyBashProfile = relativePath( "/opt/jetty/.bash_profile" );
     }
 
-    public static class Files {
+    public static class Files
+    {
         final FileObject files = resolveFile( getBaseFileObject(), "src/test/resources/operation/files" );
         final FileObject optJettyReadmeUnix = resolveFile( files, paths.optJettyReadmeUnix.string );
         final FileObject optJettyBinExtraApp = resolveFile( files, paths.optJettyBinExtraApp.string );
@@ -100,7 +101,8 @@ public class OperationTest
         }
     }
 
-    public static class Objects {
+    public static class Objects
+    {
         UnixFsObject.Directory optJettyBin = createDirectory( "opt/jetty/bin", files.files, directoryAttributes );
         UnixFsObject.Directory optJetty = createDirectory( "opt/jetty/", files.files, directoryAttributes );
         UnixFsObject.Directory opt = createDirectory( "opt/", files.files, directoryAttributes );
@@ -124,7 +126,7 @@ public class OperationTest
         control.setMatcher( new FileObjectMatcher() );
         control.setReturnValue( fileCollector );
 
-        fileCollector.addFile( files.optJettyReadmeUnix, objects.optJettyReadmeUnix  );
+        fileCollector.addFile( files.optJettyReadmeUnix, objects.optJettyReadmeUnix );
         control.setReturnValue( fileCollector );
 
         fileCollector.addFile( files.optJettyBashProfile, objects.optJettyBashProfile );
@@ -169,7 +171,7 @@ public class OperationTest
         control.replay();
 
         new CopyDirectoryOperation( archive, relativePath( "licenses" ), asList( "**/*license.txt" ), null,
-                                    some( p(".*/(.*license.*)", "$1")), fileAttributes, directoryAttributes ).
+                                    some( p( ".*/(.*license.*)", "$1" ) ), fileAttributes, directoryAttributes ).
             perform( fileCollector );
 
         control.verify();

@@ -47,7 +47,7 @@ public class MojoFileAttributes
     public Option<UnixFileMode> mode = none();
 
     public List<String> tags = nil();
-    
+
     public MojoFileAttributes()
     {
     }

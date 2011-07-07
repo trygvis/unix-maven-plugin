@@ -182,10 +182,11 @@ public class UnixUtil
 
     public static <A> boolean optionEquals( Option<A> tis, java.lang.Object o )
     {
-        return !( o == null || !( o instanceof Option ) ) && ( o == tis || optionEquals( tis, (Option) o ) );
+        return !(o == null || !(o instanceof Option)) && (o == tis || optionEquals( tis, (Option) o ));
     }
 
-    public static <A, B> F2<Option<A>, F<A, B>, Option<B>> optionMap() {
+    public static <A, B> F2<Option<A>, F<A, B>, Option<B>> optionMap()
+    {
         return new F2<Option<A>, F<A, B>, Option<B>>()
         {
             public Option<B> f( Option<A> option, F<A, B> f )

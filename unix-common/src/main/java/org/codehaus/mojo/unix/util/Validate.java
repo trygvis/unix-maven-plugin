@@ -37,7 +37,7 @@ public class Validate
             Object o = os[i];
             if ( o == null )
             {
-                throw new NullPointerException( "Argument #" + ( i + 1 ) + " was null." );
+                throw new NullPointerException( "Argument #" + (i + 1) + " was null." );
             }
         }
     }

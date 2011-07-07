@@ -125,7 +125,7 @@ public class RelativePath
 
     public String asAbsolutePath( String basePath )
     {
-        return basePath + ( basePath.endsWith( "/" ) ? "" : "/" ) + string;
+        return basePath + (basePath.endsWith( "/" ) ? "" : "/") + string;
     }
 
     public boolean isBase()
@@ -302,7 +302,7 @@ public class RelativePath
         {
             return true;
         }
-        if ( !( o instanceof RelativePath ) )
+        if ( !(o instanceof RelativePath) )
         {
             return false;
         }

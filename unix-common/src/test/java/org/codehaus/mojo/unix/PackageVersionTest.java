@@ -24,10 +24,10 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
+import fj.data.*;
+import static fj.data.Option.*;
 import junit.framework.*;
 import static org.codehaus.mojo.unix.PackageVersion.*;
-import static fj.data.Option.*;
-import fj.data.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

@@ -1,5 +1,5 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-        xmlns:mvn="http://maven.apache.org/POM/4.0.0">
+                xmlns:mvn="http://maven.apache.org/POM/4.0.0">
   <xsl:output method="xml" indent="no" encoding="UTF-8" omit-xml-declaration="yes"/>
   <xsl:strip-space elements="*"/>
   <xsl:preserve-space elements="xsl:text"/>

@@ -97,7 +97,7 @@ public class Ar
 
                 for ( ArFile arFile : files )
                 {
-                    writer.add(arFile);
+                    writer.add( arFile );
                 }
             }
             finally

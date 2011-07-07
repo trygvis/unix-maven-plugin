@@ -26,8 +26,8 @@ package org.codehaus.mojo.unix.maven.sysvpkg;
 
 import fj.*;
 import fj.data.List;
-import fj.data.*;
 import static fj.data.List.*;
+import fj.data.*;
 import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.provider.local.*;
@@ -61,7 +61,7 @@ public class PkgUnixPackage
     private FileObject pkginfo;
     private boolean debug;
 
-    private static final ScriptUtil scriptUtil = new ScriptUtil( "preinstall" , "postinstall" , "preremove" , "postremove" ).
+    private static final ScriptUtil scriptUtil = new ScriptUtil( "preinstall", "postinstall", "preremove", "postremove" ).
         customScript( "depend" ).
         customScript( "checkinstall" ).
         customScript( "compver" ).
@@ -251,7 +251,7 @@ public class PkgUnixPackage
     public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
         throws IOException
     {
-        prototypeFile.addFile( fromFile( fromFile, file ), file  );
+        prototypeFile.addFile( fromFile( fromFile, file ), file );
 
         return this;
     }
@@ -309,7 +309,7 @@ public class PkgUnixPackage
 
                 return Unit.unit();
             }
-        });
+        } );
 
         return tmpFile;
     }

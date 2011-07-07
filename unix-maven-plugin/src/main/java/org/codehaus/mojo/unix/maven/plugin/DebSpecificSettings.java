@@ -31,7 +31,7 @@ import static fj.data.Option.*;
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-@SuppressWarnings({"UnusedDeclaration"})
+@SuppressWarnings( {"UnusedDeclaration"} )
 public class DebSpecificSettings
 {
     public Option<String> priority = none();

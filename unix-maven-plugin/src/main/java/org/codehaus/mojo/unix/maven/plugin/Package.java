@@ -25,8 +25,8 @@ package org.codehaus.mojo.unix.maven.plugin;
  */
 
 import fj.data.*;
-import static fj.data.Option.*;
 import static fj.data.List.*;
+import static fj.data.Option.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

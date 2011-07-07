@@ -28,9 +28,9 @@ import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.maven.artifact.*;
 import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.mojo.unix.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;

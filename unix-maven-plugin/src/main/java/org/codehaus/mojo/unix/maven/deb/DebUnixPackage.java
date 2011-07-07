@@ -65,7 +65,7 @@ public class DebUnixPackage
 
     public DebUnixPackage parameters( PackageParameters parameters )
     {
-        controlFile = new ControlFile(parameters.id).
+        controlFile = new ControlFile( parameters.id ).
             version( some( getDebianVersion( parameters.version ) ) ).
             description( getDescription( parameters ) ).
             maintainer( parameters.contact ).
@@ -78,7 +78,7 @@ public class DebUnixPackage
     public DebUnixPackage debParameters( Option<String> priority,
                                          Option<String> section,
                                          boolean useFakeroot,
-                                         List<String> depends, 
+                                         List<String> depends,
                                          List<String> recommends,
                                          List<String> suggests,
                                          List<String> preDepends,

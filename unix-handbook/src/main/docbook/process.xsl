@@ -24,12 +24,13 @@
   ~ SOFTWARE.
   -->
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:unix="http://mojo.codehaus.org/unix/conditional">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:unix="http://mojo.codehaus.org/unix/conditional">
 
   <xsl:output method="xml" indent="yes"/>
-<!--
+  <!--
   <xsl:strip-space elements="*"/>
--->
+  -->
 
   <xsl:param name="format"/>
   <xsl:param name="version"/>
@@ -41,30 +42,34 @@
   </xsl:template>
 
   <xsl:template match="//unix:version">
-    <xsl:message>in version <xsl:value-of select="$version"/></xsl:message>
-    <xsl:element name="version"><xsl:value-of select="$version"/></xsl:element>
+    <xsl:message>in version
+      <xsl:value-of select="$version"/>
+    </xsl:message>
+    <xsl:element name="version">
+      <xsl:value-of select="$version"/>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="*[@unix:format]">
-<!--
+    <!--
     <xsl:message>
       $format: <xsl:value-of select="$format"/>
       @format <xsl:value-of select="@format"/>
       @unix:format <xsl:value-of select="@unix:format"/>
     </xsl:message>
--->
-<!--
+    -->
+    <!--
     <xsl:message>in format: <xsl:value-of select="$format"/></xsl:message>
--->
+    -->
     <xsl:if test="@unix:format=$format">
-<!--
-      <xsl:apply-templates/>
--->
+      <!--
+        <xsl:apply-templates/>
+      -->
       <xsl:element name="{name()}" namespace="{namespace-uri()}">
         <xsl:apply-templates/>
       </xsl:element>
     </xsl:if>
-<!--
+    <!--
     <xsl:choose>
       <xsl:when test="@format = 'pkg'">
         <xsl:message>pkg!</xsl:message>
@@ -76,7 +81,7 @@
         <xsl:message terminate="yes">Unknown format <xsl:value-of select="@format"/></xsl:message>
       </xsl:otherwise>
     </xsl:choose>
--->
+    -->
   </xsl:template>
 
 </xsl:stylesheet>

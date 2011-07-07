@@ -87,7 +87,8 @@ public class FjIterator<A>
         return new FjIterator<A>( new FilteringIterator<A>( this, f ) );
     }
 
-    public Iterable<A> toIterable() {
+    public Iterable<A> toIterable()
+    {
         return new Iterable<A>()
         {
             public Iterator<A> iterator()

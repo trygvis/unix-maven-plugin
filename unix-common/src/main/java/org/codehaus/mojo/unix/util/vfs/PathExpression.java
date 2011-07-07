@@ -73,7 +73,7 @@ public class PathExpression
 
             if ( c == '*' )
             {
-                if ( expression.length() > ( i + 1 ) && expression.charAt( i + 1 ) == '*' )
+                if ( expression.length() > (i + 1) && expression.charAt( i + 1 ) == '*' )
                 {
                     buffer.append( ".*" );
                     i++;

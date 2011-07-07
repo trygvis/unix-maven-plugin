@@ -34,9 +34,15 @@
         The documentation for the plugin is available in the handbook in three formats:
       </p>
       <ul>
-        <li><a href="unix-handbook/handbook.pdf">PDF</a></li>
-        <li><a href="unix-handbook/handbook.html">Single-page HTML</a></li>
-        <li><a href="unix-handbook/handbook">Multi-page HTML</a></li>
+        <li>
+          <a href="unix-handbook/handbook.pdf">PDF</a>
+        </li>
+        <li>
+          <a href="unix-handbook/handbook.html">Single-page HTML</a>
+        </li>
+        <li>
+          <a href="unix-handbook/handbook">Multi-page HTML</a>
+        </li>
       </ul>
     </section>
   </body>

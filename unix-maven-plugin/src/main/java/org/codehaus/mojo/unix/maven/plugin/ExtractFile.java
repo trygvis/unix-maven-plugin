@@ -27,8 +27,8 @@ package org.codehaus.mojo.unix.maven.plugin;
 import org.apache.commons.vfs.*;
 import static org.apache.commons.vfs.VFS.*;
 import org.apache.maven.plugin.*;
-import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.core.*;
 
 import java.io.*;
 

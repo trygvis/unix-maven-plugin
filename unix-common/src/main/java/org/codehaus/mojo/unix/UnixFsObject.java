@@ -130,7 +130,7 @@ public abstract class UnixFsObject<A extends UnixFsObject>
         {
             return true;
         }
-        if ( !( o instanceof UnixFsObject ) )
+        if ( !(o instanceof UnixFsObject) )
         {
             return false;
         }
@@ -158,8 +158,8 @@ public abstract class UnixFsObject<A extends UnixFsObject>
 
     public String toString()
     {
-        F<String,String> leftPad10 = curry( UnixFsObject.leftPad, 10 );
-        F<String,String> rightPad10 = curry( UnixFsObject.rightPad, 10 );
+        F<String, String> leftPad10 = curry( UnixFsObject.leftPad, 10 );
+        F<String, String> rightPad10 = curry( UnixFsObject.rightPad, 10 );
 
         // I wonder how long this will hold. Perhaps it should only be possible to call toString() on valid
         // objects - trygve
@@ -223,7 +223,7 @@ public abstract class UnixFsObject<A extends UnixFsObject>
             // This might not be good enough validation
             int i = s.lastIndexOf( '/' );
 
-            return (i == -1 ) ? s.length() : s.length() - i - 1;
+            return (i == -1) ? s.length() : s.length() - i - 1;
         }
 
         protected Symlink copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )

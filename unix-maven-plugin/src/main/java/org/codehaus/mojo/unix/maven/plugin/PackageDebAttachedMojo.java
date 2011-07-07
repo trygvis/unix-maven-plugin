@@ -54,4 +54,3 @@ public class PackageDebAttachedMojo
         return curry( DebMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, deb );
     }
 }
- 

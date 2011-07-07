@@ -95,7 +95,7 @@ public class IncludeExcludeFileSelector
 
         boolean include;
 
-        if( includes.size() == 0 )
+        if ( includes.size() == 0 )
         {
             // Default to including the file is the list of includes is empty
             include = true;
@@ -128,9 +128,10 @@ public class IncludeExcludeFileSelector
 
     private boolean matchesAny( boolean include, boolean returnIfMatch, String relative, Collection<PathExpression> pathExpressions )
     {
-        for (PathExpression pathExpression : pathExpressions )
+        for ( PathExpression pathExpression : pathExpressions )
         {
-            if (pathExpression.matches(relative)) {
+            if ( pathExpression.matches( relative ) )
+            {
                 return returnIfMatch;
             }
         }
@@ -173,7 +174,7 @@ public class IncludeExcludeFileSelector
                 return this;
             }
 
-            for (String include : includes)
+            for ( String include : includes )
             {
                 this.includes.add( new PathExpression( include ) );
             }

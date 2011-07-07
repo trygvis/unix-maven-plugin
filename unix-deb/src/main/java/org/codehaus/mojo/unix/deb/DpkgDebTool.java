@@ -53,7 +53,8 @@ public class DpkgDebTool
         {
             archive = Ar.read( file );
 
-            for (ReadableArFile arFile : archive) {
+            for ( ReadableArFile arFile : archive )
+            {
                 if ( arFile.getName().startsWith( "data." ) )
                 {
                     return processCompressedTar( arFile );
@@ -101,7 +102,7 @@ public class DpkgDebTool
 
             objects.add( entry.isDirectory() ?
                 directory( path, lastModified, attributes ) :
-                regularFile( path, lastModified, entry.getSize(), some( attributes ) ));
+                regularFile( path, lastModified, entry.getSize(), some( attributes ) ) );
 
             entry = tarInputStream.getNextEntry();
         }

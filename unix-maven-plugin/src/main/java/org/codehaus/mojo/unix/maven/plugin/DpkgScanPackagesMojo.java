@@ -115,7 +115,7 @@ public class DpkgScanPackagesMojo
 
         try
         {
-            if( outputFile.getName().endsWith( ".gz" ) )
+            if ( outputFile.getName().endsWith( ".gz" ) )
             {
                 output = new GZIPOutputStream( new FileOutputStream( outputFile ) );
             }
@@ -141,8 +141,9 @@ public class DpkgScanPackagesMojo
         {
             throw new MojoExecutionException( "Could not run dpkg-scanpackages.", e );
         }
-        finally {
-            IOUtil.close(output);
+        finally
+        {
+            IOUtil.close( output );
         }
     }
 }

@@ -40,7 +40,7 @@ public abstract class AbstractPackageMojo
     /**
      * @parameter
      */
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings( {"UnusedDeclaration"} )
     private Package[] packages;
 
     private final String platformType;

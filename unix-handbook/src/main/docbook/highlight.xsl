@@ -8,7 +8,7 @@
   <xsl:template match="xslthl:keyword">
     <xsl:message>KEYWORD</xsl:message>
   </xsl:template>
-<!--
+  <!--
   <xsl:template match="code">
     <xsl:message>code</xsl:message>
     <xsl:variable name="content">
@@ -122,5 +122,5 @@
       <xsl:apply-templates mode="xslthl"/>
     </span>
   </xsl:template>
--->
+  -->
 </xsl:stylesheet>

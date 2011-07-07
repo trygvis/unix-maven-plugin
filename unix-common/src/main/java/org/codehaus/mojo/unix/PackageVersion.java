@@ -53,7 +53,7 @@ public final class PackageVersion
 
     private static String version( boolean snapshot, String version )
     {
-        if( !snapshot )
+        if ( !snapshot )
         {
             return version;
         }
@@ -74,7 +74,7 @@ public final class PackageVersion
         validateNotNull( mavenVersion, timestamp, configuredRevision );
 
         String version = version( snapshot, mavenVersion );
-        
+
         // If the configured revision is set, there is not need to transform the version
         if ( configuredRevision.isSome() )
         {

@@ -37,7 +37,8 @@ public class FjFile
         this.file = file;
     }
 
-    public static F<File, Boolean> toF( final FileFilter filter ) {
+    public static F<File, Boolean> toF( final FileFilter filter )
+    {
         return new F<File, Boolean>()
         {
             public Boolean f( File file )

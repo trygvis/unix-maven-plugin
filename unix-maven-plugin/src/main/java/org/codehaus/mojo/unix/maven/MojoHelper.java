@@ -74,8 +74,8 @@ public abstract class MojoHelper
     static
     {
         System.setProperty(
-                org.apache.commons.logging.LogFactory.class.getName(),
-                MavenCommonLoggingLogFactory.class.getName() );
+            org.apache.commons.logging.LogFactory.class.getName(),
+            MavenCommonLoggingLogFactory.class.getName() );
     }
 
     public static Execution create( Map platforms,
@@ -114,8 +114,8 @@ public abstract class MojoHelper
         // This chunk replaces the above getDeploymentTimestamp. However, it not ensure that all files get the
         // same timestamp. Need to look into how this is done with Maven 3
         DateFormat utcDateFormatter = new SimpleDateFormat( "yyyyMMdd.HHmmss" );
-        utcDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ));
-        String timestamp = utcDateFormatter.format(new Date());
+        utcDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+        String timestamp = utcDateFormatter.format( new Date() );
 
         FileObject buildDirectory;
 
@@ -127,7 +127,7 @@ public abstract class MojoHelper
         }
         catch ( FileSystemException e )
         {
-            throw new MojoExecutionException( "Error while initializing Commons VFS", e);
+            throw new MojoExecutionException( "Error while initializing Commons VFS", e );
         }
 
         PackageVersion version = PackageVersion.packageVersion( project.version, timestamp,
@@ -201,15 +201,15 @@ public abstract class MojoHelper
                     }
                 }
 
-                packages = packages.cons( p(unixPackage, pakke, assemblyOperations ) );
+                packages = packages.cons( p( unixPackage, pakke, assemblyOperations ) );
             }
             catch ( UnknownArtifactException e )
             {
                 Map map = new TreeMap<String, Artifact>( e.artifactMap );
 
                 // TODO: Do not log here, throw a CouldNotFindArtifactException with the map as an argument
-                log.warn("Could not find artifact:" + e.artifact );
-                log.warn("Available artifacts:");
+                log.warn( "Could not find artifact:" + e.artifact );
+                log.warn( "Available artifacts:" );
                 for ( Object o : map.keySet() )
                 {
                     log.warn( o.toString() );
@@ -370,7 +370,7 @@ public abstract class MojoHelper
                                                                                      Defaults mojo,
                                                                                      Defaults pakke )
     {
-        return p(calculateFileAttributes( platform.getDefaultFileAttributes(),
+        return p( calculateFileAttributes( platform.getDefaultFileAttributes(),
                                           mojo.fileAttributes.create(),
                                           pakke.fileAttributes.create() ),
                  calculateFileAttributes( platform.getDefaultDirectoryAttributes(),

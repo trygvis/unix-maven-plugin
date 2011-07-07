@@ -26,19 +26,18 @@ package org.codehaus.mojo.unix.maven.plugin;
 
 import fj.*;
 import fj.Function;
-import fj.pre.*;
 import fj.data.*;
 import static fj.data.HashMap.*;
 import static fj.data.Option.*;
 import static fj.data.Stream.*;
+import fj.pre.*;
 import groovy.lang.*;
 import org.codehaus.mojo.unix.*;
-import org.codehaus.mojo.unix.FileAttributes;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.deb.*;
+import org.codehaus.mojo.unix.rpm.*;
 import org.codehaus.mojo.unix.sysvpkg.*;
 import org.codehaus.mojo.unix.sysvpkg.prototype.*;
-import org.codehaus.mojo.unix.rpm.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
@@ -76,7 +75,7 @@ public class ShittyUtil
         return findArtifact( groupId, artifactId, version, type, null );
     }
 
-    public static File findArtifact(String groupId, String artifactId, String version, String type, String classifier)
+    public static File findArtifact( String groupId, String artifactId, String version, String type, String classifier )
         throws IOException
     {
         File m2Repository = new File( System.getProperty( "user.home" ), ".m2/repository" );
@@ -223,12 +222,12 @@ public class ShittyUtil
             } );
 
         F2<RpmUtil.FileInfo, RpmUtil.FileInfo, Boolean> fileInfoChecker = new F2<RpmUtil.FileInfo, RpmUtil.FileInfo, Boolean>()
+        {
+            public Boolean f( RpmUtil.FileInfo expected, RpmUtil.FileInfo actual )
             {
-                public Boolean f( RpmUtil.FileInfo expected, RpmUtil.FileInfo actual )
-                {
-                    return expected.equalsIgnoreNull( actual );
-                }
-            };
+                return expected.equalsIgnoreNull( actual );
+            }
+        };
 
         return assertEntries( iterableStream( expectedFiles ).map( fileInfoToP2 ), map, fileInfoChecker );
     }
@@ -259,7 +258,8 @@ public class ShittyUtil
                     long size = zipEntry.getSize();
 
                     // For some reason ZipInputStream can't give me zipEntry objects with a reasonable getSize()
-                    if(size == -1) {
+                    if ( size == -1 )
+                    {
                         size = 0;
                         int s;
 
@@ -346,13 +346,13 @@ public class ShittyUtil
     }
 
     private static class UnixFsObjectChecker
-        implements F2<UnixFsObject, UnixFsObject,  Boolean>
+        implements F2<UnixFsObject, UnixFsObject, Boolean>
     {
         public Boolean f( UnixFsObject expected, UnixFsObject actual )
         {
-            return expected.path.equals( actual.path ) && ( expected.size == 0 || expected.size == actual.size ) &&
-                ( expected.lastModified == null || expected.lastModified.equals( START_OF_TIME ) ||
-                    expected.lastModified.equals( actual.lastModified ) );
+            return expected.path.equals( actual.path ) && (expected.size == 0 || expected.size == actual.size) &&
+                (expected.lastModified == null || expected.lastModified.equals( START_OF_TIME ) ||
+                    expected.lastModified.equals( actual.lastModified ));
         }
     }
 
@@ -379,9 +379,9 @@ public class ShittyUtil
                         {
                             return a.isNone() || Equal.stringEqual.eq( a.some(), b.some() );
                         }
-                    }) );
+                    } ) );
                     Equal<List<String>> listStringEqual = Equal.listEqual( Equal.stringEqual );
-                    return  tis.arch.equals( that.arch ) &&
+                    return tis.arch.equals( that.arch ) &&
                         tis.category.equals( that.category ) &&
                         tis.name.equals( that.name ) &&
                         tis.pkg.equals( that.pkg ) &&

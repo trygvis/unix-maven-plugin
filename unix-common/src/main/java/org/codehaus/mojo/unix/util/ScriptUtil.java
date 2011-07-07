@@ -30,13 +30,13 @@ import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
 import fj.pre.*;
+import static java.lang.Math.*;
 import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.java.FileF.*;
 import static org.codehaus.mojo.unix.util.FileModulator.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
-import static java.lang.Math.*;
 import java.util.concurrent.*;
 
 /**
@@ -229,7 +229,7 @@ public final class ScriptUtil
         F<String, File> newScriptsFile = curry( FileF.newFile, scripts );
 
         List<File> preInstallFiles = f.f( preInstall ).map( newScriptsFile ).filter( canRead );
-        List<File> postInstallFiles = f.f( postInstall ) .map( newScriptsFile ).filter( canRead );
+        List<File> postInstallFiles = f.f( postInstall ).map( newScriptsFile ).filter( canRead );
         List<File> preRemoveFiles = f.f( preRemove ).map( newScriptsFile ).filter( canRead );
         List<File> postRemoveFiles = f.f( postRemove ).map( newScriptsFile ).filter( canRead );
 

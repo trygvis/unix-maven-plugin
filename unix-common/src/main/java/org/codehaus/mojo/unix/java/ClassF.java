@@ -36,7 +36,7 @@ public class ClassF
     {
         return new F<A, B>()
         {
-            @SuppressWarnings({"unchecked"})
+            @SuppressWarnings( {"unchecked"} )
             public B f( A a )
             {
                 return (B) a;

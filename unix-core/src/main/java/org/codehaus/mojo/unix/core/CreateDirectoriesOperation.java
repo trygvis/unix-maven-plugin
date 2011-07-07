@@ -27,8 +27,8 @@ package org.codehaus.mojo.unix.core;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
-import org.codehaus.mojo.unix.util.line.*;
 import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
+import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
 import java.io.*;

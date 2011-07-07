@@ -24,11 +24,11 @@ package org.codehaus.mojo.unix.util.line;
  * SOFTWARE.
  */
 
+import static java.util.Collections.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
 import java.util.*;
-import static java.util.Collections.*;
 
 /**
  * TODO: Implement equals and hashCode.
@@ -64,8 +64,8 @@ public class LineFile
 
     public String toString()
     {
-        StringBuffer buffer = new StringBuffer();
-        for (String line : lines)
+        StringBuilder buffer = new StringBuilder();
+        for ( String line : lines )
         {
             buffer.append( line ).append( EOL );
         }
@@ -116,9 +116,9 @@ public class LineFile
         {
             writer = new LineWriterWriter( new FileWriter( file ) );
 
-            for (String line : lines)
+            for ( String line : lines )
             {
-                writer.add( line);
+                writer.add( line );
             }
         }
         finally

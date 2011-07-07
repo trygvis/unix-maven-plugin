@@ -92,9 +92,9 @@ public class PkgchkUtil
             return this.getClass().isAssignableFrom( that.getClass() ) &&
                 pathname.equals( that.pathname ) &&
                 type.equals( that.type ) &&
-                ( fileSize == 0 || fileSize == that.fileSize ) &&
-                ( sum == 0 || sum == that.sum ) &&
-                ( lastModification.isNone() || lastModification.some().equals( that.lastModification.some() ) );
+                (fileSize == 0 || fileSize == that.fileSize) &&
+                (sum == 0 || sum == that.sum) &&
+                (lastModification.isNone() || lastModification.some().equals( that.lastModification.some() ));
         }
 
         public final boolean equals( Object o )
@@ -103,7 +103,7 @@ public class PkgchkUtil
             {
                 return true;
             }
-            if ( !( o instanceof FileInfo ) )
+            if ( !(o instanceof FileInfo) )
             {
                 return false;
             }

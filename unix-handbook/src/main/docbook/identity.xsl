@@ -18,7 +18,7 @@
     </xsl:copy>
   </xsl:template>
 
-<!-- Not needed. Was used to make sure all textdata references was absolute
+  <!-- Not needed. Was used to make sure all textdata references was absolute
   <xsl:template match="db:textdata">
     <xsl:message>basedir: <xsl:value-of select="system-property('basedir')"/></xsl:message>
     <xsl:variable name="basedir" select="system-property('basedir')"/>
@@ -28,6 +28,6 @@
       </xsl:attribute>
     </db:textdata>
   </xsl:template>
--->
+  -->
 
 </xsl:stylesheet>

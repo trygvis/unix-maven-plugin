@@ -62,9 +62,9 @@
         <version>1.0-beta-1</version>
         <executions>
           <execution>
-<!--
+            <!--
             <phase>generate-resources</phase>
--->
+            -->
             <goals>
               <goal>assemble</goal>
             </goals>
@@ -115,7 +115,8 @@
               <toFile>/usr/share/hudson/lib/hudson.war</toFile>
             </copyArtifact>
             <copyArtifact>
-              <artifact>org.codehaus.mojo.unix.it:my-native:so:${os.name}-${os.version}-${os.arch}</artifact>
+              <artifact>org.codehaus.mojo.unix.it:my-native:so:${os.name}-${os.version}-${os.arch}
+              </artifact>
               <toFile>/usr/share/hudson/lib/my-native.so</toFile>
             </copyArtifact>
             <copyDirectory>

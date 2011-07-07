@@ -29,7 +29,6 @@ import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.UnixUtil.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

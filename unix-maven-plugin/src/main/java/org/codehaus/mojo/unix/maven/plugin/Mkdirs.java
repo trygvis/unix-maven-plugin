@@ -51,7 +51,7 @@ public class Mkdirs
                                               FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
-        validateEitherIsSet(path, paths, "path", "paths");
+        validateEitherIsSet( path, paths, "path", "paths" );
 
         if ( path != null )
         {

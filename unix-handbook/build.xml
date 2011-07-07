@@ -110,13 +110,13 @@
     </antcall>
 
     <antcall target="style">
-<!--
-	<param name="style.input" value="test.xml"/>
-	<param name="style.output" value="test-out.xml"/>
--->
-	<param name="style.input" value="target/docbook/handbook-identity.xml"/>
-	<param name="style.output" value="target/docbook/handbook-resolved.xml"/>
-	<param name="style.xsl" value="src/main/docbook/generate-id.xsl"/>
+      <!--
+      <param name="style.input" value="test.xml"/>
+      <param name="style.output" value="test-out.xml"/>
+      -->
+      <param name="style.input" value="target/docbook/handbook-identity.xml"/>
+      <param name="style.output" value="target/docbook/handbook-resolved.xml"/>
+      <param name="style.xsl" value="src/main/docbook/generate-id.xsl"/>
     </antcall>
   </target>
 
