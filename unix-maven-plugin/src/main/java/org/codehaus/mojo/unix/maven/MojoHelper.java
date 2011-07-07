@@ -55,8 +55,6 @@ import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
 
 import java.io.*;
-import static java.lang.String.*;
-
 import java.text.*;
 import java.util.*;
 import java.util.TreeMap;
