@@ -780,6 +780,12 @@
             </tbody>
           </tgroup>
         </informaltable>
+
+        <para>For the allowed values for the priority field, see <link
+        xlink:href="http://www.debian.org/doc/debian-policy/ch-archive.html#s-priorities"><code>priorities</code></link>
+        and <link
+        xlink:href="http://www.debian.org/doc/debian-policy/ch-archive.html#s-subsections"><code>sections</code></link>
+        sections in the Debian Policy Manual.</para>
       </section>
 
       <section>
@@ -2207,7 +2213,7 @@
       <title>Upgrading From Previous Versions</title>
       <section>
         <title>Upgrading from 1.0-alpha-1</title>
-        
+
         <copy> => <copyFile>, <copyDirectory>
         <defaults>
           <fileUser>..</fileUser>
@@ -2215,9 +2221,9 @@
           <directoryUser>..</directoryUser>
           <directoryGroup>..</directoryGroup>
         </defaults>
-        
+
         =>
-        
+
         <defaults>
           <fileAttributes>
             <user>..</user>
@@ -2239,7 +2245,22 @@
       into and disassembling packages.</para>
 
       <section>
-        <title>RP</title>
+        <title><code>dpkg</code> Commands</title>
+
+        <section>
+          <title>Listing All Files In a Package</title>
+
+          <example>
+            <title>Output of <code>rpm -q -l -p</code></title>
+
+            <screen><?dbfo-font-size 75%?><xi:include
+                href="command-reference/rpm-qlp.txt" parse="text" /></screen>
+          </example>
+        </section>
+      </section>
+
+      <section>
+        <title><code>rpm</code> Commands</title>
 
         <section>
           <title>List All Files In a Package</title>
@@ -2279,7 +2300,7 @@
       </section>
 
       <section>
-        <title>Zip</title>
+        <title><code>zip</code> Commands</title>
 
         <para>Note that there are no standard for the utilities used to handle
         zip files. However, most platforms support this command.</para>

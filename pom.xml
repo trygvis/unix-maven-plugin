@@ -28,7 +28,7 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>29-SNAPSHOT</version>
+    <version>27</version>
   </parent>
   <groupId>org.codehaus.mojo.unix</groupId>
   <artifactId>unix</artifactId>
@@ -147,26 +147,6 @@
       -->
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>java.net</id>
-      <url>http://download.java.net/maven/2</url>
-    </repository>
-    <repository>
-      <id>functionaljava</id>
-      <url>http://functionaljava.googlecode.com/svn/maven/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>xslthl.soruceforge.net</id>
-      <url>http://xslthl.sourceforge.net/maven/repository</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
   <modules>
     <module>unix-ar</module>
     <module>unix-common</module>
@@ -241,6 +221,29 @@
           </plugin>
         </plugins>
       </reporting>
+    </profile>
+    <profile>
+      <id>repositories</id>
+      <repositories>
+        <repository>
+          <id>java.net</id>
+          <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+          <id>functionaljava</id>
+          <url>http://functionaljava.googlecode.com/svn/maven/</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>xslthl.soruceforge.net</id>
+          <url>http://xslthl.sourceforge.net/maven/repository</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
     </profile>
   </profiles>
 </project>
