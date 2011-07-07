@@ -51,7 +51,6 @@ import java.util.concurrent.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class PkgUnixPackage
     extends UnixPackage

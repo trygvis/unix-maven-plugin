@@ -39,7 +39,6 @@ import org.joda.time.format.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public abstract class UnixFsObject<A extends UnixFsObject>
     implements Comparable<UnixFsObject>, LineProducer, HasFileAttributes<UnixFsObject>

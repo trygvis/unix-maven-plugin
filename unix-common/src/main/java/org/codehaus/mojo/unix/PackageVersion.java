@@ -30,7 +30,6 @@ import static org.codehaus.mojo.unix.util.Validate.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public final class PackageVersion
 {

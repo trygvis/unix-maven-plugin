@@ -41,7 +41,6 @@ import java.util.zip.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class DpkgDebTool
 {

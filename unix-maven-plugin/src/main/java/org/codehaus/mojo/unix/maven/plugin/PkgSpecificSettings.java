@@ -31,7 +31,6 @@ import static org.codehaus.mojo.unix.java.StringF.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 @SuppressWarnings( {"UnusedDeclaration"} )
 public class PkgSpecificSettings

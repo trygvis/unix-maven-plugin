@@ -36,7 +36,6 @@ import static org.codehaus.mojo.unix.java.StringF.*;
  * create() method should return an Either or Option with an validation message on errors.
  *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id: FileAttributes.java 9221 2009-03-15 22:52:14Z trygvis $
  */
 public class MojoFileAttributes
 {

@@ -31,7 +31,6 @@ import static org.codehaus.mojo.unix.PackageVersion.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class PackageVersionTest
     extends TestCase

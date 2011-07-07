@@ -31,7 +31,6 @@ import org.codehaus.mojo.unix.maven.deb.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  * @goal package-deb
  * @phase package
  * @requiresDependencyResolution runtime

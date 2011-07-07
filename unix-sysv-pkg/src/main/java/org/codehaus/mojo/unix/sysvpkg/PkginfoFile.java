@@ -43,7 +43,6 @@ import java.util.*;
  * A pkginfo file. See <code>man -s 4 pkginfo</code>.
  *
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class PkginfoFile
 {

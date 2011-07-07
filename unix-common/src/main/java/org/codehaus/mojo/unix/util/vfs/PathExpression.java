@@ -28,7 +28,6 @@ import java.util.regex.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public class PathExpression
 {
