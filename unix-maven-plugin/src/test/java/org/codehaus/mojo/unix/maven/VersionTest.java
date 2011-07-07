@@ -45,10 +45,10 @@ public class VersionTest
 {
     public void testSnapshotWithoutRevision()
     {
-        verify(packageVersion("1.2-SNAPSHOT", "20090423095107", true, Option.<String>none()),
-                pkg("1.2-20090423095107"),
-                deb("1.2-20090423095107"),
-                rpm("1.2_20090423095107", "1"));
+        verify( packageVersion( "1.2-SNAPSHOT", "20090423095107", true, Option.<String>none() ),
+            pkg( "1.2-20090423095107" ),
+            deb( "1.2-20090423095107" ),
+            rpm( "1.2_20090423095107", "1" ) );
     }
 
     public void testSnapshotWithConfiguredRevision()

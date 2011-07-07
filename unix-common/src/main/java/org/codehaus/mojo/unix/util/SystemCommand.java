@@ -579,7 +579,7 @@ public class SystemCommand
     {
         public void setup( String threadName, InputStream inputStream )
         {
-            IOUtil.close(inputStream);
+            IOUtil.close( inputStream );
         }
 
         public void join()
