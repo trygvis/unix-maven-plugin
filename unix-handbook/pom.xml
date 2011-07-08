@@ -22,13 +22,12 @@
   ~ SOFTWARE.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.codehaus.mojo.unix</groupId>
     <artifactId>unix</artifactId>
-    <version>1.0-alpha-5-SNAPSHOT</version>
+    <version>1.0-alpha-5</version>
   </parent>
   <artifactId>unix-handbook</artifactId>
   <name>Unix Maven Plugin Handbook</name>
@@ -94,17 +93,17 @@
         </dependencies>
         <configuration>
           <tasks>
-            <property name="version.docbook" value="${version.docbook}"/>
-            <property name="version.unix-maven-plugin" value="${version.unix-maven-plugin}"/>
-            <property name="version.maven-ant-tasks" value="${version.maven-ant-tasks}"/>
+            <property name="version.docbook" value="${version.docbook}" />
+            <property name="version.unix-maven-plugin" value="${version.unix-maven-plugin}" />
+            <property name="version.maven-ant-tasks" value="${version.maven-ant-tasks}" />
             <ant dir="${basedir}">
-              <target name="clean"/>
-              <target name="html"/>
-              <target name="pdf"/>
+              <target name="clean" />
+              <target name="html" />
+              <target name="pdf" />
             </ant>
-            <attachartifact file="./target/site/handbook.pdf" classifier="single" type="pdf"/>
-            <attachartifact file="./target/site/handbook.html" classifier="single" type="html"/>
-            <attachartifact file="./target/site/unix-maven-handbook-${project.version}.zip" classifier="html-chunked" type="zip"/>
+            <attachartifact file="./target/site/handbook.pdf" classifier="single" type="pdf" />
+            <attachartifact file="./target/site/handbook.html" classifier="single" type="html" />
+            <attachartifact file="./target/site/unix-maven-handbook-${project.version}.zip" classifier="html-chunked" type="zip" />
           </tasks>
         </configuration>
       </plugin>
