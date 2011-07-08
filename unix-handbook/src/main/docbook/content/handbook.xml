@@ -545,15 +545,26 @@
       </section>
 
       <section>
-        <title>Resulting ZIP</title>
+        <title>The Zip version</title>
 
-        <para>After running <command>mvn install</command> on the rpm version
-        of the project, the package is packaged into
-        <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+        <section>
+          <title><code>pom.xml</code> for the zip version</title>
 
-        <para>The zip will contain these files:</para>
+          <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
+        </section>
 
-        <screen><xi:include href="../examples/unzip-l.txt" parse="text" /></screen>
+        <section>
+          <title>Resulting ZIP</title>
+
+          <para>After running <command>mvn install</command> on the rpm
+          version of the project, the package is packaged into
+          <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+
+          <para>The zip will contain these files:</para>
+
+          <screen><xi:include href="../examples/unzip-l.txt" parse="text" /></screen>
+        </section>
       </section>
     </chapter>
 
