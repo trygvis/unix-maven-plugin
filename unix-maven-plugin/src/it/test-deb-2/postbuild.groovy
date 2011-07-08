@@ -7,10 +7,10 @@ import org.codehaus.mojo.unix.UnixFsObject
 import static org.codehaus.mojo.unix.UnixFsObject.directory
 import static org.codehaus.mojo.unix.UnixFsObject.regularFile
 import org.codehaus.mojo.unix.deb.Dpkg
-import static org.codehaus.mojo.unix.maven.ShittyUtil.START_OF_TIME
-import static org.codehaus.mojo.unix.maven.ShittyUtil.assertDebEntries
-import static org.codehaus.mojo.unix.maven.ShittyUtil.assertFormat
-import static org.codehaus.mojo.unix.maven.ShittyUtil.r
+import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.START_OF_TIME
+import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.assertDebEntries
+import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.assertFormat
+import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.r
 
 boolean success = true
 
