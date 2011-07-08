@@ -1,0 +1,8 @@
+$ dpkg-deb -f target/*.deb
+Package: basic
+Section: devel
+Priority: standard
+Maintainer: Acme
+Version: 1.0-20110708.151032
+Architecture: all
+Description: Hudson Solaris Package

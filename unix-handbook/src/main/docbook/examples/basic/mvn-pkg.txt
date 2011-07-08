@@ -5,8 +5,8 @@
 [INFO] ------------------------------------------------------------------------
 [INFO] [clean:clean]
 [INFO] [resources:resources]
-[WARNING] Using platform encoding (ISO646-US actually) to copy filtered resources, i.e. build is platform dependent!
-[INFO] skip non existing resourceDirectory /home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/basic-pkg/src/main/resources
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory ~/unix/unix-handbook/src/main/docbook/examples/basic/src/main/resources
 [INFO] [unix:package-pkg]
 .
     opt
@@ -20,7 +20,7 @@
             hudson
 
 [INFO] [install:install]
-[INFO] Installing /home/trygvis/dev/org.codehaus.mojo/trunk/mojo/unix/src/examples/basic-pkg/target/basic-1.0-SNAPSHOT.pkg to /home/trygvis/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.pkg
+[INFO] Installing ~/unix/src/examples/basic-pkg/target/basic-1.0-SNAPSHOT.pkg to ~/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.pkg
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESSFUL
 [INFO] ------------------------------------------------------------------------

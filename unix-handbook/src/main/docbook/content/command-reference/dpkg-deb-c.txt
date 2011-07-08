@@ -1,0 +1,8 @@
+$ dpkg-deb -c target/*.deb
+drwxr-xr-x root/root         0 2011-07-07 16:38 ./
+drwxr-xr-x root/root         0 2011-07-07 16:38 ./var/
+drwxr-xr-x root/root         0 2011-07-07 16:38 ./var/log/
+drwxr-xr-x root/root         0 2011-07-07 16:38 ./opt/
+drwxr-xr-x root/root         0 2011-07-07 16:38 ./opt/hudson/
+-rw-r--r-- root/root  20623413 2011-04-27 10:41 ./opt/hudson/hudson.war
+lrwxrwxrwx root/root         0 2011-07-07 16:38 ./var/log/hudson -> /var/opt/hudson/log

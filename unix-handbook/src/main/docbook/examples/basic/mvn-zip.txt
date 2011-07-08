@@ -1,22 +1,22 @@
 [INFO] Scanning for projects...
-[INFO]                                                                         
+[INFO]
 [INFO] ------------------------------------------------------------------------
 [INFO] Building Hudson Solaris Package 1.0-SNAPSHOT
 [INFO] ------------------------------------------------------------------------
-[INFO] 
+[INFO]
 [INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ basic ---
-[INFO] 
+[INFO]
 [INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ basic ---
 [debug] execute contextualize
-[WARNING] Using platform encoding (MacRoman actually) to copy filtered resources, i.e. build is platform dependent!
-[INFO] skip non existing resourceDirectory /Users/trygvis/dev/org.codehaus/mojo/trunk/mojo/unix/unix-handbook/src/main/docbook/examples/basic/src/main/resources
-[INFO] 
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory ~/unix/unix-handbook/src/main/docbook/examples/basic/src/main/resources
+[INFO]
 [INFO] --- unix-maven-plugin:1.0-alpha-5-SNAPSHOT:package-zip (default-package-zip) @ basic ---
-[INFO] Using "/var/folders/Wb/WbbGqdy4FmuoMHaIo5r-aU+++TM/-Tmp-/vfs_cache" as temporary files store.
-[INFO] 
+[INFO] Using "/tmp/vfs_cache" as temporary files store.
+[INFO]
 [INFO] --- maven-install-plugin:2.3.1:install (default-install) @ basic ---
-[INFO] Installing /Users/trygvis/dev/org.codehaus/mojo/trunk/mojo/unix/unix-handbook/src/main/docbook/examples/basic/target/basic-1.0-SNAPSHOT.zip to /Users/trygvis/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.zip
-[INFO] Installing /Users/trygvis/dev/org.codehaus/mojo/trunk/mojo/unix/unix-handbook/src/main/docbook/examples/basic/pom-zip.xml to /Users/trygvis/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.pom
+[INFO] Installing ~/unix/unix-handbook/src/main/docbook/examples/basic/target/basic-1.0-SNAPSHOT.zip to ~/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.zip
+[INFO] Installing ~/unix/unix-handbook/src/main/docbook/examples/basic/pom-zip.xml to ~/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.pom
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------

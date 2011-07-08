@@ -1,38 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ The MIT License
-  ~
-  ~ Copyright 2009 The Codehaus.
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of
-  ~ this software and associated documentation files (the "Software"), to deal in
-  ~ the Software without restriction, including without limitation the rights to
-  ~ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-  ~ of the Software, and to permit persons to whom the Software is furnished to do
-  ~ so, subject to the following conditions:
-  ~
-  ~ The above copyright notice and this permission notice shall be included in all
-  ~ copies or substantial portions of the Software.
-  ~
-  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  ~ SOFTWARE.
-  -->
-<project xmlns:unix="http://mojo.codehaus.org/unix/conditional">
+<project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.codehaus.mojo.unix.example</groupId>
   <artifactId>basic</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging unix:format="deb">deb</packaging>
-  <packaging unix:format="pkg">pkg</packaging>
-  <packaging unix:format="rpm">rpm</packaging>
-  <packaging unix:format="zip">unix-zip</packaging>
+  <packaging>rpm</packaging>
   <name>Hudson</name>
-  <licenses unix:format="rpm">
+  <licenses>
     <license>
       <name>BSD</name>
     </license>
@@ -56,17 +29,14 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>unix-maven-plugin</artifactId>
-        <unix:version/>
+        <version>1.0-alpha-5-SNAPSHOT</version>
         <extensions>true</extensions>
         <configuration>
           <contact>Acme</contact>
           <contactEmail>support@acme.org</contactEmail>
-          <rpm unix:format="rpm">
+          <rpm>
             <group>Application/Collectors</group>
           </rpm>
-          <deb unix:format="deb">
-            <section>devel</section>
-          </deb>
           <assembly>
             <copyArtifact>
               <artifact>org.jvnet.hudson.main:hudson-war:war</artifact>
