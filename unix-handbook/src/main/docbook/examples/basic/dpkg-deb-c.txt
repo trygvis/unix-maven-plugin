@@ -1,0 +1,11 @@
+$ dpkg-deb -c target/*.deb
+drwxr-xr-x root/root         0 2011-07-08 17:10 ./
+drwxr-xr-x root/root         0 2011-07-08 17:10 ./var/
+drwxr-xr-x root/root         0 2011-07-08 17:10 ./var/log/
+drwxr-xr-x root/root         0 2011-07-08 17:10 ./opt/
+drwxr-xr-x root/root         0 2011-07-08 17:10 ./opt/hudson/
+drwxr-xr-x root/root         0 2011-07-08 17:10 ./opt/hudson/doc/
+-rw-r--r-- root/root      1544 2008-10-02 02:07 ./opt/hudson/doc/dc-license.txt
+-rw-r--r-- root/root        49 2008-10-02 02:07 ./opt/hudson/doc/atom-license.txt
+-rw-r--r-- root/root  20623413 2011-04-27 10:41 ./opt/hudson/hudson.war
+lrwxrwxrwx root/root         0 2011-07-08 17:10 ./var/log/hudson -> /var/opt/hudson/log

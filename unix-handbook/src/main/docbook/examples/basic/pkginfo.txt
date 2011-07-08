@@ -1,6 +1,6 @@
 $ pkginfo -l -d target/basic-*.pkg
    PKGINST:  basic
-      NAME:  Hudson Solaris Package
+      NAME:  Hudson
   CATEGORY:  application
       ARCH:  all
    VERSION:  1.0-20090513.193125

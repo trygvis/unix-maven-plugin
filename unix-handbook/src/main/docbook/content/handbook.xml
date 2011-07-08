@@ -411,7 +411,7 @@
       </warning>
 
       <para>This is an example on how a simple, standalone application can be
-      packaged. The example is available in all three formats.</para>
+      packaged. The example is available in all four formats.</para>
 
       <para>Keywords:</para>
 
@@ -437,55 +437,111 @@
       </itemizedlist>
 
       <section>
-        <title>The pom.xml for pkg</title>
+        <title>The Deb version</title>
 
-        <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
-            href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
+        <section>
+          <title><code>pom.xml</code> for the deb version</title>
+
+          <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/pom-deb.xml" parse="text" /></programlisting>
+        </section>
+
+        <section>
+          <title>Resulting Deb</title>
+
+          <para>After running <command>mvn install</command> on the project,
+          the package is packaged into
+          <filename>target/basic-1.0-SNAPSHOT.deb</filename>.</para>
+
+          <para>The package will contain these files:</para>
+
+          <screen><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/dpkg-deb-c.txt" parse="text" /></screen>
+
+          <para>The generated control file:</para>
+
+          <screen><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/dpkg-deb-f.txt" parse="text" /></screen>
+        </section>
       </section>
 
       <section>
-        <title>Resulting PKG</title>
+        <title>The Pkg version</title>
 
-        <para>After running <command>mvn install</command> on the pkg version
-        of the project, the package is packaged into
-        <filename>target/basic-pkg-1.0.pkg</filename>.</para>
+        <section>
+          <title><code>pom.xml</code> for the pkg version</title>
 
-        <para>The generated meta data will look like this:</para>
+          <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
+        </section>
 
-        <screen><?dbfo-font-size 75% ?><xi:include
-            href="../examples/basic/pkginfo.txt" parse="text" /></screen>
+        <section>
+          <title>Resulting PKG</title>
 
-        <para>Notice that the SNAPSHOT part of the version string has been
-        replaced with the a timestamp.</para>
+          <para>After running <command>mvn install</command> on the pkg
+          version of the project, the package is packaged into
+          <filename>target/basic-pkg-1.0.pkg</filename>.</para>
 
-        <para>To see verify the paths and their attributes, run this:</para>
+          <para>The generated meta data will look like this:</para>
 
-        <screen><?dbfo-font-size 75% ?><xi:include
-            href="../examples/basic/pkgchk.txt" parse="text" /></screen>
+          <screen><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/pkginfo.txt" parse="text" /></screen>
+
+          <para>Notice that the SNAPSHOT part of the version string has been
+          replaced with the a timestamp.</para>
+
+          <para>To see verify the paths and their attributes, run this:</para>
+
+          <screen><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/pkgchk.txt" parse="text" /></screen>
+        </section>
       </section>
 
       <section>
-        <title>Resulting RPM</title>
+        <title>The RPM version</title>
 
-        <para>After running <command>mvn install</command> on the rpm version
-        of the project, the package is packaged into
-        <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+        <section>
+          <title><code>pom.xml</code> for RPM version</title>
 
-        <para>The package will contain these files:</para>
+          <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
+        </section>
 
-        <screen><xi:include href="../examples/basic/rpm-qlp.txt" parse="text" /></screen>
+        <section>
+          <title>Resulting RPM</title>
+
+          <para>After running <command>mvn install</command> on the rpm
+          version of the project, the package is packaged into
+          <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+
+          <para>The package will contain these files:</para>
+
+          <screen><xi:include href="../examples/basic/rpm-qlp.txt"
+              parse="text" /></screen>
+        </section>
       </section>
 
       <section>
-        <title>Resulting ZIP</title>
+        <title>The Zip version</title>
 
-        <para>After running <command>mvn install</command> on the rpm version
-        of the project, the package is packaged into
-        <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+        <section>
+          <title><code>pom.xml</code> for the zip version</title>
 
-        <para>The zip will contain these files:</para>
+          <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
+        </section>
 
-        <screen><xi:include href="../examples/unzip-l.txt" parse="text" /></screen>
+        <section>
+          <title>Resulting ZIP</title>
+
+          <para>After running <command>mvn install</command> on the rpm
+          version of the project, the package is packaged into
+          <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+
+          <para>The zip will contain these files:</para>
+
+          <screen><xi:include href="../examples/unzip-l.txt" parse="text" /></screen>
+        </section>
       </section>
     </chapter>
 

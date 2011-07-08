@@ -88,6 +88,11 @@
   <target name="create-pom">
     <antcall target="process-pom">
       <param name="example.project" value="basic"/>
+      <param name="example.format" value="deb"/>
+    </antcall>
+
+    <antcall target="process-pom">
+      <param name="example.project" value="basic"/>
       <param name="example.format" value="pkg"/>
     </antcall>
 

@@ -1,26 +1,26 @@
 [INFO] Scanning for projects...
-[INFO]
+[INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
 [INFO] Building Hudson Solaris Package 1.0-SNAPSHOT
 [INFO] ------------------------------------------------------------------------
-[INFO]
+[INFO] 
 [INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ basic ---
-[INFO]
+[INFO] 
 [INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ basic ---
 [debug] execute contextualize
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] skip non existing resourceDirectory ~/unix/unix-handbook/src/main/docbook/examples/basic/src/main/resources
-[INFO]
-[INFO] --- unix-maven-plugin:1.0-alpha-5-SNAPSHOT:package-rpm (default-package-rpm) @ basic ---
+[INFO] 
+[INFO] --- unix-maven-plugin:1.0-alpha-5-SNAPSHOT:package-deb (default-package-deb) @ basic ---
 [INFO] Using "/tmp/vfs_cache" as temporary files store.
-[INFO]
+[INFO] 
 [INFO] --- maven-install-plugin:2.3.1:install (default-install) @ basic ---
-[INFO] Installing ~/unix/unix-handbook/src/main/docbook/examples/basic/target/basic-1.0-SNAPSHOT.rpm to ~/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.rpm
-[INFO] Installing ~/unix/unix-handbook/src/main/docbook/examples/basic/pom-rpm.xml to ~/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.pom
+[INFO] Installing ~/unix/unix-handbook/src/main/docbook/examples/basic/target/basic-1.0-SNAPSHOT.deb to ~/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.deb
+[INFO] Installing ~/unix/unix-handbook/src/main/docbook/examples/basic/pom-deb.xml to ~/.m2/repository/org/codehaus/mojo/unix/example/basic/1.0-SNAPSHOT/basic-1.0-SNAPSHOT.pom
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 12.908s
-[INFO] Finished at: Thu Apr 07 14:33:27 CEST 2011
-[INFO] Final Memory: 8M/81M
+[INFO] Total time: 4.001s
+[INFO] Finished at: Fri Jul 08 17:10:34 CEST 2011
+[INFO] Final Memory: 9M/149M
 [INFO] ------------------------------------------------------------------------
