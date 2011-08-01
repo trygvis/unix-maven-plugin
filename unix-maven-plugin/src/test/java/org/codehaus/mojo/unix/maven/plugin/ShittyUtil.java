@@ -30,7 +30,6 @@ import fj.data.*;
 import static fj.data.HashMap.*;
 import static fj.data.Option.*;
 import static fj.data.Stream.*;
-import fj.pre.*;
 import groovy.lang.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
@@ -345,7 +344,7 @@ public class ShittyUtil
     }
 
     private static class UnixFsObjectChecker
-        implements F2<UnixFsObject, UnixFsObject, Boolean>
+        extends F2<UnixFsObject, UnixFsObject, Boolean>
     {
         public Boolean f( UnixFsObject expected, UnixFsObject actual )
         {

@@ -28,7 +28,6 @@ import fj.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
-import fj.pre.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
 import static org.codehaus.mojo.unix.util.Validate.*;

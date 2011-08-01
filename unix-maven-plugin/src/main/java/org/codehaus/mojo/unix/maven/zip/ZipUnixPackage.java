@@ -132,7 +132,7 @@ public class ZipUnixPackage
         F2<RelativePath, PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>, Boolean> pathFilter =
             ZipUnixPackage.pathFilter();
 
-        List<PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>> items = fileSystem.
+        Stream<PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>> items = fileSystem.
             toList().
             filter( compose( BooleanF.invert, curry( pathFilter, BASE ) ) );
 

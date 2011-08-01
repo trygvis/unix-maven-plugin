@@ -25,10 +25,8 @@ package org.codehaus.mojo.unix;
  */
 
 import fj.*;
-import fj.data.List;
 import fj.data.*;
 import static fj.data.Option.*;
-import fj.pre.*;
 import junit.framework.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
@@ -76,7 +74,7 @@ public class PackageFileSystemTest
 
     static PlainPackageFileSystemObject c_x_u = plain( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, some( fileA ) ) );
 
-    Show<List<PackageFileSystemObject<Object>>> fsShow = Show.listShow( Show.showS( new F<PackageFileSystemObject<Object>, String>()
+    Show<Stream<PackageFileSystemObject<Object>>> fsShow = Show.streamShow( Show.showS( new F<PackageFileSystemObject<Object>, String>()
     {
         public String f( PackageFileSystemObject o )
         {
@@ -178,7 +176,7 @@ public class PackageFileSystemTest
 
         fsShow.println( fileSystem.toList() );
 
-        List<PackageFileSystemObject<Object>> actual = fileSystem.prettify().toList();
+        Stream<PackageFileSystemObject<Object>> actual = fileSystem.prettify().toList();
         assertEquals( 9, actual.length() );
         int i = 0;
         assertEquals( root.getUnixFsObject(), actual.index( i++ ).getUnixFsObject() );

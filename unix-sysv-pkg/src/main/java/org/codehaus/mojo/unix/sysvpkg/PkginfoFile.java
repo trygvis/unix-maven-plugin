@@ -30,7 +30,7 @@ import fj.data.List;
 import fj.data.*;
 import static fj.data.Option.*;
 import fj.data.TreeMap;
-import static fj.pre.Ord.*;
+import static fj.Ord.*;
 import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.java.StringF.*;
 import org.codehaus.mojo.unix.util.fj.*;

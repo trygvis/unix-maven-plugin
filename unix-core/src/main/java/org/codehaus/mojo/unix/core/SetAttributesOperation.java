@@ -138,7 +138,7 @@ public class SetAttributesOperation
     }
 
     private final class ApplyAttributes
-        implements F2<UnixFsObject, FileAttributes, FileAttributes>
+        extends F2<UnixFsObject, FileAttributes, FileAttributes>
     {
         private final Class<? extends UnixFsObject> klass;
         private final RelativePath basedir;

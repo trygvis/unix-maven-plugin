@@ -30,7 +30,7 @@ import static fj.Function.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
-import static fj.pre.Ord.*;
+import static fj.Ord.*;
 import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.java.StringF.*;
 

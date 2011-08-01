@@ -24,14 +24,13 @@ package org.codehaus.mojo.unix.util;
  * SOFTWARE.
  */
 
+import fj.*;
 import fj.data.*;
-import fj.pre.*;
 
+import java.lang.Class;
 import java.io.*;
 import java.net.*;
 
-/**
- */
 public class TestUtil
 {
     public static final String EOL = System.getProperty( "line.separator" );

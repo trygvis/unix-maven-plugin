@@ -1,8 +1,8 @@
 package org.codehaus.mojo.unix.deb;
 
+import fj.*;
 import fj.data.*;
 import static fj.data.List.*;
-import fj.pre.*;
 import junit.framework.*;
 import static org.codehaus.mojo.unix.deb.ControlFile.*;
 

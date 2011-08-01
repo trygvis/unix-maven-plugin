@@ -76,12 +76,12 @@ public class PackageFileSystemFormatter<A>
 
         lines.add( "." );
 
-        print( 1, lines, tree.subForest() );
+        print( 1, lines, tree.subForest()._1() );
 
         return lines;
     }
 
-    private void print( int i, LineFile lines, List<Tree<PackageFileSystemObject<A>>> children )
+    private void print( int i, LineFile lines, Stream<Tree<PackageFileSystemObject<A>>> children )
     {
         String indent = StringUtils.repeat( "    ", i );
         i++;
@@ -89,7 +89,7 @@ public class PackageFileSystemFormatter<A>
         for ( Tree<PackageFileSystemObject<A>> child : children )
         {
             lines.add( indent + child.root().getUnixFsObject().path.name() );
-            print( i, lines, child.subForest() );
+            print( i, lines, child.subForest()._1() );
         }
     }
 }

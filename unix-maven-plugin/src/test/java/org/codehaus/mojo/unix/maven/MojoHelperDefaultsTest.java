@@ -26,8 +26,7 @@ package org.codehaus.mojo.unix.maven;
 
 import static fj.P.*;
 import fj.*;
-import fj.pre.*;
-import static fj.pre.Equal.*;
+import static fj.Equal.*;
 import junit.framework.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;

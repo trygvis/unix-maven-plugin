@@ -35,7 +35,7 @@ import fj.data.*;
 import static fj.data.Option.*;
 import fj.data.Set;
 import static fj.data.Set.*;
-import static fj.pre.Ord.*;
+import static fj.Ord.*;
 import static java.lang.String.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.artifact.*;

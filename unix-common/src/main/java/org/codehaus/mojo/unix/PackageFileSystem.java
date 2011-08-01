@@ -26,17 +26,16 @@ package org.codehaus.mojo.unix;
 
 import static fj.Bottom.*;
 import fj.*;
+import fj.data.*;
 import fj.Function;
 import static fj.Function.compose;
 import static fj.Function.*;
 import static fj.P.*;
-import fj.data.*;
+import static fj.Ord.*;
 import static fj.data.Either.*;
 import static fj.data.Option.*;
 import static fj.data.Tree.*;
 import static fj.data.TreeZipper.*;
-import fj.pre.*;
-import static fj.pre.Ord.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.fj.FunctionF.*;
@@ -200,7 +199,7 @@ public class PackageFileSystem<A>
             }
         };
 
-    public List<PackageFileSystemObject<A>> toList()
+    public Stream<PackageFileSystemObject<A>> toList()
     {
         return root.toTree().flatten();
     }
@@ -310,7 +309,7 @@ public class PackageFileSystem<A>
 
     private static <A> Tree<PackageFileSystemObject<A>> prettyTree( Tree<PackageFileSystemObject<A>> root )
     {
-        List<Tree<PackageFileSystemObject<A>>> forest = root.subForest().
+        Stream<Tree<PackageFileSystemObject<A>>> forest = root.subForest()._1().
             sort( PackageFileSystem.<A>treeOrd() ).
             map( new F<Tree<PackageFileSystemObject<A>>, Tree<PackageFileSystemObject<A>>>()
             {

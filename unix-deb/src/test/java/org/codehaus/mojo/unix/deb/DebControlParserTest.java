@@ -4,7 +4,6 @@ import fj.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
-import fj.pre.*;
 import junit.framework.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;

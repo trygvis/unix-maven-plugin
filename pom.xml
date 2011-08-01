@@ -22,8 +22,7 @@
   ~ SOFTWARE.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>mojo-parent</artifactId>
@@ -38,7 +37,7 @@
   <inceptionYear>2008</inceptionYear>
   <description>Supporting tools for writing software for the UNIX platform</description>
   <properties>
-    <functionaljava.version>2.19</functionaljava.version>
+    <functionaljava.version>3.0</functionaljava.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -69,7 +68,7 @@
       </dependency>
       <dependency>
         <groupId>org.functionaljava</groupId>
-        <artifactId>fj</artifactId>
+        <artifactId>functionaljava</artifactId>
         <version>${functionaljava.version}</version>
       </dependency>
     </dependencies>

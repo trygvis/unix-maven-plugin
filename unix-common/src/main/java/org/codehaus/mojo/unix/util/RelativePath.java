@@ -28,7 +28,6 @@ import fj.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
-import fj.pre.*;
 
 /**
  * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>

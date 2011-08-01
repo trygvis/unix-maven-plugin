@@ -29,7 +29,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>unix-maven-plugin</artifactId>
-        <version>1.0-alpha-5-SNAPSHOT</version>
+        <version>1.0-alpha-6-SNAPSHOT</version>
         <extensions>true</extensions>
         <configuration>
           <contact>Acme</contact>

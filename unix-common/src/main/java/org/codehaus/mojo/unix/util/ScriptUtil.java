@@ -29,7 +29,6 @@ import static fj.Function.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
-import fj.pre.*;
 import static java.lang.Math.*;
 import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.java.FileF.*;

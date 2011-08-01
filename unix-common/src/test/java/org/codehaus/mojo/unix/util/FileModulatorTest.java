@@ -26,7 +26,7 @@ package org.codehaus.mojo.unix.util;
 
 import fj.data.*;
 import static fj.data.List.*;
-import static fj.pre.Equal.*;
+import static fj.Equal.*;
 import junit.framework.*;
 import static org.codehaus.mojo.unix.util.FileModulator.*;
 
