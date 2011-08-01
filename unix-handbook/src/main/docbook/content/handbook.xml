@@ -516,8 +516,8 @@
 
           <para>The package will contain these files:</para>
 
-          <screen><xi:include href="../examples/basic/rpm-qlp.txt"
-              parse="text" /></screen>
+          <screen><?dbfo-font-size 75% ?><xi:include
+              href="../examples/basic/rpm-qlp.txt" parse="text" /></screen>
         </section>
       </section>
 
@@ -528,30 +528,7 @@
           <title><code>pom.xml</code> for the zip version</title>
 
           <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
-        </section>
-
-        <section>
-          <title>Resulting ZIP</title>
-
-          <para>After running <command>mvn install</command> on the rpm
-          version of the project, the package is packaged into
-          <filename>target/basic-pkg-1.0.rpm</filename>.</para>
-
-          <para>The zip will contain these files:</para>
-
-          <screen><xi:include href="../examples/unzip-l.txt" parse="text" /></screen>
-        </section>
-      </section>
-
-      <section>
-        <title>The Zip version</title>
-
-        <section>
-          <title><code>pom.xml</code> for the zip version</title>
-
-          <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
+              href="../examples/basic/pom-zip.xml" parse="text" /></programlisting>
         </section>
 
         <section>
