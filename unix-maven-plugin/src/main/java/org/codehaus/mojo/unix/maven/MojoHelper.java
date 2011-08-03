@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.maven;
 
 import fj.*;
 import static fj.Function.*;
+import static fj.Ord.*;
 import static fj.P.*;
 import fj.data.List;
 import static fj.data.List.join;
@@ -35,12 +36,12 @@ import fj.data.*;
 import static fj.data.Option.*;
 import fj.data.Set;
 import static fj.data.Set.*;
-import static fj.Ord.*;
 import static java.lang.String.*;
+import org.apache.commons.logging.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.artifact.*;
 import org.apache.maven.plugin.*;
-import org.apache.maven.plugin.logging.*;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
@@ -69,13 +70,6 @@ public abstract class MojoHelper
     public static final String ATTACHED_NO_ARTIFACTS_CONFIGURED = "When running in attached mode at least one package has to be configured.";
     public static final String DUPLICATE_CLASSIFIER = "Duplicate package classifier: '%s'.";
     public static final String DUPLICATE_UNCLASSIFIED = "There can only be one package without an classifier.";
-
-    static
-    {
-        System.setProperty(
-            org.apache.commons.logging.LogFactory.class.getName(),
-            MavenCommonLoggingLogFactory.class.getName() );
-    }
 
     public static Execution create( Map platforms,
                                     String platformType,
@@ -255,6 +249,29 @@ public abstract class MojoHelper
         }
 
         public void execute( String artifactType, MavenProject mavenProject, MavenProjectHelper mavenProjectHelper, ScriptUtil.Strategy strategy )
+            throws MojoExecutionException, MojoFailureException
+        {
+            // Save and restore the system property for commons logging.
+            String key = LogFactory.class.getName();
+            String value = System.getProperty( key );
+
+            System.setProperty( key, MavenCommonLoggingLogFactory.class.getName() );
+
+            try
+            {
+                execute_( artifactType, mavenProject, mavenProjectHelper, strategy );
+            }
+            finally {
+                if(value == null) {
+                    System.getProperties().remove( key );
+                }
+                else {
+                    System.setProperty( key, value );
+                }
+            }
+        }
+
+        private void execute_( String artifactType, MavenProject mavenProject, MavenProjectHelper mavenProjectHelper, ScriptUtil.Strategy strategy )
             throws MojoExecutionException, MojoFailureException
         {
             for ( P3<UnixPackage, Package, List<AssemblyOperation>> p : packages )
