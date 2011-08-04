@@ -92,6 +92,8 @@ public class SpecFile
 
     public File buildRoot;
 
+    public String buildArch;
+
     public String description;
 
     public boolean dump;
@@ -164,11 +166,12 @@ public class SpecFile
             add( "License: " + UnixUtil.getField( "license", license ) ).
             addIfNotEmpty( "Distribution: ", distribution ).
             add( "Group: " + UnixUtil.getField( "group", group ) ).
-            addIfNotEmpty( "Packager", packager ).
-            addAllLines( prefix( provides, "Provides" ) ).
-            addAllLines( prefix( requires, "Requires" ) ).
-            addAllLines( prefix( conflicts, "Conflicts" ) ).
+            addIfNotEmpty( "Packager: ", packager ).
+            addAllLines( prefix( provides, "Provides: " ) ).
+            addAllLines( prefix( requires, "Requires: " ) ).
+            addAllLines( prefix( conflicts, "Conflicts: " ) ).
             addIfNotEmpty( fromNull( buildRoot ).map( compose( curry( concat, "BuildRoot: " ), getAbsolutePath ) ).orSome( "" ) ).
+            add( "BuildArch: " + buildArch ).
             add();
 
         // The %description tag is required even if it is empty.

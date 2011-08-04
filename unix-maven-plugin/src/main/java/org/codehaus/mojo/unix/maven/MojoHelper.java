@@ -379,7 +379,7 @@ public abstract class MojoHelper
             contact( mojoParameters.contact ).
             contactEmail( mojoParameters.contactEmail ).
             license( getLicense( project ) ).
-            architecture( mojoParameters.architecture );
+            architecture( pakke.architecture.orElse( mojoParameters.architecture ) );
     }
 
     public static P2<FileAttributes, FileAttributes> calculateDefaultFileAttributes( UnixPlatform platform,

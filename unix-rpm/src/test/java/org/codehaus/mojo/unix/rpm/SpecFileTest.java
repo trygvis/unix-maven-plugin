@@ -46,6 +46,7 @@ public class SpecFileTest
     extends TestCase
 {
     final LineFile header;
+    final LineFile buildHeader;
 
     final LocalDateTime lastModified = new LocalDateTime( 2009, 2, 24, 9, 42 );
 
@@ -59,8 +60,12 @@ public class SpecFileTest
             add( "Release: 1" ).
             add( "Summary: My summary" ).
             add( "License: License" ).
-            add( "Group: My Group" ).
-            add( "BuildRoot: " + new File( "build-root" ).getAbsolutePath() );
+            add( "Group: My Group" );
+
+        buildHeader = new LineFile();
+        buildHeader.
+            add( "BuildRoot: " + new File( "build-root" ).getAbsolutePath() ).
+            add( "BuildArch: noarch" );
     }
 
     public void testFilesGeneration()
@@ -92,7 +97,12 @@ public class SpecFileTest
         specFile.addFile( regularFile( relativePath( "/e" ), lastModified, 10, some( fileAttributes.addTag( "rpm:ghost" ) ) ) );
         specFile.apply( filter( extract2Jar, extract2JarAttributes ) );
 
+        specFile.provides = List.list( "foo", "bar" );
+
         assertEquals( header.
+            add( "Provides: foo" ).
+            add( "Provides: bar" ).
+            addAllLines( buildHeader.getLines() ).
             add().
             add( "%description" ).
             add().
@@ -118,6 +128,7 @@ public class SpecFileTest
         specFile.description = "Yo yo";
 
         assertEquals( header.
+            addAllLines( buildHeader.getLines() ).
             add().
             add( "%description" ).
             add( "Yo yo" ).
@@ -134,6 +145,7 @@ public class SpecFileTest
         specFile.includePost = some( new File( "pom.xml" ) );
 
         assertEquals( header.
+            addAllLines( buildHeader.getLines() ).
             add().
             add( "%description" ).
             add().
@@ -219,6 +231,7 @@ public class SpecFileTest
         specFile.license = "License";
         specFile.group = "My Group";
         specFile.buildRoot = new File( "build-root" );
+        specFile.buildArch = "noarch";
         specFile.beforeAssembly( UnixFsObject.directory( BASE, new LocalDateTime(), fileAttributes ) );
         return specFile;
     }

@@ -96,9 +96,10 @@ public class Rpmbuild
             addArgument( "-bb" ).
             addArgument( "--buildroot" ).
             addArgument( buildroot.getAbsolutePath() ).
-            addArgument( "--target" ).
-            addArgument( "noarch" ).
             addArgument( specFile.getAbsolutePath() );
+
+        // --target <arch> used to be a part of the rpmbuild command but to allow different architectures (not
+        // only "noarch") it has to be specified in the spec file.
 
         // TODO: Only the _topdir defines should be there, the others should be in the spec file
         // TODO: This should be configurable

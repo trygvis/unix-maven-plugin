@@ -75,6 +75,7 @@ public class RpmUnixPackage
         specFile.summary = parameters.name;
         specFile.description = parameters.description.orSome( "" ); // TODO: This is not right
         specFile.license = parameters.license.some();
+        specFile.buildArch = parameters.architecture.orSome( "noarch" );
 
         P2<String, String> rpmVersion = getRpmVersion( parameters.version );
         specFile.version = rpmVersion._1();

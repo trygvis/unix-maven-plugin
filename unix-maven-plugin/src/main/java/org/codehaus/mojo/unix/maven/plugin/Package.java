@@ -41,6 +41,8 @@ public class Package
 
     public Option<String> description = none();
 
+    public Option<String> architecture = none();
+
     public Defaults defaults = new Defaults();
 
     public List<AssemblyOp> assembly = nil();
@@ -63,6 +65,11 @@ public class Package
     public void setDescription( String description )
     {
         this.description = fromNull( description );
+    }
+
+    public void setArchitecture( String architecture )
+    {
+        this.architecture = fromNull( architecture );
     }
 
     public void setAssembly( AssemblyOp[] assembly )
