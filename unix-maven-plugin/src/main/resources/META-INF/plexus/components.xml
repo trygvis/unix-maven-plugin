@@ -91,7 +91,7 @@
       <configuration>
         <phases>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-          <package>org.codehaus.mojo:unix-maven-plugin:package-deb</package>
+          <package>no.arktekk.unix:unix-maven-plugin:package-deb</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
         </phases>
@@ -104,7 +104,7 @@
       <configuration>
         <phases>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-          <package>org.codehaus.mojo:unix-maven-plugin:package-sysvpkg</package>
+          <package>no.arktekk.unix:unix-maven-plugin:package-sysvpkg</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
         </phases>
@@ -117,7 +117,7 @@
       <configuration>
         <phases>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-          <package>org.codehaus.mojo:unix-maven-plugin:package-rpm</package>
+          <package>no.arktekk.unix:unix-maven-plugin:package-rpm</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
         </phases>
@@ -130,7 +130,7 @@
       <configuration>
         <phases>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-          <package>org.codehaus.mojo:unix-maven-plugin:package-zip</package>
+          <package>no.arktekk.unix:unix-maven-plugin:package-zip</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
         </phases>
