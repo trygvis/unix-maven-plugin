@@ -30,7 +30,7 @@ import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class Mkdirs
     extends AssemblyOp

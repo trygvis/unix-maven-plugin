@@ -13,7 +13,7 @@ boolean success = true
 File pkg = new File((File) basedir, "target/project-sysvpkg-1-1.1-2.pkg")
 
 pkginfo = new PkginfoFile("all", "application", "Hudson", "project-sysvpkg-1", "1.1-2").
-        email(some("trygvis@codehaus.org"))
+        email(some("trygvis@inamo.no"))
 
 success &= assertRelaxed(pkginfo, PkginfoUtil.getPackageInfoForDevice(pkg).some(), packageInfoEqual);
 

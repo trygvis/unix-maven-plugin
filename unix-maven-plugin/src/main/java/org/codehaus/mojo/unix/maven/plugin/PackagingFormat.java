@@ -27,7 +27,7 @@ package org.codehaus.mojo.unix.maven.plugin;
 import org.codehaus.mojo.unix.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public interface PackagingFormat
 {

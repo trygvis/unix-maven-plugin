@@ -26,7 +26,7 @@
 <document>
   <properties>
     <title>Unix Maven Plugin</title>
-    <author email="trygvis@codehaus.org">Trygve Laugstol</author>
+    <author email="trygvis@inamo.no">Trygve Laugstol</author>
   </properties>
   <body>
     <section name="Documentation">

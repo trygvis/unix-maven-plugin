@@ -24,7 +24,7 @@
   -->
 <project xmlns:unix="http://mojo.codehaus.org/unix/conditional">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.codehaus.mojo.unix.example</groupId>
+  <groupId>no.arktekk.unix.example</groupId>
   <artifactId>basic</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging unix:format="deb">deb</packaging>
@@ -54,7 +54,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>no.arktekk.unix</groupId>
         <artifactId>unix-maven-plugin</artifactId>
         <unix:version/>
         <extensions>true</extensions>

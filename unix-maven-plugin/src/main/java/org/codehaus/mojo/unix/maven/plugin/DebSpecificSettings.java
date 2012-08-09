@@ -28,7 +28,7 @@ import fj.data.*;
 import static fj.data.Option.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 @SuppressWarnings( {"UnusedDeclaration"} )
 public class DebSpecificSettings

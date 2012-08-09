@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class FsFileCollector
     implements FileCollector

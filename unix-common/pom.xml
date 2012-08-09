@@ -26,7 +26,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.codehaus.mojo.unix</groupId>
+    <groupId>no.arktekk.unix</groupId>
     <artifactId>unix</artifactId>
     <version>1.0-alpha-6-SNAPSHOT</version>
   </parent>
@@ -36,17 +36,10 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>1.5.6</version>
     </dependency>
     <dependency>
       <groupId>commons-vfs</groupId>
       <artifactId>commons-vfs</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-container-default</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.functionaljava</groupId>
@@ -55,7 +48,6 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>1.6</version>
     </dependency>
   </dependencies>
 </project>

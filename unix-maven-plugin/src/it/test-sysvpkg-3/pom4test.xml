@@ -26,7 +26,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.codehaus.mojo.unix</groupId>
+    <groupId>no.arktekk.unix</groupId>
     <artifactId>unix</artifactId>
     <version>@project.version@</version>
   </parent>
@@ -48,13 +48,13 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>no.arktekk.unix</groupId>
         <artifactId>unix-maven-plugin</artifactId>
         <version>@project.version@</version>
         <extensions>true</extensions>
         <configuration>
           <contact>Trygve Laugstol</contact>
-          <contactEmail>trygvis@codehaus.org</contactEmail>
+          <contactEmail>trygvis@inamo.no</contactEmail>
           <!-- Include the license in both packages -->
           <assembly>
             <extractArtifact>

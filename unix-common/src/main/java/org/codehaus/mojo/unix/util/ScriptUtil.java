@@ -70,7 +70,7 @@ import java.util.concurrent.*;
  * `-- post-install-b-rpm
  * </pre>
  *
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public final class ScriptUtil
 {

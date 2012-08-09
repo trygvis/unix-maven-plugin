@@ -33,7 +33,7 @@ import org.codehaus.mojo.unix.util.*;
 import java.io.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class EditableEntry
     extends PrototypeEntry<RegularFile>

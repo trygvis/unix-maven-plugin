@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.regex.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class CopyDirectoryOperation
     extends AssemblyOperation

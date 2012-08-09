@@ -29,7 +29,7 @@ import static fj.data.Option.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class PackageParameters
 {

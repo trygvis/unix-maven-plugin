@@ -26,11 +26,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>mojo-parent</artifactId>
-    <groupId>org.codehaus.mojo</groupId>
-    <version>27</version>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
   </parent>
-  <groupId>org.codehaus.mojo.unix</groupId>
+  <groupId>no.arktekk.unix</groupId>
   <artifactId>unix</artifactId>
   <version>1.0-alpha-6-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -39,9 +39,31 @@
   <description>Supporting tools for writing software for the UNIX platform</description>
   <properties>
     <functionaljava.version>3.0</functionaljava.version>
+    <version.maven-compiler-plugin>2.3.1</version.maven-compiler-plugin>
+    <version.maven-dependency-plugin>2.5</version.maven-dependency-plugin>
+    <version.maven-deploy-plugin>2.5</version.maven-deploy-plugin>
+    <version.maven-javadoc-plugin>2.8</version.maven-javadoc-plugin>
+    <version.maven-jxr-plugin>2.3</version.maven-jxr-plugin>
+    <version.maven-pmd-plugin>2.5</version.maven-pmd-plugin>
+    <version.maven-resources-plugin>2.5</version.maven-resources-plugin>
   </properties>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>commons-vfs</groupId>
+        <artifactId>commons-vfs</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>1.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>2.0</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-project</artifactId>
@@ -50,6 +72,11 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
+        <version>2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
         <version>2.0</version>
       </dependency>
       <dependency>
@@ -78,7 +105,7 @@
     <developer>
       <id>trygvis</id>
       <name>Trygve Laugstol</name>
-      <email>trygvis@codehaus.org</email>
+      <email>trygvis@inamo.no</email>
       <url>http://blogs.codehaus.org/people/trygvis</url>
       <roles>
         <role>Java Developer</role>
@@ -93,8 +120,7 @@
     </contributor>
   </contributors>
   <issueManagement>
-    <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MUNIX</url>
+    <url>https://github.com/trygvis/unix-maven-plugin/issues</url>
   </issueManagement>
   <licenses>
     <license>
@@ -103,11 +129,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  <scm>
-    <url>https://svn.codehaus.org/mojo/trunk/mojo/unix</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/unix</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/unix</developerConnection>
-  </scm>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -117,10 +138,41 @@
     </dependency>
   </dependencies>
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${version.maven-compiler-plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${version.maven-dependency-plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.maven-deploy-plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${version.maven-javadoc-plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jxr-plugin</artifactId>
+          <version>${version.maven-jxr-plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>${version.maven-pmd-plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${version.maven-resources-plugin}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.1</version>
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
@@ -128,7 +180,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.4.3</version>
         <configuration>
           <encoding>utf-8</encoding>
           <source>1.5</source>
@@ -159,8 +210,8 @@
   <reporting>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${version.maven-javadoc-plugin}</version>
         <configuration>
           <links>
             <link>http://java.sun.com/j2se/1.4.2/docs/api</link>
@@ -175,6 +226,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
+        <version>${version.maven-pmd-plugin}</version>
         <configuration>
           <targetJdk>1.5</targetJdk>
         </configuration>

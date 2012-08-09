@@ -38,7 +38,7 @@ import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 import java.io.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class DebUnixPackage
     extends UnixPackage

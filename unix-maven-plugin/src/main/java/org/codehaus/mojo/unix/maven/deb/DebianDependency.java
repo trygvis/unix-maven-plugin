@@ -29,7 +29,7 @@ import org.apache.maven.artifact.*;
 import java.io.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 class DebianDependency
 {

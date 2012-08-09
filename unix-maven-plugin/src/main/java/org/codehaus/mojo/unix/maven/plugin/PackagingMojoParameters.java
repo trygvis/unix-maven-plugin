@@ -32,7 +32,7 @@ import static org.codehaus.mojo.unix.util.Validate.*;
 /**
  * A utility class to contain all configuration settings for a packaging mojo.
  *
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class PackagingMojoParameters
 {

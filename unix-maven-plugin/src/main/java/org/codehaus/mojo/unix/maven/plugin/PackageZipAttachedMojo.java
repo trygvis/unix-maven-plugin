@@ -29,7 +29,7 @@ import static fj.Function.*;
 import org.codehaus.mojo.unix.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @goal package-zip-attached
  * @phase package
  * @requiresDependencyResolution runtime

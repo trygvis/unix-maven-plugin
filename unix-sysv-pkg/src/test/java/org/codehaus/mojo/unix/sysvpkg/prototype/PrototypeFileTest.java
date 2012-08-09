@@ -40,7 +40,7 @@ import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class PrototypeFileTest
     extends TestCase

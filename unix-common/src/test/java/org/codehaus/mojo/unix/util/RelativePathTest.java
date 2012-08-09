@@ -29,7 +29,7 @@ import junit.framework.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class RelativePathTest
     extends TestCase

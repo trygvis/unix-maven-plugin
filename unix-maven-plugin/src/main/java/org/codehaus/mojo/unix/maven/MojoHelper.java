@@ -63,7 +63,7 @@ import java.util.TreeMap;
 /**
  * Utility class encapsulating how to create a package. Used by all packaging Mojos.
  *
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public abstract class MojoHelper
 {

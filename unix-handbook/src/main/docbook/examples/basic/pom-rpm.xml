@@ -1,6 +1,6 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.codehaus.mojo.unix.example</groupId>
+  <groupId>no.arktekk.unix.example</groupId>
   <artifactId>basic</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>rpm</packaging>
@@ -27,7 +27,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>no.arktekk.unix</groupId>
         <artifactId>unix-maven-plugin</artifactId>
         <version>1.0-alpha-6-SNAPSHOT</version>
         <extensions>true</extensions>

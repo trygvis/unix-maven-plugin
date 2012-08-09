@@ -32,7 +32,7 @@ import static org.codehaus.mojo.unix.sysvpkg.PkginfoFile.*;
 import org.codehaus.mojo.unix.util.line.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class PkginfoFileTest
     extends TestCase
@@ -46,7 +46,7 @@ public class PkginfoFileTest
             add( "           ARCH:  all" ).
             add( "        VERSION:  1.1-2" ).
             add( "         PSTAMP:  20090129.134909" ).
-            add( "          EMAIL:  trygvis@codehaus.org" ).
+            add( "          EMAIL:  trygvis@inamo.no" ).
             add( "         STATUS:  spooled" ).
             add( "          FILES:        3 spooled pathnames" ).
             add( "                        2 package information files" ).
@@ -54,7 +54,7 @@ public class PkginfoFileTest
 
         PkginfoFile expected = new PkginfoFile( "all", "application", "Hudson", "project-pkg-1", "1.1-2",
                                                 some( "20090129.134909" ), Option.<String>none(),
-                                                some( "trygvis@codehaus.org" ), List.<String>nil() );
+                                                some( "trygvis@inamo.no" ), List.<String>nil() );
 
         assertEquals( expected.toString(), fromStream( pkginfoStrings ).some().toString() );
     }

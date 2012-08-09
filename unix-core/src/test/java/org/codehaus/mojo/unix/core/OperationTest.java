@@ -37,7 +37,7 @@ import org.codehaus.plexus.*;
 import org.easymock.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class OperationTest
     extends PlexusTestCase

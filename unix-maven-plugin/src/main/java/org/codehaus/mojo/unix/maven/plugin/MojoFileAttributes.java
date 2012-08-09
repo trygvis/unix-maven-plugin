@@ -35,7 +35,7 @@ import static org.codehaus.mojo.unix.java.StringF.*;
  * TODO: Re-work how these attributes are validated. Right now a RuntimeException is thrown, but the
  * create() method should return an Either or Option with an validation message on errors.
  *
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class MojoFileAttributes
 {

@@ -34,7 +34,7 @@ import static org.codehaus.mojo.unix.maven.MojoHelper.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class MojoHelperDefaultsTest
     extends TestCase

@@ -34,7 +34,7 @@ import java.io.*;
  * <p/>
  * TODO: Move to unix-core. Stuff in unix-common should be generic for "unix stuff".
  *
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public abstract class UnixPackage
     implements FileCollector

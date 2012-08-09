@@ -36,7 +36,7 @@ import java.util.zip.*;
  * <p/>
  * By default the entire local repository will be scanned.
  *
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @goal dpkg-scanpackages
  * @requiresProject false
  */

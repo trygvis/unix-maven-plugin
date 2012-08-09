@@ -31,7 +31,7 @@ import org.codehaus.mojo.unix.util.*;
 import java.util.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class IncludeExcludeTest
     extends TestCase

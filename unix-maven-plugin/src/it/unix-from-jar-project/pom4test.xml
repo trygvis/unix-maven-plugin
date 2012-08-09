@@ -26,7 +26,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.codehaus.mojo.unix</groupId>
+    <groupId>no.arktekk.unix</groupId>
     <artifactId>unix</artifactId>
     <version>@project.version@</version>
   </parent>
@@ -47,7 +47,7 @@
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.mojo.unix.it</groupId>
+      <groupId>no.arktekk.unix.it</groupId>
       <artifactId>my-native</artifactId>
       <version>1.0</version>
       <type>so</type>
@@ -80,7 +80,7 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>no.arktekk.unix</groupId>
         <artifactId>unix-maven-plugin</artifactId>
         <version>@project.version@</version>
         <executions>
@@ -95,7 +95,7 @@
         </executions>
         <configuration>
           <contact>Trygve Laugstol</contact>
-          <contactEmail>trygvis@codehaus.org</contactEmail>
+          <contactEmail>trygvis@inamo.no</contactEmail>
           <defaults>
             <fileAttributes>
               <user>hudson</user>
@@ -115,7 +115,7 @@
               <toFile>/usr/share/hudson/lib/hudson.war</toFile>
             </copyArtifact>
             <copyArtifact>
-              <artifact>org.codehaus.mojo.unix.it:my-native:so:${os.name}-${os.version}-${os.arch}
+              <artifact>no.arktekk.unix.it:my-native:so:${os.name}-${os.version}-${os.arch}
               </artifact>
               <toFile>/usr/share/hudson/lib/my-native.so</toFile>
             </copyArtifact>

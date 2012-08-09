@@ -34,7 +34,7 @@ import java.io.*;
  * package in buildDir using the contents of stageDir.  This classes
  * assumes that stageDir is going to be a direct descendant of buildDir.
  *
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class Dpkg
 {

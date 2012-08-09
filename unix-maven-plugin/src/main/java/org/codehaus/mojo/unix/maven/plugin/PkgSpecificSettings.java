@@ -30,7 +30,7 @@ import static fj.data.Option.*;
 import static org.codehaus.mojo.unix.java.StringF.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 @SuppressWarnings( {"UnusedDeclaration"} )
 public class PkgSpecificSettings

@@ -40,7 +40,7 @@ import org.codehaus.plexus.*;
 import java.io.*;
 
 /**
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class DebUnixPackageTest
     extends PlexusTestCase

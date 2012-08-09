@@ -52,7 +52,7 @@ import java.util.*;
  * <p/>
  * A purely meta data one is useful for parts of the code that just create SPEC files and testing.
  *
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class SpecFile
     implements LineProducer

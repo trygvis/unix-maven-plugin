@@ -26,11 +26,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.codehaus.mojo.unix</groupId>
+    <groupId>no.arktekk.unix</groupId>
     <artifactId>unix</artifactId>
     <version>1.0-alpha-6-SNAPSHOT</version>
   </parent>
-  <groupId>org.codehaus.mojo</groupId>
   <artifactId>unix-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>Maven Unix Plug-In</name>
@@ -40,6 +39,29 @@
   </prerequisites>
   <dependencies>
     <dependency>
+      <groupId>commons-vfs</groupId>
+      <artifactId>commons-vfs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
     </dependency>
@@ -48,21 +70,47 @@
       <artifactId>maven-plugin-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.1</version>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.mojo.unix</groupId>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>unix-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>unix-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>easymock</groupId>
-      <artifactId>easymock</artifactId>
-      <version>1.2_Java1.3</version>
-      <scope>test</scope>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>unix-deb</artifactId>
+      <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>unix-rpm</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>unix-sysv-pkg</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.functionaljava</groupId>
+      <artifactId>functionaljava</artifactId>
+    </dependency>
+
     <!-- These are for the integration tests -->
     <dependency>
       <groupId>org.jvnet.hudson.main</groupId>

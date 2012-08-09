@@ -39,7 +39,7 @@ import java.util.Set;
 /**
  * A small wrapper around a MavenProject instance to make testing easier.
  *
- * @author <a href="mailto:trygvis@codehaus.org">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class MavenProjectWrapper
 {
