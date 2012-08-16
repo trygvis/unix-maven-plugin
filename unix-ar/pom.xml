@@ -27,7 +27,7 @@
   <parent>
     <groupId>no.arktekk.unix</groupId>
     <artifactId>unix</artifactId>
-    <version>1.0-alpha-6</version>
+    <version>1.0-alpha-7-SNAPSHOT</version>
   </parent>
   <artifactId>unix-ar</artifactId>
   <name>Maven Ar File Format Tools</name>
