@@ -8,7 +8,7 @@ import org.codehaus.mojo.unix.util.*;
 import org.joda.time.*;
 
 /**
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class AssemblyOperationUtil
 {
