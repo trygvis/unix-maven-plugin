@@ -27,7 +27,7 @@
   <parent>
     <groupId>no.arktekk.unix</groupId>
     <artifactId>unix</artifactId>
-    <version>1.0-alpha-6-SNAPSHOT</version>
+    <version>1.0-alpha-6</version>
   </parent>
   <artifactId>unix-handbook</artifactId>
   <name>Unix Maven Plugin Handbook</name>
@@ -97,9 +97,9 @@
             <property name="version.unix-maven-plugin" value="${version.unix-maven-plugin}" />
             <property name="version.maven-ant-tasks" value="${version.maven-ant-tasks}" />
             <ant dir="${basedir}">
-              <target name="clean"/>
-              <target name="html"/>
-              <target name="pdf"/>
+              <target name="clean" />
+              <target name="html" />
+              <target name="pdf" />
             </ant>
             <attachartifact file="./target/site/handbook.pdf" classifier="single" type="pdf" />
             <attachartifact file="./target/site/handbook.html" classifier="single" type="html" />
