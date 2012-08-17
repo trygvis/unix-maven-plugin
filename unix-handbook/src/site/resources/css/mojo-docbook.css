@@ -19,15 +19,15 @@ div.literallayout > p {
     margin: 0;
 }
 
-.part, .preface > table {
+.preface > table {
     border: 0;
 }
 
-.part, .preface > td {
+.preface > td {
     border: 0;
 }
 
-.part, .preface > th {
+.preface > th {
     background-color: #BBBBBB;
     color: white;
     font-weight: bold;
@@ -36,7 +36,7 @@ div.literallayout > p {
 }
 
 /* Copies the 'a' table row class */
-.part, .preface > tr {
+.preface > tr {
     background-color: #DDDDDD;
 }
 
