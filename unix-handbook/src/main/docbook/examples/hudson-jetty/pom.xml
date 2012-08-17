@@ -28,7 +28,7 @@
   <groupId>no.arktekk.unix.example</groupId>
   <artifactId>hudson-jetty-pkg</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>pkg</packaging>
+  <packaging>sysvpkg</packaging>
   <name>Hudson Solaris Package</name>
   <properties>
     <version.jetty>7.0.0pre3</version.jetty>
