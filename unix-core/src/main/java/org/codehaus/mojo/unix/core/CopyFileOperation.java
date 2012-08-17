@@ -37,7 +37,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class CopyFileOperation
-    extends AssemblyOperation
+    implements AssemblyOperation
 {
     private final FileAttributes attributes;
 

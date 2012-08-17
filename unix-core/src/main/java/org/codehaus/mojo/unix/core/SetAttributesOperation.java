@@ -44,7 +44,7 @@ import java.util.List;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class SetAttributesOperation
-    extends AssemblyOperation
+    implements AssemblyOperation
 {
     private final IncludeExcludeFileSelector selector;
 

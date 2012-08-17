@@ -38,7 +38,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class SymlinkOperation
-    extends AssemblyOperation
+    implements AssemblyOperation
 {
     private final RelativePath path;
 

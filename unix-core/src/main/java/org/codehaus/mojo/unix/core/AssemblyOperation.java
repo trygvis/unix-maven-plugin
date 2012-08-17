@@ -32,9 +32,9 @@ import java.io.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public abstract class AssemblyOperation
-    implements LineProducer
+public interface AssemblyOperation
+    extends LineProducer
 {
-    public abstract void perform( FileCollector fileCollector )
+    void perform(FileCollector fileCollector)
         throws IOException;
 }

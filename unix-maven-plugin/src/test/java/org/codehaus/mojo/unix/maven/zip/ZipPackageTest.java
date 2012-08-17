@@ -34,6 +34,7 @@ import org.codehaus.mojo.unix.util.*;
 import java.io.*;
 
 /**
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class ZipPackageTest
     extends TestCase

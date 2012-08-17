@@ -44,7 +44,7 @@ import java.util.regex.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class CopyDirectoryOperation
-    extends AssemblyOperation
+    implements AssemblyOperation
 {
     private final FileObject from;
 
