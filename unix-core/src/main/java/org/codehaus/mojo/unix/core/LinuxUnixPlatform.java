@@ -34,7 +34,8 @@ public class LinuxUnixPlatform
     private static final FileAttributes defaultFileAttributes =
         new FileAttributes( some( "root" ), some( "root" ), some( _0644 ) );
 
-    private static final FileAttributes defaultDirectoryAttributes = defaultFileAttributes.mode( _0755 );
+    private static final FileAttributes defaultDirectoryAttributes =
+        defaultFileAttributes.mode( _0755 );
 
     public FileAttributes getDefaultFileAttributes()
     {

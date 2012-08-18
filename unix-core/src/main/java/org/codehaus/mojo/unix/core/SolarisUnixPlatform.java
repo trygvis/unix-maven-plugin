@@ -34,7 +34,8 @@ public class SolarisUnixPlatform
     private static final FileAttributes defaultFileAttributes =
         new FileAttributes( some( "nobody" ), some( "nogroup" ), some( _0644 ) );
 
-    private static final FileAttributes defaultDirectoryAttributes = defaultFileAttributes.mode( _0755 );
+    private static final FileAttributes defaultDirectoryAttributes =
+        defaultFileAttributes.mode( _0755 );
 
     public FileAttributes getDefaultFileAttributes()
     {

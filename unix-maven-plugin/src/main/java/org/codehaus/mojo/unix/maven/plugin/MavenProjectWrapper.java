@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.maven.plugin;
 
 import fj.data.*;
 import static fj.data.Option.*;
+import static java.util.Collections.*;
 import org.apache.maven.artifact.*;
 import org.apache.maven.model.*;
 import org.apache.maven.project.*;
@@ -34,7 +35,9 @@ import static org.codehaus.mojo.unix.util.Validate.*;
 import java.io.*;
 import java.util.List;
 import java.util.*;
+import java.util.Map.*;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * A small wrapper around a MavenProject instance to make testing easier.
@@ -65,9 +68,12 @@ public class MavenProjectWrapper
 
     public final Map<String, Artifact> artifactConflictIdMap;
 
+    public final Map<String, String> properties;
+
     public MavenProjectWrapper( String groupId, String artifactId, String version, Artifact artifact, String name,
                                 String description, File basedir, File buildDirectory, Set<Artifact> artifacts,
-                                List<License> licenses, Map<String, Artifact> artifactConflictIdMap )
+                                List<License> licenses, Map<String, Artifact> artifactConflictIdMap,
+                                Map<String, String> properties )
     {
         validateNotNull( groupId, artifactId, version, name );
         this.groupId = groupId;
@@ -81,22 +87,30 @@ public class MavenProjectWrapper
         this.artifacts = artifacts;
         this.licenses = licenses;
         this.artifactConflictIdMap = artifactConflictIdMap;
+        this.properties = properties;
     }
 
-    public static MavenProjectWrapper mavenProjectWrapper( MavenProject project )
+    public static MavenProjectWrapper mavenProjectWrapper( final MavenProject project )
     {
-        Map<String, Artifact> artifactConflictIdMap = new java.util.HashMap<String, Artifact>();
+        Map<String, Artifact> artifactConflictIdMap = new TreeMap<String, Artifact>();
 
-        //noinspection unchecked
-        for ( Artifact artifact : (java.util.Set<Artifact>) project.getArtifacts() )
+        for ( Artifact artifact : project.getArtifacts() )
         {
             artifactConflictIdMap.put( artifact.getDependencyConflictId(), artifact );
         }
 
-        //noinspection unchecked
+        Map<String, String> properties = new TreeMap<String, String>();
+
+        for ( Entry<Object, Object> entry : project.getProperties().entrySet() )
+        {
+            properties.put( entry.getValue().toString(), entry.getKey().toString() );
+        }
+
         return new MavenProjectWrapper( project.getGroupId(), project.getArtifactId(), project.getVersion(),
                                         project.getArtifact(), project.getName(), project.getDescription(),
                                         project.getBasedir(), new File( project.getBuild().getDirectory() ),
-                                        project.getArtifacts(), project.getLicenses(), artifactConflictIdMap );
+                                        project.getArtifacts(), project.getLicenses(),
+                                        unmodifiableMap( artifactConflictIdMap ),
+                                        unmodifiableMap( properties ) );
     }
 }

@@ -56,7 +56,7 @@ public class ExtractFile
     {
         File file = validateFileIsReadableFile( archive, "archive" );
 
-        return createOperationInternal( getManager().resolveFile( file.getAbsolutePath() ), defaultFileAttributes,
-                                        defaultDirectoryAttributes );
+        return createCopyArchiveOperation( getManager().resolveFile( file.getAbsolutePath() ), defaultFileAttributes,
+                                           defaultDirectoryAttributes );
     }
 }

@@ -38,6 +38,7 @@
   <description>Supporting tools for writing software for the UNIX platform</description>
   <properties>
     <functionaljava.version>3.0</functionaljava.version>
+    <version.maven-apis>3.0</version.maven-apis>
     <version.maven-compiler-plugin>2.3.1</version.maven-compiler-plugin>
     <version.maven-dependency-plugin>2.5</version.maven-dependency-plugin>
     <version.maven-deploy-plugin>2.5</version.maven-deploy-plugin>
@@ -60,24 +61,35 @@
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
-        <artifactId>maven-artifact</artifactId>
-        <version>2.0</version>
+        <artifactId>maven-core</artifactId>
+        <version>${version.maven-apis}</version>
       </dependency>
+<!--
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${version.maven-apis}</version>
+      </dependency>
+-->
+<!--
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-project</artifactId>
-        <version>2.0</version>
+        <version>${version.maven-apis}</version>
       </dependency>
+-->
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
-        <version>2.0</version>
+        <version>${version.maven-apis}</version>
       </dependency>
+      <!--
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-model</artifactId>
-        <version>2.0</version>
+        <version>${version.maven-apis}</version>
       </dependency>
+      -->
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-container-default</artifactId>
@@ -293,7 +305,7 @@
           </snapshots>
         </repository>
         <repository>
-          <id>xslthl.soruceforge.net</id>
+          <id>xslthl.sourceforge.net</id>
           <url>http://xslthl.sourceforge.net/maven/repository</url>
           <snapshots>
             <enabled>false</enabled>

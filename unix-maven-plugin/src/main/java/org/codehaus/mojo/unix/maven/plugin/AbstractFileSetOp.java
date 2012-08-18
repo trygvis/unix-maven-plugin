@@ -64,43 +64,50 @@ public abstract class AbstractFileSetOp
         super( operationType );
     }
 
+    @SuppressWarnings( "UnusedDeclaration" )
     public void setTo( String to )
     {
         this.to = relativePath( to );
     }
 
+    @SuppressWarnings( "UnusedDeclaration" )
     public void setIncludes( String[] includes )
     {
         this.includes = asList( includes );
     }
 
+    @SuppressWarnings( "UnusedDeclaration" )
     public void setExcludes( String[] excludes )
     {
         this.excludes = asList( excludes );
     }
 
+    @SuppressWarnings( "UnusedDeclaration" )
     public void setPattern( String pattern )
     {
         this.pattern = nullifEmpty( pattern );
     }
 
+    @SuppressWarnings( "UnusedDeclaration" )
     public void setReplacement( String replacement )
     {
         this.replacement = nullifEmpty( replacement );
     }
 
+    @SuppressWarnings( "UnusedDeclaration" )
     public void setFileAttributes( MojoFileAttributes fileAttributes )
     {
         this.fileAttributes = fileAttributes;
     }
 
+    @SuppressWarnings( "UnusedDeclaration" )
     public void setDirectoryAttributes( MojoFileAttributes directoryAttributes )
     {
         this.directoryAttributes = directoryAttributes;
     }
 
-    protected AssemblyOperation createOperationInternal( FileObject archive, FileAttributes defaultFileAttributes,
-                                                         FileAttributes defaultDirectoryAttributes )
+    protected AssemblyOperation createCopyArchiveOperation( FileObject archive, FileAttributes defaultFileAttributes,
+                                                            FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
         Option<P2<String, String>> pattern = none();

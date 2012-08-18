@@ -36,6 +36,7 @@ import java.io.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
+@SuppressWarnings( "UnusedDeclaration" )
 public class CopyArtifact
     extends AssemblyOp
 {

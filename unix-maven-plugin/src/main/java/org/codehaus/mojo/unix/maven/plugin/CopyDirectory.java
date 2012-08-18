@@ -58,7 +58,7 @@ public class CopyDirectory
 
         File file = validateFileIsDirectory( from, "from" );
 
-        return createOperationInternal( getManager().resolveFile( file.getAbsolutePath() ), defaultFileAttributes,
-                                        defaultDirectoryAttributes );
+        return createCopyArchiveOperation( getManager().resolveFile( file.getAbsolutePath() ), defaultFileAttributes,
+                                           defaultDirectoryAttributes );
     }
 }

@@ -59,6 +59,6 @@ public class ExtractArtifact
         FileObject archiveObject = fsManager.resolveFile( artifactFile.getAbsolutePath() );
         FileObject archive = fsManager.createFileSystem( archiveObject );
 
-        return createOperationInternal( archive, defaultFileAttributes, defaultDirectoryAttributes );
+        return createCopyArchiveOperation( archive, defaultFileAttributes, defaultDirectoryAttributes );
     }
 }
