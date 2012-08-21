@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix;
+package org.codehaus.mojo.unix.io;
 
 /*
  * The MIT License
@@ -24,24 +24,43 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import fj.*;
-import org.apache.commons.vfs.*;
+import junit.framework.*;
+import org.codehaus.mojo.unix.io.*;
 
 import java.io.*;
 
-/**
- * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- */
-public interface FileCollector
+public class FileScannerTest
+    extends TestCase
 {
-    FileCollector addDirectory( UnixFsObject.Directory directory )
-        throws IOException;
+    public void testBasic()
+        throws IOException
+    {
+        FileScanner scanner = new FileScanner( new File( "src/test/resources" ), new String[0], new String[0] );
 
-    FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
-        throws IOException;
+//        for ( File file : scanner.toStream() )
+//        {
+//            System.out.println( "file = " + file );
+//        }
+    }
 
-    FileCollector addSymlink( UnixFsObject.Symlink symlink )
-        throws IOException;
+    public void testIncludes()
+        throws IOException
+    {
+        File base = new File( System.getProperty( "user.home" ) + "/.m2/repository" );
+        FileScanner scanner = new FileScanner( base, new String[]{"**/*.pkg"}, new String[0] );
 
-    void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f );
+//        for ( File file : scanner.toStream() )
+//        {
+//            System.out.println( "file = " + file );
+//        }
+    }
+
+    public void testNoMatch()
+        throws IOException
+    {
+        File base = new File( "src/test/resources" ).getAbsoluteFile();
+        FileScanner scanner = new FileScanner( base, new String[]{"**/nothere/**"}, new String[0] );
+
+        assertTrue( scanner.toStream().isEmpty() );
+    }
 }

@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
@@ -32,8 +33,10 @@ import org.codehaus.mojo.unix.core.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
+@SuppressWarnings( "UnusedDeclaration" )
 public class Mkdirs
     extends AssemblyOp
+    implements AssemblyOp.CreateOperation
 {
     private String path;
 
@@ -47,7 +50,9 @@ public class Mkdirs
     }
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes )
+                                              FileAttributes defaultDirectoryAttributes,
+                                              List<FileFilterDescriptor> filters,
+                                              MavenProjectWrapper.ArtifactMap artifactMap )
         throws MojoFailureException, FileSystemException
     {
         validateEitherIsSet( path, paths, "path", "paths" );

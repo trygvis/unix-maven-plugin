@@ -1,9 +1,9 @@
-package org.codehaus.mojo.unix.util.fj;
+package org.codehaus.mojo.unix.maven.plugin;
 
 /*
  * The MIT License
  *
- * Copyright 2009 The Codehaus.
+ * Copyright 2012 The Codehaus.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,42 +24,40 @@ package org.codehaus.mojo.unix.util.fj;
  * SOFTWARE.
  */
 
-import junit.framework.*;
+import fj.data.*;
+import static fj.data.List.*;
+import org.codehaus.mojo.unix.core.*;
 
-import java.io.*;
-
-public class FileScannerTest
-    extends TestCase
+/**
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ */
+@SuppressWarnings( "UnusedDeclaration" )
+public class FilterFiles
+    extends AssemblyOp
 {
-    public void testBasic()
-        throws IOException
-    {
-        FileScanner scanner = new FileScanner( new File( "src/test/resources" ), new String[0], new String[0] );
+    private List<String> includes = nil();
 
-        for ( File file : scanner.toStream() )
-        {
-            System.out.println( "file = " + file );
-        }
+    private List<String> excludes = nil();
+
+    public FilterFiles()
+    {
+        super( "filter-files" );
     }
 
-    public void testIncludes()
-        throws IOException
+    @SuppressWarnings( "UnusedDeclaration" )
+    public void setIncludes( String[] includes )
     {
-        File base = new File( System.getProperty( "user.home" ) + "/.m2/repository" );
-        FileScanner scanner = new FileScanner( base, new String[]{"**/*.pkg"}, new String[0] );
-
-        for ( File file : scanner.toStream() )
-        {
-            System.out.println( "file = " + file );
-        }
+        this.includes = list( includes );
     }
 
-    public void testNoMatch()
-        throws IOException
+    @SuppressWarnings( "UnusedDeclaration" )
+    public void setExcludes( String[] excludes )
     {
-        File base = new File( "src/test/resources" ).getAbsoluteFile();
-        FileScanner scanner = new FileScanner( base, new String[]{"**/nothere/**"}, new String[0] );
+        this.excludes = list( excludes );
+    }
 
-        assertTrue( scanner.toStream().isEmpty() );
+    public FileFilterDescriptor toDescriptor()
+    {
+        return new FileFilterDescriptor( includes, excludes );
     }
 }

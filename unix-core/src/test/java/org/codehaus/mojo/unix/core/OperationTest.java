@@ -26,9 +26,9 @@ package org.codehaus.mojo.unix.core;
 
 import static fj.P.*;
 import fj.*;
+import static fj.data.List.*;
 import fj.data.*;
 import static fj.data.Option.*;
-import static java.util.Arrays.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.util.*;
@@ -137,8 +137,8 @@ public class OperationTest
         control.expectAndReturn( fileCollector.addDirectory( objects.base ), fileCollector );
         control.replay();
 
-        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, Option.<P2<String, String>>none(),
-                                    fileAttributes, directoryAttributes ).
+        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, List.<FileFilterDescriptor>nil(),
+                                    Option.<P2<String, String>>none(), fileAttributes, directoryAttributes ).
             perform( fileCollector );
 
         control.verify();
@@ -169,8 +169,9 @@ public class OperationTest
         control.expectAndReturn( fileCollector.addFile( fooLicense, fooLicenseUnixFile ), fileCollector );
         control.replay();
 
-        new CopyDirectoryOperation( archive, relativePath( "licenses" ), asList( "**/*license.txt" ), null,
-                                    some( p( ".*/(.*license.*)", "$1" ) ), fileAttributes, directoryAttributes ).
+        new CopyDirectoryOperation( archive, relativePath( "licenses" ), single( "**/*license.txt" ), null,
+                                    List.<FileFilterDescriptor>nil(), some( p( ".*/(.*license.*)", "$1" ) ),
+                                    fileAttributes, directoryAttributes ).
             perform( fileCollector );
 
         control.verify();

@@ -234,11 +234,6 @@ public class PkgUnixPackage
         return version;
     }
 
-    public FileObject getRoot()
-    {
-        return workingDirectory;
-    }
-
     public FileCollector addDirectory( UnixFsObject.Directory directory )
         throws IOException
     {

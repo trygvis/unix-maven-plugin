@@ -118,11 +118,6 @@ public class RpmUnixPackage
         return this;
     }
 
-    public FileObject getRoot()
-    {
-        return fileCollector.getRoot();
-    }
-
     public FileCollector addDirectory( UnixFsObject.Directory directory )
         throws IOException
     {

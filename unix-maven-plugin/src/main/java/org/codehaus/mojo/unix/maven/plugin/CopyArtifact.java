@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
@@ -39,6 +40,7 @@ import java.io.*;
 @SuppressWarnings( "UnusedDeclaration" )
 public class CopyArtifact
     extends AssemblyOp
+    implements AssemblyOp.CreateOperation
 {
     private String artifact;
 
@@ -74,10 +76,12 @@ public class CopyArtifact
     }
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes )
+                                              FileAttributes defaultDirectoryAttributes,
+                                              List<FileFilterDescriptor> filters,
+                                              MavenProjectWrapper.ArtifactMap artifactMap )
         throws MojoFailureException, FileSystemException, UnknownArtifactException
     {
-        File artifactFile = validateArtifact( artifact );
+        File artifactFile = artifactMap.validateArtifact( artifact );
 
         RelativePath toFile = validateAndResolveOutputFile( artifactFile, toDir, this.toFile );
 

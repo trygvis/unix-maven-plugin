@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.core;
  */
 
 import fj.*;
+import static fj.Unit.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.util.*;
@@ -59,11 +60,6 @@ public class FsFileCollector
     public FileObject getFsRoot()
     {
         return fsRoot;
-    }
-
-    public FileObject getRoot()
-    {
-        return root;
     }
 
     public FileCollector addDirectory( UnixFsObject.Directory directory )
@@ -118,7 +114,7 @@ public class FsFileCollector
                 toFile.getParent().createFolder();
                 toFile.copyFrom( from, Selectors.SELECT_SELF );
                 toFile.getContent().setLastModifiedTime( to.lastModified.toDateTime().toDate().getTime() );
-                return Unit.unit();
+                return unit();
             }
         };
     }
@@ -131,7 +127,7 @@ public class FsFileCollector
                 throws Exception
             {
                 root.resolveFile( path.string ).createFolder();
-                return Unit.unit();
+                return unit();
             }
         };
     }
@@ -149,7 +145,7 @@ public class FsFileCollector
 
                 UnixUtil.symlink( file, symlink.value, symlink.path );
 
-                return Unit.unit();
+                return unit();
             }
         };
     }

@@ -117,11 +117,6 @@ public class DebUnixPackage
         fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
     }
 
-    public FileObject getRoot()
-    {
-        return fileCollector.getRoot();
-    }
-
     public FileCollector addDirectory( UnixFsObject.Directory directory )
     {
         fileCollector.addDirectory( directory );

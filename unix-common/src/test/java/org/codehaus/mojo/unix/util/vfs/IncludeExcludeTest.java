@@ -26,6 +26,8 @@ package org.codehaus.mojo.unix.util.vfs;
 
 import junit.framework.*;
 import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.io.*;
+import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
 import org.codehaus.mojo.unix.util.*;
 
 import java.util.*;
@@ -47,13 +49,11 @@ public class IncludeExcludeTest
         assertEquals( FileType.FOLDER, myProject.getType() );
 
         List<FileObject> selection = new ArrayList<FileObject>();
-        myProject.findFiles( IncludeExcludeFileSelector.build( myProject.getName() ).
+        myProject.findFiles( new IncludeExcludeFileSelector( myProject.getName(), true, includeExcludeFilter().
             addInclude( new PathExpression( "/src/main/unix/files/**" ) ).
             addInclude( new PathExpression( "*.java" ) ).
             addExclude( new PathExpression( "**/huge-file" ) ).
-            filesOnly().
-//            noDefaultExcludes().
-            create(), true, selection );
+            create() ), true, selection );
 
         System.out.println( "Included:" );
         for ( FileObject fileObject : selection )

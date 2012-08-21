@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix;
 import org.codehaus.mojo.unix.util.*;
 
 /**
+ * E is data associated with the object.
  */
 public interface PackageFileSystemObject<E>
 {

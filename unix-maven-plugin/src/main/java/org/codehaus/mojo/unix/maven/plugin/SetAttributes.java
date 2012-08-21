@@ -25,8 +25,8 @@ package org.codehaus.mojo.unix.maven.plugin;
  */
 
 import fj.data.*;
+import static fj.data.List.*;
 import static fj.data.Option.*;
-import static java.util.Arrays.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
@@ -34,20 +34,19 @@ import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 
-import java.util.*;
-import java.util.List;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
+@SuppressWarnings( "UnusedDeclaration" )
 public class SetAttributes
     extends AssemblyOp
+    implements AssemblyOp.CreateOperation
 {
     private RelativePath basedir = RelativePath.BASE;
 
-    private List<String> includes = Collections.emptyList();
+    private List<String> includes = nil();
 
-    private List<String> excludes = Collections.emptyList();
+    private List<String> excludes = nil();
 
     private Option<MojoFileAttributes> fileAttributes = none();
 
@@ -65,12 +64,12 @@ public class SetAttributes
 
     public void setIncludes( String[] includes )
     {
-        this.includes = asList( includes );
+        this.includes = list( includes );
     }
 
     public void setExcludes( String[] excludes )
     {
-        this.excludes = asList( excludes );
+        this.excludes = list( excludes );
     }
 
     public void setFileAttributes( MojoFileAttributes fileAttributes )
@@ -84,7 +83,9 @@ public class SetAttributes
     }
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes )
+                                              FileAttributes defaultDirectoryAttributes,
+                                              List<FileFilterDescriptor> filters,
+                                              MavenProjectWrapper.ArtifactMap artifactMap )
         throws MojoFailureException, FileSystemException
     {
         return new SetAttributesOperation( this.basedir, includes, excludes,

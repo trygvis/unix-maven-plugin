@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.fj;
+package org.codehaus.mojo.unix.io;
 
 /*
  * The MIT License
@@ -31,7 +31,9 @@ import fj.data.*;
 import static fj.data.Option.*;
 import static fj.data.Stream.*;
 import static java.util.Arrays.*;
-import org.codehaus.mojo.unix.util.vfs.*;
+import org.codehaus.mojo.unix.io.*;
+import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 
 import java.io.*;
 import java.util.*;
@@ -42,7 +44,7 @@ public class FileScanner
 
     private final String absolutePath;
 
-    private final IncludeExcludeFileSelector selector;
+    private final IncludeExcludeFilter selector;
 
     public FileScanner( File file, String[] includes, String[] excludes )
         throws IOException
@@ -54,7 +56,7 @@ public class FileScanner
             throw new IOException( "Not a directory." );
         }
 
-        selector = IncludeExcludeFileSelector.build( null ).
+        selector = includeExcludeFilter().
             addStringIncludes( includes == null ? Collections.<String>emptyList() : asList( includes ) ).
             addStringExcludes( excludes == null ? Collections.<String>emptyList() : asList( excludes ) ).
             create();
@@ -103,7 +105,7 @@ public class FileScanner
 
                     s = next.getAbsolutePath().substring( absolutePath.length() );
 
-                    if ( selector.matches( s ) )
+                    if ( selector.matches( relativePath( s ) ) )
                     {
                         return some( p( next, state ) );
                     }

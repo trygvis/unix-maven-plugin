@@ -199,13 +199,13 @@ public class MojoHelperTest
     {
         Set<Artifact> artifactSet = Collections.emptySet();
         java.util.List<License> licenses = Collections.emptyList();
-        Map<String, Artifact> artifactMap = Collections.emptyMap();
 
         PackageVersion version = PackageVersion.packageVersion( "1.0", "123456.123456", false, Option.<String>none() );
 
         MavenProjectWrapper mavenProject = new MavenProjectWrapper( "groupId", "artifactId", "1.0", null, projectName,
                                                                     null, null, null, artifactSet, licenses,
-                                                                    artifactMap );
+                                                                    new MavenProjectWrapper.ArtifactMap( artifactSet ),
+                                                                    Collections.<String, String>emptyMap() );
 
         PackagingMojoParameters mojoParameters = new PackagingMojoParameters( mojoName, null, "Description", "A B",
                                                                               "a@b.com", "all", new Defaults(),

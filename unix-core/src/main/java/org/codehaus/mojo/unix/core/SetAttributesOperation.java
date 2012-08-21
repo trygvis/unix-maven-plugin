@@ -29,16 +29,15 @@ import fj.data.*;
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
+import org.codehaus.mojo.unix.io.*;
+import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
 import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
 import org.codehaus.mojo.unix.util.line.*;
-import org.codehaus.mojo.unix.util.vfs.*;
 
 import java.io.*;
 import java.lang.Class;
-import java.lang.String;
-import java.util.List;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -46,7 +45,7 @@ import java.util.List;
 public class SetAttributesOperation
     implements AssemblyOperation
 {
-    private final IncludeExcludeFileSelector selector;
+    private final IncludeExcludeFilter selector;
 
     public final Option<F2<UnixFsObject, FileAttributes, FileAttributes>> applyFileAttributes;
     public final Option<F2<UnixFsObject, FileAttributes, FileAttributes>> applyDirectoryAttributes;
@@ -68,7 +67,7 @@ public class SetAttributesOperation
         this.fileAttributes = fileAttributes;
         this.directoryAttributes = directoryAttributes;
 
-        selector = IncludeExcludeFileSelector.build( null ).
+        selector = includeExcludeFilter().
             addStringIncludes( includes ).
             addStringExcludes( excludes ).
             create();
@@ -159,11 +158,11 @@ public class SetAttributesOperation
             }
 
             // Remove the basedir part of the path before matching
-            String massagedPath;
+            RelativePath massagedPath;
 
             if ( basedir == RelativePath.BASE )
             {
-                massagedPath = fsObject.path.string;
+                massagedPath = fsObject.path;
             }
             else
             {
@@ -173,7 +172,7 @@ public class SetAttributesOperation
                     return currentAttributes;
                 }
 
-                massagedPath = option.some().string;
+                massagedPath = option.some();
             }
 
             if ( !selector.matches( massagedPath ) )

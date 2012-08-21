@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.vfs;
+package org.codehaus.mojo.unix.io;
 
 /*
  * The MIT License
@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.util.vfs;
  */
 
 import junit.framework.*;
+import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -53,16 +54,16 @@ public class PathExpressionTest
             "^.*/META-INF/.*$"              // **/META-INF/**
         };
 
-        assertEquals( IncludeExcludeFileSelector.DEFAULT_EXCLUDES.length, patterns.length );
+        assertEquals( DEFAULT_EXCLUDES.length, patterns.length );
 
-        for ( int i = 0; i < IncludeExcludeFileSelector.DEFAULT_EXCLUDES.length; i++ )
+        for ( int i = 0; i < DEFAULT_EXCLUDES.length; i++ )
         {
-            String pattern = IncludeExcludeFileSelector.DEFAULT_EXCLUDES[i].getPattern().pattern();
+            String pattern = DEFAULT_EXCLUDES[i].getPattern().pattern();
             if ( !pattern.equals( patterns[i] ) )
             {
-                System.out.println( i + ": ok=" + pattern.equals( patterns[i] ) + ", expression = " + IncludeExcludeFileSelector.DEFAULT_EXCLUDES[i].getExpression() + ", expected = " + patterns[i] + ", actual = " + pattern );
+                System.out.println( i + ": ok=" + pattern.equals( patterns[i] ) + ", expression = " + DEFAULT_EXCLUDES[i].getExpression() + ", expected = " + patterns[i] + ", actual = " + pattern );
             }
-            assertEquals( patterns[i], IncludeExcludeFileSelector.DEFAULT_EXCLUDES[i].getPattern().pattern() );
+            assertEquals( patterns[i], DEFAULT_EXCLUDES[i].getPattern().pattern() );
         }
 
         assertEquals( "^/[^/]*\\.java$", new PathExpression( "*.java" ).getPattern().pattern() );

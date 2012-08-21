@@ -65,11 +65,6 @@ public class ZipUnixPackage
     // FileCollector Implementation
     // -----------------------------------------------------------------------
 
-    public FileObject getRoot()
-    {
-        return workingDirectory;
-    }
-
     public FileCollector addDirectory( final UnixFsObject.Directory directory )
         throws IOException
     {
@@ -84,12 +79,10 @@ public class ZipUnixPackage
     public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
         throws IOException
     {
-        F2<UnixFsObject, ZipOutputStream, Callable> f = uncurryF2( curry( this.file, fromFile ) );
+        F2<UnixFsObject, ZipOutputStream, Callable> f = file( fromFile );
 
-        BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>> o =
-            new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( file, f );
-
-        fileSystem = fileSystem.addFile( o );
+        fileSystem = fileSystem.addFile(
+            new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( file, f ) );
 
         return this;
     }
@@ -183,11 +176,10 @@ public class ZipUnixPackage
             }
         };
 
-    private final F3<FileObject, UnixFsObject, ZipOutputStream, Callable> file =
-        new F3<FileObject, UnixFsObject, ZipOutputStream, Callable>()
+    private final F2<UnixFsObject, ZipOutputStream, Callable> file( final FileObject fromFile) {
+        return new F2<UnixFsObject, ZipOutputStream, Callable>()
         {
-            public Callable f( final FileObject fromFile, final UnixFsObject unixFsObject,
-                               final ZipOutputStream zipOutputStream )
+            public Callable f( final UnixFsObject unixFsObject, final ZipOutputStream zipOutputStream )
             {
                 return new Callable()
                 {
@@ -217,4 +209,5 @@ public class ZipUnixPackage
                 };
             }
         };
+    }
 }

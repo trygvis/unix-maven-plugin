@@ -1,4 +1,4 @@
-package org.codehaus.mojo.unix.util.vfs;
+package org.codehaus.mojo.unix.io;
 
 /*
  * The MIT License
@@ -104,5 +104,10 @@ public class PathExpression
     public boolean matches( String relative )
     {
         return getPattern().matcher( relative ).matches();
+    }
+
+    public String toString()
+    {
+        return expression;
     }
 }

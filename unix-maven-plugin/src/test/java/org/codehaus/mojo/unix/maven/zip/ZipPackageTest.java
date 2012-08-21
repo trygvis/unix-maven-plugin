@@ -24,6 +24,11 @@ package org.codehaus.mojo.unix.maven.zip;
  * SOFTWARE.
  */
 
+import fj.*;
+import fj.data.*;
+import fj.data.List;
+import static fj.data.List.*;
+import static java.util.Arrays.*;
 import junit.framework.*;
 import org.apache.commons.vfs.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
@@ -32,6 +37,7 @@ import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
 
 import java.io.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -39,13 +45,15 @@ import java.io.*;
 public class ZipPackageTest
     extends TestCase
 {
+    private final TestUtil testUtil = new TestUtil( getClass() );
+
     public void testBasic()
         throws Exception
     {
         FileSystemManager fileSystemManager = VFS.getManager();
 
-        File zip1 = new TestUtil( this ).getTestFile( "src/it/test-zip-1" );
-        File zip = new File( zip1, "target/zip/test.zip" );
+        File zip1 = testUtil.getTestFile( "src/test/resources/zip/zip-1" );
+        File zip = testUtil.getTestFile( "target/zip/zip-1/test.zip" );
         if ( !zip.getParentFile().isDirectory() )
         {
             assertTrue( zip.getParentFile().mkdirs() );
@@ -59,10 +67,18 @@ public class ZipPackageTest
 
         assertEquals( FileType.FOLDER, basedir.getType() );
 
-        new CreateDirectoriesOperation( new String[]{"/opt/hudson"}, EMPTY ).
+        List<FileFilterDescriptor> filters = single( new FileFilterDescriptor(
+            single( "dirs/**" ),
+            List.<String>nil() ) );
+
+        new CreateDirectoriesOperation( new String[]{ "/opt/hudson" }, EMPTY ).
             perform( zipPackage );
 
-        new CopyFileOperation( EMPTY, basedir.resolveFile( "pom4test.xml" ), relativePath( "/opt/hudson/hudson.war" ) ).
+        new CopyDirectoryOperation( basedir, relativePath( "" ), List.<String>nil(), List.<String>nil(), filters,
+                                    Option.<P2<String, String>>none(), EMPTY, EMPTY ).
+            perform( zipPackage );
+
+        new CopyFileOperation( EMPTY, basedir.resolveFile( "file/foo.txt" ), relativePath( "/file/foo.txt" ) ).
             perform( zipPackage );
 
         zipPackage.

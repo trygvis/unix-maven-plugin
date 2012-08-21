@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
@@ -36,8 +37,10 @@ import java.io.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
+@SuppressWarnings( "UnusedDeclaration" )
 public class CopyFile
     extends AssemblyOp
+    implements AssemblyOp.CreateOperation
 {
     private File path;
 
@@ -63,7 +66,9 @@ public class CopyFile
     }
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes )
+                                              FileAttributes defaultDirectoryAttributes,
+                                              List<FileFilterDescriptor> filters,
+                                              MavenProjectWrapper.ArtifactMap artifactMap )
         throws MojoFailureException, FileSystemException
     {
         return new CopyFileOperation( defaultFileAttributes.useAsDefaultsFor( attributes.create() ),

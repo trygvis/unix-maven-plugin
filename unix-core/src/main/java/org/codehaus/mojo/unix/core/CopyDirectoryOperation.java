@@ -28,6 +28,7 @@ import fj.*;
 import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
@@ -36,8 +37,6 @@ import org.codehaus.mojo.unix.util.vfs.*;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
 import java.io.*;
-import java.util.*;
-import java.util.List;
 import java.util.regex.*;
 
 /**
@@ -54,6 +53,8 @@ public class CopyDirectoryOperation
 
     private final List<String> excludes;
 
+    private final List<FileFilterDescriptor> filters;
+
     private final Option<P2<String, String>> pattern;
 
     private final FileAttributes fileAttributes;
@@ -61,13 +62,14 @@ public class CopyDirectoryOperation
     private final FileAttributes directoryAttributes;
 
     public CopyDirectoryOperation( FileObject from, RelativePath to, List<String> includes, List<String> excludes,
-                                   Option<P2<String, String>> pattern, FileAttributes fileAttributes,
-                                   FileAttributes directoryAttributes )
+                                   List<FileFilterDescriptor> filters, Option<P2<String, String>> pattern,
+                                   FileAttributes fileAttributes, FileAttributes directoryAttributes )
     {
         this.from = from;
         this.to = to;
         this.includes = includes;
         this.excludes = excludes;
+        this.filters = filters;
         this.pattern = pattern;
         this.fileAttributes = fileAttributes;
         this.directoryAttributes = directoryAttributes;
@@ -77,13 +79,14 @@ public class CopyDirectoryOperation
         throws IOException
     {
         Pattern pattern = this.pattern.isSome() ? Pattern.compile( this.pattern.some()._1() ) : null;
+        String replacement = this.pattern.isSome() ? this.pattern.some()._2() : null;
 
-        IncludeExcludeFileSelector selector = IncludeExcludeFileSelector.build( from.getName() ).
+        IncludeExcludeFileSelector selector = new IncludeExcludeFileSelector( from.getName(), includeExcludeFilter().
             addStringIncludes( includes ).
             addStringExcludes( excludes ).
-            create();
+            create() );
 
-        List<FileObject> files = new ArrayList<FileObject>();
+        java.util.List<FileObject> files = new java.util.ArrayList<FileObject>();
         from.findFiles( selector, true, files );
 
         for ( FileObject f : files )
@@ -101,16 +104,32 @@ public class CopyDirectoryOperation
             if ( pattern != null )
             {
                 String path = relativePath( relativeName ).asAbsolutePath( "/" );
-                relativeName = pattern.matcher( path ).replaceAll( this.pattern.some()._2() );
+
+                relativeName = pattern.matcher( path ).replaceAll( replacement );
             }
+
+            RelativePath targetName = to.add( relativeName );
 
             if ( f.getType() == FileType.FILE )
             {
-                fileCollector.addFile( f, AssemblyOperationUtil.fromFileObject( to.add( relativeName ), f, fileAttributes ) );
+                for ( FileFilterDescriptor filter : filters )
+                {
+                    if ( filter.matches( targetName ) )
+                    {
+                        System.out.println( "Filtering " + targetName );
+                    }
+                    else
+                    {
+                        System.out.println( "No filtering of " + targetName );
+                    }
+                }
+
+                fileCollector.addFile( f, AssemblyOperationUtil.fromFileObject( targetName, f, fileAttributes ) );
             }
             else if ( f.getType() == FileType.FOLDER )
             {
-                fileCollector.addDirectory( AssemblyOperationUtil.dirFromFileObject( to.add( relativeName ), f, directoryAttributes ) );
+                fileCollector.addDirectory(
+                    AssemblyOperationUtil.dirFromFileObject( targetName, f, directoryAttributes ) );
             }
         }
     }

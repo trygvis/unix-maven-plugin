@@ -33,6 +33,7 @@ import org.apache.maven.project.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.*;
 import java.util.Map.*;
@@ -66,13 +67,13 @@ public class MavenProjectWrapper
 
     public final List<License> licenses;
 
-    public final Map<String, Artifact> artifactConflictIdMap;
+    public final ArtifactMap artifactMap;
 
     public final Map<String, String> properties;
 
     public MavenProjectWrapper( String groupId, String artifactId, String version, Artifact artifact, String name,
                                 String description, File basedir, File buildDirectory, Set<Artifact> artifacts,
-                                List<License> licenses, Map<String, Artifact> artifactConflictIdMap,
+                                List<License> licenses, ArtifactMap artifactMap,
                                 Map<String, String> properties )
     {
         validateNotNull( groupId, artifactId, version, name );
@@ -86,19 +87,12 @@ public class MavenProjectWrapper
         this.buildDirectory = buildDirectory;
         this.artifacts = artifacts;
         this.licenses = licenses;
-        this.artifactConflictIdMap = artifactConflictIdMap;
+        this.artifactMap = artifactMap;
         this.properties = properties;
     }
 
     public static MavenProjectWrapper mavenProjectWrapper( final MavenProject project )
     {
-        Map<String, Artifact> artifactConflictIdMap = new TreeMap<String, Artifact>();
-
-        for ( Artifact artifact : project.getArtifacts() )
-        {
-            artifactConflictIdMap.put( artifact.getDependencyConflictId(), artifact );
-        }
-
         Map<String, String> properties = new TreeMap<String, String>();
 
         for ( Entry<Object, Object> entry : project.getProperties().entrySet() )
@@ -110,7 +104,40 @@ public class MavenProjectWrapper
                                         project.getArtifact(), project.getName(), project.getDescription(),
                                         project.getBasedir(), new File( project.getBuild().getDirectory() ),
                                         project.getArtifacts(), project.getLicenses(),
-                                        unmodifiableMap( artifactConflictIdMap ),
+                                        new ArtifactMap( project.getArtifacts() ),
                                         unmodifiableMap( properties ) );
+    }
+
+    public static class ArtifactMap
+    {
+        private final Map<String, Artifact> artifacts = new HashMap<String, Artifact>();
+
+        public ArtifactMap( Set<Artifact> artifacts )
+        {
+            for ( Artifact artifact : artifacts )
+            {
+                this.artifacts.put( artifact.getDependencyConflictId(), artifact );
+            }
+        }
+
+        public File validateArtifact( String artifact )
+            throws UnknownArtifactException
+        {
+            Artifact a = artifacts.get( artifact );
+
+            if ( a != null )
+            {
+                return a.getFile();
+            }
+
+            a = artifacts.get( artifact + ":jar" );
+
+            if ( a != null )
+            {
+                return a.getFile();
+            }
+
+            throw new UnknownArtifactException( artifact, artifacts );
+        }
     }
 }

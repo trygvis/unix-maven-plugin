@@ -24,9 +24,9 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.FileSystem;
-import org.apache.maven.artifact.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
@@ -34,17 +34,12 @@ import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public abstract class AssemblyOp
 {
-    private final Map<String, Artifact> mutableArtifactMap = new HashMap<String, Artifact>();
-
-    protected final Map<String, Artifact> artifactMap = Collections.unmodifiableMap( mutableArtifactMap );
-
     protected final String operationType;
 
     protected AssemblyOp( String operationType )
@@ -56,18 +51,18 @@ public abstract class AssemblyOp
     //
     // -----------------------------------------------------------------------
 
-    public abstract AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                                       FileAttributes defaultDirectoryAttributes )
-        throws MojoFailureException, FileSystemException, UnknownArtifactException;
+    public static interface CreateOperation {
+        AssemblyOperation createOperation( FileObject basedir,
+                                           FileAttributes defaultFileAttributes,
+                                           FileAttributes defaultDirectoryAttributes,
+                                           List<FileFilterDescriptor> filters,
+                                           MavenProjectWrapper.ArtifactMap artifactMap )
+            throws MojoFailureException, FileSystemException, UnknownArtifactException;
+    }
 
     // -----------------------------------------------------------------------
     // Utilities
     // -----------------------------------------------------------------------
-
-    public void setArtifactMap( Map<String, Artifact> artifactMap )
-    {
-        mutableArtifactMap.putAll( artifactMap );
-    }
 
     protected FileObject resolve( FileSystem basedir, File file )
         throws FileSystemException
@@ -152,25 +147,5 @@ public abstract class AssemblyOp
         }
 
         return file;
-    }
-
-    protected File validateArtifact( String artifact )
-        throws UnknownArtifactException
-    {
-        Artifact a = artifactMap.get( artifact );
-
-        if ( a != null )
-        {
-            return a.getFile();
-        }
-
-        a = artifactMap.get( artifact + ":jar" );
-
-        if ( a != null )
-        {
-            return a.getFile();
-        }
-
-        throw new UnknownArtifactException( artifact, artifactMap );
     }
 }

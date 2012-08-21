@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
@@ -34,6 +35,7 @@ import java.io.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
+@SuppressWarnings( "UnusedDeclaration" )
 public class ExtractArtifact
     extends AbstractFileSetOp
 {
@@ -50,15 +52,17 @@ public class ExtractArtifact
     }
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes )
+                                              FileAttributes defaultDirectoryAttributes,
+                                              List<FileFilterDescriptor> filters,
+                                              MavenProjectWrapper.ArtifactMap artifactMap )
         throws MojoFailureException, FileSystemException, UnknownArtifactException
     {
-        File artifactFile = validateArtifact( artifact );
+        File artifactFile = artifactMap.validateArtifact( artifact );
 
         FileSystemManager fsManager = VFS.getManager();
         FileObject archiveObject = fsManager.resolveFile( artifactFile.getAbsolutePath() );
         FileObject archive = fsManager.createFileSystem( archiveObject );
 
-        return createCopyArchiveOperation( archive, defaultFileAttributes, defaultDirectoryAttributes );
+        return createCopyArchiveOperation( archive, defaultFileAttributes, defaultDirectoryAttributes, filters );
     }
 }

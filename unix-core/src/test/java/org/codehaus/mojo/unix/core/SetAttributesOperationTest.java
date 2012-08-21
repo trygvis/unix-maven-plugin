@@ -2,6 +2,7 @@ package org.codehaus.mojo.unix.core;
 
 import fj.*;
 import fj.data.*;
+import static fj.data.List.*;
 import static fj.data.Option.*;
 import junit.framework.*;
 import org.apache.commons.vfs.*;
@@ -12,8 +13,6 @@ import static org.codehaus.mojo.unix.core.OperationTest.*;
 import org.codehaus.mojo.unix.util.*;
 import org.easymock.*;
 import org.easymock.internal.*;
-
-import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -26,6 +25,8 @@ public class SetAttributesOperationTest
 
     public final static FileAttributes directoryAttributes =
         new FileAttributes( some( "myuser" ), some( "mygroup" ), some( UnixFileMode._0644 ) );
+
+    private final static List<String> nilStrings = nil();
 
     public void testBasic()
         throws Exception
@@ -54,13 +55,14 @@ public class SetAttributesOperationTest
         control.setMatcher( new AlwaysMatcher() );
         control.replay();
 
-        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, Option.<P2<String, String>>none(),
+        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, List.<FileFilterDescriptor>nil(),
+                                    Option.<P2<String, String>>none(),
                                     fileAttributes, directoryAttributes ).perform( fileCollector );
 
-        new SetAttributesOperation( RelativePath.BASE, Collections.<String>emptyList(), Collections.<String>emptyList(),
+        new SetAttributesOperation( RelativePath.BASE, nilStrings, nilStrings,
             Option.<FileAttributes>none(), Option.<FileAttributes>none() ).perform( fileCollector );
 
-        new SetAttributesOperation( RelativePath.BASE, Collections.singletonList( "**/bin/extra-app" ), Collections.<String>emptyList(),
+        new SetAttributesOperation( RelativePath.BASE, single( "**/bin/extra-app" ), nilStrings,
             changedAttributes, Option.<FileAttributes>none() ).perform( fileCollector );
 
         control.verify();
@@ -71,7 +73,7 @@ public class SetAttributesOperationTest
         FileAttributes defaultAttributes = FileAttributes.EMPTY.user( "default" ).group( "default" ).mode( _0755 );
 
         SetAttributesOperation operation = new SetAttributesOperation( RelativePath.BASE,
-            Collections.singletonList( "**/bin/*" ), Collections.<String>emptyList(),
+            single( "**/bin/*" ), nilStrings,
             some( EMPTY.user( "myuser" ) ), some( EMPTY ) );
 
         assertEquals( defaultAttributes, operation.applyFileAttributes.some().f( objects.optJettyReadmeUnix, defaultAttributes ) );
