@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
@@ -57,7 +56,7 @@ public class SymlinkOperation
     public void perform( FileCollector fileCollector )
         throws IOException
     {
-        fileCollector.addSymlink( symlink( path, new LocalDateTime(), some( attributes ), target ) );
+        fileCollector.addSymlink( symlink( path, new LocalDateTime(), attributes, target ) );
     }
 
     public void streamTo( LineStreamWriter streamWriter )

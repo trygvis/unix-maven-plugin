@@ -53,18 +53,8 @@ public class EditableEntry
             " " + toString( object.getFileAttributes() );
     }
 
-    public FileAttributes getFileAttributes()
+    public PackageFileSystemObject<PrototypeEntry> withUnixFsObject( UnixFsObject object )
     {
-        throw new RuntimeException( "Not implemented" );
-    }
-
-    public EditableEntry setFileAttributes( FileAttributes attributes )
-    {
-        return new EditableEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ), realPath );
-    }
-
-    public EditableEntry setPath( RelativePath path )
-    {
-        return new EditableEntry( some( pkgClass ), relative, object.setPath( path ), realPath );
+        return new EditableEntry( some( pkgClass ), relative, (RegularFile) object, realPath );
     }
 }

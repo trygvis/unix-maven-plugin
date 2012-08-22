@@ -55,18 +55,8 @@ public class DirectoryEntry
         return "d " + pkgClass + " " + getPath() + " " + toString( object.getFileAttributes() );
     }
 
-    public FileAttributes getFileAttributes()
+    public PackageFileSystemObject<PrototypeEntry> withUnixFsObject( UnixFsObject object )
     {
-        return object.getFileAttributes();
-    }
-
-    public DirectoryEntry setFileAttributes( FileAttributes attributes )
-    {
-        return new DirectoryEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ) );
-    }
-
-    public PackageFileSystemObject<PrototypeEntry> setPath( RelativePath path )
-    {
-        return new DirectoryEntry( some( pkgClass ), relative, object.setPath( path ) );
+        return new DirectoryEntry( some( pkgClass ), relative, (Directory) object );
     }
 }

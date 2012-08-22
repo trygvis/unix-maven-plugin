@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.core;
 
 import fj.*;
 import static fj.Unit.*;
+import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.util.*;
@@ -33,6 +34,7 @@ import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -62,29 +64,23 @@ public class FsFileCollector
         return fsRoot;
     }
 
-    public FileCollector addDirectory( UnixFsObject.Directory directory )
+    public void addDirectory( UnixFsObject.Directory directory )
     {
         operations.add( packageDirectory( directory.path ) );
-
-        return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
     {
         operations.add( packageFile( fromFile, file ) );
-
-        return this;
     }
 
-    public FileCollector addSymlink( UnixFsObject.Symlink symlink )
+    public void addSymlink( UnixFsObject.Symlink symlink )
         throws IOException
     {
         operations.add( packageSymlink( symlink ) );
-
-        return this;
     }
 
-    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
+    public void apply( F<UnixFsObject, Option<UnixFsObject>> f )
     {
         // Not implemented
     }

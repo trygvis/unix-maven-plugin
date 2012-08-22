@@ -106,8 +106,7 @@ public abstract class AbstractFileSetOp
 
     protected AssemblyOperation createCopyArchiveOperation( FileObject archive,
                                                             FileAttributes defaultFileAttributes,
-                                                            FileAttributes defaultDirectoryAttributes,
-                                                            List<FileFilterDescriptor> filters )
+                                                            FileAttributes defaultDirectoryAttributes )
         throws MojoFailureException, FileSystemException
     {
         Option<P2<String, String>> pattern = none();
@@ -121,7 +120,7 @@ public abstract class AbstractFileSetOp
             pattern = some( p( this.pattern, replacement ) );
         }
 
-        return new CopyDirectoryOperation( archive, to, includes, excludes, filters, pattern,
+        return new CopyDirectoryOperation( archive, to, includes, excludes, pattern,
                                            defaultFileAttributes.useAsDefaultsFor( fileAttributes.create() ),
                                            defaultDirectoryAttributes.useAsDefaultsFor( directoryAttributes.create() ) );
     }

@@ -47,7 +47,7 @@ public class IEntry
     {
         super( pkgClass, Option.<Boolean>none(),
                regularFile( path, fromDateFields( new Date( realPath.lastModified() ) ), realPath.length(),
-                            Option.<FileAttributes>none() ) );
+                            FileAttributes.EMPTY ) );
         this.realPath = realPath;
     }
 
@@ -56,17 +56,7 @@ public class IEntry
         return "i " + getProcessedPath( some( realPath ) );
     }
 
-    public FileAttributes getFileAttributes()
-    {
-        throw error( "Not applicable" );
-    }
-
-    public PrototypeEntry<UnixFsObject> setFileAttributes( FileAttributes attributes )
-    {
-        throw error( "Not applicable" );
-    }
-
-    public PackageFileSystemObject<PrototypeEntry> setPath( RelativePath path )
+    public PackageFileSystemObject<PrototypeEntry> withUnixFsObject( UnixFsObject object )
     {
         throw error( "Not applicable" );
     }

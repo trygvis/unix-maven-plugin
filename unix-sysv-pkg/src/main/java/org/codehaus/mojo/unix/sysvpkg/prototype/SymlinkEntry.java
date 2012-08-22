@@ -25,10 +25,8 @@ package org.codehaus.mojo.unix.sysvpkg.prototype;
  */
 
 import fj.data.*;
-import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
-import org.codehaus.mojo.unix.util.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -46,18 +44,8 @@ public class SymlinkEntry
         return "s " + pkgClass + " " + getPath() + "=" + object.value;
     }
 
-    public FileAttributes getFileAttributes()
+    public PackageFileSystemObject<PrototypeEntry> withUnixFsObject( UnixFsObject object )
     {
-        return object.getFileAttributes();
-    }
-
-    public SymlinkEntry setFileAttributes( FileAttributes attributes )
-    {
-        return new SymlinkEntry( some( pkgClass ), object.setFileAttributes( attributes ) );
-    }
-
-    public PackageFileSystemObject<PrototypeEntry> setPath( RelativePath path )
-    {
-        return new SymlinkEntry( Option.some( pkgClass ), object.setPath( path ) );
+        return new SymlinkEntry( Option.some( pkgClass ), (Symlink) object );
     }
 }

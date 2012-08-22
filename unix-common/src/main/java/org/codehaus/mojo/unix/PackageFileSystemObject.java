@@ -35,7 +35,5 @@ public interface PackageFileSystemObject<E>
 
     E getExtension();
 
-    PackageFileSystemObject<E> setFileAttributes( FileAttributes fileAttributes );
-
-    PackageFileSystemObject<E> setPath( RelativePath path );
+    PackageFileSystemObject<E> withUnixFsObject( UnixFsObject object );
 }

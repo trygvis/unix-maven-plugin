@@ -83,12 +83,10 @@ public class RpmUnixPackageTest
             group( "Fun" );
 
         LocalDateTime now = new LocalDateTime();
-        Option<FileAttributes> none = Option.none();
 
-        unixPackage.
-            addFile( pomXml, regularFile( relativePath( "/pom.xml" ), now, 0, none ) ).
-            addFile( fooLicense, regularFile( relativePath( "/foo-license.txt" ), now, 0, none ) ).
-            addFile( barLicense, regularFile( relativePath( "/bar-license.txt" ), now, 0, none ) );
+        unixPackage.addFile( pomXml, regularFile( relativePath( "/pom.xml" ), now, 0, EMPTY ) );
+        unixPackage.addFile( fooLicense, regularFile( relativePath( "/foo-license.txt" ), now, 0, EMPTY ) );
+        unixPackage.addFile( barLicense, regularFile( relativePath( "/bar-license.txt" ), now, 0, EMPTY ) );
 
         unixPackage.
             debug( true ).

@@ -468,7 +468,7 @@ public abstract class MojoHelper
 
             AssemblyOperation operation = ( (AssemblyOp.CreateOperation) assemblyOp ).
                 createOperation( buildDirectory, parameters.defaultFileAttributes,
-                                 parameters.defaultDirectoryAttributes, filters, project.artifactMap );
+                                 parameters.defaultDirectoryAttributes, project.artifactMap );
 
             operations = operations.cons( operation );
         }

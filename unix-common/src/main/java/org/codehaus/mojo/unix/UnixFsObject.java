@@ -27,10 +27,7 @@ package org.codehaus.mojo.unix;
 import fj.*;
 import static fj.Function.*;
 import static fj.P.*;
-import fj.data.*;
-import static fj.data.Option.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.UnixUtil.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.plexus.util.*;
@@ -41,12 +38,12 @@ import org.joda.time.format.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public abstract class UnixFsObject<A extends UnixFsObject>
-    implements Comparable<UnixFsObject>, LineProducer, HasFileAttributes<UnixFsObject>
+    implements Comparable<UnixFsObject>, LineProducer
 {
     public final RelativePath path;
     public final LocalDateTime lastModified;
     public final long size;
-    public final Option<FileAttributes> attributes;
+    public final FileAttributes attributes;
 
     private static final DateTimeFormatter FORMAT = new DateTimeFormatterBuilder().
         appendMonthOfYearShortText().
@@ -59,7 +56,7 @@ public abstract class UnixFsObject<A extends UnixFsObject>
 
     private char prefixChar;
 
-    protected UnixFsObject( char prefixChar, RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
+    protected UnixFsObject( char prefixChar, RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes )
     {
         validateNotNull( path, lastModified, attributes );
 
@@ -82,38 +79,33 @@ public abstract class UnixFsObject<A extends UnixFsObject>
 
     public FileAttributes getFileAttributes()
     {
-        return attributes.some();
+        return attributes;
     }
 
     public final A setFileAttributes( FileAttributes attributes )
     {
         Validate.validateNotNull( attributes );
-        return copy( path, lastModified, size, some( attributes ) );
+        return copy( path, lastModified, size, attributes );
     }
 
-    protected abstract A copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes );
-
-    public UnixFsObject asUnixFsObject()
-    {
-        return this;
-    }
+    protected abstract A copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes );
 
     // -----------------------------------------------------------------------
     // Static
     // -----------------------------------------------------------------------
 
     public static RegularFile regularFile( RelativePath path, LocalDateTime lastModified, long size,
-                                           Option<FileAttributes> attributes )
+                                           FileAttributes attributes )
     {
         return new RegularFile( path, lastModified, size, attributes );
     }
 
     public static Directory directory( RelativePath path, LocalDateTime lastModified, FileAttributes attributes )
     {
-        return new Directory( path, lastModified, some( attributes ) );
+        return new Directory( path, lastModified, attributes );
     }
 
-    public static Symlink symlink( RelativePath path, LocalDateTime lastModified, Option<FileAttributes> attributes,
+    public static Symlink symlink( RelativePath path, LocalDateTime lastModified, FileAttributes attributes,
                                    String target )
     {
         return new Symlink( path, lastModified, attributes, target );
@@ -136,8 +128,10 @@ public abstract class UnixFsObject<A extends UnixFsObject>
 
         UnixFsObject that = (UnixFsObject) o;
 
-        return path.equals( that.path ) && lastModified.equals( that.lastModified ) && size == that.size &&
-            optionEquals( attributes, that.attributes );
+        return path.equals( that.path ) &&
+            lastModified.equals( that.lastModified ) &&
+            size == that.size &&
+            attributes.equals( that.attributes );
     }
 
     public int hashCode()
@@ -160,10 +154,6 @@ public abstract class UnixFsObject<A extends UnixFsObject>
         F<String, String> leftPad10 = curry( UnixFsObject.leftPad, 10 );
         F<String, String> rightPad10 = curry( UnixFsObject.rightPad, 10 );
 
-        // I wonder how long this will hold. Perhaps it should only be possible to call toString() on valid
-        // objects - trygve
-        FileAttributes attributes = this.attributes.some();
-
         return prefixChar + attributes.mode.map( UnixFileMode.showLong ).orSome( "<unknown>" ) +
             " " + attributes.user.map( leftPad10 ).orSome( " <unknown>" ) +
             " " + attributes.group.map( leftPad10 ).orSome( " <unknown>" ) +
@@ -179,12 +169,12 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     public static class RegularFile
         extends UnixFsObject<RegularFile>
     {
-        private RegularFile( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
+        private RegularFile( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes )
         {
             super( '-', path, lastModified, size, attributes );
         }
 
-        protected RegularFile copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
+        protected RegularFile copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes )
         {
             return new RegularFile( path, lastModified, size, attributes );
         }
@@ -193,12 +183,12 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     public static class Directory
         extends UnixFsObject<Directory>
     {
-        private Directory( RelativePath path, LocalDateTime lastModified, Option<FileAttributes> attributes )
+        private Directory( RelativePath path, LocalDateTime lastModified, FileAttributes attributes )
         {
             super( 'd', path, lastModified, 0, attributes );
         }
 
-        protected Directory copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
+        protected Directory copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes )
         {
             return new Directory( path, lastModified, attributes );
         }
@@ -209,7 +199,7 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     {
         public final String value;
 
-        private Symlink( RelativePath path, LocalDateTime lastModified, Option<FileAttributes> attributes, String value )
+        private Symlink( RelativePath path, LocalDateTime lastModified, FileAttributes attributes, String value )
         {
             super( 'l', path, lastModified, sizeOfSymlink( value ), attributes );
             validateNotNull( value );
@@ -225,7 +215,7 @@ public abstract class UnixFsObject<A extends UnixFsObject>
             return (i == -1) ? s.length() : s.length() - i - 1;
         }
 
-        protected Symlink copy( RelativePath path, LocalDateTime lastModified, long size, Option<FileAttributes> attributes )
+        protected Symlink copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes )
         {
             return new Symlink( path, lastModified, attributes, value );
         }

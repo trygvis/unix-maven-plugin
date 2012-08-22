@@ -38,10 +38,8 @@ import java.io.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public abstract class PrototypeEntry<U extends UnixFsObject>
-    implements LineProducer, PackageFileSystemObject<PrototypeEntry>, HasFileAttributes<PrototypeEntry<U>>
+    implements LineProducer, PackageFileSystemObject<PrototypeEntry>
 {
-    static final String EOL = System.getProperty( "line.separator" );
-
     protected final String pkgClass;
 
     protected final Option<Boolean> relative;

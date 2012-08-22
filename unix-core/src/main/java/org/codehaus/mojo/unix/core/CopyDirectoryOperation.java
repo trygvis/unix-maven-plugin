@@ -53,8 +53,6 @@ public class CopyDirectoryOperation
 
     private final List<String> excludes;
 
-    private final List<FileFilterDescriptor> filters;
-
     private final Option<P2<String, String>> pattern;
 
     private final FileAttributes fileAttributes;
@@ -62,14 +60,13 @@ public class CopyDirectoryOperation
     private final FileAttributes directoryAttributes;
 
     public CopyDirectoryOperation( FileObject from, RelativePath to, List<String> includes, List<String> excludes,
-                                   List<FileFilterDescriptor> filters, Option<P2<String, String>> pattern,
-                                   FileAttributes fileAttributes, FileAttributes directoryAttributes )
+                                   Option<P2<String, String>> pattern, FileAttributes fileAttributes,
+                                   FileAttributes directoryAttributes )
     {
         this.from = from;
         this.to = to;
         this.includes = includes;
         this.excludes = excludes;
-        this.filters = filters;
         this.pattern = pattern;
         this.fileAttributes = fileAttributes;
         this.directoryAttributes = directoryAttributes;
@@ -112,18 +109,6 @@ public class CopyDirectoryOperation
 
             if ( f.getType() == FileType.FILE )
             {
-                for ( FileFilterDescriptor filter : filters )
-                {
-                    if ( filter.matches( targetName ) )
-                    {
-                        System.out.println( "Filtering " + targetName );
-                    }
-                    else
-                    {
-                        System.out.println( "No filtering of " + targetName );
-                    }
-                }
-
                 fileCollector.addFile( f, AssemblyOperationUtil.fromFileObject( targetName, f, fileAttributes ) );
             }
             else if ( f.getType() == FileType.FOLDER )

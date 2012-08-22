@@ -117,29 +117,23 @@ public class DebUnixPackage
         fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
     }
 
-    public FileCollector addDirectory( UnixFsObject.Directory directory )
+    public void addDirectory( UnixFsObject.Directory directory )
     {
         fileCollector.addDirectory( directory );
-
-        return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
     {
         fileCollector.addFile( fromFile, file );
-
-        return this;
     }
 
-    public FileCollector addSymlink( UnixFsObject.Symlink symlink )
+    public void addSymlink( UnixFsObject.Symlink symlink )
         throws IOException
     {
         fileCollector.addSymlink( symlink );
-
-        return this;
     }
 
-    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
+    public void apply( F<UnixFsObject, Option<UnixFsObject>> f )
     {
         fileCollector.apply( f );
     }

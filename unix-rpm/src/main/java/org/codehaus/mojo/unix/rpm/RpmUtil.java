@@ -315,11 +315,11 @@ public class RpmUtil
             {
                 if ( "X".equals( parts[10] ) )
                 {
-                    specFile.addFile( regularFile( path, lastModified, size, some( attributes ) ) );
+                    specFile.addFile( regularFile( path, lastModified, size, attributes ) );
                 }
                 else
                 {
-                    specFile.addSymlink( symlink( path, lastModified, some( attributes ), parts[10] ) );
+                    specFile.addSymlink( symlink( path, lastModified, attributes, parts[10] ) );
                 }
             }
         }

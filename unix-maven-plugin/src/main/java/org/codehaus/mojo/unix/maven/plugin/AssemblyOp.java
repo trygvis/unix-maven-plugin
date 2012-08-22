@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.maven.plugin.*;
@@ -52,11 +51,8 @@ public abstract class AssemblyOp
     // -----------------------------------------------------------------------
 
     public static interface CreateOperation {
-        AssemblyOperation createOperation( FileObject basedir,
-                                           FileAttributes defaultFileAttributes,
-                                           FileAttributes defaultDirectoryAttributes,
-                                           List<FileFilterDescriptor> filters,
-                                           MavenProjectWrapper.ArtifactMap artifactMap )
+        AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
+                                           FileAttributes defaultDirectoryAttributes, MavenProjectWrapper.ArtifactMap artifactMap )
             throws MojoFailureException, FileSystemException, UnknownArtifactException;
     }
 

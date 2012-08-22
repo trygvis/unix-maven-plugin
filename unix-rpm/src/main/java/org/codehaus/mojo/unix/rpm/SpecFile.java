@@ -143,7 +143,7 @@ public class SpecFile
         return fileSystem;
     }
 
-    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
+    public void apply( F<UnixFsObject, Option<UnixFsObject>> f )
     {
         fileSystem = fileSystem.apply( f );
     }
@@ -220,16 +220,16 @@ public class SpecFile
             public String f( PackageFileSystemObject p2 )
             {
                 @SuppressWarnings( {"unchecked"} ) UnixFsObject<A> unixFsObject = p2.getUnixFsObject();
-                Option<FileAttributes> attributes = unixFsObject.attributes;
+                FileAttributes attributes = unixFsObject.attributes;
 
                 String s = "";
 
-                s += unixFsObject.attributes.map( tagsF ).bind( formatTags ).orSome( "" );
+                s += formatTags.f( attributes.tags ).orSome( "" );
 
                 s += "%attr(" +
-                    attributes.bind( FileAttributes.modeF ).map( UnixFileMode.showOcalString ).orSome( "-" ) + "," +
-                    attributes.bind( FileAttributes.userF ).orSome( "-" ) + "," +
-                    attributes.bind( FileAttributes.groupF ).orSome( "-" ) + ") ";
+                    attributes.mode.map( UnixFileMode.showOcalString ).orSome( "-" ) + "," +
+                    attributes.user.orSome( "-" ) + "," +
+                    attributes.group.orSome( "-" ) + ") ";
 
                 s += unixFsObject.path.asAbsolutePath( "/" );
 

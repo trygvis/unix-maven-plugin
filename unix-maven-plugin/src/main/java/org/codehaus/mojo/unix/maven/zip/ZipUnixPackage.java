@@ -42,14 +42,10 @@ import java.io.*;
 import java.util.concurrent.*;
 import java.util.zip.*;
 
-/**
- */
 public class ZipUnixPackage
     extends UnixPackage
 {
     private PackageFileSystem<F2<UnixFsObject, ZipOutputStream, Callable>> fileSystem;
-
-    private FileObject workingDirectory;
 
     public ZipUnixPackage()
     {
@@ -65,35 +61,30 @@ public class ZipUnixPackage
     // FileCollector Implementation
     // -----------------------------------------------------------------------
 
-    public FileCollector addDirectory( final UnixFsObject.Directory directory )
+    public void addDirectory( final UnixFsObject.Directory directory )
         throws IOException
     {
         BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>> o =
             new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( directory, this.directory );
 
         fileSystem = fileSystem.addDirectory( o );
-
-        return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
         throws IOException
     {
         F2<UnixFsObject, ZipOutputStream, Callable> f = file( fromFile );
 
         fileSystem = fileSystem.addFile(
             new BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, Callable>>( file, f ) );
-
-        return this;
     }
 
-    public FileCollector addSymlink( UnixFsObject.Symlink symlink )
+    public void addSymlink( UnixFsObject.Symlink symlink )
         throws IOException
     {
-        return this;
     }
 
-    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
+    public void apply( F<UnixFsObject, Option<UnixFsObject>> f )
     {
         fileSystem = fileSystem.apply( f );
     }
@@ -105,7 +96,6 @@ public class ZipUnixPackage
     public ZipUnixPackage workingDirectory( FileObject workingDirectory )
         throws FileSystemException
     {
-        this.workingDirectory = workingDirectory;
         return this;
     }
 

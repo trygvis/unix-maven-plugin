@@ -49,13 +49,8 @@ public class BasicPackageFileSystemObject<E>
         return extension;
     }
 
-    public PackageFileSystemObject<E> setFileAttributes( FileAttributes fileAttributes )
+    public PackageFileSystemObject<E> withUnixFsObject( UnixFsObject object )
     {
-        return new BasicPackageFileSystemObject<E>( unixFsObject.setFileAttributes( fileAttributes ), extension );
-    }
-
-    public PackageFileSystemObject<E> setPath( RelativePath path )
-    {
-        return new BasicPackageFileSystemObject<E>( unixFsObject.setPath( path ), extension );
+        return new BasicPackageFileSystemObject<E>( object, extension );
     }
 }

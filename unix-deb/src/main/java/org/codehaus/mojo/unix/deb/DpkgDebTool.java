@@ -101,7 +101,7 @@ public class DpkgDebTool
 
             objects.add( entry.isDirectory() ?
                 directory( path, lastModified, attributes ) :
-                regularFile( path, lastModified, entry.getSize(), some( attributes ) ) );
+                regularFile( path, lastModified, entry.getSize(), attributes ) );
 
             entry = tarInputStream.getNextEntry();
         }

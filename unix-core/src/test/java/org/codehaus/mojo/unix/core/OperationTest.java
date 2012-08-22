@@ -123,22 +123,16 @@ public class OperationTest
 
         fileCollector.addFile( files.optJettyBinExtraApp, objects.optJettyBinExtraApp );
         control.setMatcher( new FileObjectMatcher() );
-        control.setReturnValue( fileCollector );
-
         fileCollector.addFile( files.optJettyReadmeUnix, objects.optJettyReadmeUnix );
-        control.setReturnValue( fileCollector );
-
         fileCollector.addFile( files.optJettyBashProfile, objects.optJettyBashProfile );
-        control.setReturnValue( fileCollector );
-
-        control.expectAndReturn( fileCollector.addDirectory( objects.optJettyBin ), fileCollector );
-        control.expectAndReturn( fileCollector.addDirectory( objects.optJetty ), fileCollector );
-        control.expectAndReturn( fileCollector.addDirectory( objects.opt ), fileCollector );
-        control.expectAndReturn( fileCollector.addDirectory( objects.base ), fileCollector );
+        fileCollector.addDirectory( objects.optJettyBin );
+        fileCollector.addDirectory( objects.optJetty );
+        fileCollector.addDirectory( objects.opt );
+        fileCollector.addDirectory( objects.base );
         control.replay();
 
-        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, List.<FileFilterDescriptor>nil(),
-                                    Option.<P2<String, String>>none(), fileAttributes, directoryAttributes ).
+        new CopyDirectoryOperation( files.files, RelativePath.BASE, null, null, Option.<P2<String, String>>none(),
+                                    fileAttributes, directoryAttributes ).
             perform( fileCollector );
 
         control.verify();
@@ -165,13 +159,12 @@ public class OperationTest
         MockControl control = MockControl.createControl( FileCollector.class );
         FileCollector fileCollector = (FileCollector) control.getMock();
 
-        control.expectAndReturn( fileCollector.addFile( barLicense, barLicenseUnixFile ), fileCollector );
-        control.expectAndReturn( fileCollector.addFile( fooLicense, fooLicenseUnixFile ), fileCollector );
+        fileCollector.addFile( barLicense, barLicenseUnixFile );
+        fileCollector.addFile( fooLicense, fooLicenseUnixFile );
         control.replay();
 
         new CopyDirectoryOperation( archive, relativePath( "licenses" ), single( "**/*license.txt" ), null,
-                                    List.<FileFilterDescriptor>nil(), some( p( ".*/(.*license.*)", "$1" ) ),
-                                    fileAttributes, directoryAttributes ).
+                                    some( p( ".*/(.*license.*)", "$1" ) ), fileAttributes, directoryAttributes ).
             perform( fileCollector );
 
         control.verify();

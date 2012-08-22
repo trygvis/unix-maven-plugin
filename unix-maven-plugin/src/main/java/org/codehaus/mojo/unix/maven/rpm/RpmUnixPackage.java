@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.maven.rpm;
 
 import fj.*;
 import static fj.P.*;
+import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
@@ -118,32 +119,28 @@ public class RpmUnixPackage
         return this;
     }
 
-    public FileCollector addDirectory( UnixFsObject.Directory directory )
+    public void addDirectory( UnixFsObject.Directory directory )
         throws IOException
     {
         specFile.addDirectory( directory );
         fileCollector.addDirectory( directory );
-        return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
         throws IOException
     {
         specFile.addFile( file );
         fileCollector.addFile( fromFile, file );
-        return this;
     }
 
-    public FileCollector addSymlink( UnixFsObject.Symlink symlink )
+    public void addSymlink( UnixFsObject.Symlink symlink )
         throws IOException
     {
         specFile.addSymlink( symlink );
         fileCollector.addSymlink( symlink );
-
-        return this;
     }
 
-    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
+    public void apply( F<UnixFsObject, Option<UnixFsObject>> f )
     {
         specFile.apply( f );
     }

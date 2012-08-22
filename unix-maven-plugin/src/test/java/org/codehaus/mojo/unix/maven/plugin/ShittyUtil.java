@@ -25,13 +25,12 @@ package org.codehaus.mojo.unix.maven.plugin;
  */
 
 import fj.*;
-import fj.Function;
 import fj.data.*;
 import static fj.data.HashMap.*;
-import static fj.data.Option.*;
 import static fj.data.Stream.*;
 import groovy.lang.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.deb.*;
 import org.codehaus.mojo.unix.rpm.*;
@@ -274,7 +273,7 @@ public class ShittyUtil
 
                     }
 
-                    o = regularFile( path, time, size, some( FileAttributes.EMPTY ) );
+                    o = regularFile( path, time, size, EMPTY );
                 }
                 actualFiles.set( path, o );
                 zipEntry = zis.getNextEntry();

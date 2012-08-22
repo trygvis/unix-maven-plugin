@@ -71,9 +71,9 @@ public class PrototypeFileTest
 
         FileObject bashProfileObject = fsManager.resolveFile( getTestPath( "src/test/non-existing/bash_profile" ) );
         FileObject extractJarObject = fsManager.resolveFile( getTestPath( "src/test/non-existing/extract.jar" ) );
-        UnixFsObject.RegularFile extractJar = regularFile( extractJarPath, dateTime, 0, some( fileAttributes ) );
-        UnixFsObject.RegularFile bashProfile = regularFile( bashProfilePath, dateTime, 0, some( fileAttributes ) );
-        UnixFsObject.RegularFile smfManifestXml = regularFile( smfManifestXmlPath, dateTime, 0, some( fileAttributes.addTag( "class:smf" ) ) );
+        UnixFsObject.RegularFile extractJar = regularFile( extractJarPath, dateTime, 0, fileAttributes );
+        UnixFsObject.RegularFile bashProfile = regularFile( bashProfilePath, dateTime, 0, fileAttributes );
+        UnixFsObject.RegularFile smfManifestXml = regularFile( smfManifestXmlPath, dateTime, 0, fileAttributes.addTag( "class:smf" ) );
 
         prototypeFile.addFile( bashProfileObject, bashProfile );
         prototypeFile.addFile( extractJarObject, extractJar );
@@ -98,13 +98,15 @@ public class PrototypeFileTest
             toString(), stream.toString() );
     }
 
-    private F2<UnixFsObject, FileAttributes, FileAttributes> filter( final RelativePath s, final FileAttributes newAttributes )
+    private F<UnixFsObject, Option<UnixFsObject>> filter( final RelativePath s, final FileAttributes newAttributes )
     {
-        return new F2<UnixFsObject, FileAttributes, FileAttributes>()
+        return new F<UnixFsObject, Option<UnixFsObject>>()
         {
-            public FileAttributes f( UnixFsObject fsObject, FileAttributes attributes )
+            public Option<UnixFsObject> f( UnixFsObject object )
             {
-                return !fsObject.path.string.startsWith( s.string ) ? attributes : attributes.useAsDefaultsFor( newAttributes );
+                return !object.path.string.startsWith( s.string ) ?
+                    Option.<UnixFsObject>none() :
+                    some( object.setFileAttributes( object.attributes.useAsDefaultsFor( newAttributes ) ) );
             }
         };
     }

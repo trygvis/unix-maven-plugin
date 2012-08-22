@@ -88,13 +88,13 @@ public class SpecFileTest
 
         specFile.addDirectory( usrbin );
         specFile.addDirectory( bin );
-        specFile.addFile( regularFile( relativePath( "/extract.jar" ), lastModified, 10, some( fileAttributes ) ) );
-        specFile.addFile( regularFile( extract2Jar, lastModified, 10, some( fileAttributes ) ) );
-        specFile.addFile( regularFile( relativePath( "/a" ), lastModified, 10, some( fileAttributes.addTag( "doc" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/b" ), lastModified, 10, some( fileAttributes.addTag( "config" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/c" ), lastModified, 10, some( fileAttributes.addTag( "rpm:missingok" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/d" ), lastModified, 10, some( fileAttributes.addTag( "rpm:noreplace" ) ) ) );
-        specFile.addFile( regularFile( relativePath( "/e" ), lastModified, 10, some( fileAttributes.addTag( "rpm:ghost" ) ) ) );
+        specFile.addFile( regularFile( relativePath( "/extract.jar" ), lastModified, 10, fileAttributes ) );
+        specFile.addFile( regularFile( extract2Jar, lastModified, 10, fileAttributes ) );
+        specFile.addFile( regularFile( relativePath( "/a" ), lastModified, 10, fileAttributes.addTag( "doc" ) ) );
+        specFile.addFile( regularFile( relativePath( "/b" ), lastModified, 10, fileAttributes.addTag( "config" ) ) );
+        specFile.addFile( regularFile( relativePath( "/c" ), lastModified, 10, fileAttributes.addTag( "rpm:missingok" ) ) );
+        specFile.addFile( regularFile( relativePath( "/d" ), lastModified, 10, fileAttributes.addTag( "rpm:noreplace" ) ) );
+        specFile.addFile( regularFile( relativePath( "/e" ), lastModified, 10, fileAttributes.addTag( "rpm:ghost" ) ) );
         specFile.apply( filter( extract2Jar, extract2JarAttributes ) );
 
         specFile.provides = List.list( "foo", "bar" );
@@ -236,14 +236,16 @@ public class SpecFileTest
         return specFile;
     }
 
-    private F2<UnixFsObject, FileAttributes, FileAttributes> filter( final RelativePath path,
-                                                                     final FileAttributes newAttributes )
+    private F<UnixFsObject, Option<UnixFsObject>> filter( final RelativePath path,
+                                                          final FileAttributes newAttributes )
     {
-        return new F2<UnixFsObject, FileAttributes, FileAttributes>()
+        return new F<UnixFsObject, Option<UnixFsObject>>()
         {
-            public FileAttributes f( UnixFsObject fsObject, FileAttributes attributes )
+            public Option<UnixFsObject> f( UnixFsObject object )
             {
-                return !fsObject.path.isBelowOrSame( path ) ? attributes : attributes.useAsDefaultsFor( newAttributes );
+                return !object.path.isBelowOrSame( path ) ?
+                    Option.<UnixFsObject>none() :
+                    some( object.setFileAttributes( object.attributes.useAsDefaultsFor( newAttributes ) ) );
             }
         };
     }

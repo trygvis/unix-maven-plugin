@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
@@ -60,9 +59,7 @@ public class Symlink
     }
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes,
-                                              List<FileFilterDescriptor> filters,
-                                              MavenProjectWrapper.ArtifactMap artifactMap )
+                                              FileAttributes defaultDirectoryAttributes, MavenProjectWrapper.ArtifactMap artifactMap )
         throws MojoFailureException, FileSystemException
     {
         MojoFileAttributes attributes = new MojoFileAttributes( null, null, UnixFileMode._0777 );

@@ -25,7 +25,9 @@ package org.codehaus.mojo.unix;
  */
 
 import fj.*;
+import fj.data.*;
 import org.apache.commons.vfs.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 
 import java.io.*;
 
@@ -34,14 +36,14 @@ import java.io.*;
  */
 public interface FileCollector
 {
-    FileCollector addDirectory( UnixFsObject.Directory directory )
+    void addDirectory( Directory directory )
         throws IOException;
 
-    FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    void addFile( FileObject fromFile, RegularFile file )
         throws IOException;
 
-    FileCollector addSymlink( UnixFsObject.Symlink symlink )
+    void addSymlink( Symlink symlink )
         throws IOException;
 
-    void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f );
+    void apply( F<UnixFsObject, Option<UnixFsObject>> f );
 }

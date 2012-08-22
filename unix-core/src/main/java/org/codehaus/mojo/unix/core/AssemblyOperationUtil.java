@@ -44,7 +44,7 @@ public class AssemblyOperationUtil
 
         LocalDateTime time = new LocalDateTime( content.getLastModifiedTime() );
 
-        return regularFile( toFile, time, content.getSize(), fromNull( attributes ) );
+        return regularFile( toFile, time, content.getSize(), attributes );
     }
 
     public static UnixFsObject.Directory dirFromFileObject( RelativePath toFile, FileObject fromFile,

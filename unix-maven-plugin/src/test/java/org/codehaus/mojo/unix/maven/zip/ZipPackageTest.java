@@ -74,11 +74,14 @@ public class ZipPackageTest
         new CreateDirectoriesOperation( new String[]{ "/opt/hudson" }, EMPTY ).
             perform( zipPackage );
 
-        new CopyDirectoryOperation( basedir, relativePath( "" ), List.<String>nil(), List.<String>nil(), filters,
+        new CopyDirectoryOperation( basedir, relativePath( "" ), List.<String>nil(), List.<String>nil(),
                                     Option.<P2<String, String>>none(), EMPTY, EMPTY ).
             perform( zipPackage );
 
         new CopyFileOperation( EMPTY, basedir.resolveFile( "file/foo.txt" ), relativePath( "/file/foo.txt" ) ).
+            perform( zipPackage );
+
+        new FilterFilesOperation( filters ).
             perform( zipPackage );
 
         zipPackage.

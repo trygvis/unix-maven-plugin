@@ -47,9 +47,6 @@ public class SetAttributesOperation
 {
     private final IncludeExcludeFilter selector;
 
-    public final Option<F2<UnixFsObject, FileAttributes, FileAttributes>> applyFileAttributes;
-    public final Option<F2<UnixFsObject, FileAttributes, FileAttributes>> applyDirectoryAttributes;
-
     private final RelativePath basedir;
     private final List<String> includes;
     private final List<String> excludes;
@@ -71,41 +68,34 @@ public class SetAttributesOperation
             addStringIncludes( includes ).
             addStringExcludes( excludes ).
             create();
-
-        if ( fileAttributes.isSome() )
-        {
-            F2<UnixFsObject, FileAttributes, FileAttributes> f = new ApplyAttributes( UnixFsObject.RegularFile.class, basedir, fileAttributes.some() );
-            applyFileAttributes = some( f );
-        }
-        else
-        {
-            applyFileAttributes = none();
-        }
-
-        if ( directoryAttributes.isSome() )
-        {
-            F2<UnixFsObject, FileAttributes, FileAttributes> f = new ApplyAttributes( UnixFsObject.Directory.class, basedir, directoryAttributes.some() );
-            applyDirectoryAttributes = some( f );
-        }
-        else
-        {
-            applyDirectoryAttributes = none();
-        }
     }
 
     public void perform( final FileCollector fileCollector )
         throws IOException
     {
-        Effect<F2<UnixFsObject, FileAttributes, FileAttributes>> effect = new Effect<F2<UnixFsObject, FileAttributes, FileAttributes>>()
+        Effect<ApplyAttributes> effect = new Effect<ApplyAttributes>()
         {
-            public void e( F2<UnixFsObject, FileAttributes, FileAttributes> applyAttributes )
+            public void e( ApplyAttributes applyAttributes )
             {
                 fileCollector.apply( applyAttributes );
             }
         };
 
-        applyFileAttributes.foreach( effect );
-        applyDirectoryAttributes.foreach( effect );
+        fileAttributes.map( new F<FileAttributes, ApplyAttributes>()
+        {
+            public ApplyAttributes f( FileAttributes fileAttributes )
+            {
+                return new ApplyAttributes( UnixFsObject.RegularFile.class, basedir, fileAttributes );
+            }
+        } ).foreach( effect );
+
+        directoryAttributes.map( new F<FileAttributes, ApplyAttributes>()
+        {
+            public ApplyAttributes f( FileAttributes fileAttributes )
+            {
+                return new ApplyAttributes( UnixFsObject.Directory.class, basedir, directoryAttributes.some() );
+            }
+        } ).foreach( effect );
     }
 
     public void streamTo( LineStreamWriter streamWriter )
@@ -137,7 +127,7 @@ public class SetAttributesOperation
     }
 
     private final class ApplyAttributes
-        extends F2<UnixFsObject, FileAttributes, FileAttributes>
+        extends F<UnixFsObject, Option<UnixFsObject>>
     {
         private final Class<? extends UnixFsObject> klass;
         private final RelativePath basedir;
@@ -150,11 +140,11 @@ public class SetAttributesOperation
             this.attributes = attributes;
         }
 
-        public FileAttributes f( UnixFsObject fsObject, FileAttributes currentAttributes )
+        public Option<UnixFsObject> f( UnixFsObject fsObject )
         {
             if ( !klass.isAssignableFrom( fsObject.getClass() ) )
             {
-                return currentAttributes;
+                return none();
             }
 
             // Remove the basedir part of the path before matching
@@ -169,7 +159,7 @@ public class SetAttributesOperation
                 Option<RelativePath> option = fsObject.path.subtract( basedir );
                 if ( option.isNone() )
                 {
-                    return currentAttributes;
+                    return none();
                 }
 
                 massagedPath = option.some();
@@ -177,12 +167,11 @@ public class SetAttributesOperation
 
             if ( !selector.matches( massagedPath ) )
             {
-                return currentAttributes;
+                return none();
             }
 
-            // Use 'currentAttributes' as a default, which means that any attribute that is set in 'attributes'
-            // will override any currently set attribute
-            return currentAttributes.useAsDefaultsFor( attributes );
+            // TODO: check that the attributes was changed. return none() if not.
+            return some( fsObject.setFileAttributes( fsObject.attributes.useAsDefaultsFor( attributes ) ) );
         }
     }
 }

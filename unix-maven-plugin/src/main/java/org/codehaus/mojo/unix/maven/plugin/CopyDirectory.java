@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import fj.data.*;
 import org.apache.commons.vfs.*;
 import static org.apache.commons.vfs.VFS.*;
 import org.apache.maven.plugin.*;
@@ -53,7 +52,7 @@ public class CopyDirectory
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
                                               FileAttributes defaultDirectoryAttributes,
-                                              List<FileFilterDescriptor> filters, MavenProjectWrapper.ArtifactMap artifactMap )
+                                              MavenProjectWrapper.ArtifactMap artifactMap )
         throws MojoFailureException, FileSystemException
     {
         validateIsSet( from, "from" );
@@ -61,6 +60,6 @@ public class CopyDirectory
         File file = validateFileIsDirectory( from, "from" );
 
         return createCopyArchiveOperation( getManager().resolveFile( file.getAbsolutePath() ), defaultFileAttributes,
-                                           defaultDirectoryAttributes, filters );
+                                           defaultDirectoryAttributes );
     }
 }

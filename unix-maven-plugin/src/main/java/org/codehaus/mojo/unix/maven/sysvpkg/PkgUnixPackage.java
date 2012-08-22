@@ -234,31 +234,25 @@ public class PkgUnixPackage
         return version;
     }
 
-    public FileCollector addDirectory( UnixFsObject.Directory directory )
+    public void addDirectory( UnixFsObject.Directory directory )
         throws IOException
     {
         prototypeFile.addDirectory( directory );
-
-        return this;
     }
 
-    public FileCollector addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
         throws IOException
     {
         prototypeFile.addFile( fromFile( fromFile, file ), file );
-
-        return this;
     }
 
-    public FileCollector addSymlink( UnixFsObject.Symlink symlink )
+    public void addSymlink( UnixFsObject.Symlink symlink )
         throws IOException
     {
         prototypeFile.addSymlink( symlink );
-
-        return this;
     }
 
-    public void apply( F2<UnixFsObject, FileAttributes, FileAttributes> f )
+    public void apply( F<UnixFsObject, Option<UnixFsObject>> f )
     {
         prototypeFile.apply( f );
     }

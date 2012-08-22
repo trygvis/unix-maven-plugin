@@ -83,9 +83,7 @@ public class SetAttributes
     }
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes,
-                                              List<FileFilterDescriptor> filters,
-                                              MavenProjectWrapper.ArtifactMap artifactMap )
+                                              FileAttributes defaultDirectoryAttributes, MavenProjectWrapper.ArtifactMap artifactMap )
         throws MojoFailureException, FileSystemException
     {
         return new SetAttributesOperation( this.basedir, includes, excludes,

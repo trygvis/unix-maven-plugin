@@ -62,17 +62,17 @@ public class PackageFileSystemTest
 
     static PlainPackageFileSystemObject b = plain( directory( relativePath( "/b" ), lm, directoryA.mode( UnixFileMode.none ) ) );
 
-    static PlainPackageFileSystemObject a_x = plain( regularFile( relativePath( "/a/a-x" ), lm, 10, some( fileA ) ) );
+    static PlainPackageFileSystemObject a_x = plain( regularFile( relativePath( "/a/a-x" ), lm, 10, fileA ) );
 
-    static PlainPackageFileSystemObject a_y = plain( regularFile( relativePath( "/a/a-y" ), lm, 10, some( fileA ) ) );
+    static PlainPackageFileSystemObject a_y = plain( regularFile( relativePath( "/a/a-y" ), lm, 10, fileA ) );
 
-    static PlainPackageFileSystemObject b_x = plain( regularFile( relativePath( "/b/b-x" ), lm, 10, some( fileA ) ) );
+    static PlainPackageFileSystemObject b_x = plain( regularFile( relativePath( "/b/b-x" ), lm, 10, fileA ) );
 
     static PlainPackageFileSystemObject c = plain( directory( relativePath( "/c" ), lm, directoryA ) );
 
     static PlainPackageFileSystemObject c_x = plain( directory( relativePath( "/c/c-x" ), lm, directoryA ) );
 
-    static PlainPackageFileSystemObject c_x_u = plain( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, some( fileA ) ) );
+    static PlainPackageFileSystemObject c_x_u = plain( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, fileA ) );
 
     Show<Stream<PackageFileSystemObject<Object>>> fsShow = Show.streamShow( Show.showS( new F<PackageFileSystemObject<Object>, String>()
     {
@@ -161,7 +161,7 @@ public class PackageFileSystemTest
     {
         FileAttributes tjoho = a_x.getUnixFsObject().getFileAttributes().user( "tjoho" );
 
-        PackageFileSystem<Object> fileSystem = PackageFileSystem.<Object>create( root, root ).
+        PackageFileSystem<Object> fileSystem = create( root, root ).
             addDirectory( b ).
             addDirectory( a ).
             addFile( a_y ).
@@ -211,16 +211,16 @@ public class PackageFileSystemTest
         }
     };
 
-    private F2<UnixFsObject, FileAttributes, FileAttributes> filter( final String s,
-                                                                     final FileAttributes newAttributes )
+    private F<UnixFsObject, Option<UnixFsObject>> filter( final String s,
+                                                  final FileAttributes newAttributes )
     {
-        return new F2<UnixFsObject, FileAttributes, FileAttributes>()
+        return new F<UnixFsObject, Option<UnixFsObject>>()
         {
-            public FileAttributes f( UnixFsObject fsObject, FileAttributes attributes )
+            public Option<UnixFsObject> f( UnixFsObject fsObject )
             {
                 return !fsObject.path.string.startsWith( s )
-                    ? attributes
-                    : attributes.useAsDefaultsFor( newAttributes );
+                    ? Option.<UnixFsObject>none()
+                    : some( fsObject.setFileAttributes( fsObject.attributes.useAsDefaultsFor( newAttributes ) ) );
             }
         };
     }

@@ -61,18 +61,8 @@ public class FileEntry
         return "f " + pkgClass + " " + getProcessedPath( realPath ) + " " + toString( object.getFileAttributes() );
     }
 
-    public FileAttributes getFileAttributes()
+    public PackageFileSystemObject<PrototypeEntry> withUnixFsObject( UnixFsObject object )
     {
-        return object.getFileAttributes();
-    }
-
-    public FileEntry setFileAttributes( FileAttributes attributes )
-    {
-        return new FileEntry( some( pkgClass ), relative, object.setFileAttributes( attributes ), realPath );
-    }
-
-    public FileEntry setPath( RelativePath path )
-    {
-        return new FileEntry( some( pkgClass ), relative, object.setPath( path ), realPath );
+        return new FileEntry( some( pkgClass ), relative, (RegularFile) object, realPath );
     }
 }

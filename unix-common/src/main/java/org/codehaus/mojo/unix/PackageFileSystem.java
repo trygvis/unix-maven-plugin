@@ -160,16 +160,22 @@ public class PackageFileSystem<A>
      * <p/>
      * TODO: Shouldn't it just return a new UnixFsObject?
      */
-    public PackageFileSystem<A> apply( final F2<UnixFsObject, FileAttributes, FileAttributes> f )
+    public PackageFileSystem<A> apply( final F<UnixFsObject, Option<UnixFsObject>> f )
     {
         TreeZipper<PackageFileSystemObject<A>> root = this.root.map( new F<PackageFileSystemObject<A>, PackageFileSystemObject<A>>()
         {
             public PackageFileSystemObject<A> f( PackageFileSystemObject<A> node )
             {
-                final FileAttributes fileAttributes = f.f( node.getUnixFsObject(), node.getUnixFsObject().getFileAttributes() );
+                Option<UnixFsObject> result = f.f( node.getUnixFsObject() );
 
-                // TODO: check if the attributes was modified
-                return node.setFileAttributes( fileAttributes );
+                if ( result.isSome() )
+                {
+                    return node.withUnixFsObject( result.some() );
+                }
+                else
+                {
+                    return node;
+                }
             }
         } );
 
@@ -179,25 +185,6 @@ public class PackageFileSystem<A>
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
-
-    // Applies the function to each path, and selects the last one that was some()
-
-    F2<P2<RelativePath, FileAttributes>, F<RelativePath, Option<FileAttributes>>, P2<RelativePath, FileAttributes>>
-        fileAttributeFolder =
-        new F2<P2<RelativePath, FileAttributes>, F<RelativePath, Option<FileAttributes>>, P2<RelativePath, FileAttributes>>()
-        {
-            public P2<RelativePath, FileAttributes> f( final P2<RelativePath, FileAttributes> previous,
-                                                       final F<RelativePath, Option<FileAttributes>> transformer )
-            {
-                return previous.map2( new F<FileAttributes, FileAttributes>()
-                {
-                    public FileAttributes f( FileAttributes fileAttributes )
-                    {
-                        return transformer.f( previous._1() ).orSome( previous._2() );
-                    }
-                } );
-            }
-        };
 
     public Stream<PackageFileSystemObject<A>> toList()
     {
@@ -243,7 +230,7 @@ public class PackageFileSystem<A>
         while ( paths.isNotEmpty() && paths.tail().isNotEmpty() )
         {
             path = path.add( paths.head() );
-            zipper = addChild( zipper, leaf( defaultDirectory.setPath( path ) ) );
+            zipper = addChild( zipper, leaf( defaultDirectory.withUnixFsObject( defaultDirectory.getUnixFsObject().setPath( path ) ) ) );
             paths = paths.tail();
         }
 
@@ -348,14 +335,6 @@ public class PackageFileSystem<A>
      */
     private class Fs
     {
-        F2<String, String, String> last = new F2<String, String, String>()
-        {
-            public String f( String s, String s1 )
-            {
-                return s1;
-            }
-        };
-
         F<P2<TreeZipper<PackageFileSystemObject<A>>, List<String>>, TreeZipper<PackageFileSystemObject<A>>> createParentsFor =
             new F<P2<TreeZipper<PackageFileSystemObject<A>>, List<String>>, TreeZipper<PackageFileSystemObject<A>>>()
             {
@@ -382,28 +361,6 @@ public class PackageFileSystem<A>
                     return addChild( parent, node );
                 }
             };
-
-//        public F2<PackageFileSystemObject<A>, PackageFileSystemObject<A>, PackageFileSystemObject<A>> apply_()
-//        {
-//            return new F2<PackageFileSystemObject<A>, PackageFileSystemObject<A>, PackageFileSystemObject<A>>()
-//            {
-//                public PackageFileSystemObject<A> f( PackageFileSystemObject<A> node, PackageFileSystemObject<A> p2 )
-//                {
-//                    return node.apply( p2 );
-//                }
-//            };
-//        }
-
-//        public F<PackageFileSystemObject<A>, PackageFileSystemObject<A>> toP2_()
-//        {
-//            return new F<PackageFileSystemObject<A>, PackageFileSystemObject<A>>()
-//            {
-//                public PackageFileSystemObject<A> f( PackageFileSystemObject<A> node )
-//                {
-//                    return node.toP2();
-//                }
-//            };
-//        }
 
         F2<PackageFileSystemObject<A>, TreeZipper<PackageFileSystemObject<A>>, TreeZipper<PackageFileSystemObject<A>>> mutateExisting =
             new F2<PackageFileSystemObject<A>, TreeZipper<PackageFileSystemObject<A>>, TreeZipper<PackageFileSystemObject<A>>>()
