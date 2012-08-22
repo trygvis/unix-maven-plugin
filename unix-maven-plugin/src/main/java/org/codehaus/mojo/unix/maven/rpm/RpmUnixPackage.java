@@ -105,7 +105,7 @@ public class RpmUnixPackage
         return this;
     }
 
-    public void beforeAssembly( FileAttributes defaultDirectoryAttributes )
+    public void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException
     {
         specFile.beforeAssembly( directory( BASE, new LocalDateTime(), defaultDirectoryAttributes ) );

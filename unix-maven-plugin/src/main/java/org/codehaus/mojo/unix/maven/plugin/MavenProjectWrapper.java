@@ -31,6 +31,7 @@ import org.apache.maven.artifact.*;
 import org.apache.maven.model.*;
 import org.apache.maven.project.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
+import org.joda.time.*;
 
 import java.io.*;
 import java.util.HashMap;
@@ -63,6 +64,8 @@ public class MavenProjectWrapper
 
     public final File buildDirectory;
 
+    public final LocalDateTime timestamp;
+
     public final Set<Artifact> artifacts;
 
     public final List<License> licenses;
@@ -72,8 +75,8 @@ public class MavenProjectWrapper
     public final Map<String, String> properties;
 
     public MavenProjectWrapper( String groupId, String artifactId, String version, Artifact artifact, String name,
-                                String description, File basedir, File buildDirectory, Set<Artifact> artifacts,
-                                List<License> licenses, ArtifactMap artifactMap,
+                                String description, File basedir, File buildDirectory, LocalDateTime timestamp,
+                                Set<Artifact> artifacts, List<License> licenses, ArtifactMap artifactMap,
                                 Map<String, String> properties )
     {
         validateNotNull( groupId, artifactId, version, name );
@@ -85,6 +88,7 @@ public class MavenProjectWrapper
         this.description = fromNull( description );
         this.basedir = basedir;
         this.buildDirectory = buildDirectory;
+        this.timestamp = timestamp;
         this.artifacts = artifacts;
         this.licenses = licenses;
         this.artifactMap = artifactMap;
@@ -103,7 +107,7 @@ public class MavenProjectWrapper
         return new MavenProjectWrapper( project.getGroupId(), project.getArtifactId(), project.getVersion(),
                                         project.getArtifact(), project.getName(), project.getDescription(),
                                         project.getBasedir(), new File( project.getBuild().getDirectory() ),
-                                        project.getArtifacts(), project.getLicenses(),
+                                        new LocalDateTime(), project.getArtifacts(), project.getLicenses(),
                                         new ArtifactMap( project.getArtifacts() ),
                                         unmodifiableMap( properties ) );
     }

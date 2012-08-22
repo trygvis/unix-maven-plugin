@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix;
 
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.util.*;
+import org.joda.time.*;
 
 import java.io.*;
 
@@ -78,7 +79,7 @@ public abstract class UnixPackage
         return this;
     }
 
-    public abstract void beforeAssembly( FileAttributes defaultDirectoryAttributes )
+    public abstract void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException;
 
     public abstract void packageToFile( File packageFile, ScriptUtil.Strategy strategy )

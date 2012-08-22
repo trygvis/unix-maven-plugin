@@ -26,12 +26,16 @@ package org.codehaus.mojo.unix.maven.zip;
 
 import fj.*;
 import static fj.Function.*;
+import static fj.Show.*;
 import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.BasicPackageFileSystemObject.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
+import static org.codehaus.mojo.unix.UnixFsObject.Filter.*;
+import org.codehaus.mojo.unix.io.*;
 import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
@@ -39,13 +43,12 @@ import org.codehaus.plexus.util.*;
 import org.joda.time.*;
 
 import java.io.*;
-import java.util.concurrent.*;
 import java.util.zip.*;
 
 public class ZipUnixPackage
     extends UnixPackage
 {
-    private PackageFileSystem<F<ZipOutputStream, Callable>> fileSystem;
+    private PackageFileSystem<F2<UnixFsObject, ZipOutputStream, IoEffect>> fileSystem;
 
     public ZipUnixPackage()
     {
@@ -64,7 +67,7 @@ public class ZipUnixPackage
     public void addDirectory( final Directory directory )
         throws IOException
     {
-        fileSystem = fileSystem.addDirectory( directory(directory ) );
+        fileSystem = fileSystem.addDirectory( directory( directory ) );
     }
 
     public void addFile( FileObject fromFile, RegularFile file )
@@ -93,21 +96,26 @@ public class ZipUnixPackage
         return this;
     }
 
-    public void beforeAssembly( FileAttributes defaultDirectoryAttributes )
+    public void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException
     {
-        Directory rootDirectory = Directory.directory( BASE, new LocalDateTime( System.currentTimeMillis() ), EMPTY );
+        Directory rootDirectory = Directory.directory( BASE, timestamp, EMPTY );
 
-        fileSystem = create( directory(rootDirectory), directory(rootDirectory) );
+        fileSystem = create( directory( rootDirectory ), directory( rootDirectory ) );
     }
 
     public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception
     {
-        F2<RelativePath, PackageFileSystemObject<F<ZipOutputStream, Callable>>, Boolean> pathFilter =
-            ZipUnixPackage.pathFilter();
+        F2<RelativePath, PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>>, Boolean> pathFilter =
+            pathFilter();
 
-        Stream<PackageFileSystemObject<F<ZipOutputStream, Callable>>> items = fileSystem.
+        PackageFileSystemFormatter<F2<UnixFsObject, ZipOutputStream, IoEffect>> formatter =
+            PackageFileSystemFormatter.flatFormatter();
+
+        fileSystem = fileSystem.prettify();
+
+        Stream<PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>>> items = fileSystem.
             toList().
             filter( compose( BooleanF.invert, curry( pathFilter, BASE ) ) );
 
@@ -116,9 +124,9 @@ public class ZipUnixPackage
         {
             zos = new ZipOutputStream( new FileOutputStream( packageFile ) );
 
-            for ( PackageFileSystemObject<F<ZipOutputStream, Callable>> fileSystemObject : items )
+            for ( PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> fileSystemObject : items )
             {
-                fileSystemObject.getExtension().f( zos ).call();
+                fileSystemObject.getExtension().f( fileSystemObject.getUnixFsObject(), zos ).run();
             }
         }
         finally
@@ -138,63 +146,105 @@ public class ZipUnixPackage
         };
     }
 
-    private BasicPackageFileSystemObject<F<ZipOutputStream, Callable>> directory( final Directory directory )
+    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> directory( Directory directory )
     {
-        F<ZipOutputStream, Callable> f = new F<ZipOutputStream, Callable>()
+        F2<UnixFsObject, ZipOutputStream, IoEffect> f = new F2<UnixFsObject, ZipOutputStream, IoEffect>()
         {
-            public Callable f( final ZipOutputStream zipOutputStream )
+            public IoEffect f( final UnixFsObject object, final ZipOutputStream zipOutputStream )
             {
-                return new Callable()
+                return new IoEffect()
                 {
-                    public Object call()
+                    public void run()
                         throws Exception
                     {
-                        String path = directory.path.isBase() ? "." : directory.path.asAbsolutePath( "./" ) + "/";
+                        String path = object.path.isBase() ? "." : object.path.asAbsolutePath( "./" ) + "/";
 
-                        zipOutputStream.putNextEntry( new ZipEntry( path ) );
-
-                        return null;
+                        ZipEntry entry = new ZipEntry( path );
+                        entry.setTime( object.lastModified.toDateTime().getMillis() );
+                        zipOutputStream.putNextEntry( entry );
                     }
                 };
             }
         };
 
-        return new BasicPackageFileSystemObject<F<ZipOutputStream, Callable>>( directory, f );
+        return basicPackageFSO( directory, f );
     }
 
-    private BasicPackageFileSystemObject<F<ZipOutputStream, Callable>> file( final FileObject fromFile,
-                                                                             final RegularFile file )
+    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> file( final FileObject fromFile,
+                                                                                            UnixFsObject file )
     {
-        F<ZipOutputStream, Callable> f = new F<ZipOutputStream, Callable>()
+        F2<UnixFsObject, ZipOutputStream, IoEffect> f = new F2<UnixFsObject, ZipOutputStream, IoEffect>()
         {
-            public Callable f( final ZipOutputStream zipOutputStream )
+            public IoEffect f( final UnixFsObject file, final ZipOutputStream zipOutputStream )
             {
-                return new Callable()
+                return new IoEffect()
                 {
-                    public Object call()
+                    public void run()
                         throws Exception
                     {
-                        ZipEntry zipEntry = new ZipEntry( file.path.asAbsolutePath( "./" ) );
-                        zipEntry.setSize( file.size );
-                        zipEntry.setTime( file.lastModified.toDateTime().getMillis() );
-                        zipOutputStream.putNextEntry( zipEntry );
-
                         InputStream inputStream = null;
+                        BufferedReader reader = null;
                         try
                         {
+                            @SuppressWarnings( "unchecked" ) List<Filter> filters = file.filters;
+
+                            System.out.println(
+                                "path=" + file.path + ", filters=" + listShow( filterShow ).showS( filters ) );
+
+                            long size;
+
                             inputStream = fromFile.getContent().getInputStream();
+
+                            if ( filters.isEmpty() )
+                            {
+                                size = file.size;
+                            }
+                            else
+                            {
+                                // TODO: Ideally create an output stream that doesn't create a new array on
+                                // toByteArray, but instead can be used as an InputStream directly.
+                                // TODO: This is going to add additional LF/CRLF at the end of the file. Fuck it.
+                                ByteArrayOutputStream output = new ByteArrayOutputStream( (int) file.size );
+                                PrintWriter writer = new PrintWriter( output );
+
+                                // This implicitly uses the platform encoding. Not smart.
+                                reader = new BufferedReader( new InputStreamReader( inputStream ), 1024 * 128 );
+
+                                String line = reader.readLine();
+
+                                while ( line != null )
+                                {
+                                    for ( Filter filter : filters )
+                                    {
+                                        line = filter.replace( line );
+                                    }
+                                    writer.println( line );
+
+                                    line = reader.readLine();
+                                }
+                                inputStream.close();
+                                writer.flush();
+
+                                inputStream = new ByteArrayInputStream( output.toByteArray() );
+                                size = output.size();
+                            }
+
+                            ZipEntry zipEntry = new ZipEntry( file.path.asAbsolutePath( "./" ) );
+                            zipEntry.setSize( size );
+                            zipEntry.setTime( file.lastModified.toDateTime().getMillis() );
+                            zipOutputStream.putNextEntry( zipEntry );
                             IOUtil.copy( inputStream, zipOutputStream, 1024 * 128 );
                         }
                         finally
                         {
                             IOUtil.close( inputStream );
+                            IOUtil.close( reader );
                         }
-
-                        return null;
                     }
                 };
             }
         };
-        return new BasicPackageFileSystemObject<F<ZipOutputStream, Callable>>( file, f );
+
+        return basicPackageFSO( file, f );
     }
 }

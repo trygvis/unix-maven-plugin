@@ -24,9 +24,13 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import fj.data.*;
+import fj.data.List;
 import static fj.data.List.*;
+import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
+
+import java.util.*;
+import java.util.regex.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -56,8 +60,18 @@ public class FilterFiles
         this.excludes = list( excludes );
     }
 
-    public FileFilterDescriptor toDescriptor()
+    public FileFilterDescriptor toDescriptor( Map<String, String> properties )
     {
-        return new FileFilterDescriptor( includes, excludes );
+        List<UnixFsObject.Filter> filter = nil();
+
+        for ( Map.Entry<String, String> entry : properties.entrySet() )
+        {
+            // This needs to be quoted, patterns like "${project.version}" are not very useful regular expressions.
+            Pattern pattern = Pattern.compile( Pattern.quote( entry.getKey() ) );
+
+            filter = filter.cons( new UnixFsObject.Filter( pattern, entry.getValue() ) );
+        }
+
+        return new FileFilterDescriptor( includes, excludes, filter );
     }
 }

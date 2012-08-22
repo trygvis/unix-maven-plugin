@@ -40,12 +40,15 @@ import java.util.*;
 public class CreateDirectoriesOperation
     implements AssemblyOperation
 {
+    private LocalDateTime timestamp;
+
     private String[] paths;
 
     private FileAttributes attributes;
 
-    public CreateDirectoriesOperation( String[] paths, FileAttributes attributes )
+    public CreateDirectoriesOperation( LocalDateTime timestamp, String[] paths, FileAttributes attributes )
     {
+        this.timestamp = timestamp;
         this.paths = paths;
         this.attributes = attributes;
     }
@@ -55,7 +58,7 @@ public class CreateDirectoriesOperation
     {
         for ( String path : paths )
         {
-            fileCollector.addDirectory( directory( relativePath( path ), new LocalDateTime(), attributes ) );
+            fileCollector.addDirectory( directory( relativePath( path ), timestamp, attributes ) );
         }
     }
 

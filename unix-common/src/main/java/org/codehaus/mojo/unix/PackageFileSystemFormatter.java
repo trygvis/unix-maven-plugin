@@ -31,7 +31,7 @@ import org.codehaus.plexus.util.*;
 public class PackageFileSystemFormatter<A>
 {
     /*
-    TODO: Create strategies for printing in "flat", "flat with detailes" and "tree" modes
+    TODO: Create strategies for printing in "flat", "flat with details" and "tree" modes
 
     flat:
     .
@@ -88,6 +88,8 @@ public class PackageFileSystemFormatter<A>
 
         for ( Tree<PackageFileSystemObject<A>> child : children )
         {
+//            UnixFsObject unixFsObject = child.root().getUnixFsObject();
+//            lines.add( indent + unixFsObject.path.name() + ", filters=" + unixFsObject.filters );
             lines.add( indent + child.root().getUnixFsObject().path.name() );
             print( i, lines, child.subForest()._1() );
         }

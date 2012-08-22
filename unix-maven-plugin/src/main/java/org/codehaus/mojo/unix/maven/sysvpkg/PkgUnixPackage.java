@@ -114,7 +114,7 @@ public class PkgUnixPackage
         return this;
     }
 
-    public void beforeAssembly( FileAttributes defaultDirectoryAttributes )
+    public void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException
     {
         prototype = workingDirectory.resolveFile( "prototype" );

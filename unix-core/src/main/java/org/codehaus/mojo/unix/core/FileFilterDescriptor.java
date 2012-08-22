@@ -1,24 +1,23 @@
 package org.codehaus.mojo.unix.core;
 
 import fj.data.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.io.*;
 import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
-import org.codehaus.mojo.unix.util.*;
 
 public class FileFilterDescriptor
 {
-    private final IncludeExcludeFilter filter;
+    public final IncludeExcludeFilter selector;
 
-    public FileFilterDescriptor( List<String> includes, List<String> excludes )
+    public final List<Filter> filters;
+
+    public FileFilterDescriptor( List<String> includes, List<String> excludes, List<Filter> filters )
     {
-        filter = includeExcludeFilter().
+        selector = includeExcludeFilter().
             addStringIncludes( includes ).
             addStringExcludes( excludes ).
             create();
-    }
 
-    public boolean matches( RelativePath targetName )
-    {
-        return filter.matches( targetName );
+        this.filters = filters;
     }
 }

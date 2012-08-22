@@ -39,6 +39,7 @@ import org.codehaus.mojo.unix.maven.plugin.*;
 import org.codehaus.mojo.unix.maven.plugin.Package;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
+import org.joda.time.*;
 
 import java.util.*;
 import java.util.Set;
@@ -203,7 +204,8 @@ public class MojoHelperTest
         PackageVersion version = PackageVersion.packageVersion( "1.0", "123456.123456", false, Option.<String>none() );
 
         MavenProjectWrapper mavenProject = new MavenProjectWrapper( "groupId", "artifactId", "1.0", null, projectName,
-                                                                    null, null, null, artifactSet, licenses,
+                                                                    null, null, null, new LocalDateTime(), artifactSet,
+                                                                    licenses,
                                                                     new MavenProjectWrapper.ArtifactMap( artifactSet ),
                                                                     Collections.<String, String>emptyMap() );
 

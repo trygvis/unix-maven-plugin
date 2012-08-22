@@ -33,7 +33,9 @@ import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.deb.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamWriter.*;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
+import org.joda.time.*;
 
 import java.io.*;
 
@@ -43,8 +45,6 @@ import java.io.*;
 public class DebUnixPackage
     extends UnixPackage
 {
-    private static final String EOL = System.getProperty( "line.separator" );
-
     private ControlFile controlFile;
 
     private FileObject workingDirectory;
@@ -111,7 +111,7 @@ public class DebUnixPackage
         return this;
     }
 
-    public void beforeAssembly( FileAttributes defaultDirectoryAttributes )
+    public void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException
     {
         fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );

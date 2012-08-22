@@ -415,7 +415,7 @@ public abstract class MojoHelper
                                                                     List<AssemblyOp> packageAssembly )
         throws IOException, MojoFailureException, UnknownArtifactException
     {
-        unixPackage.beforeAssembly( parameters.defaultDirectoryAttributes );
+        unixPackage.beforeAssembly( parameters.defaultDirectoryAttributes, project.timestamp );
 
         // Create the default set of assembly operations
         String unix = new File( basedir, "src/main/unix/files" ).getAbsolutePath();
@@ -454,7 +454,7 @@ public abstract class MojoHelper
                 continue;
             }
 
-            filters = filters.cons( ((FilterFiles) assemblyOp).toDescriptor() );
+            filters = filters.cons( ((FilterFiles) assemblyOp).toDescriptor( project.properties ) );
         }
 
         filters = filters.reverse();

@@ -26,18 +26,20 @@ package org.codehaus.mojo.unix.maven.zip;
 
 import fj.*;
 import fj.data.*;
-import fj.data.List;
 import static fj.data.List.*;
-import static java.util.Arrays.*;
+import static java.util.regex.Pattern.*;
 import junit.framework.*;
 import org.apache.commons.vfs.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
+import org.joda.time.*;
 
 import java.io.*;
-import java.util.*;
+import java.nio.charset.*;
+import java.util.zip.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -46,6 +48,11 @@ public class ZipPackageTest
     extends TestCase
 {
     private final TestUtil testUtil = new TestUtil( getClass() );
+
+    private final Charset charset = Charset.forName( "utf-8" );
+
+    // Zip has a resolution of two seconds
+    LocalDateTime timestamp = new LocalDateTime( 2012, 1, 2, 3, 4, 6 );
 
     public void testBasic()
         throws Exception
@@ -63,15 +70,16 @@ public class ZipPackageTest
 
         ZipUnixPackage zipPackage = new ZipUnixPackage();
 
-        zipPackage.beforeAssembly( EMPTY );
+        zipPackage.beforeAssembly( EMPTY, timestamp );
 
         assertEquals( FileType.FOLDER, basedir.getType() );
 
-        List<FileFilterDescriptor> filters = single( new FileFilterDescriptor(
-            single( "dirs/**" ),
-            List.<String>nil() ) );
+        Filter filter = new Filter( compile( "@bar@" ), "awesome" );
 
-        new CreateDirectoriesOperation( new String[]{ "/opt/hudson" }, EMPTY ).
+        List<FileFilterDescriptor> filters =
+            single( new FileFilterDescriptor( single( "dirs/**" ), List.<String>nil(), single( filter ) ) );
+
+        new CreateDirectoriesOperation( timestamp, new String[]{ "/opt/hudson" }, EMPTY ).
             perform( zipPackage );
 
         new CopyDirectoryOperation( basedir, relativePath( "" ), List.<String>nil(), List.<String>nil(),
@@ -86,5 +94,45 @@ public class ZipPackageTest
 
         zipPackage.
             packageToFile( zip, ScriptUtil.Strategy.SINGLE );
+
+        FileInputStream fis = new FileInputStream( zip );
+        ZipInputStream in = new ZipInputStream( fis );
+        assertDirectory( in, "./dirs/", new LocalDateTime( 2012, 8, 19, 10, 34, 10 ) );
+        assertFile( in, "./dirs/bar.txt", 8, new LocalDateTime( 2012, 8, 19, 10, 34, 10 ), "awesome\n" );
+        assertDirectory( in, "./file/", new LocalDateTime( 2012, 8, 19, 10, 34, 48 ) );
+        assertFile( in, "./file/foo.txt", 6, new LocalDateTime( 2012, 8, 19, 10, 34, 10 ), "@foo@\n" );
+        assertDirectory( in, "./opt/", timestamp );
+        assertDirectory( in, "./opt/hudson/", timestamp );
+        assertNull( in.getNextEntry() );
+        in.close();
+        fis.close();
+    }
+
+    private void assertDirectory( ZipInputStream in, String name, LocalDateTime time )
+        throws IOException
+    {
+        ZipEntry entry = in.getNextEntry();
+        assertNotNull( name, entry );
+        assertTrue( name + " should be file", entry.isDirectory() );
+        assertEquals( name + ", name", name, entry.getName() );
+        assertEquals( name + ", timestamp", time, new LocalDateTime( entry.getTime() ) );
+        in.closeEntry();
+    }
+
+    private void assertFile( ZipInputStream in, String name, int size, LocalDateTime time, String content )
+        throws IOException
+    {
+        ZipEntry entry = in.getNextEntry();
+        assertNotNull( entry );
+        assertFalse( name + " should be file", entry.isDirectory() );
+        assertEquals( name + ", name", name, entry.getName() );
+        assertEquals( name + ", timestamp", time, new LocalDateTime( entry.getTime() ) );
+        // wtf: http://vimalathithen.blogspot.no/2006/06/using-zipentrygetsize.html
+        // assertEquals( name + ", size", size, entry.getSize() );
+
+        byte[] bytes = new byte[1000];
+        assertEquals( size, in.read( bytes, 0, bytes.length ) );
+        assertEquals( content, new String( bytes, 0, size, charset ) );
+        in.closeEntry();
     }
 }

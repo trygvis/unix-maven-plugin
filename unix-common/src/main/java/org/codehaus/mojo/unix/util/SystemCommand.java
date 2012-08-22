@@ -24,7 +24,7 @@ package org.codehaus.mojo.unix.util;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamWriter.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
@@ -80,7 +80,7 @@ public class SystemCommand
         {
             buffer.
                 append( line ).
-                append( AbstractLineStreamWriter.EOL );
+                append( EOL );
         }
 
         public String toString()

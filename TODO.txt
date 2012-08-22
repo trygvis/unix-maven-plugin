@@ -143,6 +143,16 @@ o Make sure the handbook is build. Consider moving it out to a separate trunk.
 
 = Change Log =
 
+== For 1.0-alpha-7 ==
+
+o All relevant operations has a default timestamp used when creating new objects.
+
+== For 1.0-alpha-6 ==
+
+o New group id: no.arktekk.unix
+
+TODO
+
 == For 1.0-alpha-5 ==
 
 o MUNIX-13: Support 'tar' format

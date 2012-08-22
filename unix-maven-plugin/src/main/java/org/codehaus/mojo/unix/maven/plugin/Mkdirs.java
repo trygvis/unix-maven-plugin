@@ -28,6 +28,7 @@ import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
+import org.joda.time.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -49,7 +50,8 @@ public class Mkdirs
     }
 
     public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes, MavenProjectWrapper.ArtifactMap artifactMap )
+                                              FileAttributes defaultDirectoryAttributes,
+                                              MavenProjectWrapper.ArtifactMap artifactMap )
         throws MojoFailureException, FileSystemException
     {
         validateEitherIsSet( path, paths, "path", "paths" );
@@ -59,7 +61,7 @@ public class Mkdirs
             paths = new String[]{path};
         }
 
-        return new CreateDirectoriesOperation( paths,
+        return new CreateDirectoriesOperation( new LocalDateTime(), paths,
                                                defaultDirectoryAttributes.useAsDefaultsFor( attributes.create() ) );
     }
 }

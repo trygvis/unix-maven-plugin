@@ -25,6 +25,8 @@ package org.codehaus.mojo.unix;
  */
 
 import fj.*;
+import fj.data.List;
+import static fj.data.List.*;
 import fj.data.*;
 import static fj.data.Option.*;
 import junit.framework.*;
@@ -36,8 +38,6 @@ import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
-import java.util.*;
-
 /**
  * TODO: Assert the creation of parent directories.
  *
@@ -48,6 +48,8 @@ public class PackageFileSystemTest
 {
     static LocalDateTime lm = new LocalDateTime( 2009, 2, 24, 9, 42 );
 
+    static List<Filter> nil = nil();
+
     static Option<String> mygroup = some( "mygroup" );
 
     static Option<String> myuser = Option.some( "myuser" );
@@ -56,23 +58,23 @@ public class PackageFileSystemTest
 
     static FileAttributes directoryA = new FileAttributes( myuser, mygroup, some( _0755 ) );
 
-    static PlainPackageFileSystemObject root = plain( directory( RelativePath.BASE, lm, directoryA ) );
+    static PlainPackageFileSystemObject root = p( directory( RelativePath.BASE, lm, directoryA ) );
 
-    static PlainPackageFileSystemObject a = plain( directory( relativePath( "/a" ), lm, directoryA ) );
+    static PlainPackageFileSystemObject a = p( directory( relativePath( "/a" ), lm, directoryA ) );
 
-    static PlainPackageFileSystemObject b = plain( directory( relativePath( "/b" ), lm, directoryA.mode( UnixFileMode.none ) ) );
+    static PlainPackageFileSystemObject b = p( directory( relativePath( "/b" ), lm, directoryA.mode( UnixFileMode.none ) ) );
 
-    static PlainPackageFileSystemObject a_x = plain( regularFile( relativePath( "/a/a-x" ), lm, 10, fileA ) );
+    static PlainPackageFileSystemObject a_x = p( regularFile( relativePath( "/a/a-x" ), lm, 10, fileA, nil ) );
 
-    static PlainPackageFileSystemObject a_y = plain( regularFile( relativePath( "/a/a-y" ), lm, 10, fileA ) );
+    static PlainPackageFileSystemObject a_y = p( regularFile( relativePath( "/a/a-y" ), lm, 10, fileA, nil ) );
 
-    static PlainPackageFileSystemObject b_x = plain( regularFile( relativePath( "/b/b-x" ), lm, 10, fileA ) );
+    static PlainPackageFileSystemObject b_x = p( regularFile( relativePath( "/b/b-x" ), lm, 10, fileA, nil ) );
 
-    static PlainPackageFileSystemObject c = plain( directory( relativePath( "/c" ), lm, directoryA ) );
+    static PlainPackageFileSystemObject c = p( directory( relativePath( "/c" ), lm, directoryA ) );
 
-    static PlainPackageFileSystemObject c_x = plain( directory( relativePath( "/c/c-x" ), lm, directoryA ) );
+    static PlainPackageFileSystemObject c_x = p( directory( relativePath( "/c/c-x" ), lm, directoryA ) );
 
-    static PlainPackageFileSystemObject c_x_u = plain( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, fileA ) );
+    static PlainPackageFileSystemObject c_x_u = p( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, fileA, nil ) );
 
     Show<Stream<PackageFileSystemObject<Object>>> fsShow = Show.streamShow( Show.showS( new F<PackageFileSystemObject<Object>, String>()
     {
@@ -198,18 +200,10 @@ public class PackageFileSystemTest
 
         FileAttributes newAttributes = root.getUnixFsObject().getFileAttributes().user( "woot" );
 
-        fs = fs.addDirectory( plain( directory( RelativePath.BASE, lm, newAttributes ) ) );
+        fs = fs.addDirectory( p( directory( RelativePath.BASE, lm, newAttributes ) ) );
 
         assertEquals( newAttributes, fs.getObject( RelativePath.BASE ).some().getUnixFsObject().getFileAttributes() );
     }
-
-    public static final Comparator<UnixFsObject> comparator = new Comparator<UnixFsObject>()
-    {
-        public int compare( UnixFsObject a, UnixFsObject b )
-        {
-            return a.compareTo( b );
-        }
-    };
 
     private F<UnixFsObject, Option<UnixFsObject>> filter( final String s,
                                                   final FileAttributes newAttributes )
@@ -225,7 +219,7 @@ public class PackageFileSystemTest
         };
     }
 
-    public static PlainPackageFileSystemObject plain( UnixFsObject unixFsObject )
+    public static PlainPackageFileSystemObject p( UnixFsObject unixFsObject )
     {
         return new PlainPackageFileSystemObject( unixFsObject );
     }

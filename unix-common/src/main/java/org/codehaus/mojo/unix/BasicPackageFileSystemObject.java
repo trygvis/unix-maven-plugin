@@ -39,6 +39,11 @@ public class BasicPackageFileSystemObject<E>
         this.extension = extension;
     }
 
+    public static <E> BasicPackageFileSystemObject<E> basicPackageFSO( UnixFsObject unixFsObject, E extension )
+    {
+        return new BasicPackageFileSystemObject<E>( unixFsObject, extension );
+    }
+
     public UnixFsObject getUnixFsObject()
     {
         return unixFsObject;
@@ -51,6 +56,6 @@ public class BasicPackageFileSystemObject<E>
 
     public PackageFileSystemObject<E> withUnixFsObject( UnixFsObject object )
     {
-        return new BasicPackageFileSystemObject<E>( object, extension );
+        return basicPackageFSO( object, extension );
     }
 }

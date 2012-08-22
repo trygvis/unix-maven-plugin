@@ -32,8 +32,6 @@ import java.util.*;
 public abstract class AbstractLineStreamWriter
     implements LineStreamWriter
 {
-    public static final String EOL = System.getProperty( "line.separator" );
-
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------

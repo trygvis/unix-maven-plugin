@@ -32,6 +32,8 @@ import java.util.*;
  */
 public interface LineStreamWriter
 {
+    String EOL = System.getProperty( "line.separator" );
+
     LineStreamWriter add();
 
     LineStreamWriter add( String line );

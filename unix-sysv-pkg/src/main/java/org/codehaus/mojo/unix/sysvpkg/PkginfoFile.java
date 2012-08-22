@@ -26,14 +26,15 @@ package org.codehaus.mojo.unix.sysvpkg;
 
 import fj.*;
 import static fj.Function.*;
+import static fj.Ord.*;
 import fj.data.List;
 import fj.data.*;
 import static fj.data.Option.*;
 import fj.data.TreeMap;
-import static fj.Ord.*;
 import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.java.StringF.*;
 import org.codehaus.mojo.unix.util.fj.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamWriter.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
@@ -132,8 +133,7 @@ public class PkginfoFile
 
     public String toString()
     {
-        String eol = System.getProperty( "line.separator" );
-        return toList().foldLeft( joiner.f( eol ), "" ).trim() + eol;
+        return toList().foldLeft( joiner.f( EOL ), "" ).trim() + EOL;
     }
 
     public String getPkgName( File pkginfoFile )

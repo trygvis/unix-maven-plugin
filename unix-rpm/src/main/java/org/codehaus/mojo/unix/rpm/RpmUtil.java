@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.rpm;
  * SOFTWARE.
  */
 
-import static fj.data.Option.*;
 import static java.lang.Long.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;

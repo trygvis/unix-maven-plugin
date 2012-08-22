@@ -24,6 +24,9 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
+/**
+ * TODO: make plain not extend basic, removing the need to implement getExtension().
+ */
 public class PlainPackageFileSystemObject
     extends BasicPackageFileSystemObject<Object>
 {

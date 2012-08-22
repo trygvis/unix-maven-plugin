@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.util;
 
 import fj.*;
 import fj.data.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamWriter.*;
 
 import java.lang.Class;
 import java.io.*;
@@ -33,8 +34,6 @@ import java.net.*;
 
 public class TestUtil
 {
-    public static final String EOL = System.getProperty( "line.separator" );
-
     private final Class klass;
 
     public TestUtil( Object object )

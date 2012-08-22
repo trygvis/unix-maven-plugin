@@ -29,6 +29,7 @@ import static fj.P.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static org.codehaus.mojo.unix.deb.ControlFile.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamWriter.*;
 
 import java.io.*;
 
@@ -37,8 +38,6 @@ import java.io.*;
  */
 public class DebControlParser
 {
-    private static final String EOL = System.getProperty( "line.separator" );
-
     public ControlFile parse( List<String> rest )
         throws IOException
     {

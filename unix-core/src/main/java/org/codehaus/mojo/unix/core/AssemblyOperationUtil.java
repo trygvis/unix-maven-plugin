@@ -24,7 +24,8 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import static fj.data.Option.*;
+import fj.data.*;
+import static fj.data.List.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
@@ -36,25 +37,24 @@ import org.joda.time.*;
  */
 public class AssemblyOperationUtil
 {
-    public static UnixFsObject.RegularFile fromFileObject( RelativePath toFile, FileObject fromFile,
-                                                           FileAttributes attributes )
+    private static final List<Filter> filters = nil();
+
+    public static RegularFile fromFileObject( RelativePath toFile, FileObject fromFile, FileAttributes attributes )
         throws FileSystemException
     {
         FileContent content = fromFile.getContent();
 
-        LocalDateTime time = new LocalDateTime( content.getLastModifiedTime() );
-
-        return regularFile( toFile, time, content.getSize(), attributes );
+        return regularFile( toFile, new LocalDateTime( content.getLastModifiedTime() ), content.getSize(), attributes,
+                            filters );
     }
 
-    public static UnixFsObject.Directory dirFromFileObject( RelativePath toFile, FileObject fromFile,
-                                                            FileAttributes attributes )
+    public static Directory dirFromFileObject( RelativePath toFile, FileObject fromFile, FileAttributes attributes )
         throws FileSystemException
     {
         if ( !fromFile.getType().equals( FileType.FOLDER ) )
         {
             throw new FileSystemException( "Not a directory: " + fromFile.getName().getPath() + ", was: " +
-                fromFile.getType() );
+                                               fromFile.getType() );
         }
 
         FileContent content = fromFile.getContent();
