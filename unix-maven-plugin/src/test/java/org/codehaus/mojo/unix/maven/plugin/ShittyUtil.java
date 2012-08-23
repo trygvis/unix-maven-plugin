@@ -347,9 +347,10 @@ public class ShittyUtil
     {
         public Boolean f( UnixFsObject expected, UnixFsObject actual )
         {
-            return expected.path.equals( actual.path ) && (expected.size == 0 || expected.size == actual.size) &&
-                (expected.lastModified == null || expected.lastModified.equals( START_OF_TIME ) ||
-                    expected.lastModified.equals( actual.lastModified ));
+            return expected.path.equals( actual.path ) &&
+                ( expected.size == 0 || expected.size == actual.size ) &&
+                ( expected.lastModified == null || expected.lastModified.equals( START_OF_TIME )
+                    || expected.lastModified.equals( actual.lastModified ) );
         }
     }
 

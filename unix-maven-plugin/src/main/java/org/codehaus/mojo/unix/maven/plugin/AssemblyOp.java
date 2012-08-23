@@ -50,15 +50,27 @@ public abstract class AssemblyOp
     //
     // -----------------------------------------------------------------------
 
-    public static interface CreateOperation {
-        /**
-         * TODO: Replace all of these parameters with a context object.
-         * TODO: Add timestamp to keep all timestamps consistent.
-         */
-        AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                           FileAttributes defaultDirectoryAttributes,
-                                           MavenProjectWrapper.ArtifactMap artifactMap )
-            throws MojoFailureException, FileSystemException, UnknownArtifactException;
+    /**
+     * TODO: Replace all of these parameters with a context object.
+     * TODO: Add timestamp to keep all timestamps consistent.
+     */
+    public abstract AssemblyOperation createOperation( CreateOperationContext context )
+        throws MojoFailureException, FileSystemException, UnknownArtifactException;
+
+    public static class CreateOperationContext {
+        public final FileObject basedir;
+        public final FileAttributes defaultFileAttributes;
+        public final FileAttributes defaultDirectoryAttributes;
+        public final MavenProjectWrapper project;
+
+        public CreateOperationContext( FileObject basedir, FileAttributes defaultFileAttributes,
+                                       FileAttributes defaultDirectoryAttributes, MavenProjectWrapper project )
+        {
+            this.basedir = basedir;
+            this.defaultFileAttributes = defaultFileAttributes;
+            this.defaultDirectoryAttributes = defaultDirectoryAttributes;
+            this.project = project;
+        }
     }
 
     // -----------------------------------------------------------------------

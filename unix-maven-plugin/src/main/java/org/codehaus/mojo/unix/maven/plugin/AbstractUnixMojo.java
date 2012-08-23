@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
+import org.apache.maven.execution.*;
 import org.apache.maven.plugin.*;
 import org.apache.maven.project.*;
 
@@ -97,6 +98,12 @@ public abstract class AbstractUnixMojo
      * @readonly
      */
     protected MavenProject project;
+
+    /**
+     * @parameter expression="${session}"
+     * @readonly
+     */
+    protected ThreadLocal<MavenSession> session = new ThreadLocal<MavenSession>();
 
     /**
      * @component role="org.codehaus.mojo.unix.core.UnixPlatform"

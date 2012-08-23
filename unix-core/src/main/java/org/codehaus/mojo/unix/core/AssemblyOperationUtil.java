@@ -30,6 +30,8 @@ import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
 import org.joda.time.*;
 
 /**
@@ -37,7 +39,7 @@ import org.joda.time.*;
  */
 public class AssemblyOperationUtil
 {
-    private static final List<Filter> filters = nil();
+    private static final List<Replacer> filters = nil();
 
     public static RegularFile fromFileObject( RelativePath toFile, FileObject fromFile, FileAttributes attributes )
         throws FileSystemException
@@ -60,5 +62,27 @@ public class AssemblyOperationUtil
         FileContent content = fromFile.getContent();
 
         return UnixFsObject.directory( toFile, new LocalDateTime( content.getLastModifiedTime() ), attributes );
+    }
+
+    public static void streamIncludesAndExcludes( LineStreamWriter streamWriter, List<String> includes,
+                                                  List<String> excludes )
+    {
+        if ( !includes.isEmpty() )
+        {
+            streamWriter.add( " Includes: " ).addAllLines( prefix( includes, "  " ) );
+        }
+        else
+        {
+            streamWriter.add( " No includes set" );
+        }
+
+        if ( !excludes.isEmpty() )
+        {
+            streamWriter.add( " Excludes: " ).addAllLines( prefix( excludes, "  " ) );
+        }
+        else
+        {
+            streamWriter.add( " No excludes set" );
+        }
     }
 }

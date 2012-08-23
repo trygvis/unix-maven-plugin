@@ -74,10 +74,7 @@ public class ZipPackageTest
 
         assertEquals( FileType.FOLDER, basedir.getType() );
 
-        Filter filter = new Filter( compile( "@bar@" ), "awesome" );
-
-        List<FileFilterDescriptor> filters =
-            single( new FileFilterDescriptor( single( "dirs/**" ), List.<String>nil(), single( filter ) ) );
+        Replacer replacer = new Replacer( compile( "@bar@" ), "awesome" );
 
         new CreateDirectoriesOperation( timestamp, new String[]{ "/opt/hudson" }, EMPTY ).
             perform( zipPackage );
@@ -89,7 +86,7 @@ public class ZipPackageTest
         new CopyFileOperation( EMPTY, basedir.resolveFile( "file/foo.txt" ), relativePath( "/file/foo.txt" ) ).
             perform( zipPackage );
 
-        new FilterFilesOperation( filters ).
+        new FilterFilesOperation( single( "dirs/**" ), List.<String>nil(), single( replacer ) ).
             perform( zipPackage );
 
         zipPackage.

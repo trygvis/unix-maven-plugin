@@ -28,10 +28,10 @@ import fj.*;
 import fj.data.*;
 import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.core.AssemblyOperationUtil.*;
 import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
-import static org.codehaus.mojo.unix.util.line.LineStreamUtil.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.mojo.unix.util.vfs.*;
 import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
@@ -124,25 +124,8 @@ public class CopyDirectoryOperation
         streamWriter.add( "Copy directory:" ).
             add( " From: " + asFile( from ).getAbsolutePath() ).
             add( " To: " + to );
-        if ( !includes.isEmpty() )
-        {
-            streamWriter.add( " Includes: " ).
-                addAllLines( prefix( includes, "  " ) );
-        }
-        else
-        {
-            streamWriter.add( " No includes set" );
-        }
 
-        if ( !excludes.isEmpty() )
-        {
-            streamWriter.add( " Excludes: " ).
-                addAllLines( prefix( excludes, "  " ) );
-        }
-        else
-        {
-            streamWriter.add( " No excludes set" );
-        }
+        streamIncludesAndExcludes( streamWriter, includes, excludes );
 
         streamWriter.add( pattern.map( new F<P2<String, String>, String>()
         {

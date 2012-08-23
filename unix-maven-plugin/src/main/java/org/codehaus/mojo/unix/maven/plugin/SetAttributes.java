@@ -29,7 +29,6 @@ import static fj.data.List.*;
 import static fj.data.Option.*;
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
-import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
@@ -40,7 +39,6 @@ import static org.codehaus.mojo.unix.util.RelativePath.*;
 @SuppressWarnings( "UnusedDeclaration" )
 public class SetAttributes
     extends AssemblyOp
-    implements AssemblyOp.CreateOperation
 {
     private RelativePath basedir = RelativePath.BASE;
 
@@ -82,8 +80,7 @@ public class SetAttributes
         this.directoryAttributes = fromNull( directoryAttributes );
     }
 
-    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes, MavenProjectWrapper.ArtifactMap artifactMap )
+    public AssemblyOperation createOperation( CreateOperationContext context )
         throws MojoFailureException, FileSystemException
     {
         return new SetAttributesOperation( this.basedir, includes, excludes,

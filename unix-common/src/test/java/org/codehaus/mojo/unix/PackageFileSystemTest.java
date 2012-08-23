@@ -48,7 +48,7 @@ public class PackageFileSystemTest
 {
     static LocalDateTime lm = new LocalDateTime( 2009, 2, 24, 9, 42 );
 
-    static List<Filter> nil = nil();
+    static List<Replacer> nil = nil();
 
     static Option<String> mygroup = some( "mygroup" );
 

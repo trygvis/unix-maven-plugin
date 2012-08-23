@@ -37,7 +37,6 @@ import static org.codehaus.mojo.unix.util.RelativePath.*;
 @SuppressWarnings( "UnusedDeclaration" )
 public class Symlink
     extends AssemblyOp
-    implements AssemblyOp.CreateOperation
 {
     private RelativePath path;
 
@@ -58,12 +57,12 @@ public class Symlink
         this.value = value;
     }
 
-    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes, MavenProjectWrapper.ArtifactMap artifactMap )
+    public AssemblyOperation createOperation( CreateOperationContext context )
         throws MojoFailureException, FileSystemException
     {
-        MojoFileAttributes attributes = new MojoFileAttributes( null, null, UnixFileMode._0777 );
+        FileAttributes attributes = context.defaultFileAttributes.useAsDefaultsFor(
+            new MojoFileAttributes( null, null, UnixFileMode._0777 ).create() );
 
-        return new SymlinkOperation( path, value, defaultFileAttributes.useAsDefaultsFor( attributes.create() ) );
+        return new SymlinkOperation( path, value, attributes );
     }
 }

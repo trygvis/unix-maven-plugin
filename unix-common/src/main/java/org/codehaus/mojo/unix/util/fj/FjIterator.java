@@ -183,7 +183,7 @@ public class FjIterator<A>
 
         public void remove()
         {
-            throw new RuntimeException( "Not implemented" );
+            throw new RuntimeException( "Not supported" );
         }
     }
 }

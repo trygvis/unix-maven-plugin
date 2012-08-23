@@ -28,6 +28,7 @@ import fj.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.maven.*;
+import static org.codehaus.mojo.unix.maven.plugin.MavenProjectWrapper.*;
 import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.*;
 
 /**
@@ -60,7 +61,7 @@ public abstract class AbstractPackageAttachedMojo
                            platformType,
                            formats,
                            formatType,
-                           MavenProjectWrapper.mavenProjectWrapper( project ),
+                           mavenProjectWrapper( project, session.get() ),
                            debug,
                            true,
                            getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF(),

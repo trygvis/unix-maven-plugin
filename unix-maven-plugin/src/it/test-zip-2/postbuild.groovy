@@ -14,7 +14,7 @@ success &= assertZipEntries(zip, [
         directory(r("/usr/share/hudson/lib"), START_OF_TIME, EMPTY),
         regularFile(r("/usr/share/hudson/lib/slave.jar"), START_OF_TIME, 158615, some(EMPTY)),
         directory(r("/usr/share/hudson/license"), START_OF_TIME, EMPTY),
-        regularFile(r("/usr/share/hudson/license/atom-license.txt"), START_OF_TIME, 49, some(EMPTY)),
-        regularFile(r("/usr/share/hudson/license/dc-license.txt"), START_OF_TIME, 1544, some(EMPTY)),
+        regularFile(r("/usr/share/hudson/license/atom-license.txt"), START_OF_TIME, 49, EMPTY),
+        regularFile(r("/usr/share/hudson/license/dc-license.txt"), START_OF_TIME, 1544, EMPTY),
 ])
 return success

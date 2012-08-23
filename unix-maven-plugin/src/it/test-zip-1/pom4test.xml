@@ -68,12 +68,11 @@
                 <mode>0666</mode>
               </attributes>
             </copyArtifact>
-            <!-- Not supported
-            <symlink>
-              <path>/var/log/hudson</path>
-              <value>/var/opt/hudson/log</value>
-            </symlink>
-            -->
+            <filterFiles>
+              <includes>
+                <include>/opt/hudson/etc/*</include>
+              </includes>
+            </filterFiles>
           </assembly>
         </configuration>
       </plugin>

@@ -446,31 +446,15 @@ public abstract class MojoHelper
 
         List<AssemblyOperation> operations = nil();
 
-        List<FileFilterDescriptor> filters = nil();
+        AssemblyOp.CreateOperationContext context = new AssemblyOp.CreateOperationContext(
+            buildDirectory,
+            parameters.defaultFileAttributes,
+            parameters.defaultDirectoryAttributes,
+            project );
 
         for ( AssemblyOp assemblyOp : assemblyOps )
         {
-            if( !(assemblyOp instanceof FilterFiles)) {
-                continue;
-            }
-
-            filters = filters.cons( ((FilterFiles) assemblyOp).toDescriptor( project.properties ) );
-        }
-
-        filters = filters.reverse();
-
-        for ( AssemblyOp assemblyOp : assemblyOps )
-        {
-            if ( !( assemblyOp instanceof AssemblyOp.CreateOperation ) )
-            {
-                continue;
-            }
-
-            AssemblyOperation operation = ( (AssemblyOp.CreateOperation) assemblyOp ).
-                createOperation( buildDirectory, parameters.defaultFileAttributes,
-                                 parameters.defaultDirectoryAttributes, project.artifactMap );
-
-            operations = operations.cons( operation );
+            operations = operations.cons( assemblyOp.createOperation( context ) );
         }
 
         return operations.reverse();

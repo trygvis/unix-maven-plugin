@@ -34,7 +34,7 @@ import static org.codehaus.mojo.unix.BasicPackageFileSystemObject.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
-import static org.codehaus.mojo.unix.UnixFsObject.Filter.*;
+import static org.codehaus.mojo.unix.UnixFsObject.Replacer.*;
 import org.codehaus.mojo.unix.io.*;
 import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.util.*;
@@ -186,7 +186,7 @@ public class ZipUnixPackage
                         BufferedReader reader = null;
                         try
                         {
-                            @SuppressWarnings( "unchecked" ) List<Filter> filters = file.filters;
+                            @SuppressWarnings( "unchecked" ) List<Replacer> filters = file.filters;
 
                             System.out.println(
                                 "path=" + file.path + ", filters=" + listShow( filterShow ).showS( filters ) );
@@ -214,7 +214,7 @@ public class ZipUnixPackage
 
                                 while ( line != null )
                                 {
-                                    for ( Filter filter : filters )
+                                    for ( Replacer filter : filters )
                                     {
                                         line = filter.replace( line );
                                     }

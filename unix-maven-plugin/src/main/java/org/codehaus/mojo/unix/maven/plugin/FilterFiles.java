@@ -26,7 +26,9 @@ package org.codehaus.mojo.unix.maven.plugin;
 
 import fj.data.List;
 import static fj.data.List.*;
-import org.codehaus.mojo.unix.*;
+import org.apache.commons.vfs.*;
+import org.apache.maven.plugin.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
 
 import java.util.*;
@@ -60,18 +62,32 @@ public class FilterFiles
         this.excludes = list( excludes );
     }
 
-    public FileFilterDescriptor toDescriptor( Map<String, String> properties )
+    @Override
+    public AssemblyOperation createOperation( CreateOperationContext context )
+        throws MojoFailureException, FileSystemException, UnknownArtifactException
     {
-        List<UnixFsObject.Filter> filter = nil();
+        return new FilterFilesOperation( includes, excludes, toDescriptor( context.project.properties ) );
+    }
+
+    /**
+     * See comment in mavenProjectWrapper on the keys.
+     *
+     * @see MavenProjectWrapper#mavenProjectWrapper
+     */
+    public static List<Replacer> toDescriptor( Map<String, String> properties )
+    {
+        List<Replacer> replacers = nil();
 
         for ( Map.Entry<String, String> entry : properties.entrySet() )
         {
-            // This needs to be quoted, patterns like "${project.version}" are not very useful regular expressions.
-            Pattern pattern = Pattern.compile( Pattern.quote( entry.getKey() ) );
+            String key = "${" + entry.getKey() + "}";
 
-            filter = filter.cons( new UnixFsObject.Filter( pattern, entry.getValue() ) );
+            // This needs to be quoted, patterns like "${project.version}" are not very useful regular expressions.
+            Pattern pattern = Pattern.compile( Pattern.quote( key ) );
+
+            replacers = replacers.cons( new Replacer( pattern, entry.getValue() ) );
         }
 
-        return new FileFilterDescriptor( includes, excludes, filter );
+        return replacers;
     }
 }

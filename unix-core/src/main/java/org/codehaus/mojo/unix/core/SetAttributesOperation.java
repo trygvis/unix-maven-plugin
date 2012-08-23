@@ -29,6 +29,7 @@ import fj.data.*;
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
+import static org.codehaus.mojo.unix.core.AssemblyOperationUtil.*;
 import org.codehaus.mojo.unix.io.*;
 import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
 import org.codehaus.mojo.unix.util.*;
@@ -102,25 +103,7 @@ public class SetAttributesOperation
     {
         streamWriter.add( "Set attributes:" ).
             add( " Basedir: " + basedir );
-        if ( !includes.isEmpty() )
-        {
-            streamWriter.add( " Includes: " ).
-                addAllLines( prefix( includes, "  " ) );
-        }
-        else
-        {
-            streamWriter.add( " No includes set" );
-        }
-
-        if ( !excludes.isEmpty() )
-        {
-            streamWriter.add( " Excludes: " ).
-                addAllLines( prefix( excludes, "  " ) );
-        }
-        else
-        {
-            streamWriter.add( " No excludes set" );
-        }
+        streamIncludesAndExcludes( streamWriter, includes, excludes );
         streamWriter.add( " Attributes: " ).
             add( "  File     : " + fileAttributes.map( singleLineShow.showS_() ).orSome( "None" ) ).
             add( "  Directory: " + directoryAttributes.map( singleLineShow.showS_() ).orSome( "None" ) );

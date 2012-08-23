@@ -207,7 +207,7 @@ public class MojoHelperTest
                                                                     null, null, null, new LocalDateTime(), artifactSet,
                                                                     licenses,
                                                                     new MavenProjectWrapper.ArtifactMap( artifactSet ),
-                                                                    Collections.<String, String>emptyMap() );
+                                                                    new java.util.TreeMap<String, String>() );
 
         PackagingMojoParameters mojoParameters = new PackagingMojoParameters( mojoName, null, "Description", "A B",
                                                                               "a@b.com", "all", new Defaults(),

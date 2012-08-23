@@ -28,6 +28,7 @@ import fj.data.*;
 import static fj.data.Option.*;
 import static java.util.Collections.*;
 import org.apache.maven.artifact.*;
+import org.apache.maven.execution.*;
 import org.apache.maven.model.*;
 import org.apache.maven.project.*;
 import static org.codehaus.mojo.unix.util.Validate.*;
@@ -72,12 +73,12 @@ public class MavenProjectWrapper
 
     public final ArtifactMap artifactMap;
 
-    public final Map<String, String> properties;
+    public final SortedMap<String, String> properties;
 
     public MavenProjectWrapper( String groupId, String artifactId, String version, Artifact artifact, String name,
                                 String description, File basedir, File buildDirectory, LocalDateTime timestamp,
                                 Set<Artifact> artifacts, List<License> licenses, ArtifactMap artifactMap,
-                                Map<String, String> properties )
+                                SortedMap<String, String> properties )
     {
         validateNotNull( groupId, artifactId, version, name );
         this.groupId = groupId;
@@ -95,21 +96,45 @@ public class MavenProjectWrapper
         this.properties = properties;
     }
 
-    public static MavenProjectWrapper mavenProjectWrapper( final MavenProject project )
+    public static MavenProjectWrapper mavenProjectWrapper( final MavenProject project, MavenSession session )
     {
-        Map<String, String> properties = new TreeMap<String, String>();
+        SortedMap<String, String> properties = new TreeMap<String, String>();
 
-        for ( Entry<Object, Object> entry : project.getProperties().entrySet() )
-        {
-            properties.put( entry.getValue().toString(), entry.getKey().toString() );
-        }
+        // This is perhaps not ideal. Maven uses reflection to dynamically extract properties from the project
+        // when interpolating each file. This uses a static list that doesn't contain the project.* properties, except
+        // the new we hard-code support for.
+        //
+        // The user can work around this like this:
+        // <properties>
+        //   <project.build.directory>${project.build.directory}</project.build.directory>
+        // </properties>
+        //
+        // If this has to change, the properties has to be a F<String, String> and interpolation tokens ("${" and "}")
+        // has to be defined. Doable but too painful for now.
+        properties.putAll( toMap( session.getSystemProperties() ) );
+        properties.putAll( toMap( session.getUserProperties() ) );
+        properties.putAll( toMap( project.getProperties() ) );
+        properties.put( "project.groupId", project.getGroupId() );
+        properties.put( "project.artifactId", project.getArtifactId() );
+        properties.put( "project.version", project.getVersion() );
 
         return new MavenProjectWrapper( project.getGroupId(), project.getArtifactId(), project.getVersion(),
                                         project.getArtifact(), project.getName(), project.getDescription(),
                                         project.getBasedir(), new File( project.getBuild().getDirectory() ),
                                         new LocalDateTime(), project.getArtifacts(), project.getLicenses(),
                                         new ArtifactMap( project.getArtifacts() ),
-                                        unmodifiableMap( properties ) );
+                                        unmodifiableSortedMap( properties ) );
+    }
+
+    private static Map<String, String> toMap( Properties properties )
+    {
+        Map<String, String> map = new HashMap<String, String>();
+        for ( Entry<Object, Object> entry : properties.entrySet() )
+        {
+            System.out.println(entry.getKey() + "=" + entry.getValue());
+            properties.put( entry.getKey().toString(), entry.getValue().toString() );
+        }
+        return map;
     }
 
     public static class ArtifactMap

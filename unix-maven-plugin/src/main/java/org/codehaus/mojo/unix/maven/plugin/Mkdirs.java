@@ -26,9 +26,7 @@ package org.codehaus.mojo.unix.maven.plugin;
 
 import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
-import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
-import org.joda.time.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -36,7 +34,6 @@ import org.joda.time.*;
 @SuppressWarnings( "UnusedDeclaration" )
 public class Mkdirs
     extends AssemblyOp
-    implements AssemblyOp.CreateOperation
 {
     private String path;
 
@@ -49,9 +46,7 @@ public class Mkdirs
         super( "mkdirs" );
     }
 
-    public AssemblyOperation createOperation( FileObject basedir, FileAttributes defaultFileAttributes,
-                                              FileAttributes defaultDirectoryAttributes,
-                                              MavenProjectWrapper.ArtifactMap artifactMap )
+    public AssemblyOperation createOperation( CreateOperationContext context )
         throws MojoFailureException, FileSystemException
     {
         validateEitherIsSet( path, paths, "path", "paths" );
@@ -61,7 +56,7 @@ public class Mkdirs
             paths = new String[]{path};
         }
 
-        return new CreateDirectoriesOperation( new LocalDateTime(), paths,
-                                               defaultDirectoryAttributes.useAsDefaultsFor( attributes.create() ) );
+        return new CreateDirectoriesOperation( context.project.timestamp, paths,
+                                               context.defaultDirectoryAttributes.useAsDefaultsFor( attributes.create() ) );
     }
 }
