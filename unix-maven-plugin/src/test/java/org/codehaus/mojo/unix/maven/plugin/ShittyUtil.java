@@ -53,6 +53,8 @@ public class ShittyUtil
 {
     public static final LocalDateTime START_OF_TIME = PrototypeFile.START_OF_TIME;
 
+    public static final LocalDateTime hudsonWarTimestamp = new LocalDateTime(2010, 9, 30, 10, 12, 56);
+
     public static final OutputStreamWriter out = new OutputStreamWriter( System.out );
 
     public static final LineWriterWriter stream = new LineWriterWriter( out );

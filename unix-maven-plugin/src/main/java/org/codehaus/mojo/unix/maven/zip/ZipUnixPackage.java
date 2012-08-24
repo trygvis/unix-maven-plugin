@@ -188,9 +188,6 @@ public class ZipUnixPackage
                         {
                             @SuppressWarnings( "unchecked" ) List<Replacer> filters = file.filters;
 
-                            System.out.println(
-                                "path=" + file.path + ", filters=" + listShow( filterShow ).showS( filters ) );
-
                             long size;
 
                             inputStream = fromFile.getContent().getInputStream();
