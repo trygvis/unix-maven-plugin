@@ -59,10 +59,16 @@
       <version>2.9.1</version>
     </dependency>
     <dependency>
-      <groupId>org.docbook</groupId>
+      <groupId>net.sf.docbook</groupId>
       <artifactId>docbook-xsl</artifactId>
       <version>${version.docbook}</version>
+      <classifier>ns-resources</classifier>
       <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.docbook</groupId>
+      <artifactId>docbook-xsl-saxon</artifactId>
+      <version>1.0.1-pre</version>
     </dependency>
     <dependency>
       <groupId>net.sf.xslthl</groupId>
