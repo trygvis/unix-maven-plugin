@@ -34,7 +34,10 @@ import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
+import static org.codehaus.mojo.unix.util.line.LineStreamWriter.EOL;
+
 import org.codehaus.mojo.unix.util.*;
+import org.codehaus.mojo.unix.util.line.LineStreamWriter;
 import org.joda.time.*;
 
 import java.io.*;
@@ -50,6 +53,11 @@ public class ZipPackageTest
     private final TestUtil testUtil = new TestUtil( getClass() );
 
     private final Charset charset = Charset.forName( "utf-8" );
+
+    LocalDateTime dirsTimestamp = new LocalDateTime( 2012, 8, 19, 10, 34, 10 );
+    LocalDateTime dirsBarTxtTimestamp = new LocalDateTime( 2012, 8, 19, 10, 34, 10 );
+    LocalDateTime fileTimestamp = new LocalDateTime( 2012, 8, 19, 10, 34, 48 );
+    LocalDateTime fileFooTxtTimestamp = new LocalDateTime( 2012, 8, 19, 10, 34, 10 );
 
     // Zip has a resolution of two seconds
     LocalDateTime timestamp = new LocalDateTime( 2012, 1, 2, 3, 4, 6 );
@@ -74,6 +82,12 @@ public class ZipPackageTest
 
         assertEquals( FileType.FOLDER, basedir.getType() );
 
+        // Git set the timestamp of file objects
+        assertTrue(new File(zip1, "dirs").setLastModified(dirsTimestamp.toDateTime().getMillis()));
+        assertTrue(new File(zip1, "dirs/bar.txt").setLastModified(dirsBarTxtTimestamp.toDateTime().getMillis()));
+        assertTrue(new File(zip1, "file").setLastModified(fileTimestamp.toDateTime().getMillis()));
+        assertTrue(new File(zip1, "file/foo.txt").setLastModified(fileFooTxtTimestamp.toDateTime().getMillis()));
+
         Replacer replacer = new Replacer( compile( "@bar@" ), "awesome" );
 
         new CreateDirectoriesOperation( timestamp, new String[]{ "/opt/hudson" }, EMPTY ).
@@ -94,10 +108,11 @@ public class ZipPackageTest
 
         FileInputStream fis = new FileInputStream( zip );
         ZipInputStream in = new ZipInputStream( fis );
-        assertDirectory( in, "./dirs/", new LocalDateTime( 2012, 8, 19, 10, 34, 10 ) );
-        assertFile( in, "./dirs/bar.txt", 8, new LocalDateTime( 2012, 8, 19, 10, 34, 10 ), "awesome\n" );
-        assertDirectory( in, "./file/", new LocalDateTime( 2012, 8, 19, 10, 34, 48 ) );
-        assertFile( in, "./file/foo.txt", 6, new LocalDateTime( 2012, 8, 19, 10, 34, 10 ), "@foo@\n" );
+        assertDirectory( in, "./dirs/", dirsTimestamp );
+        // Is it really correct that filtered files should retain the old timestamp?
+        assertFile( in, "./dirs/bar.txt", 7 + EOL.length(), dirsBarTxtTimestamp, "awesome" + EOL );
+        assertDirectory( in, "./file/", fileTimestamp );
+        assertFile( in, "./file/foo.txt", 6, fileFooTxtTimestamp, "@foo@\n" );
         assertDirectory( in, "./opt/", timestamp );
         assertDirectory( in, "./opt/hudson/", timestamp );
         assertNull( in.getNextEntry() );

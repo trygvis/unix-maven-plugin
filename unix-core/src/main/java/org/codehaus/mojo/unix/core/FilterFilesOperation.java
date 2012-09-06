@@ -14,6 +14,7 @@ import java.io.*;
 
 /**
  * TODO: support basedir parameter like SetAttributesOperation.
+ * TODO: Is it really correct that filtered files should retain the old timestamp?
  */
 public class FilterFilesOperation
     implements AssemblyOperation
@@ -48,12 +49,12 @@ public class FilterFilesOperation
 
                 RegularFile f = (RegularFile) object;
 
-                if ( selector.matches( f.path ) )
+                if ( !selector.matches( f.path ) )
                 {
-                    return some( object.withReplacers( replacers ) );
+                    return none();
                 }
 
-                return none();
+                return some( object.withReplacers( replacers ) );
             }
         } );
     }
