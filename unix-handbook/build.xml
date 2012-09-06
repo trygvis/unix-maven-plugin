@@ -67,9 +67,9 @@
   </target>
 
   <target name="docbook" depends="init" unless="docbook.unpacked">
-    <unzip src="${org.docbook:docbook-xsl:zip}" dest="target/docbook" overwrite="false"/>
+    <unzip src="${net.sf.docbook:docbook-xsl:zip:ns-resources}" dest="target/docbook" overwrite="false"/>
     <copy todir="${docbook-xsl}">
-      <fileset dir="target/docbook/docbook-xsl-${version.docbook}"/>
+      <fileset dir="target/docbook/docbook"/>
     </copy>
   </target>
 
@@ -183,7 +183,7 @@
         <pathelement location="${saxon:saxon:jar}"/>
         <pathelement location="${xerces:xercesImpl:jar}"/>
         <pathelement location="${net.sf.xslthl:xslthl:jar}"/>
-        <pathelement location="${docbook-xsl}/extensions/saxon65.jar"/>
+        <pathelement location="${net.sf.docbook:docbook-xsl-saxon:jar}"/>
       </classpath>
       <arg value="-o"/>
       <arg value="${basedir}/${style.output}"/>
