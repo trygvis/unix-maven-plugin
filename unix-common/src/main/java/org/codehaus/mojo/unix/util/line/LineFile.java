@@ -41,6 +41,18 @@ public class LineFile
 {
     private final List<String> lines = new ArrayList<String>( 1000 );
 
+    private final String eol;
+
+    public LineFile()
+    {
+        this.eol = EOL;
+    }
+
+    public LineFile( String eol )
+    {
+        this.eol = eol;
+    }
+
     protected void onLine( String line )
     {
         lines.add( line != null ? line : "" );
@@ -63,10 +75,15 @@ public class LineFile
 
     public String toString()
     {
+        return toString( eol );
+    }
+
+    public String toString( String eol )
+    {
         StringBuilder buffer = new StringBuilder();
         for ( String line : lines )
         {
-            buffer.append( line ).append( EOL );
+            buffer.append( line ).append( eol );
         }
         return buffer.toString();
     }

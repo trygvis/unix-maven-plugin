@@ -7,6 +7,8 @@ import static fj.data.Option.*;
 import junit.framework.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
+
+import static org.codehaus.mojo.unix.deb.DebControlParser.DPKG_EOL;
 import static org.codehaus.mojo.unix.util.line.LineFile.*;
 
 import java.io.*;
@@ -42,7 +44,7 @@ public class DebControlParserTest
         P2<String, List<String>> p = DebControlParser.parseField( lines );
 
         assertTrue( p._2().isEmpty() );
-        assertEquals( "123" + EOL + "234", p._1() );
+        assertEquals( "123" + DPKG_EOL + "234", p._1() );
     }
 
     public void testParseMultipleLineWhichDoesNotEndsTheFileField()
@@ -57,7 +59,7 @@ public class DebControlParserTest
         P2<String, List<String>> p = DebControlParser.parseField( lines );
 
         assertEquals( 1, p._2().length() );
-        assertEquals( "123" + EOL + "234", p._1() );
+        assertEquals( "123" + DPKG_EOL + "234", p._1() );
     }
 
     public void testParseMultipleLineWithBlankLine()
@@ -73,7 +75,7 @@ public class DebControlParserTest
         P2<String, List<String>> p = DebControlParser.parseField( lines );
 
         assertEquals( 1, p._2().length() );
-        assertEquals( "123" + EOL + EOL + "234", p._1() );
+        assertEquals( "123" + DPKG_EOL + DPKG_EOL + "234", p._1() );
     }
 
     public void testParseMultipleLineWithBlankLineLast()
@@ -89,7 +91,7 @@ public class DebControlParserTest
         P2<String, List<String>> p = DebControlParser.parseField( lines );
 
         assertEquals( 1, p._2().length() );
-        assertEquals( "123" + EOL + "234" + EOL, p._1() );
+        assertEquals( "123" + DPKG_EOL + "234" + DPKG_EOL, p._1() );
     }
 
     public void testParseAnt()
@@ -182,13 +184,13 @@ public class DebControlParserTest
 //            add( " the standard math library, as well as many others.").toString(),
 //                      LineFile.fromList( controlFile.toList() ).toString() );
 
-        assertEquals( new LineFile().
+        assertEquals( new LineFile( DPKG_EOL ).
             add( "Package: my-package" ).
             add( "Description: GNU C Library: Shared libraries" ).
             add( "Contains the standard libraries that are used by nearly all programs on the" +
                 " system. This package includes shared versions of the standard C library and" +
                 " the standard math library, as well as many others." ).toString(),
-                LineFile.fromList( controlFile.toList() ).toString() );
+                LineFile.fromList( controlFile.toList() ).toString( DPKG_EOL ) );
     }
 
     private void assertControlFile( String path, ControlFile expectedControlFile )

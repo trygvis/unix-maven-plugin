@@ -39,6 +39,8 @@ import static org.codehaus.mojo.unix.util.UnixUtil.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.joda.time.*;
 
+import java.io.File;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
@@ -69,6 +71,7 @@ public class PrototypeFileTest
 
         PrototypeFile prototypeFile = new PrototypeFile( defaultEntry );
 
+        System.out.println("getTestPath( \"src/test/non-existing/bash_profile\" ) = " + getTestPath("src/test/non-existing/bash_profile"));
         FileObject bashProfileObject = fsManager.resolveFile( getTestPath( "src/test/non-existing/bash_profile" ) );
         FileObject extractJarObject = fsManager.resolveFile( getTestPath( "src/test/non-existing/extract.jar" ) );
         UnixFsObject.RegularFile extractJar = regularFile( extractJarPath, dateTime, 0, fileAttributes );
@@ -88,14 +91,19 @@ public class PrototypeFileTest
         prototypeFile.streamTo( stream );
 
         assertEquals( new LineFile().
-            add( "f none /extract.jar=" + extractJarObject.getName().getPath() + " 0644 funnyuser nogroup" ).
+            add( "f none /extract.jar=" + file( extractJarObject ) + " 0644 funnyuser nogroup" ).
             add( "d none /opt ? default default" ).
             add( "d none /opt/jetty ? default default" ).
-            add( "f none /opt/jetty/.bash_profile=" + bashProfileObject.getName().getPath() + " 0644 nouser nogroup" ).
+            add( "f none /opt/jetty/.bash_profile=" + file( bashProfileObject ) + " 0644 nouser nogroup" ).
             add( "d none /smf ? default default" ).
-            add( "f smf /smf/manifest.xml=" + extractJarObject.getName().getPath() + " 0644 nouser nogroup" ).
+            add( "f smf /smf/manifest.xml=" + file( extractJarObject ) + " 0644 nouser nogroup" ).
             add( "d none /special 0755 nouser funnygroup" ).
             toString(), stream.toString() );
+    }
+
+    private File file( FileObject object )
+    {
+        return new File(object.getName().getPath()).getAbsoluteFile();
     }
 
     private F<UnixFsObject, Option<UnixFsObject>> filter( final RelativePath s, final FileAttributes newAttributes )

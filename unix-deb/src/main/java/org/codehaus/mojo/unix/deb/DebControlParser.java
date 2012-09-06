@@ -29,7 +29,6 @@ import static fj.P.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static org.codehaus.mojo.unix.deb.ControlFile.*;
-import static org.codehaus.mojo.unix.util.line.LineStreamWriter.*;
 
 import java.io.*;
 
@@ -38,6 +37,12 @@ import java.io.*;
  */
 public class DebControlParser
 {
+    /**
+     * Dpkg should always use '\n' as line separator. I can't find this in any documentation, but that's the only
+     * thing that makes sense.
+     */
+    public static final String DPKG_EOL = "\n";
+
     public ControlFile parse( List<String> rest )
         throws IOException
     {
@@ -86,11 +91,11 @@ public class DebControlParser
 
             if ( line.equals( " ." ) )
             {
-                value += EOL;
+                value += DPKG_EOL;
             }
             else
             {
-                value += EOL + line.substring( 1 );
+                value += DPKG_EOL + line.substring( 1 );
             }
 
             rest = rest.drop( 1 );
