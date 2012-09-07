@@ -54,7 +54,7 @@ public class CopyArtifact
 
     public void setArtifact( String artifact )
     {
-        this.artifact = nullifEmpty( artifact );
+        this.artifact = nullIfEmpty(artifact);
     }
 
     public void setToFile( String toFile )

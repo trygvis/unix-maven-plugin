@@ -83,7 +83,7 @@ public abstract class AssemblyOp
         return basedir.resolveFile( file.getAbsolutePath() );
     }
 
-    protected static String nullifEmpty( String artifact )
+    protected static String nullIfEmpty(String artifact)
     {
         return StringUtils.clean( artifact ).length() == 0 ? null : artifact;
     }

@@ -81,13 +81,13 @@ public abstract class AbstractFileSetOp
     @SuppressWarnings( "UnusedDeclaration" )
     public void setPattern( String pattern )
     {
-        this.pattern = nullifEmpty( pattern );
+        this.pattern = nullIfEmpty(pattern);
     }
 
     @SuppressWarnings( "UnusedDeclaration" )
     public void setReplacement( String replacement )
     {
-        this.replacement = nullifEmpty( replacement );
+        this.replacement = nullIfEmpty(replacement);
     }
 
     @SuppressWarnings( "UnusedDeclaration" )

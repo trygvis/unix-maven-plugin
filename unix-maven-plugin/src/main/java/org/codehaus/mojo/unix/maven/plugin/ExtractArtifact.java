@@ -46,7 +46,7 @@ public class ExtractArtifact
 
     public void setArtifact( String artifact )
     {
-        this.artifact = nullifEmpty( artifact );
+        this.artifact = nullIfEmpty(artifact);
     }
 
     public AssemblyOperation createOperation( CreateOperationContext context )
