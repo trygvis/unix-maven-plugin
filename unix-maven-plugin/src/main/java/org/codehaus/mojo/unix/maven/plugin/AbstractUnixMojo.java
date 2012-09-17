@@ -69,7 +69,6 @@ public abstract class AbstractUnixMojo
 
     /**
      * @parameter
-     * @required
      */
     protected String contact;
 
