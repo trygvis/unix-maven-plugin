@@ -24,10 +24,9 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
-import static org.apache.commons.vfs.VFS.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.io.fs.*;
 
 import java.io.*;
 
@@ -51,10 +50,10 @@ public class ExtractFile
     }
 
     public AssemblyOperation createOperation( CreateOperationContext context )
-        throws MojoFailureException, FileSystemException
+        throws MojoFailureException, IOException
     {
         File file = validateFileIsReadableFile( archive, "archive" );
 
-        return createCopyArchiveOperation( getManager().resolveFile( file.getAbsolutePath() ), context );
+        return createCopyArchiveOperation( FsUtil.resolve( archive ), context );
     }
 }

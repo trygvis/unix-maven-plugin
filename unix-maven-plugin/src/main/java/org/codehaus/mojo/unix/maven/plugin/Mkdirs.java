@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
 
@@ -47,7 +46,7 @@ public class Mkdirs
     }
 
     public AssemblyOperation createOperation( CreateOperationContext context )
-        throws MojoFailureException, FileSystemException
+        throws MojoFailureException
     {
         validateEitherIsSet( path, paths, "path", "paths" );
 

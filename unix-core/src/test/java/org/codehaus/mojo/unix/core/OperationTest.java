@@ -24,17 +24,21 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import static fj.P.*;
 import fj.*;
-import static fj.data.List.*;
 import fj.data.*;
-import static fj.data.Option.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.plexus.*;
 import org.easymock.*;
+
+import java.io.*;
+
+import static fj.P.*;
+import static fj.data.List.*;
+import static fj.data.Option.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -48,25 +52,7 @@ public class OperationTest
     public final static FileAttributes directoryAttributes =
         new FileAttributes( some( "myuser" ), some( "mygroup" ), some( UnixFileMode._0644 ) );
 
-    private static FileObject baseFileObject;
-
-    public static FileObject getBaseFileObject()
-    {
-        try
-        {
-            if ( baseFileObject == null )
-            {
-                FileSystemManager fsManager = VFS.getManager();
-                baseFileObject = fsManager.resolveFile( PlexusTestCase.getBasedir() );
-            }
-
-            return baseFileObject;
-        }
-        catch ( FileSystemException e )
-        {
-            throw new RuntimeException( e );
-        }
-    }
+    private static final TestUtil testUtil = new TestUtil( OperationTest.class );
 
     public static final Paths paths = new Paths();
     public static final Files files = new Files();
@@ -74,41 +60,32 @@ public class OperationTest
 
     public static class Paths
     {
-        RelativePath optJettyBin = relativePath( "/opt/jetty/bin" );
-        RelativePath optJettyBinExtraApp = relativePath( "/opt/jetty/bin/extra-app" );
-        RelativePath optJettyReadmeUnix = relativePath( "/opt/jetty/README-unix.txt" );
-        RelativePath optJettyBashProfile = relativePath( "/opt/jetty/.bash_profile" );
+        RelativePath base = RelativePath.BASE;
+        RelativePath opt = relativePath( "/opt/" );
+        RelativePath optJetty = opt.add( "jetty" );
+        RelativePath optJettyBin = optJetty.add( "bin" );
+        RelativePath optJettyBinExtraApp = optJettyBin.add( "extra-app" );
+        RelativePath optJettyReadmeUnix = optJetty.add( "README-unix.txt" );
+        RelativePath optJettyBashProfile = optJetty.add( ".bash_profile" );
     }
 
     public static class Files
     {
-        final FileObject files = resolveFile( getBaseFileObject(), "src/test/resources/operation/files" );
-        final FileObject optJettyReadmeUnix = resolveFile( files, paths.optJettyReadmeUnix.string );
-        final FileObject optJettyBinExtraApp = resolveFile( files, paths.optJettyBinExtraApp.string );
-        final FileObject optJettyBashProfile = resolveFile( files, paths.optJettyBashProfile.string );
-
-        private FileObject resolveFile( FileObject files, String string )
-        {
-            try
-            {
-                return files.resolveFile( string );
-            }
-            catch ( FileSystemException e )
-            {
-                throw new RuntimeException( e );
-            }
-        }
+        LocalFs files = new LocalFs( testUtil.getTestFile( "src/test/resources/operation/files" ) );
+        LocalFs optJettyReadmeUnix = files.resolve( paths.optJettyReadmeUnix );
+        LocalFs optJettyBinExtraApp = files.resolve( paths.optJettyBinExtraApp );
+        LocalFs optJettyBashProfile = files.resolve( paths.optJettyBashProfile );
     }
 
     public static class Objects
     {
-        UnixFsObject.Directory optJettyBin = createDirectory( "opt/jetty/bin", files.files, directoryAttributes );
-        UnixFsObject.Directory optJetty = createDirectory( "opt/jetty/", files.files, directoryAttributes );
-        UnixFsObject.Directory opt = createDirectory( "opt/", files.files, directoryAttributes );
-        UnixFsObject.Directory base = createDirectory( ".", files.files, directoryAttributes );
-        UnixFsObject.RegularFile optJettyBashProfile = fromFileObject( paths.optJettyBashProfile, files.optJettyBashProfile, fileAttributes );
-        UnixFsObject.RegularFile optJettyBinExtraApp = fromFileObject( paths.optJettyBinExtraApp, files.optJettyBinExtraApp, fileAttributes );
-        UnixFsObject.RegularFile optJettyReadmeUnix = fromFileObject( paths.optJettyReadmeUnix, files.optJettyReadmeUnix, fileAttributes );
+        Directory optJettyBin = directory( paths.optJettyBin, files.files.resolve( paths.optJettyBin ).lastModified(), directoryAttributes );
+        Directory optJetty = directory( paths.optJetty, files.files.resolve( paths.optJetty ).lastModified(), directoryAttributes );
+        Directory opt = directory( paths.opt, files.files.resolve( paths.opt ).lastModified(), directoryAttributes );
+        Directory base = directory( paths.base, files.files.resolve( paths.base ).lastModified(), directoryAttributes );
+        RegularFile optJettyBashProfile = regularFile( paths.optJettyBashProfile, files.optJettyBashProfile.lastModified(), files.optJettyBashProfile.size(), fileAttributes );
+        RegularFile optJettyBinExtraApp = regularFile( paths.optJettyBinExtraApp, files.optJettyBinExtraApp.lastModified(), files.optJettyBinExtraApp.size(), fileAttributes );
+        RegularFile optJettyReadmeUnix = regularFile( paths.optJettyReadmeUnix, files.optJettyReadmeUnix.lastModified(), files.optJettyReadmeUnix.size(), fileAttributes );
     }
 
     /**
@@ -117,12 +94,12 @@ public class OperationTest
     public void testCopyOnACompleteDirectoryStructure()
         throws Exception
     {
-        assertEquals( FileType.FOLDER, files.files.getType() );
+        assertTrue( files.files.isDirectory() );
         MockControl control = MockControl.createControl( FileCollector.class );
-        FileCollector fileCollector = (FileCollector) control.getMock();
+        FileCollector<LocalFs> fileCollector = (FileCollector) control.getMock();
 
         fileCollector.addFile( files.optJettyBinExtraApp, objects.optJettyBinExtraApp );
-        control.setMatcher( new FileObjectMatcher() );
+        control.setMatcher( new FsMatcher() );
         fileCollector.addFile( files.optJettyReadmeUnix, objects.optJettyReadmeUnix );
         fileCollector.addFile( files.optJettyBashProfile, objects.optJettyBashProfile );
         fileCollector.addDirectory( objects.optJettyBin );
@@ -141,20 +118,18 @@ public class OperationTest
     public void testExtractWithPattern()
         throws Exception
     {
-        String archivePath = PlexusTestCase.getTestPath( "src/test/resources/operation/extract.jar" );
+        File archivePath = PlexusTestCase.getTestFile("src/test/resources/operation/extract.jar");
 
-        FileSystemManager fsManager = VFS.getManager();
-        FileObject archiveObject = fsManager.resolveFile( archivePath );
-        assertEquals( FileType.FILE, archiveObject.getType() );
-        FileObject archive = fsManager.createFileSystem( archiveObject );
+        Fs archive = FsUtil.resolve( archivePath );
 
-        FileObject fooLicense = archive.getChild( "foo-license.txt" );
-        UnixFsObject.RegularFile fooLicenseUnixFile =
-            fromFileObject( relativePath( "licenses/foo-license.txt" ), fooLicense, fileAttributes );
+        Fs fooLicense = archive.resolve( relativePath( "foo-license.txt" ) );
+        assertTrue( fooLicense.isFile() );
+        RegularFile fooLicenseUnixFile = regularFile( relativePath( "licenses/foo-license.txt" ),
+                                                      fooLicense.lastModified(), fooLicense.size(), fileAttributes );
 
-        FileObject barLicense = archive.getChild( "mydir" ).getChild( "bar-license.txt" );
-        UnixFsObject.RegularFile barLicenseUnixFile =
-            fromFileObject( relativePath( "licenses/bar-license.txt" ), barLicense, fileAttributes );
+        Fs barLicense = archive.resolve( relativePath( "mydir/bar-license.txt" ) );
+        RegularFile barLicenseUnixFile = regularFile( relativePath( "licenses/bar-license.txt" ),
+                                                      barLicense.lastModified(), barLicense.size(), fileAttributes );
 
         MockControl control = MockControl.createControl( FileCollector.class );
         FileCollector fileCollector = (FileCollector) control.getMock();
@@ -170,7 +145,7 @@ public class OperationTest
         control.verify();
     }
 
-    static class FileObjectMatcher
+    static class FsMatcher
         extends AbstractMatcher
     {
         int i = 0;
@@ -183,36 +158,36 @@ public class OperationTest
                 return super.argumentMatches( e, a );
             }
 
-            FileObject expected = (FileObject) e;
-            FileObject actual = (FileObject) a;
+            Fs expected = (Fs) e;
+            Fs actual = (Fs) a;
 
-            return MockControl.EQUALS_MATCHER.matches( new Object[]{expected.getName()},
-                                                       new Object[]{actual.getName()} );
+            return MockControl.EQUALS_MATCHER.matches( new Object[]{expected.basedir() + "/" + expected.relativePath().string},
+                                                       new Object[]{actual.basedir() + "/" + actual.relativePath().string} );
         }
     }
 
-    private static UnixFsObject.Directory createDirectory( String path, FileObject files, FileAttributes directoryAttributes )
-    {
-        try
-        {
-            return AssemblyOperationUtil.dirFromFileObject( relativePath( path ), files.resolveFile( path ), directoryAttributes );
-        }
-        catch ( FileSystemException e )
-        {
-            throw new RuntimeException( e );
-        }
-    }
-
-    private static UnixFsObject.RegularFile fromFileObject( RelativePath path, FileObject file,
-                                                            FileAttributes attributes )
-    {
-        try
-        {
-            return AssemblyOperationUtil.fromFileObject( path, file, attributes );
-        }
-        catch ( FileSystemException e )
-        {
-            throw new RuntimeException( e );
-        }
-    }
+//    private static UnixFsObject.Directory createDirectory( String path, FileObject files, FileAttributes directoryAttributes )
+//    {
+//        try
+//        {
+//            return AssemblyOperationUtil.dirFromFileObject( relativePath( path ), files.resolveFile( path ), directoryAttributes );
+//        }
+//        catch ( FileSystemException e )
+//        {
+//            throw new RuntimeException( e );
+//        }
+//    }
+//
+//    private static RegularFile fromFileObject( RelativePath path, FileObject file,
+//                                                            FileAttributes attributes )
+//    {
+//        try
+//        {
+//            return AssemblyOperationUtil.fromFileObject( path, file, attributes );
+//        }
+//        catch ( FileSystemException e )
+//        {
+//            throw new RuntimeException( e );
+//        }
+//    }
 }

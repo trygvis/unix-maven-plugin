@@ -27,15 +27,14 @@ package org.codehaus.mojo.unix.maven.rpm;
 import fj.*;
 import static fj.P.*;
 import fj.data.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.rpm.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
-import org.codehaus.mojo.unix.util.vfs.*;
 import org.codehaus.plexus.util.*;
 import org.joda.time.*;
 
@@ -51,7 +50,7 @@ public class RpmUnixPackage
 
     private FsFileCollector fileCollector;
 
-    private FileObject workingDirectory;
+    private LocalFs workingDirectory;
 
     private String rpmbuildPath;
 
@@ -91,8 +90,7 @@ public class RpmUnixPackage
         return this;
     }
 
-    public UnixPackage workingDirectory( FileObject workingDirectory )
-        throws FileSystemException
+    public UnixPackage workingDirectory( LocalFs workingDirectory )
     {
         this.workingDirectory = workingDirectory;
         return this;
@@ -109,7 +107,7 @@ public class RpmUnixPackage
         throws IOException
     {
         specFile.beforeAssembly( directory( BASE, new LocalDateTime(), defaultDirectoryAttributes ) );
-        fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
+        fileCollector = new FsFileCollector( workingDirectory.resolve( relativePath( "assembly" ) ) );
     }
 
     // TODO: This is not used
@@ -126,7 +124,7 @@ public class RpmUnixPackage
         fileCollector.addDirectory( directory );
     }
 
-    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( Fs<Fs> fromFile, RegularFile file )
         throws IOException
     {
         specFile.addFile( file );
@@ -148,39 +146,38 @@ public class RpmUnixPackage
     public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception
     {
-        File workingDirectoryF = VfsUtil.asFile( workingDirectory );
-        File rpms = new File( workingDirectoryF, "RPMS" );
-        File specsDir = new File( workingDirectoryF, "SPECS" );
-        File tmp = new File( workingDirectoryF, "tmp" );
+        File rpms = new File( workingDirectory.file, "RPMS" );
+        File specsDir = new File( workingDirectory.file, "SPECS" );
+        File tmp = new File( workingDirectory.file, "tmp" );
 
         File specFilePath = new File( specsDir, specFile.name + ".spec" );
 
-        FileUtils.forceMkdir( new File( workingDirectoryF, "BUILD" ) );
+        FileUtils.forceMkdir( new File( workingDirectory.file, "BUILD" ) );
         FileUtils.forceMkdir( rpms );
-        FileUtils.forceMkdir( new File( workingDirectoryF, "SOURCES" ) );
+        FileUtils.forceMkdir( new File( workingDirectory.file, "SOURCES" ) );
         FileUtils.forceMkdir( specsDir );
-        FileUtils.forceMkdir( new File( workingDirectoryF, "SRPMS" ) );
+        FileUtils.forceMkdir( new File( workingDirectory.file, "SRPMS" ) );
         FileUtils.forceMkdir( tmp );
 
         fileCollector.collect();
 
         ScriptUtil.Result result = scriptUtil.
-            createExecution( specFile.name, "rpm", getScripts(), workingDirectoryF, strategy ).
+            createExecution( specFile.name, "rpm", getScripts(), workingDirectory.file, strategy ).
             execute();
 
         specFile.includePre = result.preInstall;
         specFile.includePost = result.postInstall;
         specFile.includePreun = result.preRemove;
         specFile.includePostun = result.postRemove;
-        specFile.buildRoot = VfsUtil.asFile( fileCollector.getFsRoot() );
+        specFile.buildRoot = fileCollector.root.file;
 
         LineStreamUtil.toFile( specFile, specFilePath );
 
         new Rpmbuild().
             setDebug( debug ).
-            setBuildroot( VfsUtil.asFile( fileCollector.getFsRoot() ) ).
+            setBuildroot( specFile.buildRoot ).
             define( "_tmppath " + tmp.getAbsolutePath() ).
-            define( "_topdir " + workingDirectoryF.getAbsolutePath() ).
+            define( "_topdir " + workingDirectory.file.getAbsolutePath() ).
             define( "_rpmdir " + packageFile.getParentFile().getAbsolutePath() ).
             define( "_rpmfilename " + packageFile.getName() ).
             setSpecFile( specFilePath ).

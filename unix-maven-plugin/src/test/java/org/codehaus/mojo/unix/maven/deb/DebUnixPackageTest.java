@@ -26,15 +26,14 @@ package org.codehaus.mojo.unix.maven.deb;
 
 import fj.data.*;
 import static fj.data.Option.*;
-import org.apache.commons.vfs.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
 import static org.codehaus.mojo.unix.PackageVersion.*;
 import org.codehaus.mojo.unix.deb.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.mojo.unix.util.vfs.*;
 import org.codehaus.plexus.*;
 
 import java.io.*;
@@ -55,9 +54,9 @@ public class DebUnixPackageTest
 
         DebPackagingFormat packagingFormat = (DebPackagingFormat) lookup( PackagingFormat.ROLE, "deb" );
 
-        FileObject dpkgTest = VFS.getManager().resolveFile( getTestPath( "target/deb-test" ) );
-        FileObject packageRoot = dpkgTest.resolveFile( "root" );
-        File packageFile = VfsUtil.asFile( dpkgTest.resolveFile( "file.deb" ) );
+        LocalFs dpkgTest = new LocalFs( getTestFile( "target/deb-test" ) );
+        LocalFs packageRoot = dpkgTest.resolve( "root" );
+        File packageFile = dpkgTest.resolve( "file.deb" ).file;
 
         PackageVersion version = packageVersion( "1.0", "123", false, some( "1" ) );
         PackageParameters parameters = packageParameters( "mygroup", "myartifact", version, "id", "default-name",

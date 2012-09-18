@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
@@ -58,7 +57,7 @@ public class Symlink
     }
 
     public AssemblyOperation createOperation( CreateOperationContext context )
-        throws MojoFailureException, FileSystemException
+        throws MojoFailureException
     {
         FileAttributes attributes = context.defaultFileAttributes.useAsDefaultsFor(
             new MojoFileAttributes( null, null, UnixFileMode._0777 ).create() );

@@ -28,11 +28,12 @@ import fj.*;
 import fj.data.*;
 import static fj.data.Option.*;
 import junit.framework.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
+
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import static org.codehaus.mojo.unix.util.UnixUtil.*;
@@ -64,16 +65,14 @@ public class PrototypeFileTest
     public void testBasic()
         throws Exception
     {
-        FileSystemManager fsManager = VFS.getManager();
-
-        FileObject root = fsManager.resolveFile( getTestPath( "target/prototype-test/assembly" ) );
-        root.createFolder();
+        LocalFs root = new LocalFs( getTestFile( "target/prototype-test/assembly" ) );
+        root.mkdir();
 
         PrototypeFile prototypeFile = new PrototypeFile( defaultEntry );
 
         System.out.println("getTestPath( \"src/test/non-existing/bash_profile\" ) = " + getTestPath("src/test/non-existing/bash_profile"));
-        FileObject bashProfileObject = fsManager.resolveFile( getTestPath( "src/test/non-existing/bash_profile" ) );
-        FileObject extractJarObject = fsManager.resolveFile( getTestPath( "src/test/non-existing/extract.jar" ) );
+        LocalFs bashProfileObject = root.resolve( "src/test/non-existing/bash_profile" );
+        LocalFs extractJarObject = root.resolve( "src/test/non-existing/extract.jar" );
         UnixFsObject.RegularFile extractJar = regularFile( extractJarPath, dateTime, 0, fileAttributes );
         UnixFsObject.RegularFile bashProfile = regularFile( bashProfilePath, dateTime, 0, fileAttributes );
         UnixFsObject.RegularFile smfManifestXml = regularFile( smfManifestXmlPath, dateTime, 0, fileAttributes.addTag( "class:smf" ) );
@@ -91,19 +90,14 @@ public class PrototypeFileTest
         prototypeFile.streamTo( stream );
 
         assertEquals( new LineFile().
-            add( "f none /extract.jar=" + file( extractJarObject ) + " 0644 funnyuser nogroup" ).
+            add( "f none /extract.jar=" + extractJarObject.absolutePath() + " 0644 funnyuser nogroup" ).
             add( "d none /opt ? default default" ).
             add( "d none /opt/jetty ? default default" ).
-            add( "f none /opt/jetty/.bash_profile=" + file( bashProfileObject ) + " 0644 nouser nogroup" ).
+            add( "f none /opt/jetty/.bash_profile=" + bashProfileObject.absolutePath() + " 0644 nouser nogroup" ).
             add( "d none /smf ? default default" ).
-            add( "f smf /smf/manifest.xml=" + file( extractJarObject ) + " 0644 nouser nogroup" ).
+            add( "f smf /smf/manifest.xml=" + extractJarObject.absolutePath() + " 0644 nouser nogroup" ).
             add( "d none /special 0755 nouser funnygroup" ).
             toString(), stream.toString() );
-    }
-
-    private File file( FileObject object )
-    {
-        return new File(object.getName().getPath()).getAbsoluteFile();
     }
 
     private F<UnixFsObject, Option<UnixFsObject>> filter( final RelativePath s, final FileAttributes newAttributes )

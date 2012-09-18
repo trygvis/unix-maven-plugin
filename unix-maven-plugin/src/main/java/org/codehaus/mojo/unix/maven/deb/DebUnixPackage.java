@@ -27,14 +27,16 @@ package org.codehaus.mojo.unix.maven.deb;
 import fj.*;
 import fj.data.*;
 import static fj.data.Option.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.deb.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
+
+import static org.codehaus.mojo.unix.UnixFsObject.RegularFile;
+import static org.codehaus.mojo.unix.util.RelativePath.relativePath;
 import static org.codehaus.mojo.unix.util.line.LineStreamWriter.*;
-import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 import org.joda.time.*;
 
 import java.io.*;
@@ -47,7 +49,7 @@ public class DebUnixPackage
 {
     private ControlFile controlFile;
 
-    private FileObject workingDirectory;
+    private LocalFs workingDirectory;
 
     private FsFileCollector fileCollector;
 
@@ -98,8 +100,7 @@ public class DebUnixPackage
         return this;
     }
 
-    public DebUnixPackage workingDirectory( FileObject workingDirectory )
-        throws FileSystemException
+    public DebUnixPackage workingDirectory( LocalFs workingDirectory )
     {
         this.workingDirectory = workingDirectory;
         return this;
@@ -114,7 +115,7 @@ public class DebUnixPackage
     public void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException
     {
-        fileCollector = new FsFileCollector( workingDirectory.resolveFile( "assembly" ) );
+        fileCollector = new FsFileCollector( workingDirectory.resolve( relativePath( "assembly" ) ) );
     }
 
     public void addDirectory( UnixFsObject.Directory directory )
@@ -122,7 +123,8 @@ public class DebUnixPackage
         fileCollector.addDirectory( directory );
     }
 
-    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( Fs<Fs> fromFile, RegularFile file )
+        throws IOException
     {
         fileCollector.addFile( fromFile, file );
     }
@@ -145,17 +147,17 @@ public class DebUnixPackage
     public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception
     {
-        FileObject fsRoot = fileCollector.getFsRoot();
-        FileObject debian = fsRoot.resolveFile( "DEBIAN" );
-        FileObject controlFilePath = debian.resolveFile( "control" );
+        LocalFs fsRoot = fileCollector.root;
+        LocalFs debian = fsRoot.resolve( relativePath( "DEBIAN" ) );
+        LocalFs controlFilePath = debian.resolve( relativePath( "control" ) );
 
-        debian.createFolder();
-        LineStreamUtil.toFile( controlFile.toList(), asFile( controlFilePath ) );
+        debian.mkdir();
+        LineStreamUtil.toFile( controlFile.toList(), controlFilePath.file );
 
         fileCollector.collect();
 
         ScriptUtil.Result result = scriptUtil.
-            createExecution( controlFile.packageName, "deb", getScripts(), asFile( debian ), strategy ).
+            createExecution( controlFile.packageName, "deb", getScripts(), debian.file, strategy ).
             execute();
 
         UnixUtil.chmodIf( result.preInstall, "0755" );
@@ -165,7 +167,7 @@ public class DebUnixPackage
 
         new Dpkg().
             setDebug( debug ).
-            setPackageRoot( asFile( fsRoot ) ).
+            setPackageRoot( fsRoot.file ).
             setDebFile( packageFile ).
             setUseFakeroot( useFakeroot ).
             execute();

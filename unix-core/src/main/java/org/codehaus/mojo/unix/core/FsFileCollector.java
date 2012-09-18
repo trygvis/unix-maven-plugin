@@ -25,43 +25,32 @@ package org.codehaus.mojo.unix.core;
  */
 
 import fj.*;
-import static fj.Unit.*;
 import fj.data.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.io.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
 import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
 
+import static fj.Unit.*;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class FsFileCollector
-    implements FileCollector
+    implements FileCollector<LocalFs>
 {
-    private final List<Callable> operations = new ArrayList<Callable>();
+    private final List<IoEffect> operations = new ArrayList<IoEffect>();
 
-    private final FileObject fsRoot;
+    public final LocalFs root;
 
-    private final FileObject root;
-
-    public FsFileCollector( FileObject fsRoot )
-        throws FileSystemException
-    {
-        this.fsRoot = fsRoot;
-        FileSystemManager fileSystemManager = fsRoot.getFileSystem().getFileSystemManager();
-        FileObject root = fileSystemManager.createVirtualFileSystem( fsRoot );
-        root.createFolder();
+    public FsFileCollector( LocalFs root) throws IOException {
         this.root = root;
-    }
-
-    public FileObject getFsRoot()
-    {
-        return fsRoot;
+        mkdirs(root.file);
     }
 
     public void addDirectory( UnixFsObject.Directory directory )
@@ -69,7 +58,7 @@ public class FsFileCollector
         operations.add( packageDirectory( directory.path ) );
     }
 
-    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( Fs fromFile, UnixFsObject.RegularFile file )
     {
         operations.add( packageFile( fromFile, file ) );
     }
@@ -88,9 +77,9 @@ public class FsFileCollector
     public void collect()
         throws Exception
     {
-        for ( Callable operation : operations )
+        for ( IoEffect operation : operations )
         {
-            operation.call();
+            operation.run();
         }
     }
 
@@ -98,51 +87,55 @@ public class FsFileCollector
     //
     // -----------------------------------------------------------------------
 
-    private Callable packageFile( final FileObject from, final UnixFsObject.RegularFile to )
+    private IoEffect packageFile( final Fs from, final UnixFsObject.RegularFile to )
     {
-        return new Callable()
+        return new IoEffect()
         {
-            public Object call()
+            public void run()
                 throws Exception
             {
-                FileObject toFile = root.resolveFile( to.path.string );
-
-                toFile.getParent().createFolder();
-                toFile.copyFrom( from, Selectors.SELECT_SELF );
-                toFile.getContent().setLastModifiedTime( to.lastModified.toDateTime().toDate().getTime() );
-                return unit();
+                root.resolve( to.path ).copyFrom( from );
             }
         };
     }
 
-    private Callable packageDirectory( final RelativePath path )
+    private IoEffect packageDirectory( final RelativePath path )
     {
-        return new Callable()
+        return new IoEffect()
         {
-            public Object call()
+            public void run()
                 throws Exception
             {
-                root.resolveFile( path.string ).createFolder();
-                return unit();
+                mkdirs( root.resolve( path ).file );
             }
         };
     }
 
-    private Callable packageSymlink( final UnixFsObject.Symlink symlink )
+    private IoEffect packageSymlink( final UnixFsObject.Symlink symlink )
     {
-        return new Callable()
+        return new IoEffect()
         {
-            public Object call()
+            public void run()
                 throws Exception
             {
-                root.resolveFile( symlink.path.string ).getParent().createFolder();
+                mkdirs( root.resolve( symlink.path ).file.getParentFile() );
 
-                File file = asFile( fsRoot );
-
-                UnixUtil.symlink( file, symlink.value, symlink.path );
-
-                return unit();
+                UnixUtil.symlink( root.file, symlink.value, symlink.path );
             }
         };
+    }
+
+    private void mkdirs( File file )
+        throws IOException
+    {
+        if ( file.isDirectory() )
+        {
+            return;
+        }
+
+        if ( !file.mkdirs() )
+        {
+            throw new IOException( "Unable to create root directory: " + root.file.getAbsolutePath() );
+        }
     }
 }

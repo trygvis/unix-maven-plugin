@@ -25,12 +25,13 @@ package org.codehaus.mojo.unix.maven.rpm;
  */
 
 import fj.data.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
 import static org.codehaus.mojo.unix.PackageVersion.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
+
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 import org.codehaus.mojo.unix.rpm.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
@@ -54,19 +55,17 @@ public class RpmUnixPackageTest
             return;
         }
 
-        String archivePath = getTestPath( "src/test/resources/operation/extract.jar" );
+        File archiveFile = getTestFile( "src/test/resources/operation/extract.jar" );
 
-        FileSystemManager fsManager = VFS.getManager();
-        FileObject pomXml = fsManager.resolveFile( getTestPath( "pom.xml" ) );
-        FileObject archiveObject = fsManager.resolveFile( archivePath );
-        FileObject archive = fsManager.createFileSystem( archiveObject );
-        FileObject fooLicense = archive.getChild( "foo-license.txt" );
-        FileObject barLicense = archive.getChild( "mydir" ).getChild( "bar-license.txt" );
+        LocalFs pomXml = new LocalFs( getTestFile( "pom.xml" ) );
+        Fs archive = FsUtil.resolve( archiveFile );
+        Fs fooLicense = archive.resolve( relativePath( "foo-license.txt" ) );
+        Fs barLicense = archive.resolve( relativePath( "mydir/bar-license.txt" ) );
 
         RpmPackagingFormat packagingFormat = (RpmPackagingFormat) lookup( PackagingFormat.ROLE, "rpm" );
 
-        FileObject rpmTest = VFS.getManager().resolveFile( getTestPath( "target/rpm-test" ) );
-        FileObject packageRoot = rpmTest.resolveFile( "root" );
+        LocalFs rpmTest = new LocalFs( getTestFile( "target/rpm-test" ) );
+        LocalFs packageRoot = rpmTest.resolve( "root" );
         File packageFile = getTestFile( "target/rpm-test/file.rpm" );
 
         PackageVersion version = packageVersion( "1.0-1", "123", false, Option.<String>none() );
@@ -78,13 +77,12 @@ public class RpmUnixPackageTest
             license( "BSD" );
 
         UnixPackage unixPackage = RpmPackagingFormat.cast( packagingFormat.start().
-            parameters( parameters ).
-            workingDirectory( packageRoot ) ).
+            parameters( parameters ) ).
             group( "Fun" );
 
         LocalDateTime now = new LocalDateTime();
 
-        unixPackage.addFile( pomXml, regularFile( relativePath( "/pom.xml" ), now, 0, EMPTY ) );
+        unixPackage.addFile( (Fs) pomXml, regularFile( relativePath( "/pom.xml" ), now, 0, EMPTY ) );
         unixPackage.addFile( fooLicense, regularFile( relativePath( "/foo-license.txt" ), now, 0, EMPTY ) );
         unixPackage.addFile( barLicense, regularFile( relativePath( "/bar-license.txt" ), now, 0, EMPTY ) );
 

@@ -26,7 +26,6 @@ package org.codehaus.mojo.unix.maven.plugin;
 
 import fj.data.List;
 import static fj.data.List.*;
-import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
@@ -64,7 +63,7 @@ public class FilterFiles
 
     @Override
     public AssemblyOperation createOperation( CreateOperationContext context )
-        throws MojoFailureException, FileSystemException, UnknownArtifactException
+        throws MojoFailureException, UnknownArtifactException
     {
         return new FilterFilesOperation( includes, excludes, toDescriptor( context.project.properties ) );
     }

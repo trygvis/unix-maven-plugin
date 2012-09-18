@@ -24,7 +24,7 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 import org.joda.time.*;
 
@@ -38,7 +38,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public abstract class UnixPackage
-    implements FileCollector
+    implements FileCollector<Fs>
 {
     private final String packageFileExtension;
 
@@ -56,12 +56,6 @@ public abstract class UnixPackage
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
-
-    public UnixPackage workingDirectory( FileObject file )
-        throws FileSystemException
-    {
-        return this;
-    }
 
     public UnixPackage basedir( File basedir )
     {

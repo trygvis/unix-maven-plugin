@@ -103,9 +103,9 @@ public class FileScanner
                         }
                     }
 
-                    s = next.getAbsolutePath().substring( absolutePath.length() );
+//                    s = next.getAbsolutePath().substring( absolutePath.length() );
 
-                    if ( selector.matches( relativePath( s ) ) )
+                    if ( selector.matches( relativePathFromFiles( file, next ) ) )
                     {
                         return some( p( next, state ) );
                     }

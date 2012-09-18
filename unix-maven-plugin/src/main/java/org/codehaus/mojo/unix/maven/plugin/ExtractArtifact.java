@@ -24,9 +24,9 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.io.fs.*;
 
 import java.io.*;
 
@@ -50,14 +50,10 @@ public class ExtractArtifact
     }
 
     public AssemblyOperation createOperation( CreateOperationContext context )
-        throws MojoFailureException, FileSystemException, UnknownArtifactException
+        throws MojoFailureException, UnknownArtifactException, IOException
     {
         File artifactFile = context.project.artifactMap.validateArtifact( artifact );
 
-        FileSystemManager fsManager = VFS.getManager();
-        FileObject archiveObject = fsManager.resolveFile( artifactFile.getAbsolutePath() );
-        FileObject archive = fsManager.createFileSystem( archiveObject );
-
-        return createCopyArchiveOperation( archive, context );
+        return createCopyArchiveOperation( FsUtil.resolve( artifactFile ), context );
     }
 }

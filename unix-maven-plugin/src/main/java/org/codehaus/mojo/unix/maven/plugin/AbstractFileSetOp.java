@@ -29,9 +29,9 @@ import fj.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
-import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 
@@ -102,9 +102,9 @@ public abstract class AbstractFileSetOp
         this.directoryAttributes = directoryAttributes;
     }
 
-    protected AssemblyOperation createCopyArchiveOperation( FileObject archive,
+    protected AssemblyOperation createCopyArchiveOperation( Fs<?> archive,
                                                             CreateOperationContext context  )
-        throws MojoFailureException, FileSystemException
+        throws MojoFailureException
     {
         Option<P2<String, String>> pattern = none();
         if ( this.pattern != null )

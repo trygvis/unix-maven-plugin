@@ -26,16 +26,14 @@ package org.codehaus.mojo.unix.maven.zip;
 
 import fj.*;
 import static fj.Function.*;
-import static fj.Show.*;
 import fj.data.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.BasicPackageFileSystemObject.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
-import static org.codehaus.mojo.unix.UnixFsObject.Replacer.*;
 import org.codehaus.mojo.unix.io.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
@@ -70,7 +68,7 @@ public class ZipUnixPackage
         fileSystem = fileSystem.addDirectory( directory( directory ) );
     }
 
-    public void addFile( FileObject fromFile, RegularFile file )
+    public void addFile( Fs<Fs> fromFile, RegularFile file )
         throws IOException
     {
         fileSystem = fileSystem.addFile( file( fromFile, file ) );
@@ -90,8 +88,7 @@ public class ZipUnixPackage
     // UnixPackage Implementation
     // -----------------------------------------------------------------------
 
-    public ZipUnixPackage workingDirectory( FileObject workingDirectory )
-        throws FileSystemException
+    public ZipUnixPackage workingDirectory( LocalFs workingDirectory )
     {
         return this;
     }
@@ -170,7 +167,7 @@ public class ZipUnixPackage
         return basicPackageFSO( directory, f );
     }
 
-    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> file( final FileObject fromFile,
+    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> file( final Fs<Fs> fromFile,
                                                                                             UnixFsObject file )
     {
         F2<UnixFsObject, ZipOutputStream, IoEffect> f = new F2<UnixFsObject, ZipOutputStream, IoEffect>()
@@ -190,7 +187,7 @@ public class ZipUnixPackage
 
                             long size;
 
-                            inputStream = fromFile.getContent().getInputStream();
+                            inputStream = fromFile.inputStream();
 
                             if ( filters.isEmpty() )
                             {

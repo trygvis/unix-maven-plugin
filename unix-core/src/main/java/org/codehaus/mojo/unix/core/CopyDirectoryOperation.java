@@ -26,15 +26,18 @@ package org.codehaus.mojo.unix.core;
 
 import fj.*;
 import fj.data.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
+
+import static org.codehaus.mojo.unix.UnixFsObject.directory;
+import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
 import static org.codehaus.mojo.unix.core.AssemblyOperationUtil.*;
 import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
+
+import org.codehaus.mojo.unix.io.fs.Fs;
+import org.codehaus.mojo.unix.io.fs.LocalFs;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
-import org.codehaus.mojo.unix.util.vfs.*;
-import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 
 import java.io.*;
 import java.util.regex.*;
@@ -45,7 +48,7 @@ import java.util.regex.*;
 public class CopyDirectoryOperation
     implements AssemblyOperation
 {
-    private final FileObject from;
+    private final Fs<?> from;
 
     private final RelativePath to;
 
@@ -59,7 +62,7 @@ public class CopyDirectoryOperation
 
     private final FileAttributes directoryAttributes;
 
-    public CopyDirectoryOperation( FileObject from, RelativePath to, List<String> includes, List<String> excludes,
+    public CopyDirectoryOperation( Fs<?> from, RelativePath to, List<String> includes, List<String> excludes,
                                    Option<P2<String, String>> pattern, FileAttributes fileAttributes,
                                    FileAttributes directoryAttributes )
     {
@@ -78,22 +81,21 @@ public class CopyDirectoryOperation
         Pattern pattern = this.pattern.isSome() ? Pattern.compile( this.pattern.some()._1() ) : null;
         String replacement = this.pattern.isSome() ? this.pattern.some()._2() : null;
 
-        IncludeExcludeFileSelector selector = new IncludeExcludeFileSelector( from.getName(), includeExcludeFilter().
-            addStringIncludes( includes ).
-            addStringExcludes( excludes ).
-            create() );
+        Iterable<? extends Fs> files = from.find( includeExcludeFilter().
+                addStringIncludes( includes ).
+                addStringExcludes( excludes ).
+                create() );
 
-        java.util.List<FileObject> files = new java.util.ArrayList<FileObject>();
-        from.findFiles( selector, true, files );
-
-        for ( FileObject f : files )
+        for ( Fs f : files )
         {
-            if ( f.getName().getBaseName().equals( "" ) )
-            {
-                continue;
-            }
+//            if ( f.getName().getBaseName().equals( "" ) )
+//            {
+//                continue;
+//            }
+//
+//            String relativeName = from.getName().getRelativeName( f.getName() );
 
-            String relativeName = from.getName().getRelativeName( f.getName() );
+            String relativeName = f.relativePath().string;
 
             // Transform the path if the pattern is set. The input path will always have a leading slash
             // to make it possible to write more natural expressions.
@@ -107,14 +109,18 @@ public class CopyDirectoryOperation
 
             RelativePath targetName = to.add( relativeName );
 
-            if ( f.getType() == FileType.FILE )
+            if ( f.isFile() )
             {
-                fileCollector.addFile( f, AssemblyOperationUtil.fromFileObject( targetName, f, fileAttributes ) );
+//                fileCollector.addFile( f, AssemblyOperationUtil.fromFileObject( targetName, f, fileAttributes ) );
+
+                fileCollector.addFile( f, regularFile( f.relativePath(), f.lastModified(), f.size(), fileAttributes ) );
             }
-            else if ( f.getType() == FileType.FOLDER )
+            else if ( f.isDirectory() )
             {
-                fileCollector.addDirectory(
-                    AssemblyOperationUtil.dirFromFileObject( targetName, f, directoryAttributes ) );
+//                fileCollector.addDirectory(
+//                    AssemblyOperationUtil.dirFromFileObject( targetName, f, directoryAttributes ) );
+
+                fileCollector.addDirectory( directory( targetName, f.lastModified(), directoryAttributes ));
             }
         }
     }
@@ -122,7 +128,7 @@ public class CopyDirectoryOperation
     public void streamTo( LineStreamWriter streamWriter )
     {
         streamWriter.add( "Copy directory:" ).
-            add( " From: " + asFile( from ).getAbsolutePath() ).
+            add( " From: " + from.basedir() ).
             add( " To: " + to );
 
         streamIncludesAndExcludes( streamWriter, includes, excludes );

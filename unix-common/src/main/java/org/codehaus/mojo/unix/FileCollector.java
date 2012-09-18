@@ -24,22 +24,23 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
-import fj.*;
-import fj.data.*;
-import org.apache.commons.vfs.*;
-import static org.codehaus.mojo.unix.UnixFsObject.*;
+import fj.F;
+import fj.data.Option;
+import org.codehaus.mojo.unix.io.fs.Fs;
 
-import java.io.*;
+import java.io.IOException;
+
+import static org.codehaus.mojo.unix.UnixFsObject.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public interface FileCollector
+public interface FileCollector<FsType extends Fs>
 {
     void addDirectory( Directory directory )
         throws IOException;
 
-    void addFile( FileObject fromFile, RegularFile file )
+    void addFile( Fs<FsType> fromFile, RegularFile file )
         throws IOException;
 
     void addSymlink( Symlink symlink )

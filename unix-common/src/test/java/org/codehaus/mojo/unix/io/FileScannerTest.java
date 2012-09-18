@@ -26,16 +26,19 @@ package org.codehaus.mojo.unix.io;
 
 import junit.framework.*;
 import org.codehaus.mojo.unix.io.*;
+import org.codehaus.mojo.unix.util.*;
 
 import java.io.*;
 
 public class FileScannerTest
     extends TestCase
 {
+    TestUtil util = new TestUtil( this );
+
     public void testBasic()
         throws IOException
     {
-        FileScanner scanner = new FileScanner( new File( "src/test/resources" ), new String[0], new String[0] );
+        FileScanner scanner = new FileScanner( util.getTestFile( "src/test/resources" ), new String[0], new String[0] );
 
 //        for ( File file : scanner.toStream() )
 //        {
@@ -58,7 +61,7 @@ public class FileScannerTest
     public void testNoMatch()
         throws IOException
     {
-        File base = new File( "src/test/resources" ).getAbsoluteFile();
+        File base = util.getTestFile( "src/test/resources" );
         FileScanner scanner = new FileScanner( base, new String[]{"**/nothere/**"}, new String[0] );
 
         assertTrue( scanner.toStream().isEmpty() );

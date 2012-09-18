@@ -27,7 +27,6 @@ package org.codehaus.mojo.unix.maven.plugin;
 import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
-import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
@@ -81,7 +80,7 @@ public class SetAttributes
     }
 
     public AssemblyOperation createOperation( CreateOperationContext context )
-        throws MojoFailureException, FileSystemException
+        throws MojoFailureException
     {
         return new SetAttributesOperation( this.basedir, includes, excludes,
             fileAttributes.map( MojoFileAttributes.create_ ),

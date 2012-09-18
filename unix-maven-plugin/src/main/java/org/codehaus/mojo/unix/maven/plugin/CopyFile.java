@@ -24,9 +24,9 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 
@@ -63,10 +63,10 @@ public class CopyFile
     }
 
     public AssemblyOperation createOperation( CreateOperationContext context )
-        throws MojoFailureException, FileSystemException
+        throws MojoFailureException
     {
         return new CopyFileOperation( context.defaultFileAttributes.useAsDefaultsFor( attributes.create() ),
-                                      resolve( context.basedir.getFileSystem(), path ),
+                                      new LocalFs( path ),
                                       validateAndResolveOutputFile( path, toDir, this.toFile ) );
     }
 }
