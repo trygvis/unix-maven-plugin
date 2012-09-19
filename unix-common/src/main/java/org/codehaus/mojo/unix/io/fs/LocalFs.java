@@ -37,6 +37,16 @@ public class LocalFs
         this.file = file.getAbsoluteFile();
     }
 
+    public void close()
+        throws IOException
+    {
+    }
+
+    public boolean exists()
+    {
+        return file.exists();
+    }
+
     public boolean isFile()
     {
         return file.isFile();
@@ -83,11 +93,13 @@ public class LocalFs
     }
 
     public Iterable<LocalFs> find( IncludeExcludeFilter filter )
+        throws IOException
     {
         return find( filter, false );
     }
 
     public Iterable<LocalFs> find( IncludeExcludeFilter filter, boolean filesOnly )
+        throws IOException
     {
         ArrayList<LocalFs> list = new ArrayList<LocalFs>();
 
@@ -138,13 +150,19 @@ public class LocalFs
 
     }
 
-    private void find( File parent, List<LocalFs> list, IncludeExcludeFilter filter, boolean filesOnly )
+    private void find( File directory, List<LocalFs> list, IncludeExcludeFilter filter, boolean filesOnly )
+        throws IOException
     {
-        File[] files = parent.listFiles();
+        if ( !directory.isDirectory() )
+        {
+            return;
+        }
+
+        File[] files = directory.listFiles();
 
         if ( files == null )
         {
-            return;
+            throw new IOException( "Unable to list contents: " + directory.getAbsolutePath() );
         }
 
         for ( File file : files )

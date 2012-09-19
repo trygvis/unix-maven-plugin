@@ -1,13 +1,16 @@
 package org.codehaus.mojo.unix.io.fs;
 
-import org.codehaus.mojo.unix.io.IncludeExcludeFilter;
-import org.codehaus.mojo.unix.util.RelativePath;
-import org.joda.time.LocalDateTime;
+import org.codehaus.mojo.unix.io.*;
+import org.codehaus.mojo.unix.util.*;
+import org.joda.time.*;
 
 import java.io.*;
 
 public interface Fs<F extends Fs>
+    extends Closeable
 {
+    boolean exists();
+
     boolean isFile();
 
     boolean isDirectory();
@@ -35,13 +38,14 @@ public interface Fs<F extends Fs>
     String absolutePath();
 
     InputStream inputStream()
-        throws FileNotFoundException;
+        throws IOException;
 
-    Iterable<F> find( IncludeExcludeFilter filter );
+    Iterable<F> find( IncludeExcludeFilter filter )
+        throws IOException;
 
     void mkdir()
         throws IOException;
 
-    void copyFrom( Fs from )
+    void copyFrom( Fs<?> from )
         throws IOException;
 }

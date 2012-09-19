@@ -27,26 +27,23 @@ package org.codehaus.mojo.unix.core;
 import fj.*;
 import fj.data.*;
 import org.codehaus.mojo.unix.*;
-
-import static org.codehaus.mojo.unix.UnixFsObject.directory;
-import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
-import static org.codehaus.mojo.unix.core.AssemblyOperationUtil.*;
-import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
-
-import org.codehaus.mojo.unix.io.fs.Fs;
-import org.codehaus.mojo.unix.io.fs.LocalFs;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
-import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
 
 import java.io.*;
 import java.util.regex.*;
 
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import static org.codehaus.mojo.unix.core.AssemblyOperationUtil.*;
+import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public class CopyDirectoryOperation
-    implements AssemblyOperation
+public class CopyDirectoryOperation<FsType extends Fs>
+    implements AssemblyOperation<FsType>
 {
     private final Fs<?> from;
 
@@ -75,7 +72,7 @@ public class CopyDirectoryOperation
         this.directoryAttributes = directoryAttributes;
     }
 
-    public void perform( FileCollector fileCollector )
+    public void perform( FileCollector<FsType> fileCollector )
         throws IOException
     {
         Pattern pattern = this.pattern.isSome() ? Pattern.compile( this.pattern.some()._1() ) : null;
@@ -86,7 +83,7 @@ public class CopyDirectoryOperation
                 addStringExcludes( excludes ).
                 create() );
 
-        for ( Fs f : files )
+        for ( Fs<FsType> f : files )
         {
 //            if ( f.getName().getBaseName().equals( "" ) )
 //            {
@@ -113,7 +110,7 @@ public class CopyDirectoryOperation
             {
 //                fileCollector.addFile( f, AssemblyOperationUtil.fromFileObject( targetName, f, fileAttributes ) );
 
-                fileCollector.addFile( f, regularFile( f.relativePath(), f.lastModified(), f.size(), fileAttributes ) );
+                fileCollector.addFile( f, regularFile( targetName, f.lastModified(), f.size(), fileAttributes ) );
             }
             else if ( f.isDirectory() )
             {

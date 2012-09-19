@@ -118,7 +118,7 @@ public class OperationTest
     public void testExtractWithPattern()
         throws Exception
     {
-        File archivePath = PlexusTestCase.getTestFile("src/test/resources/operation/extract.jar");
+        File archivePath = testUtil.getTestFile( "src/test/resources/operation/extract.jar" );
 
         Fs archive = FsUtil.resolve( archivePath );
 
@@ -143,6 +143,8 @@ public class OperationTest
             perform( fileCollector );
 
         control.verify();
+
+        archive.close();
     }
 
     static class FsMatcher

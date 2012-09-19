@@ -26,8 +26,10 @@ package org.codehaus.mojo.unix.util;
 
 import fj.*;
 import fj.data.*;
+import fj.data.List;
 
 import java.io.File;
+import java.util.*;
 
 import static fj.data.List.*;
 import static fj.data.Option.*;
@@ -124,6 +126,14 @@ public class RelativePath
             };
         }
     } );
+
+    public static final Comparator<RelativePath> comparator = new Comparator<RelativePath>()
+    {
+        public int compare( RelativePath a, RelativePath b )
+        {
+            return a.string.compareTo( b.string );
+        }
+    };
 
     // -----------------------------------------------------------------------
     //
