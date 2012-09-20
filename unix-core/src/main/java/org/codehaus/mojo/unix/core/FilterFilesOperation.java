@@ -22,12 +22,14 @@ public class FilterFilesOperation
     public final List<String> includes;
     public final List<String> excludes;
     public final List<Replacer> replacers;
+    public final LineEnding lineEnding;
 
-    public FilterFilesOperation( List<String> includes, List<String> excludes, List<Replacer> replacers )
+    public FilterFilesOperation( List<String> includes, List<String> excludes, List<Replacer> replacers, LineEnding lineEnding )
     {
         this.includes = includes;
         this.excludes = excludes;
         this.replacers = replacers;
+        this.lineEnding = lineEnding;
     }
 
     public void perform( FileCollector fileCollector )
@@ -54,7 +56,7 @@ public class FilterFilesOperation
                     return none();
                 }
 
-                return some( object.withReplacers( replacers ) );
+                return some( object.addReplacers( replacers, lineEnding ) );
             }
         } );
     }
@@ -63,5 +65,10 @@ public class FilterFilesOperation
     {
         streamWriter.add( "Filter Files:" );
         streamIncludesAndExcludes( streamWriter, includes, excludes );
+        streamWriter.add( "Replacers:" );
+        for ( Replacer replacer : replacers )
+        {
+            streamWriter.add( " " + replacer.toString() );
+        }
     }
 }

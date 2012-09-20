@@ -53,8 +53,6 @@ public class ShittyUtil
 {
     public static final LocalDateTime START_OF_TIME = PrototypeFile.START_OF_TIME;
 
-    public static final LocalDateTime hudsonWarTimestamp = new LocalDateTime(2010, 9, 30, 10, 12, 56);
-
     public static final OutputStreamWriter out = new OutputStreamWriter( System.out );
 
     public static final LineWriterWriter stream = new LineWriterWriter( out );
@@ -69,23 +67,21 @@ public class ShittyUtil
     // -----------------------------------------------------------------------
 
     public static File findArtifact( String groupId, String artifactId, String version, String type )
-        throws IOException
     {
         return findArtifact( groupId, artifactId, version, type, null );
     }
 
     public static File findArtifact( String groupId, String artifactId, String version, String type, String classifier )
-        throws IOException
     {
         File m2Repository = new File( System.getProperty( "user.home" ), ".m2/repository" );
 
         // TODO: This can be improved
         if ( !m2Repository.isDirectory() )
         {
-            throw new IOException( "Unable to find local repository: " + m2Repository.getAbsolutePath() );
+            throw new RuntimeException( "Unable to find local repository: " + m2Repository.getAbsolutePath() );
         }
 
-        String base = groupId.replace( '/', '.' ) + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version;
+        String base = groupId.replace( '.', '/' ) + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version;
 
         if ( classifier != null )
         {

@@ -25,18 +25,22 @@ package org.codehaus.mojo.unix.maven.plugin;
  */
 
 import fj.data.List;
-import static fj.data.List.*;
 import org.apache.maven.plugin.*;
-import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.io.*;
 
 import java.util.*;
 import java.util.regex.*;
 
+import static fj.data.List.*;
+import static java.util.regex.Pattern.*;
+import static org.codehaus.mojo.unix.UnixFsObject.*;
+import static org.codehaus.mojo.unix.io.LineEnding.*;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-@SuppressWarnings( "UnusedDeclaration" )
+@SuppressWarnings("UnusedDeclaration")
 public class FilterFiles
     extends AssemblyOp
 {
@@ -44,28 +48,45 @@ public class FilterFiles
 
     private List<String> excludes = nil();
 
+    private String lineEnding = keep.name();
+
     public FilterFiles()
     {
         super( "filter-files" );
     }
 
-    @SuppressWarnings( "UnusedDeclaration" )
+    @SuppressWarnings("UnusedDeclaration")
     public void setIncludes( String[] includes )
     {
         this.includes = list( includes );
     }
 
-    @SuppressWarnings( "UnusedDeclaration" )
+    @SuppressWarnings("UnusedDeclaration")
     public void setExcludes( String[] excludes )
     {
         this.excludes = list( excludes );
+    }
+
+    public void setLineEnding( String lineEnding )
+    {
+        this.lineEnding = lineEnding;
     }
 
     @Override
     public AssemblyOperation createOperation( CreateOperationContext context )
         throws MojoFailureException, UnknownArtifactException
     {
-        return new FilterFilesOperation( includes, excludes, toDescriptor( context.project.properties ) );
+        try
+        {
+            LineEnding lineEnding = LineEnding.valueOf( this.lineEnding );
+
+            return new FilterFilesOperation( includes, excludes, toDescriptor( context.project.properties ),
+                                             lineEnding );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            throw new MojoFailureException( "Unknown line ending: " + this.lineEnding );
+        }
     }
 
     /**
@@ -74,6 +95,7 @@ public class FilterFiles
      * @see MavenProjectWrapper#mavenProjectWrapper
      */
     public static List<Replacer> toDescriptor( Map<String, String> properties )
+        throws MojoFailureException
     {
         List<Replacer> replacers = nil();
 
@@ -81,10 +103,17 @@ public class FilterFiles
         {
             String key = "${" + entry.getKey() + "}";
 
-            // This needs to be quoted, patterns like "${project.version}" are not very useful regular expressions.
-            Pattern pattern = Pattern.compile( Pattern.quote( key ) );
+            try
+            {
+                // This needs to be quoted, patterns like "${project.version}" are not very useful regular expressions.
+                Pattern pattern = compile( Pattern.quote( key ) );
 
-            replacers = replacers.cons( new Replacer( pattern, entry.getValue() ) );
+                replacers = replacers.cons( new Replacer( pattern, entry.getValue() ) );
+            }
+            catch ( PatternSyntaxException e )
+            {
+                throw new MojoFailureException( "Illegal pattern: " + key );
+            }
         }
 
         return replacers;

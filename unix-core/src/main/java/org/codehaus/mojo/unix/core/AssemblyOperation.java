@@ -31,6 +31,9 @@ import org.codehaus.mojo.unix.util.line.*;
 import java.io.*;
 
 /**
+ * TODO: Remove the LineProducer inheritance, replace with String debugString().
+ * Let the implementations use LineFile internally.
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public interface AssemblyOperation<FsType extends Fs>
