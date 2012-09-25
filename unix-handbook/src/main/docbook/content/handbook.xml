@@ -1585,7 +1585,7 @@
           This is required for proper ordering in the Maven reactor.</para>
 
           <para>When referring an artifact from an assembly operation the
-          normal <literal>groupId:artifactId[:classifier][:type]</literal>
+          normal <literal>groupId:artifactId[:type][:classifier]</literal>
           syntax is used. Note that the version is not specified, the version
           specified as a dependency will be used. If a type is not specified,
           a default value of <literal>jar</literal> is used.</para>
