@@ -1808,7 +1808,7 @@
 
             <tbody>
               <row>
-                <entry><literal>file</literal></entry>
+                <entry><literal>path</literal></entry>
 
                 <entry>The file to copy</entry>
               </row>
@@ -1837,7 +1837,7 @@
           <title>Example usage of <tag>&lt;copyFile&gt;</tag></title>
 
           <programlisting>&lt;copyFile&gt;
-  &lt;file&gt;src/main/native/myapp.so&lt;/file&gt;
+  &lt;path&gt;src/main/native/myapp.so&lt;/path&gt;
   &lt;toFile&gt;/opt/myapp/myapp.so&lt;/toFile&gt;
   &lt;attributes&gt;
     &lt;user&gt;myapp&lt;/user&gt;
