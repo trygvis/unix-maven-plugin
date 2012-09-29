@@ -1620,15 +1620,15 @@
               </varlistentry>
 
               <varlistentry>
-                <term><literal>com.acme:myapp:slave:tar.gz</literal></term>
+                <term><literal>com.acme:myapp:tar.gz:slave</literal></term>
 
                 <listitem>
                   <literallayout><tag>&lt;dependency&gt;
   &lt;groupId&gt;com.acme&lt;/groupId&gt;
   &lt;artifactId&gt;myapp&lt;/artifactId&gt;
   &lt;version&gt;...&lt;/version&gt;
-  &lt;classifier&gt;slave&lt;/classifier&gt;
   &lt;type&gt;tar.gz&lt;/type&gt;
+  &lt;classifier&gt;slave&lt;/classifier&gt;
 &lt;/dependency&gt;</tag></literallayout>
                 </listitem>
               </varlistentry>
