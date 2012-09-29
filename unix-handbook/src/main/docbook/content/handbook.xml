@@ -1585,7 +1585,7 @@
           This is required for proper ordering in the Maven reactor.</para>
 
           <para>When referring an artifact from an assembly operation the
-          normal <literal>groupId:artifactId[:classifier][:type]</literal>
+          normal <literal>groupId:artifactId[:type][:classifier]</literal>
           syntax is used. Note that the version is not specified, the version
           specified as a dependency will be used. If a type is not specified,
           a default value of <literal>jar</literal> is used.</para>
@@ -1620,15 +1620,15 @@
               </varlistentry>
 
               <varlistentry>
-                <term><literal>com.acme:myapp:slave:tar.gz</literal></term>
+                <term><literal>com.acme:myapp:tar.gz:slave</literal></term>
 
                 <listitem>
                   <literallayout><tag>&lt;dependency&gt;
   &lt;groupId&gt;com.acme&lt;/groupId&gt;
   &lt;artifactId&gt;myapp&lt;/artifactId&gt;
   &lt;version&gt;...&lt;/version&gt;
-  &lt;classifier&gt;slave&lt;/classifier&gt;
   &lt;type&gt;tar.gz&lt;/type&gt;
+  &lt;classifier&gt;slave&lt;/classifier&gt;
 &lt;/dependency&gt;</tag></literallayout>
                 </listitem>
               </varlistentry>
