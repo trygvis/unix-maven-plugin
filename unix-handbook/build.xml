@@ -73,19 +73,25 @@
     </copy>
   </target>
 
+  <target name="copy-handbook-resources">
+    <copy todir="target/docbook/">
+      <fileset dir="src/main/docbook"/>
+    </copy>
+  </target>
+
   <target name="process-pom">
     <delete file="target/tmp.xml"/>
     <!-- Pick out the relevant stuff for the specified format -->
-    <xslt style="src/main/docbook/process.xsl" in="src/main/docbook/examples/${example.project}/pom.magic.xml" out="target/tmp.xml">
+    <xslt style="target/docbook/process.xsl" in="target/docbook/examples/${example.project}/pom.magic.xml" out="target/tmp.xml">
       <param name="format" expression="${example.format}"/>
       <param name="version" expression="${project.version}"/>
     </xslt>
 
     <!-- Format the XML -->
-    <xslt style="src/main/docbook/format.xsl" in="target/tmp.xml" out="src/main/docbook/examples/${example.project}/pom-${example.format}.xml"/>
+    <xslt style="target/docbook/format.xsl" in="target/tmp.xml" out="target/docbook/examples/${example.project}/pom-${example.format}.xml"/>
   </target>
 
-  <target name="create-pom">
+  <target name="create-pom" depends="copy-handbook-resources">
     <antcall target="process-pom">
       <param name="example.project" value="basic"/>
       <param name="example.format" value="deb"/>
@@ -108,10 +114,11 @@
   </target>
 
   <target name="resolve" depends="create-pom,docbook">
+
     <antcall target="style">
-      <param name="style.input" value="src/main/docbook/content/handbook.xml"/>
+      <param name="style.input" value="target/docbook/content/handbook.xml"/>
       <param name="style.output" value="target/docbook/handbook-identity.xml"/>
-      <param name="style.xsl" value="src/main/docbook/identity.xsl"/>
+      <param name="style.xsl" value="target/docbook/identity.xsl"/>
     </antcall>
 
     <antcall target="style">
@@ -121,7 +128,7 @@
       -->
       <param name="style.input" value="target/docbook/handbook-identity.xml"/>
       <param name="style.output" value="target/docbook/handbook-resolved.xml"/>
-      <param name="style.xsl" value="src/main/docbook/generate-id.xsl"/>
+      <param name="style.xsl" value="target/docbook/generate-id.xsl"/>
     </antcall>
   </target>
 
@@ -129,7 +136,7 @@
     <antcall target="style">
       <param name="style.input" value="target/docbook/handbook-resolved.xml"/>
       <param name="style.output" value="target/site/handbook.html"/>
-      <param name="style.xsl" value="src/main/docbook/handbook-html-single.xsl"/>
+      <param name="style.xsl" value="target/docbook/handbook-html-single.xsl"/>
     </antcall>
   </target>
 
@@ -139,7 +146,7 @@
       <param name="style.input" value="target/docbook/handbook-resolved.xml"/>
       <!-- This is required to get saxon to not write out a file called "${style.output}"  -->
       <param name="style.output" value="target/handbook-chunked.woot"/>
-      <param name="style.xsl" value="src/main/docbook/handbook-html-chunked.xsl"/>
+      <param name="style.xsl" value="target/docbook/handbook-html-chunked.xsl"/>
     </antcall>
     <mkdir dir="target/site/handbook"/>
     <copy todir="target/site/unix-maven-handbook-${project.version}">
@@ -155,7 +162,7 @@
     <antcall target="style">
       <param name="style.input" value="target/docbook/handbook-resolved.xml"/>
       <param name="style.output" value="target/docbook/handbook.fo"/>
-      <param name="style.xsl" value="src/main/docbook/handbook-fo.xsl"/>
+      <param name="style.xsl" value="target/docbook/handbook-fo.xsl"/>
     </antcall>
   </target>
 

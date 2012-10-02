@@ -4,8 +4,8 @@
                 xmlns:xslthl="http://xslthl.sf.net"
                 exclude-result-prefixes="xslthl">
 
-  <xsl:import href="../../../target/docbook/docbook-xsl/fo/docbook.xsl"/>
-  <xsl:import href="../../../target/docbook/docbook-xsl/fo/highlight.xsl"/>
+  <xsl:import href="docbook-xsl/fo/docbook.xsl"/>
+  <xsl:import href="docbook-xsl/fo/highlight.xsl"/>
 
   <xsl:import href="handbook-common.xsl"/>
 
