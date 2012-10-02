@@ -73,25 +73,48 @@
     </copy>
   </target>
 
+  <target name="copy-examples-resources">
+    <copy todir="target/docbook/examples">
+      <fileset dir="src/main/docbook/examples"/>
+    </copy>
+    <copy todir="target/docbook/examples-xsl">
+      <filelist dir="src/main/docbook">
+        <file name="process.xsl"/>
+        <file name="format.xsl"/>
+      </filelist>
+    </copy>
+  </target>
+
   <target name="copy-handbook-resources">
-    <copy todir="target/docbook/">
-      <fileset dir="src/main/docbook"/>
+    <copy todir="target/docbook/content">
+      <fileset dir="src/main/docbook/content"/>
+    </copy>
+    <copy todir="target/docbook">
+        <filelist dir="src/main/docbook">
+          <file name="generate-id.xsl"/>
+          <file name="handbook-common.xsl"/>
+          <file name="handbook-fo.xsl"/>
+          <file name="handbook-html-chunked.xsl"/>
+          <file name="handbook-html-single.xsl"/>
+          <!-- <file name="highlight.xsl"/> -->
+          <file name="identity.xsl"/>
+        </filelist>
     </copy>
   </target>
 
   <target name="process-pom">
     <delete file="target/tmp.xml"/>
     <!-- Pick out the relevant stuff for the specified format -->
-    <xslt style="target/docbook/process.xsl" in="target/docbook/examples/${example.project}/pom.magic.xml" out="target/tmp.xml">
+    <xslt style="target/docbook/examples-xsl/process.xsl" in="target/docbook/examples/${example.project}/pom.magic.xml" out="target/tmp.xml">
       <param name="format" expression="${example.format}"/>
       <param name="version" expression="${project.version}"/>
     </xslt>
 
     <!-- Format the XML -->
-    <xslt style="target/docbook/format.xsl" in="target/tmp.xml" out="target/docbook/examples/${example.project}/pom-${example.format}.xml"/>
+    <xslt style="target/docbook/examples-xsl/format.xsl" in="target/tmp.xml" out="target/docbook/examples/${example.project}/pom-${example.format}.xml"/>
   </target>
 
-  <target name="create-pom" depends="copy-handbook-resources">
+  <target name="create-pom" depends="copy-examples-resources">
     <antcall target="process-pom">
       <param name="example.project" value="basic"/>
       <param name="example.format" value="deb"/>
@@ -113,7 +136,7 @@
     </antcall>
   </target>
 
-  <target name="resolve" depends="create-pom,docbook">
+  <target name="resolve" depends="create-pom,docbook,copy-handbook-resources">
 
     <antcall target="style">
       <param name="style.input" value="target/docbook/content/handbook.xml"/>
