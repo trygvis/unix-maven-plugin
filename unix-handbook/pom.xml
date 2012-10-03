@@ -90,9 +90,7 @@
             </goals>
             <configuration>
                <tasks>
-                <property name="version.unix-maven-plugin" value="${version.unix-maven-plugin}" />
-                <property name="version.maven-ant-tasks" value="${version.maven-ant-tasks}" />
-                <ant dir="${basedir}">
+                <ant dir="${basedir}" antfile="build-examples.xml">
                   <target name="clean" />
                   <target name="create-pom" />
                 </ant>
