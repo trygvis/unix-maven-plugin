@@ -29,10 +29,10 @@
   </target>
 
   <target name="copy-examples-resources">
-    <copy todir="target/docbook/examples">
+    <copy todir="target/examples">
       <fileset dir="src/main/docbook/examples"/>
     </copy>
-    <copy todir="target/docbook/examples-xsl">
+    <copy todir="target/examples-xsl">
       <filelist dir="src/main/docbook">
         <file name="process.xsl"/>
         <file name="format.xsl"/>
@@ -43,13 +43,13 @@
   <target name="process-pom">
     <delete file="target/tmp.xml"/>
     <!-- Pick out the relevant stuff for the specified format -->
-    <xslt style="target/docbook/examples-xsl/process.xsl" in="target/docbook/examples/${example.project}/pom.magic.xml" out="target/tmp.xml">
+    <xslt style="target/examples-xsl/process.xsl" in="target/examples/${example.project}/pom.magic.xml" out="target/tmp.xml">
       <param name="format" expression="${example.format}"/>
       <param name="version" expression="${project.version}"/>
     </xslt>
 
     <!-- Format the XML -->
-    <xslt style="target/docbook/examples-xsl/format.xsl" in="target/tmp.xml" out="target/docbook/examples/${example.project}/pom-${example.format}.xml"/>
+    <xslt style="target/examples-xsl/format.xsl" in="target/tmp.xml" out="target/examples/${example.project}/pom-${example.format}.xml"/>
   </target>
 
   <target name="create-pom" depends="copy-examples-resources">

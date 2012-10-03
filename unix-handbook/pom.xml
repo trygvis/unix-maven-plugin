@@ -94,6 +94,9 @@
                   <target name="clean" />
                   <target name="create-pom" />
                 </ant>
+                <copy todir="target/docbook/examples">
+                  <fileset dir="target/examples"/>
+                </copy>
                </tasks>
             </configuration>
           </execution>
