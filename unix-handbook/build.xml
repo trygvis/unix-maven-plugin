@@ -136,7 +136,7 @@
     </antcall>
   </target>
 
-  <target name="resolve" depends="create-pom,docbook,copy-handbook-resources">
+  <target name="resolve" depends="docbook,copy-handbook-resources">
 
     <antcall target="style">
       <param name="style.input" value="target/docbook/content/handbook.xml"/>
