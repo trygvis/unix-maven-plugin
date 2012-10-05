@@ -4,11 +4,7 @@
                 xmlns:xslthl="http://xslthl.sf.net"
                 exclude-result-prefixes="xslthl">
 
-  <xsl:import href="docbook-xsl/html/docbook.xsl"/>
-  <xsl:import href="docbook-xsl/html/highlight.xsl"/>
-
-  <xsl:import href="handbook-common.xsl"/>
-
-  <xsl:param name="html.stylesheet" select="'css/mojo-docbook.css'"/>
+  <xsl:import href="urn:docbkx:stylesheet"/>
+  <xsl:import href="urn:docbkx:stylesheet/highlight.xsl"/>
 
 </xsl:stylesheet>

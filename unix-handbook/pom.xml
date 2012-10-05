@@ -97,6 +97,12 @@
                 <copy todir="target/docbook/examples">
                   <fileset dir="target/examples"/>
                 </copy>
+                <copy todir="target/docbkx/examples">
+                  <fileset dir="target/examples"/>
+                </copy>
+                <copy todir="target/docbkx/content/command-reference">
+                  <fileset dir="src/main/docbook/content/command-reference"/>
+                </copy>
                </tasks>
             </configuration>
           </execution>
@@ -111,11 +117,10 @@
                 <property name="version.unix-maven-plugin" value="${version.unix-maven-plugin}" />
                 <property name="version.maven-ant-tasks" value="${version.maven-ant-tasks}" />
                 <ant dir="${basedir}">
-                  <target name="html" />
+                  <target name="html-chunked" />
                   <target name="pdf" />
                 </ant>
                 <attachartifact file="./target/site/handbook.pdf" classifier="single" type="pdf" />
-                <attachartifact file="./target/site/handbook.html" classifier="single" type="html" />
                 <attachartifact file="./target/site/unix-maven-handbook-${project.version}.zip" classifier="html-chunked" type="zip" />
               </tasks>
             </configuration>
@@ -128,6 +133,108 @@
             <version>1.7.1</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xml-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <id>resolve-includes-in-handbook</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>${basedir}/src/main/docbook/content</dir>
+                  <includes>
+                    <include>handbook.xml</include>
+                  </includes>
+                  <stylesheet>${basedir}/src/main/docbook/identity.xsl</stylesheet>
+                  <outputDir>${project.build.directory}/docbkx/content-included</outputDir>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-ids-in-handbook</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>${project.build.directory}/docbkx/content-included</dir>
+                  <includes>
+                    <include>handbook.xml</include>
+                  </includes>
+                  <stylesheet>${basedir}/src/main/docbook/generate-id.xsl</stylesheet>
+                  <outputDir>${project.build.directory}/docbkx/content</outputDir>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.agilejava.docbkx</groupId>
+        <artifactId>docbkx-maven-plugin</artifactId>
+        <version>2.0.14</version>
+        <executions>
+          <execution>
+            <id>generate-handbook-html-single</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.build.directory}/docbkx/content</sourceDirectory>
+              <xincludeSupported>true</xincludeSupported>
+              <highlightSource>1</highlightSource>
+              <useExtensions>1</useExtensions>
+              <textinsertExtension>1</textinsertExtension>
+              <generateToc>book toc</generateToc>
+              <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
+              <sectionAutolabel>1</sectionAutolabel>
+              <xslthlConfig>file:///${basedir}/xslthl-config.xml</xslthlConfig>
+              <htmlCustomization>${basedir}/src/main/docbook/handbook-html-single.xsl</htmlCustomization>
+              <htmlStylesheet>css/mojo-docbook.css</htmlStylesheet>
+              <targetDirectory>${project.build.directory}/site</targetDirectory>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.docbook</groupId>
+            <artifactId>docbook-xml</artifactId>
+            <version>4.4</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>attach-handbook-artifacts</id>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/site/handbook.html</file>
+                  <type>html</type>
+                  <classifier>single</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
