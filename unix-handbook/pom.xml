@@ -117,11 +117,9 @@
                 <property name="version.unix-maven-plugin" value="${version.unix-maven-plugin}" />
                 <property name="version.maven-ant-tasks" value="${version.maven-ant-tasks}" />
                 <ant dir="${basedir}">
-                  <target name="html-chunked" />
                   <target name="pdf" />
                 </ant>
                 <attachartifact file="./target/site/handbook.pdf" classifier="single" type="pdf" />
-                <attachartifact file="./target/site/unix-maven-handbook-${project.version}.zip" classifier="html-chunked" type="zip" />
               </tasks>
             </configuration>
           </execution>
@@ -205,6 +203,31 @@
               <targetDirectory>${project.build.directory}/site</targetDirectory>
             </configuration>
           </execution>
+          <execution>
+            <id>generate-handbook-html-chunked</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.build.directory}/docbkx/content</sourceDirectory>
+              <xincludeSupported>true</xincludeSupported>
+              <generateIdAttributes>true</generateIdAttributes>
+              <highlightSource>1</highlightSource>
+              <useExtensions>1</useExtensions>
+              <textinsertExtension>1</textinsertExtension>
+              <generateToc>book toc</generateToc>
+              <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
+              <sectionAutolabel>1</sectionAutolabel>
+              <xslthlConfig>file:///${basedir}/xslthl-config.xml</xslthlConfig>
+              <htmlCustomization>${basedir}/src/main/docbook/handbook-html-chunked.xsl</htmlCustomization>
+              <chunkedOutput>true</chunkedOutput>
+              <chunkSectionDepth>0</chunkSectionDepth>
+              <useIdAsFilename>1</useIdAsFilename>
+              <htmlStylesheet>../css/mojo-docbook.css</htmlStylesheet>
+              <targetDirectory>${project.build.directory}/site</targetDirectory>
+            </configuration>
+          </execution>
         </executions>
         <dependencies>
           <dependency>
@@ -213,6 +236,24 @@
             <version>4.4</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>zip-chunked-html-handbook</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/zip-html-chunked.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

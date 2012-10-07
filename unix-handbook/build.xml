@@ -105,22 +105,6 @@
     </antcall>
   </target>
 
-  <target name="html-chunked" depends="resolve">
-    <delete dir="target/docbook/html-chunked"/>
-    <antcall target="style">
-      <param name="style.input" value="target/docbook/handbook-resolved.xml"/>
-      <!-- This is required to get saxon to not write out a file called "${style.output}"  -->
-      <param name="style.output" value="target/handbook-chunked.woot"/>
-      <param name="style.xsl" value="target/docbook/handbook-html-chunked.xsl"/>
-    </antcall>
-    <mkdir dir="target/site/handbook"/>
-    <copy todir="target/site/unix-maven-handbook-${project.version}">
-      <fileset dir="target/site/handbook"/>
-    </copy>
-    <zip destfile="target/site/unix-maven-handbook-${project.version}.zip"
-         basedir="target/site" includes="unix-maven-handbook-${project.version}/**"/>
-  </target>
-
   <target name="fo" depends="resolve">
     <antcall target="style">
       <param name="style.input" value="target/docbook/handbook-resolved.xml"/>
@@ -130,6 +114,7 @@
   </target>
 
   <target name="pdf" depends="fo">
+    <mkdir dir="target/site"/>
     <fop format="application/pdf"
          fofile="target/docbook/handbook.fo"
          outfile="target/site/handbook.pdf"/>
