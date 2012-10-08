@@ -172,15 +172,6 @@
               <goal>generate-html</goal>
             </goals>
             <configuration>
-              <sourceDirectory>${project.build.directory}/docbkx/content</sourceDirectory>
-              <xincludeSupported>true</xincludeSupported>
-              <highlightSource>1</highlightSource>
-              <useExtensions>1</useExtensions>
-              <textinsertExtension>1</textinsertExtension>
-              <generateToc>book toc</generateToc>
-              <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
-              <sectionAutolabel>1</sectionAutolabel>
-              <xslthlConfig>file:///${basedir}/xslthl-config.xml</xslthlConfig>
               <htmlCustomization>${basedir}/src/main/docbook/handbook-html-single.xsl</htmlCustomization>
               <htmlStylesheet>css/mojo-docbook.css</htmlStylesheet>
               <targetDirectory>${project.build.directory}/site</targetDirectory>
@@ -193,16 +184,7 @@
               <goal>generate-html</goal>
             </goals>
             <configuration>
-              <sourceDirectory>${project.build.directory}/docbkx/content</sourceDirectory>
-              <xincludeSupported>true</xincludeSupported>
               <generateIdAttributes>true</generateIdAttributes>
-              <highlightSource>1</highlightSource>
-              <useExtensions>1</useExtensions>
-              <textinsertExtension>1</textinsertExtension>
-              <generateToc>book toc</generateToc>
-              <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
-              <sectionAutolabel>1</sectionAutolabel>
-              <xslthlConfig>file:///${basedir}/xslthl-config.xml</xslthlConfig>
               <htmlCustomization>${basedir}/src/main/docbook/handbook-html-chunked.xsl</htmlCustomization>
               <chunkedOutput>true</chunkedOutput>
               <chunkSectionDepth>0</chunkSectionDepth>
@@ -218,15 +200,6 @@
               <goal>generate-pdf</goal>
             </goals>
             <configuration>
-              <sourceDirectory>${project.build.directory}/docbkx/content</sourceDirectory>
-              <xincludeSupported>true</xincludeSupported>
-              <highlightSource>1</highlightSource>
-              <useExtensions>1</useExtensions>
-              <textinsertExtension>1</textinsertExtension>
-              <generateToc>book toc</generateToc>
-              <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
-              <sectionAutolabel>1</sectionAutolabel>
-              <xslthlConfig>file:///${basedir}/xslthl-config.xml</xslthlConfig>
               <foCustomization>${basedir}/src/main/docbook/handbook-fo.xsl</foCustomization>
               <fop1Extensions>1</fop1Extensions>
               <paperType>A4</paperType>
@@ -234,6 +207,17 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <sourceDirectory>${project.build.directory}/docbkx/content</sourceDirectory>
+          <xincludeSupported>true</xincludeSupported>
+          <highlightSource>1</highlightSource>
+          <useExtensions>1</useExtensions>
+          <textinsertExtension>1</textinsertExtension>
+          <generateToc>book toc</generateToc>
+          <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
+          <sectionAutolabel>1</sectionAutolabel>
+          <xslthlConfig>file:///${basedir}/xslthl-config.xml</xslthlConfig>
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.docbook</groupId>
