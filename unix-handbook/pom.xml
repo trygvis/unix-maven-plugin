@@ -106,23 +106,6 @@
                </tasks>
             </configuration>
           </execution>
-          <execution>
-            <id>run</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <property name="version.unix-maven-plugin" value="${version.unix-maven-plugin}" />
-                <property name="version.maven-ant-tasks" value="${version.maven-ant-tasks}" />
-                <ant dir="${basedir}">
-                  <target name="pdf" />
-                </ant>
-                <attachartifact file="./target/site/handbook.pdf" classifier="single" type="pdf" />
-              </tasks>
-            </configuration>
-          </execution>
         </executions>
         <dependencies>
           <dependency>
@@ -228,6 +211,28 @@
               <targetDirectory>${project.build.directory}/site</targetDirectory>
             </configuration>
           </execution>
+          <execution>
+            <id>generate-handbook-pdf-single</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-pdf</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.build.directory}/docbkx/content</sourceDirectory>
+              <xincludeSupported>true</xincludeSupported>
+              <highlightSource>1</highlightSource>
+              <useExtensions>1</useExtensions>
+              <textinsertExtension>1</textinsertExtension>
+              <generateToc>book toc</generateToc>
+              <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
+              <sectionAutolabel>1</sectionAutolabel>
+              <xslthlConfig>file:///${basedir}/xslthl-config.xml</xslthlConfig>
+              <foCustomization>${basedir}/src/main/docbook/handbook-fo.xsl</foCustomization>
+              <fop1Extensions>1</fop1Extensions>
+              <paperType>A4</paperType>
+              <targetDirectory>${project.build.directory}/site</targetDirectory>
+            </configuration>
+          </execution>
         </executions>
         <dependencies>
           <dependency>
@@ -270,6 +275,11 @@
                 <artifact>
                   <file>${project.build.directory}/site/handbook.html</file>
                   <type>html</type>
+                  <classifier>single</classifier>
+                </artifact>
+                <artifact>
+                  <file>${project.build.directory}/site/handbook.pdf</file>
+                  <type>pdf</type>
                   <classifier>single</classifier>
                 </artifact>
               </artifacts>
