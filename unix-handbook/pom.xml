@@ -48,9 +48,6 @@
                 <ant dir="${basedir}" antfile="build-examples.xml">
                   <target name="create-pom" />
                 </ant>
-                <copy todir="target/docbook/examples">
-                  <fileset dir="target/examples"/>
-                </copy>
                 <copy todir="target/docbkx/examples">
                   <fileset dir="target/examples"/>
                 </copy>
