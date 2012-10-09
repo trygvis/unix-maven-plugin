@@ -49,7 +49,10 @@
                    <target name="create-pom" />
                  </ant>
                  <copy todir="target/docbkx/examples">
-                   <fileset dir="target/examples"/>
+                   <fileset dir="src/main/docbook/examples"/>
+                 </copy>
+                 <copy todir="target/docbkx/examples">
+                   <fileset dir="target/examples-processed"/>
                  </copy>
                  <copy todir="target/docbkx/content/command-reference">
                    <fileset dir="src/main/docbook/content/command-reference"/>
