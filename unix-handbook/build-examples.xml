@@ -24,10 +24,6 @@
 
 <project>
 
-  <target name="clean">
-    <delete dir="target/docbook"/>
-  </target>
-
   <target name="copy-examples-resources">
     <copy todir="target/examples">
       <fileset dir="src/main/docbook/examples"/>

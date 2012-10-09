@@ -46,7 +46,6 @@
             <configuration>
                <tasks>
                 <ant dir="${basedir}" antfile="build-examples.xml">
-                  <target name="clean" />
                   <target name="create-pom" />
                 </ant>
                 <copy todir="target/docbook/examples">
