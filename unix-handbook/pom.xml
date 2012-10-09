@@ -44,7 +44,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-               <tasks>
+               <target>
                  <ant dir="${basedir}" antfile="build-examples.xml">
                    <target name="create-pom" />
                  </ant>
@@ -54,7 +54,7 @@
                  <copy todir="target/docbkx/content/command-reference">
                    <fileset dir="src/main/docbook/content/command-reference"/>
                  </copy>
-               </tasks>
+               </target>
             </configuration>
           </execution>
         </executions>
