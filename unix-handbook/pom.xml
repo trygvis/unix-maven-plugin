@@ -45,15 +45,15 @@
             </goals>
             <configuration>
                <tasks>
-                <ant dir="${basedir}" antfile="build-examples.xml">
-                  <target name="create-pom" />
-                </ant>
-                <copy todir="target/docbkx/examples">
-                  <fileset dir="target/examples"/>
-                </copy>
-                <copy todir="target/docbkx/content/command-reference">
-                  <fileset dir="src/main/docbook/content/command-reference"/>
-                </copy>
+                 <ant dir="${basedir}" antfile="build-examples.xml">
+                   <target name="create-pom" />
+                 </ant>
+                 <copy todir="target/docbkx/examples">
+                   <fileset dir="target/examples"/>
+                 </copy>
+                 <copy todir="target/docbkx/content/command-reference">
+                   <fileset dir="src/main/docbook/content/command-reference"/>
+                 </copy>
                </tasks>
             </configuration>
           </execution>
