@@ -77,7 +77,7 @@
       <listitem>
         <para>Part I - Guide: An introduction and overview over the plugin.
         This part is the first you should read if you're looking into using
-        the plugin or is getting started.</para>
+        the plugin or getting started.</para>
       </listitem>
 
       <listitem>
@@ -132,9 +132,9 @@
         <title>About the plugin</title>
 
         <para>The Unix Maven Plugin is meant to fill in the gap between
-        creating platform independent applications and reality. It make it
+        creating platform independent applications and reality. It makes it
         possible to create Java application with your standard Java
-        development stack, but still be able to install the applications using
+        development stack, and still install the applications using
         the native tools that your system administrators already know.</para>
 
         <para>As it automates yet another step in the development
@@ -142,7 +142,7 @@
             <para>Development chain here refers to all the step that's between
             writing the code in an IDE to having it run in production or a
             production-like environment.</para>
-          </footnote>, it also give a new set of possibilities that can be
+          </footnote>, it also gives a new set of possibilities that can be
         taken advantage of. In particular the ability to store production
         ready binaries in a repository and the ability to install, remove and
         upgrade the software in an uniform and consistent way across an entire
@@ -154,21 +154,20 @@
       </section>
 
       <section xml:id="how-the-plugin-work">
-        <title>How the Plugin Work</title>
+        <title>How the Plugin Works</title>
 
         <para>This section is a high level explanation of how the plugin
-        work.</para>
+        works.</para>
 
         <para>The plugin goes through two major phases:</para>
 
         <itemizedlist>
           <listitem>
-            <para>Meta data generation: Each package format contain some form
-            of meta data that it uses when the package is being installed or
-            removed. The plugin will pick up as much meta data as possible
-            from the Maven POM as possible, but there are certain options that
-            might have to be filled in, depending on the package
-            format.</para>
+            <para>Metadata generation: Each package format contain some form
+            of metadata that it uses when the package is being installed or
+            removed. The plugin will pick up as much metadata from the Maven POM
+            as possible, but there are certain options that might have to be
+            filled in, depending on the package format.</para>
           </listitem>
 
           <listitem>
@@ -181,7 +180,7 @@
         </itemizedlist>
 
         <section>
-          <title>Meta Data Generation</title>
+          <title>Metadata Generation</title>
 
           <para>The first thing that happens is that the plugin starts to
           gather all the information it needs to build the package. It has
@@ -279,8 +278,8 @@
 
             <listitem>
               <para>The plugin is running in primary mode when the project has
-              set a &lt;packaging&gt; to one of the packaging that the plugin
-              support. The plugin will install an artifact as the primary
+              set a &lt;packaging&gt; to one of the packagings that the plugin
+              supports. The plugin will install an artifact as the primary
               artifact into the repository</para>
             </listitem>
           </varlistentry>
@@ -302,7 +301,7 @@
         <title>Package Formats</title>
 
         <para>A package format is a specific file format that a platform
-        supports. The plugin currently support three formats; deb, pkg and
+        supports. The plugin currently supports three formats; deb, pkg and
         rpm.</para>
       </section>
 
@@ -318,7 +317,7 @@
         <title>Package File System and File System Objects</title>
 
         <para>A package file system is a virtual file system created while the
-        plugin executes all the assembly operations. It consist of file
+        plugin executes all the assembly operations. It consists of file
         objects that represent regular files, directories and symbolic
         links.</para>
 
@@ -482,7 +481,7 @@
           version of the project, the package is packaged into
           <filename>target/basic-pkg-1.0.pkg</filename>.</para>
 
-          <para>The generated meta data will look like this:</para>
+          <para>The generated metadata will look like this:</para>
 
           <screen><?dbfo-font-size 75% ?><xi:include
               href="../examples/basic/pkginfo.txt" parse="text" /></screen>
@@ -504,7 +503,7 @@
           <title><code>pom.xml</code> for RPM version</title>
 
           <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
+              href="../examples/basic/pom-rpm.xml" parse="text" /></programlisting>
         </section>
 
         <section>
@@ -512,7 +511,7 @@
 
           <para>After running <command>mvn install</command> on the rpm
           version of the project, the package is packaged into
-          <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+          <filename>target/basic-1.0-SNAPSHOT.rpm</filename>.</para>
 
           <para>The package will contain these files:</para>
 
@@ -1476,7 +1475,7 @@
 
         <para>Againg using the "after installation" for the deb format as an
         example, the plugin will generate a postinst file based on the
-        concatination of these files:</para>
+        concatenation of these files:</para>
 
         <itemizedlist>
           <listitem>
@@ -1585,7 +1584,7 @@
           This is required for proper ordering in the Maven reactor.</para>
 
           <para>When referring an artifact from an assembly operation the
-          normal <literal>groupId:artifactId[:classifier][:type]</literal>
+          normal <literal>groupId:artifactId[:type][:classifier]</literal>
           syntax is used. Note that the version is not specified, the version
           specified as a dependency will be used. If a type is not specified,
           a default value of <literal>jar</literal> is used.</para>
@@ -1620,15 +1619,15 @@
               </varlistentry>
 
               <varlistentry>
-                <term><literal>com.acme:myapp:slave:tar.gz</literal></term>
+                <term><literal>com.acme:myapp:tar.gz:slave</literal></term>
 
                 <listitem>
                   <literallayout><tag>&lt;dependency&gt;
   &lt;groupId&gt;com.acme&lt;/groupId&gt;
   &lt;artifactId&gt;myapp&lt;/artifactId&gt;
   &lt;version&gt;...&lt;/version&gt;
-  &lt;classifier&gt;slave&lt;/classifier&gt;
   &lt;type&gt;tar.gz&lt;/type&gt;
+  &lt;classifier&gt;slave&lt;/classifier&gt;
 &lt;/dependency&gt;</tag></literallayout>
                 </listitem>
               </varlistentry>
@@ -1727,7 +1726,7 @@
         <section xml:id="file-attributes">
           <title>File Attributes</title>
 
-          <para>All file objects has a set of attributes. Note: not all
+          <para>All file objects have a set of attributes. Note: not all
           attributes applies to all object types.</para>
 
           <note>
@@ -1747,7 +1746,7 @@
                 <row>
                   <entry><literal>user</literal></entry>
 
-                  <entry>Specifies the user of the owns the file</entry>
+                  <entry>Specifies the user that owns the file</entry>
                 </row>
 
                 <row>
@@ -1808,7 +1807,7 @@
 
             <tbody>
               <row>
-                <entry><literal>file</literal></entry>
+                <entry><literal>path</literal></entry>
 
                 <entry>The file to copy</entry>
               </row>
@@ -1837,7 +1836,7 @@
           <title>Example usage of <tag>&lt;copyFile&gt;</tag></title>
 
           <programlisting>&lt;copyFile&gt;
-  &lt;file&gt;src/main/native/myapp.so&lt;/file&gt;
+  &lt;path&gt;src/main/native/myapp.so&lt;/path&gt;
   &lt;toFile&gt;/opt/myapp/myapp.so&lt;/toFile&gt;
   &lt;attributes&gt;
     &lt;user&gt;myapp&lt;/user&gt;
@@ -2058,7 +2057,7 @@
       <section>
         <title>Copy Directory, Extract Artifact and Extract File</title>
 
-        <para>These operation work in a similar fasion and share these
+        <para>These operations work in a similar fasion and share these
         attributes:</para>
 
         <table>
@@ -2195,7 +2194,7 @@
 
           <table>
             <title>Additional parameters for
-            <tag>&lt;extractDile&gt;</tag></title>
+            <tag>&lt;extractFile&gt;</tag></title>
 
             <tgroup cols="2">
               <colspec colnum="2" colwidth="2*" />
@@ -2358,7 +2357,7 @@
       <section>
         <title><code>zip</code> Commands</title>
 
-        <para>Note that there are no standard for the utilities used to handle
+        <para>Note that there is no standard for the utilities used to handle
         zip files. However, most platforms support this command.</para>
 
         <example>
@@ -2511,9 +2510,9 @@
         <tag>&lt;classifier&gt;</tag> to be closer to the existing Maven
         nomenclature.</para>
 
-        <para>All examples use hyphened elements instead of camel casing to be
+        <para>All examples use hyphenated elements instead of camel casing to be
         more consistent with how Maven POMs normally are written. This will
-        not break any builds as Maven interpret both version the same way. For
+        not break any builds as Maven interpret both versions the same way. For
         example <tag>&lt;fileAttributes&gt;</tag> is now used instead of
         <tag>&lt;file-attribues&gt;</tag>.</para>
       </section>

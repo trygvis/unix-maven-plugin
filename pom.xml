@@ -299,13 +299,6 @@
             <enabled>false</enabled>
           </snapshots>
         </repository>
-        <repository>
-          <id>xslthl.sourceforge.net</id>
-          <url>http://xslthl.sourceforge.net/maven/repository</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository>
       </repositories>
     </profile>
   </profiles>

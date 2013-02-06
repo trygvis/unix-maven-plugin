@@ -1,0 +1,61 @@
+<!--
+  ~ The MIT License
+  ~
+  ~ Copyright 2009 The Codehaus.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of
+  ~ this software and associated documentation files (the "Software"), to deal in
+  ~ the Software without restriction, including without limitation the rights to
+  ~ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+  ~ of the Software, and to permit persons to whom the Software is furnished to do
+  ~ so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<project>
+
+  <target name="process-pom">
+    <delete file="target/tmp.xml"/>
+    <!-- Pick out the relevant stuff for the specified format -->
+    <xslt style="src/main/docbook/process.xsl" in="src/main/docbook/examples/${example.project}/pom.magic.xml" out="target/tmp.xml">
+      <param name="format" expression="${example.format}"/>
+      <param name="version" expression="${project.version}"/>
+    </xslt>
+
+    <!-- Format the XML -->
+    <xslt style="src/main/docbook/format.xsl" in="target/tmp.xml" out="target/examples-processed/${example.project}/pom-${example.format}.xml"/>
+  </target>
+
+  <target name="create-pom">
+    <antcall target="process-pom">
+      <param name="example.project" value="basic"/>
+      <param name="example.format" value="deb"/>
+    </antcall>
+
+    <antcall target="process-pom">
+      <param name="example.project" value="basic"/>
+      <param name="example.format" value="pkg"/>
+    </antcall>
+
+    <antcall target="process-pom">
+      <param name="example.project" value="basic"/>
+      <param name="example.format" value="rpm"/>
+    </antcall>
+
+    <antcall target="process-pom">
+      <param name="example.project" value="basic"/>
+      <param name="example.format" value="zip"/>
+    </antcall>
+  </target>
+
+</project>
