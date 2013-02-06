@@ -90,10 +90,30 @@
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
+          <validate/>
+          <initialize/>
+          <generate-sources/>
+          <process-sources/>
+          <generate-resources/>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
+          <compile/>
+          <process-classes/>
+          <generate-test-sources/>
+          <process-test-sources/>
+          <generate-test-resources/>
+          <process-test-resources/>
+          <test-compile/>
+          <process-test-classes/>
+          <test/>
+          <prepare-package/>
+          <package/>
+          <pre-integration-test/>
+          <integration-test/>
+          <post-integration-test/>
           <package>no.arktekk.unix:unix-maven-plugin:package-deb</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
+          <verify/>
         </phases>
       </configuration>
     </component>
@@ -103,10 +123,30 @@
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
+          <validate/>
+          <initialize/>
+          <generate-sources/>
+          <process-sources/>
+          <generate-resources/>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
+          <compile/>
+          <process-classes/>
+          <generate-test-sources/>
+          <process-test-sources/>
+          <generate-test-resources/>
+          <process-test-resources/>
+          <test-compile/>
+          <process-test-classes/>
+          <test/>
+          <prepare-package/>
+          <package/>
+          <pre-integration-test/>
+          <integration-test/>
+          <post-integration-test/>
           <package>no.arktekk.unix:unix-maven-plugin:package-sysvpkg</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
+          <verify/>
         </phases>
       </configuration>
     </component>
@@ -116,10 +156,63 @@
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
+          <validate/>
+          <initialize/>
+          <generate-sources/>
+          <process-sources/>
+          <generate-resources/>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
+          <compile/>
+          <process-classes/>
+          <generate-test-sources/>
+          <process-test-sources/>
+          <generate-test-resources/>
+          <process-test-resources/>
+          <test-compile/>
+          <process-test-classes/>
+          <test/>
+          <prepare-package/>
+          <package/>
+          <pre-integration-test/>
+          <integration-test/>
+          <post-integration-test/>
           <package>no.arktekk.unix:unix-maven-plugin:package-rpm</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
+          <verify/>
+        </phases>
+      </configuration>
+    </component>
+    <component>
+      <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+      <role-hint>zip</role-hint>
+      <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+      <configuration>
+        <phases>
+          <validate/>
+          <initialize/>
+          <generate-sources/>
+          <process-sources/>
+          <generate-resources/>
+          <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
+          <compile/>
+          <process-classes/>
+          <generate-test-sources/>
+          <process-test-sources/>
+          <generate-test-resources/>
+          <process-test-resources/>
+          <test-compile/>
+          <process-test-classes/>
+          <test/>
+          <prepare-package/>
+          <package/>
+          <pre-integration-test/>
+          <integration-test/>
+          <post-integration-test/>
+          <package>no.arktekk.unix:unix-maven-plugin:package-zip</package>
+          <install>org.apache.maven.plugins:maven-install-plugin:install</install>
+          <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
+          <verify/>
         </phases>
       </configuration>
     </component>
@@ -129,10 +222,30 @@
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
+          <validate/>
+          <initialize/>
+          <generate-sources/>
+          <process-sources/>
+          <generate-resources/>
           <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
+          <compile/>
+          <process-classes/>
+          <generate-test-sources/>
+          <process-test-sources/>
+          <generate-test-resources/>
+          <process-test-resources/>
+          <test-compile/>
+          <process-test-classes/>
+          <test/>
+          <prepare-package/>
+          <package/>
+          <pre-integration-test/>
+          <integration-test/>
+          <post-integration-test/>
           <package>no.arktekk.unix:unix-maven-plugin:package-zip</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
+          <verify/>
         </phases>
       </configuration>
     </component>
