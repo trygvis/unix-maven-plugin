@@ -145,6 +145,7 @@ o Make sure the handbook is build. Consider moving it out to a separate trunk.
 
 == For 1.0-alpha-7 ==
 
+o All packaging now include all the standard phases (compile, test-resources etc).
 o All relevant operations has a default timestamp used when creating new objects.
 o Filtering support. Note that this uses a hard-coded list of properties, not MavenProject reflection like the
   resources plugin does. This is probably not a big restriction as users don't want to inspect the project when

@@ -1,1 +1,1 @@
--X -Dmaven.unix.debug=true clean install
+-Dmaven.unix.debug=true clean install
