@@ -504,7 +504,7 @@
           <title><code>pom.xml</code> for RPM version</title>
 
           <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
+              href="../examples/basic/pom-rpm.xml" parse="text" /></programlisting>
         </section>
 
         <section>
@@ -512,7 +512,7 @@
 
           <para>After running <command>mvn install</command> on the rpm
           version of the project, the package is packaged into
-          <filename>target/basic-pkg-1.0.rpm</filename>.</para>
+          <filename>target/basic-1.0-SNAPSHOT.rpm</filename>.</para>
 
           <para>The package will contain these files:</para>
 
