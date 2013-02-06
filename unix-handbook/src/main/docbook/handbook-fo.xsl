@@ -4,19 +4,8 @@
                 xmlns:xslthl="http://xslthl.sf.net"
                 exclude-result-prefixes="xslthl">
 
-  <xsl:import href="../../../target/docbook/docbook-xsl/fo/docbook.xsl"/>
-  <xsl:import href="../../../target/docbook/docbook-xsl/fo/highlight.xsl"/>
-
-  <xsl:import href="handbook-common.xsl"/>
-
-  <xsl:param name="paper.type" select="'A4'"/>
-  <xsl:param name="fop1.extensions" select="1"/>
-
-  <xsl:param name="textinsert.extension" select="1"/>
-
-  <!-- common
-  <xsl:param name="generate.toc" select="'book toc'"/>
-  -->
+  <xsl:import href="urn:docbkx:stylesheet"/>
+  <xsl:import href="urn:docbkx:stylesheet/highlight.xsl"/>
 
   <xsl:attribute-set name="monospace.verbatim.properties">
     <xsl:attribute name="wrap-option">wrap</xsl:attribute>
