@@ -31,51 +31,6 @@
   </parent>
   <artifactId>unix-handbook</artifactId>
   <name>Unix Maven Plugin Handbook</name>
-  <!-- These are also used by the build.xml script -->
-  <properties>
-    <version.docbook>1.75.0</version.docbook>
-    <version.maven-ant-tasks>2.1.2</version.maven-ant-tasks>
-    <version.unix-maven-plugin>${project.version}</version.unix-maven-plugin>
-  </properties>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-ant-tasks</artifactId>
-      <version>${version.maven-ant-tasks}</version>
-    </dependency>
-    <dependency>
-      <groupId>saxon</groupId>
-      <artifactId>saxon</artifactId>
-      <version>6.5.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>fop</artifactId>
-      <version>0.95</version>
-    </dependency>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.9.1</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.docbook</groupId>
-      <artifactId>docbook-xsl</artifactId>
-      <version>${version.docbook}</version>
-      <classifier>ns-resources</classifier>
-      <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.docbook</groupId>
-      <artifactId>docbook-xsl-saxon</artifactId>
-      <version>1.0.1-pre</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.xslthl</groupId>
-      <artifactId>xslthl</artifactId>
-      <version>2.0.1</version>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -83,11 +38,27 @@
         <version>1.6</version>
         <executions>
           <execution>
-            <id>run</id>
-            <phase>generate-resources</phase>
+            <id>build-examples</id>
+            <phase>generate-sources</phase>
             <goals>
               <goal>run</goal>
             </goals>
+            <configuration>
+               <target>
+                 <ant dir="${basedir}" antfile="build-examples.xml">
+                   <target name="create-pom" />
+                 </ant>
+                 <copy todir="target/docbkx/examples">
+                   <fileset dir="src/main/docbook/examples"/>
+                 </copy>
+                 <copy todir="target/docbkx/examples">
+                   <fileset dir="target/examples-processed"/>
+                 </copy>
+                 <copy todir="target/docbkx/content/command-reference">
+                   <fileset dir="src/main/docbook/content/command-reference"/>
+                 </copy>
+               </target>
+            </configuration>
           </execution>
         </executions>
         <dependencies>
@@ -97,21 +68,162 @@
             <version>1.7.1</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xml-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <id>resolve-includes-in-handbook</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>${basedir}/src/main/docbook/content</dir>
+                  <includes>
+                    <include>handbook.xml</include>
+                  </includes>
+                  <stylesheet>${basedir}/src/main/docbook/identity.xsl</stylesheet>
+                  <outputDir>${project.build.directory}/docbkx/content-included</outputDir>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-ids-in-handbook</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>${project.build.directory}/docbkx/content-included</dir>
+                  <includes>
+                    <include>handbook.xml</include>
+                  </includes>
+                  <stylesheet>${basedir}/src/main/docbook/generate-id.xsl</stylesheet>
+                  <outputDir>${project.build.directory}/docbkx/content</outputDir>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.agilejava.docbkx</groupId>
+        <artifactId>docbkx-maven-plugin</artifactId>
+        <version>2.0.14</version>
+        <executions>
+          <execution>
+            <id>generate-handbook-html-single</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <configuration>
+              <htmlCustomization>${basedir}/src/main/docbook/handbook-html-single.xsl</htmlCustomization>
+              <htmlStylesheet>css/mojo-docbook.css</htmlStylesheet>
+              <targetDirectory>${project.build.directory}/site</targetDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-handbook-html-chunked</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <configuration>
+              <generateIdAttributes>true</generateIdAttributes>
+              <htmlCustomization>${basedir}/src/main/docbook/handbook-html-chunked.xsl</htmlCustomization>
+              <chunkedOutput>true</chunkedOutput>
+              <chunkSectionDepth>0</chunkSectionDepth>
+              <useIdAsFilename>1</useIdAsFilename>
+              <htmlStylesheet>../css/mojo-docbook.css</htmlStylesheet>
+              <targetDirectory>${project.build.directory}/site</targetDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-handbook-pdf-single</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-pdf</goal>
+            </goals>
+            <configuration>
+              <foCustomization>${basedir}/src/main/docbook/handbook-fo.xsl</foCustomization>
+              <fop1Extensions>1</fop1Extensions>
+              <paperType>A4</paperType>
+              <targetDirectory>${project.build.directory}/site</targetDirectory>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
-          <tasks>
-            <property name="version.docbook" value="${version.docbook}" />
-            <property name="version.unix-maven-plugin" value="${version.unix-maven-plugin}" />
-            <property name="version.maven-ant-tasks" value="${version.maven-ant-tasks}" />
-            <ant dir="${basedir}">
-              <target name="clean" />
-              <target name="html" />
-              <target name="pdf" />
-            </ant>
-            <attachartifact file="./target/site/handbook.pdf" classifier="single" type="pdf" />
-            <attachartifact file="./target/site/handbook.html" classifier="single" type="html" />
-            <attachartifact file="./target/site/unix-maven-handbook-${project.version}.zip" classifier="html-chunked" type="zip" />
-          </tasks>
+          <sourceDirectory>${project.build.directory}/docbkx/content</sourceDirectory>
+          <xincludeSupported>true</xincludeSupported>
+          <highlightSource>1</highlightSource>
+          <useExtensions>1</useExtensions>
+          <textinsertExtension>1</textinsertExtension>
+          <generateToc>book toc</generateToc>
+          <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
+          <sectionAutolabel>1</sectionAutolabel>
+          <xslthlConfig>file:///${basedir}/xslthl-config.xml</xslthlConfig>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.docbook</groupId>
+            <artifactId>docbook-xml</artifactId>
+            <version>4.4</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>zip-chunked-html-handbook</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/zip-html-chunked.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>attach-handbook-artifacts</id>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/site/handbook.html</file>
+                  <type>html</type>
+                  <classifier>single</classifier>
+                </artifact>
+                <artifact>
+                  <file>${project.build.directory}/site/handbook.pdf</file>
+                  <type>pdf</type>
+                  <classifier>single</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
