@@ -3,7 +3,7 @@ language: java
 env:
   global:
     - SONATYPE_USERNAME=80ymBYBJ
-    - secure: "fWNpQtw34CGKtdzBHpawA7dQSMVQg+wg+S7lj6DtAEGJIipSPk5Uod2DYEV+\nSsP9j9yn7VAwbdo8GGqUrS0FNqKctsc6k4COOw3JMAmQEo6HEvwf7aRy/R6x\n9RgMT2YAwC34NStAC/liJunc/4a7L+QHoikr2CFImbrUn4I5+/4="
+    - secure: "GY8Fd8wbtl7trlSymM3af0BTTj9lzdU/+2sKqD8/RdZBLlSv4BK+yG+u6YfQ\ndlqWdgMaed52QaJ9Q+z2Zl8d4wAUrOgplE+MSpAVOYmkeuY2hPdGeyOu691B\neKo3DocrR4OA7Rx60PcyyqrpDUBiJWtcpHQpQuSpCNQn+T07H6w="
 
 install: "mvn -DskipTests -U -B install"
 
