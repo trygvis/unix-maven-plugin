@@ -44,6 +44,8 @@ public abstract class UnixPackage
 
     private PackageVersion version;
 
+    protected LocalFs workingDirectory;
+
     private File basedir;
 
     public UnixPackage( String packageFileExtension )
@@ -56,6 +58,12 @@ public abstract class UnixPackage
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
+
+    public final UnixPackage workingDirectory( LocalFs workingDirectory )
+    {
+        this.workingDirectory = workingDirectory;
+        return this;
+    }
 
     public UnixPackage basedir( File basedir )
     {

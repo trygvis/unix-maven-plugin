@@ -91,11 +91,6 @@ public class ZipUnixPackage
     // UnixPackage Implementation
     // -----------------------------------------------------------------------
 
-    public ZipUnixPackage workingDirectory( LocalFs workingDirectory )
-    {
-        return this;
-    }
-
     public void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException
     {

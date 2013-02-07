@@ -49,8 +49,6 @@ public class DebUnixPackage
 {
     private ControlFile controlFile;
 
-    private LocalFs workingDirectory;
-
     private FsFileCollector fileCollector;
 
     private boolean useFakeroot;
@@ -97,12 +95,6 @@ public class DebUnixPackage
             provides( provides ).
             replaces( replaces );
 
-        return this;
-    }
-
-    public DebUnixPackage workingDirectory( LocalFs workingDirectory )
-    {
-        this.workingDirectory = workingDirectory;
         return this;
     }
 

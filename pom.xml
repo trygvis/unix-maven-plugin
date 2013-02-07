@@ -31,13 +31,13 @@
   </parent>
   <groupId>no.arktekk.unix</groupId>
   <artifactId>unix</artifactId>
-  <version>1.0-alpha-7-SNAPSHOT</version>
+  <version>feature-no-commons-vfs-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Maven Unix Support</name>
   <inceptionYear>2008</inceptionYear>
   <description>Supporting tools for writing software for the UNIX platform</description>
   <properties>
-    <functionaljava.version>3.0</functionaljava.version>
+    <version.functionaljava>3.0</version.functionaljava>
     <version.maven-apis>3.0</version.maven-apis>
     <version.maven-compiler-plugin>2.3.1</version.maven-compiler-plugin>
     <version.maven-dependency-plugin>2.5</version.maven-dependency-plugin>
@@ -103,7 +103,7 @@
       <dependency>
         <groupId>org.functionaljava</groupId>
         <artifactId>functionaljava</artifactId>
-        <version>${functionaljava.version}</version>
+        <version>${version.functionaljava}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -229,7 +229,7 @@
             <link>http://java.sun.com/j2ee/1.4/docs/api</link>
             <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
             <link>http://junit.sourceforge.net/javadoc/</link>
-            <link>http://functionaljava.googlecode.com/svn/artifacts/${functionaljava.version}/javadoc</link>
+            <link>http://functionaljava.googlecode.com/svn/artifacts/${version.functionaljava}/javadoc</link>
           </links>
           <source>1.5</source>
         </configuration>

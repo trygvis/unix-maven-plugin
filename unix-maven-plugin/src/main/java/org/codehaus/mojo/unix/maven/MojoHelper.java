@@ -135,6 +135,7 @@ public abstract class MojoHelper
                 UnixPackage unixPackage = format.start().
                     parameters( parameters ).
                     setVersion( version ).                      // TODO: This should go away
+                    workingDirectory( packageRoot ).
                     debug( debug ).
                     basedir( project.basedir );
 

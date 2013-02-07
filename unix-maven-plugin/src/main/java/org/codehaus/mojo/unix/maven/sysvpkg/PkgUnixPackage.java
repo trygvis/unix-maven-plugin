@@ -54,7 +54,6 @@ import java.util.*;
 public class PkgUnixPackage
     extends UnixPackage
 {
-    private LocalFs workingDirectory;
     private LocalFs prototype;
     private LocalFs pkginfo;
     private boolean debug;
@@ -99,12 +98,6 @@ public class PkgUnixPackage
     // -----------------------------------------------------------------------
     // Common Settings
     // -----------------------------------------------------------------------
-
-    public UnixPackage workingDirectory( LocalFs workingDirectory )
-    {
-        this.workingDirectory = workingDirectory;
-        return this;
-    }
 
     public UnixPackage debug( boolean debug )
     {

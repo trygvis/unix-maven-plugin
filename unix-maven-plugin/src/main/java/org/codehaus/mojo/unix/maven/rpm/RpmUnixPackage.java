@@ -50,8 +50,6 @@ public class RpmUnixPackage
 
     private FsFileCollector fileCollector;
 
-    private LocalFs workingDirectory;
-
     private String rpmbuildPath;
 
     private boolean debug;
@@ -87,12 +85,6 @@ public class RpmUnixPackage
     public UnixPackage group( String group )
     {
         specFile.group = group;
-        return this;
-    }
-
-    public UnixPackage workingDirectory( LocalFs workingDirectory )
-    {
-        this.workingDirectory = workingDirectory;
         return this;
     }
 

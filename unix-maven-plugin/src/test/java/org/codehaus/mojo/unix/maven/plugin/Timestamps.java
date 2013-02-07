@@ -37,12 +37,12 @@ public class Timestamps
 
                 if ( !ft.file.canRead() )
                 {
-                    throw new IOException( "No such file: " + ft.file );
+                    throw new IOException( "No such file: " + ft.file.getAbsolutePath() );
                 }
 
                 if ( !ft.file.setLastModified( ft.timestamp.toDateTime().getMillis() ) )
                 {
-                    throw new IOException( "Unable to set ft." );
+                    throw new IOException( "Unable to set last modified on file: " + ft.file.getAbsolutePath() );
                 }
             }
 
@@ -56,15 +56,32 @@ public class Timestamps
         extends Common
     {
         public final FileTimestamp configProperties =
-            ft( new File( basedir, "src/main/unix/files/opt/hudson/etc/config.properties" ), 2012, 1, 2, 3, 4, 6 );
+            ft( "src/main/unix/files/opt/hudson/etc/config.properties", 2012, 1, 2, 3, 4, 6 );
     }
 
     public final Zip1 zip1;
 
+    class Zip3
+        extends Common
+    {
+        public final FileTimestamp readme_default =
+            ft( "src/main/unix/files-default/usr/share/hudson/server/README.txt", 2011, 9, 23, 17, 30, 8 );
+
+        public final FileTimestamp readme_slave =
+            ft( "src/main/unix/files-slave/usr/share/hudson/slave/README.txt", 2011, 9, 23, 17, 30, 8 );
+
+        public final FileTimestamp licenseDownstream =
+            ft( "src/main/unix/files/usr/share/hudson/LICENSE-downstream.txt", 2011, 9, 23, 17, 30, 8 );
+    }
+
+    public final Zip3 zip3;
+
     public Timestamps( File basedir )
     {
         this.basedir = basedir;
+        // These constructors depend on basedir being set.
         zip1 = new Zip1();
+        zip3 = new Zip3();
     }
 
     public class FileTimestamp
@@ -80,8 +97,8 @@ public class Timestamps
         }
     }
 
-    public FileTimestamp ft( File file, int y, int m, int d, int h, int min, int s )
+    public FileTimestamp ft( String path, int y, int m, int d, int h, int min, int s )
     {
-        return new FileTimestamp( file, new LocalDateTime( y, m, d, h, min, s ) );
+        return new FileTimestamp( new File( basedir, path ), new LocalDateTime( y, m, d, h, min, s ) );
     }
 }
