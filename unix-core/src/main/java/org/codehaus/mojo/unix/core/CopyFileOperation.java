@@ -24,12 +24,14 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
+
+import static org.codehaus.mojo.unix.UnixFsObject.regularFile;
 import static org.codehaus.mojo.unix.util.Validate.*;
 import org.codehaus.mojo.unix.util.line.*;
-import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
+import org.joda.time.LocalDateTime;
 
 import java.io.*;
 
@@ -41,11 +43,11 @@ public class CopyFileOperation
 {
     private final FileAttributes attributes;
 
-    private final FileObject fromFile;
+    private final Fs<?> fromFile;
 
     private final RelativePath toFile;
 
-    public CopyFileOperation( FileAttributes attributes, FileObject fromFile, RelativePath toFile )
+    public CopyFileOperation( FileAttributes attributes, Fs<?> fromFile, RelativePath toFile )
     {
         validateNotNull( attributes, fromFile, toFile );
 
@@ -57,13 +59,15 @@ public class CopyFileOperation
     public void perform( FileCollector fileCollector )
         throws IOException
     {
-        fileCollector.addFile( fromFile, AssemblyOperationUtil.fromFileObject( toFile, fromFile, attributes ) );
+        fileCollector.addFile( fromFile,
+                               regularFile( toFile, new LocalDateTime( fromFile.lastModified() ), fromFile.size(),
+                                            attributes ) );
     }
 
     public void streamTo( LineStreamWriter streamWriter )
     {
         streamWriter.add( "Copy file" ).
-            add( " From: " + asFile( fromFile ).getAbsolutePath() ).
+            add( " From: " + fromFile.absolutePath() ).
             add( " To: " + toFile ).
             add( " Attributes: " + attributes );
     }

@@ -26,7 +26,6 @@ package org.codehaus.mojo.unix.core;
 
 import fj.data.*;
 import static fj.data.List.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
@@ -39,30 +38,30 @@ import org.joda.time.*;
  */
 public class AssemblyOperationUtil
 {
-    private static final List<Replacer> filters = nil();
-
-    public static RegularFile fromFileObject( RelativePath toFile, FileObject fromFile, FileAttributes attributes )
-        throws FileSystemException
-    {
-        FileContent content = fromFile.getContent();
-
-        return regularFile( toFile, new LocalDateTime( content.getLastModifiedTime() ), content.getSize(), attributes,
-                            filters );
-    }
-
-    public static Directory dirFromFileObject( RelativePath toFile, FileObject fromFile, FileAttributes attributes )
-        throws FileSystemException
-    {
-        if ( !fromFile.getType().equals( FileType.FOLDER ) )
-        {
-            throw new FileSystemException( "Not a directory: " + fromFile.getName().getPath() + ", was: " +
-                                               fromFile.getType() );
-        }
-
-        FileContent content = fromFile.getContent();
-
-        return UnixFsObject.directory( toFile, new LocalDateTime( content.getLastModifiedTime() ), attributes );
-    }
+//    private static final List<Replacer> filters = nil();
+//
+//    public static RegularFile fromFileObject( RelativePath toFile, FileObject fromFile, FileAttributes attributes )
+//        throws FileSystemException
+//    {
+//        FileContent content = fromFile.getContent();
+//
+//        return regularFile( toFile, new LocalDateTime( content.getLastModifiedTime() ), content.getSize(), attributes,
+//                            filters );
+//    }
+//
+//    public static Directory dirFromFileObject( RelativePath toFile, FileObject fromFile, FileAttributes attributes )
+//        throws FileSystemException
+//    {
+//        if ( !fromFile.getType().equals( FileType.FOLDER ) )
+//        {
+//            throw new FileSystemException( "Not a directory: " + fromFile.getName().getPath() + ", was: " +
+//                                               fromFile.getType() );
+//        }
+//
+//        FileContent content = fromFile.getContent();
+//
+//        return UnixFsObject.directory( toFile, new LocalDateTime( content.getLastModifiedTime() ), attributes );
+//    }
 
     public static void streamIncludesAndExcludes( LineStreamWriter streamWriter, List<String> includes,
                                                   List<String> excludes )

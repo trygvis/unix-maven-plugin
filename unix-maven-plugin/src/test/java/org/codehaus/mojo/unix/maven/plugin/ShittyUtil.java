@@ -32,6 +32,7 @@ import groovy.lang.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.UnixFsObject.Symlink;
 import org.codehaus.mojo.unix.deb.*;
 import org.codehaus.mojo.unix.rpm.*;
 import org.codehaus.mojo.unix.sysvpkg.*;
@@ -53,8 +54,6 @@ public class ShittyUtil
 {
     public static final LocalDateTime START_OF_TIME = PrototypeFile.START_OF_TIME;
 
-    public static final LocalDateTime hudsonWarTimestamp = new LocalDateTime(2010, 9, 30, 10, 12, 56);
-
     public static final OutputStreamWriter out = new OutputStreamWriter( System.out );
 
     public static final LineWriterWriter stream = new LineWriterWriter( out );
@@ -69,23 +68,21 @@ public class ShittyUtil
     // -----------------------------------------------------------------------
 
     public static File findArtifact( String groupId, String artifactId, String version, String type )
-        throws IOException
     {
         return findArtifact( groupId, artifactId, version, type, null );
     }
 
     public static File findArtifact( String groupId, String artifactId, String version, String type, String classifier )
-        throws IOException
     {
         File m2Repository = new File( System.getProperty( "user.home" ), ".m2/repository" );
 
         // TODO: This can be improved
         if ( !m2Repository.isDirectory() )
         {
-            throw new IOException( "Unable to find local repository: " + m2Repository.getAbsolutePath() );
+            throw new RuntimeException( "Unable to find local repository: " + m2Repository.getAbsolutePath() );
         }
 
-        String base = groupId.replace( '/', '.' ) + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version;
+        String base = groupId.replace( '.', '/' ) + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version;
 
         if ( classifier != null )
         {
@@ -349,10 +346,49 @@ public class ShittyUtil
     {
         public Boolean f( UnixFsObject expected, UnixFsObject actual )
         {
-            return expected.path.equals( actual.path ) &&
-                ( expected.size == 0 || expected.size == actual.size ) &&
-                ( expected.lastModified == null || expected.lastModified.equals( START_OF_TIME )
-                    || expected.lastModified.equals( actual.lastModified ) );
+            boolean type = expected.getClass().equals( actual.getClass() );
+            boolean path = expected.path.equals( actual.path );
+            boolean size = expected.size == 0 || expected.size == actual.size;
+            boolean lastModified = expected.lastModified == null ||
+                expected.lastModified.equals( START_OF_TIME ) ||
+                expected.lastModified.equals( actual.lastModified );
+
+            /*
+            System.out.println( "--------------------" );
+            System.out.println( "expected.class = " + expected.getClass() );
+            System.out.println( "expected.path = " + expected.path );
+            System.out.println( "type = " + type );
+            System.out.println( "path = " + path );
+            System.out.println( "size = " + size );
+            System.out.println( "lastModified = " + lastModified );
+            */
+
+            if ( actual.getClass() == Directory.class )
+            {
+                return type && path && lastModified;
+            }
+            else if ( actual.getClass() == RegularFile.class )
+            {
+                return type && path && size && lastModified;
+            }
+            else if ( actual.getClass() == Symlink.class )
+            {
+                if ( !type )
+                {
+                    return false;
+                }
+
+                Symlink e = (Symlink) expected;
+                Symlink a = (Symlink) actual;
+                boolean value = e.value.equals( a.value );
+                /*
+                System.out.println( "value = " + value );
+                */
+
+                return path && size && lastModified && value;
+            }
+
+            throw new RuntimeException( "Unknown object type: " + actual.getClass() );
         }
     }
 

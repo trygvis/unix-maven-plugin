@@ -63,6 +63,7 @@ public class DebMojoUtil
             debParameters( fromNull( deb.priority.orSome( "standard" ) ),
                            fromNull( deb.section.some() ),
                            deb.useFakeroot,
+                           deb.dpkgDeb,
                            deb.depends.map( flip( StringF.split ).f( "," ) ).orSome( List.<String>nil() ),
                            deb.recommends.map( flip( StringF.split ).f( "," ) ).orSome( List.<String>nil() ),
                            deb.suggests.map( flip( StringF.split ).f( "," ) ).orSome( List.<String>nil() ),
@@ -70,24 +71,4 @@ public class DebMojoUtil
                            deb.provides.map( flip( StringF.split ).f( "," ) ).orSome( List.<String>nil() ),
                            deb.replaces.map( flip( StringF.split ).f( "," ) ).orSome( List.<String>nil() ) );
     }
-
-//    public static final F<String, Option<P2<String, String>>> unfolder = new F<String, Option<P2<String, String>>>()
-//    {
-//        public Option<P2<String, String>> f( String s )
-//        {
-//            int index = s.indexOf( ',' );
-//
-//            if ( s.length() == 0 || index == s.length() )
-//            {
-//                return Option.none();
-//            }
-//
-//            if ( index == -1 )
-//            {
-//                return some( p( s.trim(), "" ) );
-//            }
-//
-//            return some( p( s.substring( 0, index ).trim(), s.substring( index + 1 ) ) );
-//        }
-//    };
 }

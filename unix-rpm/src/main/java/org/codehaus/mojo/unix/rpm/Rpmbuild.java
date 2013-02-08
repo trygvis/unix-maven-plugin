@@ -24,11 +24,12 @@ package org.codehaus.mojo.unix.rpm;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.plexus.util.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -41,7 +42,7 @@ public class Rpmbuild
 
     private File specFile;
 
-    private String rpmbuildPath = "rpmbuild";
+    private Option<String> rpmbuild = Option.none();
 
     private List<String> defines = new LinkedList<String>();
 
@@ -64,9 +65,9 @@ public class Rpmbuild
         return this;
     }
 
-    public Rpmbuild setRpmbuildPath( String rpmbuildPath )
+    public Rpmbuild setRpmbuild( Option<String> rpmbuild )
     {
-        this.rpmbuildPath = StringUtils.defaultString( rpmbuildPath, this.rpmbuildPath );
+        this.rpmbuild = rpmbuild;
         return this;
     }
 
@@ -92,7 +93,7 @@ public class Rpmbuild
             dumpCommandIf( debug ).
             withStderrConsumer( out ).
             withStdoutConsumer( out ).
-            setCommand( rpmbuildPath ).
+            setCommand( rpmbuild() ).
             addArgument( "-bb" ).
             addArgument( "--buildroot" ).
             addArgument( buildroot.getAbsolutePath() ).
@@ -124,8 +125,13 @@ public class Rpmbuild
             assertSuccess();
     }
 
-    public static boolean available()
+    public boolean available()
     {
-        return SystemCommand.available( "rpmbuild" );
+        return SystemCommand.available( rpmbuild() );
+    }
+
+    private String rpmbuild()
+    {
+        return rpmbuild.orSome( "rpmbuild" );
     }
 }

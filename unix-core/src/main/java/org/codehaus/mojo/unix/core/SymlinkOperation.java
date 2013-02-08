@@ -24,6 +24,7 @@ package org.codehaus.mojo.unix.core;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.util.*;
@@ -43,20 +44,23 @@ public class SymlinkOperation
 
     private final String target;
 
-    private final FileAttributes attributes;
+    private final Option<String> user;
 
-    public SymlinkOperation( RelativePath path, String target, FileAttributes attributes )
+    private final Option<String> group;
+
+    public SymlinkOperation( RelativePath path, String target, Option<String> user, Option<String> group )
     {
-        validateNotNull( path, target, attributes );
+        validateNotNull( path, target, user, group );
         this.path = path;
         this.target = target;
-        this.attributes = attributes;
+        this.user = user;
+        this.group = group;
     }
 
     public void perform( FileCollector fileCollector )
         throws IOException
     {
-        fileCollector.addSymlink( symlink( path, new LocalDateTime(), attributes, target ) );
+        fileCollector.addSymlink( symlink( path, new LocalDateTime(), user, group, target ) );
     }
 
     public void streamTo( LineStreamWriter streamWriter )
@@ -64,6 +68,7 @@ public class SymlinkOperation
         streamWriter.add( "Symlink:" ).
             add( " Path: " + path ).
             add( " Target: " + target ).
-            add( " Attributes: " + attributes );
+            add( " User: " + user ).
+            add( " Group: " + group );
     }
 }

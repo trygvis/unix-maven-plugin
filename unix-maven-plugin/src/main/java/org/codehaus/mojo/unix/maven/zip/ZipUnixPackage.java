@@ -26,23 +26,24 @@ package org.codehaus.mojo.unix.maven.zip;
 
 import fj.*;
 import static fj.Function.*;
-import static fj.Show.*;
 import fj.data.*;
-import org.apache.commons.vfs.*;
+import fj.data.List;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.BasicPackageFileSystemObject.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
-import static org.codehaus.mojo.unix.UnixFsObject.Replacer.*;
 import org.codehaus.mojo.unix.io.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.util.*;
+
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.plexus.util.*;
 import org.joda.time.*;
 
 import java.io.*;
+import java.util.*;
 import java.util.zip.*;
 
 public class ZipUnixPackage
@@ -70,7 +71,7 @@ public class ZipUnixPackage
         fileSystem = fileSystem.addDirectory( directory( directory ) );
     }
 
-    public void addFile( FileObject fromFile, RegularFile file )
+    public void addFile( Fs<?> fromFile, RegularFile file )
         throws IOException
     {
         fileSystem = fileSystem.addFile( file( fromFile, file ) );
@@ -89,12 +90,6 @@ public class ZipUnixPackage
     // -----------------------------------------------------------------------
     // UnixPackage Implementation
     // -----------------------------------------------------------------------
-
-    public ZipUnixPackage workingDirectory( FileObject workingDirectory )
-        throws FileSystemException
-    {
-        return this;
-    }
 
     public void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException
@@ -170,7 +165,7 @@ public class ZipUnixPackage
         return basicPackageFSO( directory, f );
     }
 
-    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> file( final FileObject fromFile,
+    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> file( final Fs<?> fromFile,
                                                                                             UnixFsObject file )
     {
         F2<UnixFsObject, ZipOutputStream, IoEffect> f = new F2<UnixFsObject, ZipOutputStream, IoEffect>()
@@ -190,37 +185,57 @@ public class ZipUnixPackage
 
                             long size;
 
-                            inputStream = fromFile.getContent().getInputStream();
+                            inputStream = fromFile.inputStream();
 
-                            if ( filters.isEmpty() )
+                            // With no filters *and* we're keeping the line endings we can stream the file directly. Like a BOSS!
+                            if ( filters.isEmpty() && file.lineEnding.isKeep() )
                             {
                                 size = file.size;
                             }
                             else
                             {
+                                // We have to buffer the file in memory. It might be a good idea to check if the file
+                                // is big (> 10MB) and copy it to disk. It might be smart to print a warning if that
+                                // happens as the user probably has a weird configuration.
+
+                                byte[] eol;
+                                if ( file.lineEnding.isKeep() )
+                                {
+                                    Map.Entry<InputStream, LineEnding> x = LineEnding.detect( inputStream );
+                                    inputStream = x.getKey();
+                                    eol = x.getValue().eol();
+                                }
+                                else
+                                {
+                                    eol = file.lineEnding.eol();
+                                }
+
                                 // TODO: Ideally create an output stream that doesn't create a new array on
                                 // toByteArray, but instead can be used as an InputStream directly.
-                                // TODO: This is going to add additional LF/CRLF at the end of the file. Fuck it.
+                                // TODO: This is going to add additional EOL at the end of the file. Fuck it.
                                 ByteArrayOutputStream output = new ByteArrayOutputStream( (int) file.size );
-                                PrintWriter writer = new PrintWriter( output );
 
-                                // This implicitly uses the platform encoding. Not smart.
+                                // This implicitly uses the platform encoding. This will probably bite someone.
                                 reader = new BufferedReader( new InputStreamReader( inputStream ), 1024 * 128 );
 
                                 String line = reader.readLine();
 
                                 while ( line != null )
                                 {
-                                    for ( Replacer filter : filters )
+                                    if ( filters.isNotEmpty() )
                                     {
-                                        line = filter.replace( line );
+                                        for ( Replacer filter : filters )
+                                        {
+                                            line = filter.replace( line );
+                                        }
                                     }
-                                    writer.println( line );
+
+                                    output.write( line.getBytes() );
+                                    output.write( eol );
 
                                     line = reader.readLine();
                                 }
                                 inputStream.close();
-                                writer.flush();
 
                                 inputStream = new ByteArrayInputStream( output.toByteArray() );
                                 size = output.size();

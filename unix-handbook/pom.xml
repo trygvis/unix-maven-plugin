@@ -27,10 +27,11 @@
   <parent>
     <groupId>no.arktekk.unix</groupId>
     <artifactId>unix</artifactId>
-    <version>1.0-alpha-7-SNAPSHOT</version>
+    <version>feature-no-commons-vfs-SNAPSHOT</version>
   </parent>
   <artifactId>unix-handbook</artifactId>
   <name>Unix Maven Plugin Handbook</name>
+  <packaging>zip</packaging>
   <build>
     <plugins>
       <plugin>
@@ -181,24 +182,6 @@
         </dependencies>
       </plugin>
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.3</version>
-        <executions>
-          <execution>
-            <id>zip-chunked-html-handbook</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>src/main/assembly/zip-html-chunked.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <version>1.7</version>
@@ -224,6 +207,28 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>no.arktekk.unix</groupId>
+        <artifactId>unix-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <assembly>
+            <copyDirectory>
+              <from>target/site/handbook</from>
+              <to>handbook</to>
+            </copyDirectory>
+            <copyFile>
+              <path>target/site/handbook.html</path>
+              <toFile>handbook.html</toFile>
+            </copyFile>
+            <copyFile>
+              <path>target/site/handbook.html</path>
+              <toFile>handbook.pdf</toFile>
+            </copyFile>
+          </assembly>
+        </configuration>
       </plugin>
     </plugins>
   </build>

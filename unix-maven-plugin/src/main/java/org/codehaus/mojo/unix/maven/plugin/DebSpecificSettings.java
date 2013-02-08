@@ -51,6 +51,8 @@ public class DebSpecificSettings
 
     public boolean useFakeroot = true;
 
+    public Option<String> dpkgDeb = none();
+
     public void setPriority( String priority )
     {
         this.priority = fromNull( priority );
@@ -94,5 +96,10 @@ public class DebSpecificSettings
     public void setUseFakeroot( boolean useFakeroot )
     {
         this.useFakeroot = useFakeroot;
+    }
+
+    public void setDpkgDeb( String dpkgDeb )
+    {
+        this.dpkgDeb = fromNull( dpkgDeb );
     }
 }

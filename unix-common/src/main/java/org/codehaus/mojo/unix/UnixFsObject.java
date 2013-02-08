@@ -28,7 +28,10 @@ import fj.*;
 import static fj.Function.*;
 import static fj.P.*;
 import fj.data.*;
+import org.codehaus.mojo.unix.io.*;
 import org.codehaus.mojo.unix.util.*;
+
+import static fj.data.Option.some;
 import static org.codehaus.mojo.unix.util.Validate.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.plexus.util.*;
@@ -48,9 +51,14 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     public final long size;
     public final FileAttributes attributes;
     public final List<Replacer> filters;
+    public final LineEnding lineEnding;
 
     private static final DateTimeFormatter FORMAT = new DateTimeFormatterBuilder().
         appendMonthOfYearShortText().
+        appendLiteral( ' ' ).
+        appendDayOfMonth( 2 ).
+        appendLiteral( ' ' ).
+        appendYear( 4, 4 ).
         appendLiteral( ' ' ).
         appendHourOfDay( 2 ).
         appendLiteral( ':' ).
@@ -62,13 +70,16 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     /**
      * Consider creating a more unix-like variant that 1) doesn't include seconds and
      * 2) shortens the date if the file is over 1 year old.
+     *
+     * Very old file: drwxr-xr-x   3 root     sys            3 Dec 17  2008 export
+     * Recent file:   -rwxr-----   1 efa      efa         9480 Sep 20 11:45 operate.sh
      */
     public static final F<LocalDateTime, String> formatter = curry( UnixUtil.formatLocalDateTime, FORMAT );
 
-    private char prefixChar;
+    private final char prefixChar;
 
     protected UnixFsObject( char prefixChar, RelativePath path, LocalDateTime lastModified, long size,
-                            FileAttributes attributes, List<Replacer> filters )
+                            FileAttributes attributes, List<Replacer> filters, LineEnding lineEnding )
     {
         validateNotNull( path, lastModified, attributes, filters );
 
@@ -78,16 +89,17 @@ public abstract class UnixFsObject<A extends UnixFsObject>
         this.size = size;
         this.attributes = attributes;
         this.filters = filters;
+        this.lineEnding = lineEnding;
     }
 
     public final A setPath( RelativePath path )
     {
-        return copy( path, lastModified, size, attributes, filters );
+        return copy( path, lastModified, size, attributes, filters, lineEnding );
     }
 
     public final A setLastModified( LocalDateTime lastModified )
     {
-        return copy( path, lastModified, size, attributes, filters );
+        return copy( path, lastModified, size, attributes, filters, lineEnding );
     }
 
     public FileAttributes getFileAttributes()
@@ -98,15 +110,16 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     public final A setFileAttributes( FileAttributes attributes )
     {
         Validate.validateNotNull( attributes );
-        return copy( path, lastModified, size, attributes, filters );
+        return copy( path, lastModified, size, attributes, filters, lineEnding );
     }
 
-    public final A withReplacers( List<Replacer> replacers )
+    public final A addReplacers( List<Replacer> replacers, LineEnding lineEnding )
     {
-        return copy( path, lastModified, size, attributes, replacers );
+        return copy( path, lastModified, size, attributes, replacers.append( replacers ), lineEnding );
     }
 
-    protected abstract A copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes, List<Replacer> filters );
+    protected abstract A copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes,
+                               List<Replacer> filters, LineEnding lineEnding );
 
     // -----------------------------------------------------------------------
     // Static
@@ -115,24 +128,24 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     public static RegularFile regularFile( RelativePath path, LocalDateTime lastModified, long size,
                                            FileAttributes attributes )
     {
-        return new RegularFile( path, lastModified, size, attributes, List.<Replacer>nil() );
+        return new RegularFile( path, lastModified, size, attributes, List.<Replacer>nil(), LineEnding.keep );
     }
 
     public static RegularFile regularFile( RelativePath path, LocalDateTime lastModified, long size,
-                                           FileAttributes attributes, List<Replacer> filters )
+                                           FileAttributes attributes, List<Replacer> filters, LineEnding lineEnding )
     {
-        return new RegularFile( path, lastModified, size, attributes, filters );
+        return new RegularFile( path, lastModified, size, attributes, filters, lineEnding );
     }
 
     public static Directory directory( RelativePath path, LocalDateTime lastModified, FileAttributes attributes )
     {
-        return new Directory( path, lastModified, attributes, List.<Replacer>nil() );
+        return new Directory( path, lastModified, attributes );
     }
 
-    public static Symlink symlink( RelativePath path, LocalDateTime lastModified, FileAttributes attributes,
-                                   String target )
+    public static Symlink symlink( RelativePath path, LocalDateTime lastModified, Option<String> user,
+                                   Option<String> group, String target )
     {
-        return new Symlink( path, lastModified, attributes, target, List.<Replacer>nil() );
+        return new Symlink( path, lastModified, user, group, target );
     }
 
     // -----------------------------------------------------------------------
@@ -193,28 +206,31 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     public static class RegularFile
         extends UnixFsObject<RegularFile>
     {
-        private RegularFile( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes, List<Replacer> filters )
+        private RegularFile( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes,
+                             List<Replacer> filters, LineEnding lineEnding )
         {
-            super( '-', path, lastModified, size, attributes, filters );
+            super( '-', path, lastModified, size, attributes, filters, lineEnding );
         }
 
-        protected RegularFile copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes, List<Replacer> filters )
+        protected RegularFile copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes,
+                                    List<Replacer> filters, LineEnding lineEnding )
         {
-            return new RegularFile( path, lastModified, size, attributes, filters );
+            return new RegularFile( path, lastModified, size, attributes, filters, lineEnding );
         }
     }
 
     public static class Directory
         extends UnixFsObject<Directory>
     {
-        private Directory( RelativePath path, LocalDateTime lastModified, FileAttributes attributes, List<Replacer> filters )
+        private Directory( RelativePath path, LocalDateTime lastModified, FileAttributes attributes )
         {
-            super( 'd', path, lastModified, 0, attributes, filters );
+            super( 'd', path, lastModified, 0, attributes, List.<Replacer>nil(), LineEnding.keep );
         }
 
-        protected Directory copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes, List<Replacer> filters )
+        protected Directory copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes,
+                                  List<Replacer> filters, LineEnding lineEnding )
         {
-            return new Directory( path, lastModified, attributes, filters );
+            return new Directory( path, lastModified, attributes );
         }
     }
 
@@ -223,25 +239,22 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     {
         public final String value;
 
-        private Symlink( RelativePath path, LocalDateTime lastModified, FileAttributes attributes, String value, List<Replacer> filters )
+        private Symlink( RelativePath path, LocalDateTime lastModified, Option<String> user, Option<String> group, String value )
         {
-            super( 'l', path, lastModified, sizeOfSymlink( value ), attributes, filters );
+            super( 'l', path, lastModified, value.length(), new FileAttributes( user, group, some( UnixFileMode._SYMLINK ) ), List.<Replacer>nil(), LineEnding.keep );
             validateNotNull( value );
 
             this.value = value;
         }
 
-        private static long sizeOfSymlink( String s )
+        protected Symlink copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes,
+                                List<Replacer> filters, LineEnding lineEnding )
         {
-            // This might not be good enough validation
-            int i = s.lastIndexOf( '/' );
-
-            return (i == -1) ? s.length() : s.length() - i - 1;
+            return new Symlink( path, lastModified, attributes.user, attributes.group, value );
         }
 
-        protected Symlink copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes, List<Replacer> filters )
-        {
-            return new Symlink( path, lastModified, attributes, value, filters );
+        public String toString() {
+            return super.toString() + " -> " + value;
         }
     }
 

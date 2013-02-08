@@ -25,16 +25,20 @@ package org.codehaus.mojo.unix.core;
  */
 
 import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.line.*;
 
 import java.io.*;
 
 /**
+ * TODO: Remove the LineProducer inheritance, replace with String debugString().
+ * Let the implementations use LineFile internally.
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public interface AssemblyOperation
+public interface AssemblyOperation<FsType extends Fs>
     extends LineProducer
 {
-    void perform(FileCollector fileCollector)
+    void perform(FileCollector<FsType> fileCollector)
         throws IOException;
 }

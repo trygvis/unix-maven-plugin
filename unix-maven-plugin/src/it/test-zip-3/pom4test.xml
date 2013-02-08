@@ -34,7 +34,7 @@
   <artifactId>project-zip-3</artifactId>
   <version>1.1-2</version>
   <packaging>unix-zip</packaging>
-  <name>Hudson Solaris Packages</name>
+  <name>Hudson Zip Package 3</name>
   <dependencies>
     <dependency>
       <groupId>org.jvnet.hudson.main</groupId>

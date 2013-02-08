@@ -61,6 +61,7 @@ public class ClassF
 
     public static final F2<java.lang.Class, java.lang.Class, Boolean> isAssignableFrom = new F2<java.lang.Class, java.lang.Class, Boolean>()
     {
+        @SuppressWarnings( "unchecked" )
         public Boolean f( java.lang.Class _this, java.lang.Class cls )
         {
             return _this.isAssignableFrom( cls );

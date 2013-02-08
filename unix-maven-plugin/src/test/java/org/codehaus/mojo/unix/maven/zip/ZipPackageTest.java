@@ -29,15 +29,15 @@ import fj.data.*;
 import static fj.data.List.*;
 import static java.util.regex.Pattern.*;
 import junit.framework.*;
-import org.apache.commons.vfs.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import static org.codehaus.mojo.unix.util.line.LineStreamWriter.EOL;
 
+import org.codehaus.mojo.unix.io.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.mojo.unix.util.line.LineStreamWriter;
 import org.joda.time.*;
 
 import java.io.*;
@@ -65,8 +65,6 @@ public class ZipPackageTest
     public void testBasic()
         throws Exception
     {
-        FileSystemManager fileSystemManager = VFS.getManager();
-
         File zip1 = testUtil.getTestFile( "src/test/resources/zip/zip-1" );
         File zip = testUtil.getTestFile( "target/zip/zip-1/test.zip" );
         if ( !zip.getParentFile().isDirectory() )
@@ -74,13 +72,13 @@ public class ZipPackageTest
             assertTrue( zip.getParentFile().mkdirs() );
         }
 
-        FileObject basedir = fileSystemManager.resolveFile( zip1.getAbsolutePath() );
+        LocalFs basedir = new LocalFs( zip1 );
 
         ZipUnixPackage zipPackage = new ZipUnixPackage();
 
         zipPackage.beforeAssembly( EMPTY, timestamp );
 
-        assertEquals( FileType.FOLDER, basedir.getType() );
+        assertTrue( basedir.isDirectory() );
 
         // Git set the timestamp of file objects
         assertTrue(new File(zip1, "dirs").setLastModified(dirsTimestamp.toDateTime().getMillis()));
@@ -97,10 +95,10 @@ public class ZipPackageTest
                                     Option.<P2<String, String>>none(), EMPTY, EMPTY ).
             perform( zipPackage );
 
-        new CopyFileOperation( EMPTY, basedir.resolveFile( "file/foo.txt" ), relativePath( "/file/foo.txt" ) ).
+        new CopyFileOperation( EMPTY, basedir.resolve( "file/foo.txt" ), relativePath( "/file/foo.txt" ) ).
             perform( zipPackage );
 
-        new FilterFilesOperation( single( "dirs/**" ), List.<String>nil(), single( replacer ) ).
+        new FilterFilesOperation( single( "dirs/**" ), List.<String>nil(), single( replacer ), LineEnding.unix ).
             perform( zipPackage );
 
         zipPackage.
@@ -110,7 +108,7 @@ public class ZipPackageTest
         ZipInputStream in = new ZipInputStream( fis );
         assertDirectory( in, "./dirs/", dirsTimestamp );
         // Is it really correct that filtered files should retain the old timestamp?
-        assertFile( in, "./dirs/bar.txt", 7 + EOL.length(), dirsBarTxtTimestamp, "awesome" + EOL );
+        assertFile( in, "./dirs/bar.txt", 8, dirsBarTxtTimestamp, "awesome\n" );
         assertDirectory( in, "./file/", fileTimestamp );
         assertFile( in, "./file/foo.txt", 6, fileFooTxtTimestamp, "@foo@\n" );
         assertDirectory( in, "./opt/", timestamp );

@@ -24,8 +24,8 @@ package org.codehaus.mojo.unix.deb;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.codehaus.mojo.unix.util.*;
-import org.codehaus.plexus.util.*;
 
 import java.io.*;
 
@@ -36,7 +36,7 @@ import java.io.*;
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public class Dpkg
+public class DpkgDeb
 {
     private boolean debug;
 
@@ -46,35 +46,35 @@ public class Dpkg
 
     private boolean useFakeroot;
 
-    private String dpkgDebPath = "dpkg-deb";
+    private Option<String> dpkgDeb = Option.none();
 
-    public Dpkg setDebug( boolean debug )
+    public DpkgDeb setDebug( boolean debug )
     {
         this.debug = debug;
         return this;
     }
 
-    public Dpkg setPackageRoot( File packageRoot )
+    public DpkgDeb setPackageRoot( File packageRoot )
     {
         this.packageRoot = packageRoot;
         return this;
     }
 
-    public Dpkg setDebFile( File debFile )
+    public DpkgDeb setDebFile( File debFile )
     {
         this.debFile = debFile;
         return this;
     }
 
-    public Dpkg setUseFakeroot( boolean useFakeroot )
+    public DpkgDeb setUseFakeroot( boolean useFakeroot )
     {
         this.useFakeroot = useFakeroot;
         return this;
     }
 
-    public Dpkg setDpkgDebPath( String dpkgDebPath )
+    public DpkgDeb setDpkgDeb( Option<String> dpkgDeb )
     {
-        this.dpkgDebPath = StringUtils.defaultString( dpkgDebPath, this.dpkgDebPath );
+        this.dpkgDeb = dpkgDeb;
         return this;
     }
 
@@ -92,11 +92,11 @@ public class Dpkg
         }
 
         new SystemCommand().
-            setCommand( useFakeroot ? "fakeroot" : dpkgDebPath ).
+            setCommand( useFakeroot ? "fakeroot" : dpkgDeb() ).
             dumpCommandIf( debug ).
             withIgnoringStderrUnless( debug ).
             withIgnoringStdoutUnless( debug ).
-            addArgumentIf( useFakeroot, dpkgDebPath ).
+            addArgumentIf( useFakeroot, dpkgDeb() ).
             addArgument( "-b" ).
             addArgument( packageRoot.getAbsolutePath() ).
             addArgument( debFile.getAbsolutePath() ).
@@ -104,8 +104,13 @@ public class Dpkg
             assertSuccess();
     }
 
-    public static boolean available()
+    public boolean available()
     {
-        return SystemCommand.available( "dpkg" );
+        return SystemCommand.available( dpkgDeb() );
+    }
+
+    private String dpkgDeb()
+    {
+        return dpkgDeb.orSome( "dpkg-deb" );
     }
 }

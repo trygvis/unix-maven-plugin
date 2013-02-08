@@ -38,7 +38,6 @@ import fj.data.Set;
 import static fj.data.Set.*;
 import static java.lang.String.*;
 import org.apache.commons.logging.*;
-import org.apache.commons.vfs.*;
 import org.apache.maven.artifact.*;
 import org.apache.maven.plugin.*;
 import org.apache.maven.plugin.logging.Log;
@@ -46,6 +45,7 @@ import org.apache.maven.project.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.java.StringF.*;
 import org.codehaus.mojo.unix.maven.logging.*;
@@ -110,18 +110,7 @@ public abstract class MojoHelper
         utcDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
         String timestamp = utcDateFormatter.format( new Date() );
 
-        FileObject buildDirectory;
-
-        try
-        {
-            FileSystemManager fileSystemManager = VFS.getManager();
-
-            buildDirectory = fileSystemManager.resolveFile( project.buildDirectory.getAbsolutePath() );
-        }
-        catch ( FileSystemException e )
-        {
-            throw new MojoExecutionException( "Error while initializing Commons VFS", e );
-        }
+        LocalFs buildDirectory = new LocalFs( project.buildDirectory );
 
         PackageVersion version = PackageVersion.packageVersion( project.version, timestamp,
                                                                 project.artifact.isSnapshot(), mojoParameters.revision );
@@ -134,8 +123,8 @@ public abstract class MojoHelper
             {
                 String name = "unix/root-" + formatType + pakke.classifier.map( dashString ).orSome( "" );
 
-                FileObject packageRoot = buildDirectory.resolveFile( name );
-                packageRoot.createFolder();
+                LocalFs packageRoot = buildDirectory.resolve( name );
+                packageRoot.mkdir();
 
                 PackageParameters parameters = calculatePackageParameters( project,
                                                                            version,
@@ -406,13 +395,13 @@ public abstract class MojoHelper
             useAsDefaultsFor( pakke );
     }
 
-    public static List<AssemblyOperation> createAssemblyOperations( MavenProjectWrapper project,
-                                                                    PackageParameters parameters,
-                                                                    UnixPackage unixPackage,
-                                                                    File basedir,
-                                                                    FileObject buildDirectory,
-                                                                    List<AssemblyOp> mojoAssembly,
-                                                                    List<AssemblyOp> packageAssembly )
+    public static List<AssemblyOperation> createAssemblyOperations(MavenProjectWrapper project,
+                                                                   PackageParameters parameters,
+                                                                   UnixPackage unixPackage,
+                                                                   File basedir,
+                                                                   LocalFs buildDirectory,
+                                                                   List<AssemblyOp> mojoAssembly,
+                                                                   List<AssemblyOp> packageAssembly)
         throws IOException, MojoFailureException, UnknownArtifactException
     {
         unixPackage.beforeAssembly( parameters.defaultDirectoryAttributes, project.timestamp );

@@ -26,6 +26,11 @@ package org.codehaus.mojo.unix.util;
 
 import fj.*;
 import fj.data.*;
+import fj.data.List;
+
+import java.io.File;
+import java.util.*;
+
 import static fj.data.List.*;
 import static fj.data.Option.*;
 
@@ -36,6 +41,18 @@ public class RelativePath
     implements Comparable<RelativePath>
 {
     public final String string;
+
+    private static final char PATH_SEPARATOR;
+
+    static
+    {
+        String s = System.getProperty( "file.separator" );
+        if ( s.length() != 1 )
+        {
+            throw new RuntimeException( "Unsupported platform, file.separator has to be exactly one character long" );
+        }
+        PATH_SEPARATOR = s.charAt( 0 );
+    }
 
     public final static RelativePath BASE = new RelativePath( "." )
     {
@@ -49,6 +66,16 @@ public class RelativePath
             }
 
             return new RelativePath( cleaned );
+        }
+
+        public RelativePath add( RelativePath relativePath )
+        {
+            return relativePath;
+        }
+
+        public RelativePath parent()
+        {
+            throw new IllegalStateException( "parent() on BASE" );
         }
 
         public boolean isBelowOrSame( RelativePath other )
@@ -100,12 +127,25 @@ public class RelativePath
         }
     } );
 
+    public static final Comparator<RelativePath> comparator = new Comparator<RelativePath>()
+    {
+        public int compare( RelativePath a, RelativePath b )
+        {
+            return a.string.compareTo( b.string );
+        }
+    };
+
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
     private RelativePath( String string )
     {
+        if ( string.contains( "\\" ) )
+        {
+            throw new IllegalStateException( "A relative path can't contain '\\'." );
+        }
+
         this.string = string;
     }
 
@@ -119,6 +159,23 @@ public class RelativePath
         }
 
         return new RelativePath( this.string + "/" + string );
+    }
+
+    public RelativePath add( RelativePath relativePath )
+    {
+        return new RelativePath( this.string + "/" + relativePath.string );
+    }
+
+    public RelativePath parent()
+    {
+        int i = this.string.lastIndexOf( '/' );
+
+        if( i >= 0 )
+        {
+            return new RelativePath( string.substring( 0, i ) );
+        }
+
+        return BASE;
     }
 
     public String asAbsolutePath( String basePath )
@@ -288,6 +345,26 @@ public class RelativePath
     private static boolean isRoot( String s )
     {
         return s.length() == 0 || s.equals( "/" ) || s.equals( "." );
+    }
+
+    public static RelativePath relativePathFromFiles( File parent, File child )
+    {
+        String c = child.getAbsolutePath();
+        String p = parent.getAbsolutePath();
+
+        if ( !c.startsWith( p ) )
+        {
+            throw new RuntimeException( "Not a child path." );
+        }
+
+        String s = c.substring( p.length() );
+
+        if ( PATH_SEPARATOR != '/' )
+        {
+            s = s.replace( PATH_SEPARATOR, '/' );
+        }
+
+        return relativePath( s );
     }
 
     // -----------------------------------------------------------------------

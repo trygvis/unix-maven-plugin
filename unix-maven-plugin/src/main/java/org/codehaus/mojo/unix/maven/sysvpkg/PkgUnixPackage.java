@@ -29,25 +29,24 @@ import fj.data.List;
 import static fj.data.List.*;
 import fj.data.*;
 import static fj.data.Option.*;
-import org.apache.commons.vfs.*;
-import org.apache.commons.vfs.provider.local.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
+
+import org.codehaus.mojo.unix.io.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.sysvpkg.*;
 import org.codehaus.mojo.unix.sysvpkg.prototype.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
-import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 import org.codehaus.plexus.util.*;
 import org.joda.time.*;
 import static org.joda.time.LocalDateTime.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -55,9 +54,8 @@ import java.util.concurrent.*;
 public class PkgUnixPackage
     extends UnixPackage
 {
-    private FileObject workingDirectory;
-    private FileObject prototype;
-    private FileObject pkginfo;
+    private LocalFs prototype;
+    private LocalFs pkginfo;
     private boolean debug;
 
     private static final ScriptUtil scriptUtil = new ScriptUtil( "preinstall", "postinstall", "preremove", "postremove" ).
@@ -72,7 +70,7 @@ public class PkgUnixPackage
 
     private PkginfoFile pkginfoFile;
 
-    private List<Callable> operations = nil();
+    private List<IoEffect> operations = nil();
 
     private Option<String> classifier = none();
 
@@ -101,13 +99,6 @@ public class PkgUnixPackage
     // Common Settings
     // -----------------------------------------------------------------------
 
-    public UnixPackage workingDirectory( FileObject workingDirectory )
-        throws FileSystemException
-    {
-        this.workingDirectory = workingDirectory;
-        return this;
-    }
-
     public UnixPackage debug( boolean debug )
     {
         this.debug = debug;
@@ -117,8 +108,8 @@ public class PkgUnixPackage
     public void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException
     {
-        prototype = workingDirectory.resolveFile( "prototype" );
-        pkginfo = workingDirectory.resolveFile( "pkginfo" );
+        prototype = workingDirectory.resolve( relativePath( "prototype" ) );
+        pkginfo = workingDirectory.resolve( relativePath( "pkginfo" ) );
 
         Directory defaultDirectory = directory( BASE, fromDateFields( new Date( 0 ) ), defaultDirectoryAttributes );
         DirectoryEntry directoryEntry = new DirectoryEntry( Option.<String>none(), defaultDirectory );
@@ -171,19 +162,15 @@ public class PkgUnixPackage
         // The shit
         // -----------------------------------------------------------------------
 
-        File workingDirectoryF = asFile( workingDirectory );
-        File pkginfoF = asFile( pkginfo );
-        File prototypeF = asFile( prototype );
-
         ScriptUtil.Result result = scriptUtil.
-            createExecution( classifier.orSome( "default" ), "pkg", getScripts(), workingDirectoryF, strategy ).
+            createExecution( classifier.orSome( "default" ), "pkg", getScripts(), workingDirectory.file, strategy ).
             execute();
 
-        LineStreamUtil.toFile( pkginfoFile.toList(), pkginfoF );
+        LineStreamUtil.toFile( pkginfoFile.toList(), pkginfo.file );
 
-        String pkg = pkginfoFile.getPkgName( pkginfoF );
+        String pkg = pkginfoFile.getPkgName( pkginfo.file );
 
-        prototypeFile.addIFileIf( pkginfoF, "pkginfo" );
+        prototypeFile.addIFileIf( pkginfo.file, "pkginfo" );
         prototypeFile.addIFileIf( result.preInstall, "preinstall" );
         prototypeFile.addIFileIf( result.postInstall, "postinstall" );
         prototypeFile.addIFileIf( result.preRemove, "preremove" );
@@ -193,28 +180,28 @@ public class PkgUnixPackage
             prototypeFile.addIFileIf( file );
         }
 
-        workingDirectory.resolveFile( "assembly" );
+        workingDirectory.resolve( relativePath( "assembly" ) );
 
         // TODO: Replace this with an Actor-based execution
-        for ( Callable operation : operations )
+        for ( IoEffect operation : operations )
         {
-            operation.call();
+            operation.run();
         }
 
-        LineStreamUtil.toFile( prototypeFile, prototypeF );
+        LineStreamUtil.toFile( prototypeFile, prototype.file );
 
         new PkgmkCommand().
             setDebug( debug ).
             setOverwrite( true ).
-            setDevice( workingDirectoryF ).
-            setPrototype( prototypeF ).
+            setDevice( workingDirectory.file ).
+            setPrototype( prototype.file ).
             execute();
 
         new PkgtransCommand().
             setDebug( debug ).
             setAsDatastream( true ).
             setOverwrite( true ).
-            execute( workingDirectoryF, packageFile, pkg );
+            execute( workingDirectory.file, packageFile, pkg );
     }
 
     public static String getPkgVersion( PackageVersion v )
@@ -240,7 +227,7 @@ public class PkgUnixPackage
         prototypeFile.addDirectory( directory );
     }
 
-    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( Fs<?> fromFile, RegularFile file )
         throws IOException
     {
         prototypeFile.addFile( fromFile( fromFile, file ), file );
@@ -266,36 +253,32 @@ public class PkgUnixPackage
     //
     // -----------------------------------------------------------------------
 
-    public FileObject fromFile( final FileObject fromFile, UnixFsObject.RegularFile file )
-        throws FileSystemException
+    public LocalFs fromFile( final Fs<?> fromFile, UnixFsObject.RegularFile file )
     {
         // If it is a file on the local file system, just point the entry in the prototype file to it
-        if ( fromFile.getFileSystem() instanceof LocalFileSystem )
+        if ( fromFile instanceof LocalFs )
         {
-            return fromFile;
+            return (LocalFs) fromFile;
         }
 
         // Creates a file under the working directory that should match the destination path
-        final FileObject tmpFile = workingDirectory.resolveFile( file.path.string );
+        final LocalFs tmpFile = workingDirectory.resolve( file.path );
 
-        operations = operations.cons( new Callable()
+        operations = operations.cons( new IoEffect()
         {
-            public Object call()
+            public void run()
                 throws Exception
             {
                 OutputStream outputStream = null;
                 try
                 {
-                    tmpFile.getParent().createFolder();
-                    tmpFile.copyFrom( fromFile, Selectors.SELECT_ALL );
-                    tmpFile.getContent().setLastModifiedTime( fromFile.getContent().getLastModifiedTime() );
+                    tmpFile.parent().mkdir();
+                    tmpFile.copyFrom( fromFile );
                 }
                 finally
                 {
                     IOUtil.close( outputStream );
                 }
-
-                return Unit.unit();
             }
         } );
 

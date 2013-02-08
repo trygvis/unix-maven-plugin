@@ -24,9 +24,9 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 
@@ -73,14 +73,14 @@ public class CopyArtifact
     }
 
     public AssemblyOperation createOperation( CreateOperationContext context )
-        throws MojoFailureException, FileSystemException, UnknownArtifactException
+        throws MojoFailureException, UnknownArtifactException
     {
         File artifactFile = context.project.artifactMap.validateArtifact( artifact );
 
         RelativePath toFile = validateAndResolveOutputFile( artifactFile, toDir, this.toFile );
 
         return new CopyFileOperation( context.defaultFileAttributes.useAsDefaultsFor( attributes.create() ),
-                                      resolve( context.basedir.getFileSystem(), artifactFile ),
+                                      new LocalFs( artifactFile ),
                                       toFile );
     }
 }

@@ -28,14 +28,14 @@ import fj.*;
 import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
+
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.line.*;
-import static org.codehaus.mojo.unix.util.vfs.VfsUtil.*;
 import org.joda.time.*;
 
 import java.io.*;
@@ -102,9 +102,9 @@ public class PrototypeFile
         fileSystem = fileSystem.addDirectory( new DirectoryEntry( findClassTag.f( directory.attributes ), directory ) );
     }
 
-    public void addFile( FileObject fromFile, UnixFsObject.RegularFile file )
+    public void addFile( LocalFs fromFile, UnixFsObject.RegularFile file )
     {
-        fileSystem = fileSystem.addFile( new FileEntry( findClassTag.f( file.attributes ), some( false ), file, some( asFile( fromFile ) ) ) );
+        fileSystem = fileSystem.addFile( new FileEntry( findClassTag.f( file.attributes ), some( false ), file, some( fromFile.file ) ) );
     }
 
     public void addSymlink( UnixFsObject.Symlink symlink )

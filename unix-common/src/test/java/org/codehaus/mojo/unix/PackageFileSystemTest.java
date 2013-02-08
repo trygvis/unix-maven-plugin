@@ -64,17 +64,17 @@ public class PackageFileSystemTest
 
     static PlainPackageFileSystemObject b = p( directory( relativePath( "/b" ), lm, directoryA.mode( UnixFileMode.none ) ) );
 
-    static PlainPackageFileSystemObject a_x = p( regularFile( relativePath( "/a/a-x" ), lm, 10, fileA, nil ) );
+    static PlainPackageFileSystemObject a_x = p( regularFile( relativePath( "/a/a-x" ), lm, 10, fileA ) );
 
-    static PlainPackageFileSystemObject a_y = p( regularFile( relativePath( "/a/a-y" ), lm, 10, fileA, nil ) );
+    static PlainPackageFileSystemObject a_y = p( regularFile( relativePath( "/a/a-y" ), lm, 10, fileA ) );
 
-    static PlainPackageFileSystemObject b_x = p( regularFile( relativePath( "/b/b-x" ), lm, 10, fileA, nil ) );
+    static PlainPackageFileSystemObject b_x = p( regularFile( relativePath( "/b/b-x" ), lm, 10, fileA ) );
 
     static PlainPackageFileSystemObject c = p( directory( relativePath( "/c" ), lm, directoryA ) );
 
     static PlainPackageFileSystemObject c_x = p( directory( relativePath( "/c/c-x" ), lm, directoryA ) );
 
-    static PlainPackageFileSystemObject c_x_u = p( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, fileA, nil ) );
+    static PlainPackageFileSystemObject c_x_u = p( regularFile( relativePath( "/c/c-x/c-x-u" ), lm, 10, fileA ) );
 
     Show<Stream<PackageFileSystemObject<Object>>> fsShow = Show.streamShow( Show.showS( new F<PackageFileSystemObject<Object>, String>()
     {

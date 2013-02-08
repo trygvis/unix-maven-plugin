@@ -27,7 +27,7 @@
   <parent>
     <groupId>no.arktekk.unix</groupId>
     <artifactId>unix</artifactId>
-    <version>1.0-alpha-7-SNAPSHOT</version>
+    <version>feature-no-commons-vfs-SNAPSHOT</version>
   </parent>
   <artifactId>unix-core</artifactId>
   <name>Maven Unix Plugin Core</name>
@@ -42,10 +42,6 @@
       <artifactId>easymock</artifactId>
       <version>1.2_Java1.3</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-vfs</groupId>
-      <artifactId>commons-vfs</artifactId>
     </dependency>
     <dependency>
       <groupId>joda-time</groupId>

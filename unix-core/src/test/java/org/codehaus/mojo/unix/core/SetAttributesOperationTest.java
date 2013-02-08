@@ -5,7 +5,6 @@ import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
 import junit.framework.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFileMode.*;
@@ -33,12 +32,12 @@ public class SetAttributesOperationTest
     {
         Option<FileAttributes> changedAttributes = some( EMPTY.user( "myuser" ) );
 
-        assertEquals( FileType.FOLDER, files.files.getType() );
+//        assertEquals( FileType.FOLDER, files.files.getType() );
         MockControl control = MockControl.createControl( FileCollector.class );
         FileCollector fileCollector = (FileCollector) control.getMock();
 
         fileCollector.addFile( files.optJettyBinExtraApp, objects.optJettyBinExtraApp );
-        control.setMatcher( new OperationTest.FileObjectMatcher() );
+        control.setMatcher( new FsMatcher() );
         fileCollector.addFile( files.optJettyReadmeUnix, objects.optJettyReadmeUnix );
         fileCollector.addFile( files.optJettyBashProfile, objects.optJettyBashProfile );
         fileCollector.addDirectory( objects.optJettyBin );

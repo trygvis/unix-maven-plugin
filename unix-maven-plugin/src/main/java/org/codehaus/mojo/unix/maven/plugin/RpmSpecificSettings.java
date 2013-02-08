@@ -31,18 +31,21 @@ import org.apache.commons.lang.builder.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
+@SuppressWarnings( {"UnusedDeclaration"} )
 public class RpmSpecificSettings
 {
-    private Option<String> group = none();
+    public Option<String> group = none();
 
-    public Option<String> getGroup()
-    {
-        return group;
-    }
+    public Option<String> rpmbuild = none();
 
     public void setGroup( String group )
     {
         this.group = fromNull( group );
+    }
+
+    public void setRpmbuild( String rpmbuild )
+    {
+        this.rpmbuild = fromNull( rpmbuild );
     }
 
     public String toString()

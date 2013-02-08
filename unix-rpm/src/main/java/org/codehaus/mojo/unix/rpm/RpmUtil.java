@@ -318,7 +318,7 @@ public class RpmUtil
                 }
                 else
                 {
-                    specFile.addSymlink( symlink( path, lastModified, attributes, parts[10] ) );
+                    specFile.addSymlink( symlink( path, lastModified, attributes.user, attributes.group, parts[10] ) );
                 }
             }
         }

@@ -25,12 +25,13 @@ package org.codehaus.mojo.unix.util.vfs;
  */
 
 import junit.framework.*;
-import org.apache.commons.vfs.*;
 import org.codehaus.mojo.unix.io.*;
-import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 
 import java.util.*;
+
+import static org.codehaus.mojo.unix.io.IncludeExcludeFilter.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -38,31 +39,50 @@ import java.util.*;
 public class IncludeExcludeTest
     extends TestCase
 {
-    public void testBasic()
+    LocalFs fs = new LocalFs( new TestUtil( this ).getTestFile( "src/test/resources/my-project" ) );
+
+    IncludeExcludeFilter filter = includeExcludeFilter().
+        addInclude( new PathExpression( "/src/main/unix/files/**" ) ).
+        addInclude( new PathExpression( "*.java" ) ).
+        addExclude( new PathExpression( "**/huge-file" ) ).
+        create();
+
+    public void setUp()
+    {
+        assertTrue( fs.basedir.isDirectory() );
+    }
+
+    public void testFilter()
         throws Exception
     {
-        String myProjectPath = new TestUtil( this ).getTestPath( "src/test/resources/my-project" );
+        List<LocalFs> list = toList( fs.find( filter ) );
+        assertEquals( 8, list.size() );
+        assertTrue( list.contains( fs ) );
+        assertTrue( list.contains( fs.resolve( "src/main/unix/files/opt" ) ) );
+        assertTrue( list.contains( fs.resolve( "src/main/unix/files/opt/comp" ) ) );
+        assertTrue( list.contains( fs.resolve( "src/main/unix/files/opt/comp/myapp" ) ) );
+        assertTrue( list.contains( fs.resolve( "src/main/unix/files/opt/comp/myapp/etc" ) ) );
+        assertTrue( list.contains( fs.resolve( "src/main/unix/files/opt/comp/myapp/etc/myapp.conf" ) ) );
+        assertTrue( list.contains( fs.resolve( "src/main/unix/files/opt/comp/myapp/lib/" ) ) );
+        assertTrue( list.contains( fs.resolve( "Included.java" ) ) );
+    }
 
-        FileSystemManager fsManager = VFS.getManager();
-        FileObject myProject = fsManager.resolveFile( myProjectPath );
+    public void testFilterForFilesOnly()
+        throws Exception
+    {
+        List<LocalFs> list = toList( fs.find( filter, true ) );
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( fs.resolve( "src/main/unix/files/opt/comp/myapp/etc/myapp.conf" ) ) );
+        assertTrue( list.contains( fs.resolve( "Included.java" ) ) );
+    }
 
-        assertEquals( FileType.FOLDER, myProject.getType() );
-
-        List<FileObject> selection = new ArrayList<FileObject>();
-        myProject.findFiles( new IncludeExcludeFileSelector( myProject.getName(), true, includeExcludeFilter().
-            addInclude( new PathExpression( "/src/main/unix/files/**" ) ).
-            addInclude( new PathExpression( "*.java" ) ).
-            addExclude( new PathExpression( "**/huge-file" ) ).
-            create() ), true, selection );
-
-        System.out.println( "Included:" );
-        for ( FileObject fileObject : selection )
+    private static <T> List<T> toList( Iterable<T> iterable )
+    {
+        ArrayList<T> list = new ArrayList<T>();
+        for ( T t : iterable )
         {
-            System.out.println( myProject.getName().getRelativeName( fileObject.getName() ) );
+            list.add( t );
         }
-
-        assertEquals( 2, selection.size() );
-        assertTrue( selection.contains( myProject.resolveFile( "src/main/unix/files/opt/comp/myapp/etc/myapp.conf" ) ) );
-        assertTrue( selection.contains( myProject.resolveFile( "Included.java" ) ) );
+        return list;
     }
 }

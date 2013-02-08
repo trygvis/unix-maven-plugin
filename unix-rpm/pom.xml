@@ -27,7 +27,7 @@
   <parent>
     <groupId>no.arktekk.unix</groupId>
     <artifactId>unix</artifactId>
-    <version>1.0-alpha-7-SNAPSHOT</version>
+    <version>feature-no-commons-vfs-SNAPSHOT</version>
   </parent>
   <artifactId>unix-rpm</artifactId>
   <name>Maven RPM Support</name>

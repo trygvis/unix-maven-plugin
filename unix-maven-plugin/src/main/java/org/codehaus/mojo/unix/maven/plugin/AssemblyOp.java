@@ -24,11 +24,10 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.apache.commons.vfs.*;
-import org.apache.commons.vfs.FileSystem;
 import org.apache.maven.plugin.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
+import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.util.*;
 
@@ -55,16 +54,17 @@ public abstract class AssemblyOp
      * TODO: Add timestamp to keep all timestamps consistent.
      */
     public abstract AssemblyOperation createOperation( CreateOperationContext context )
-        throws MojoFailureException, FileSystemException, UnknownArtifactException;
+        throws MojoFailureException, UnknownArtifactException, IOException;
 
     public static class CreateOperationContext {
-        public final FileObject basedir;
+        public final LocalFs basedir;
         public final FileAttributes defaultFileAttributes;
         public final FileAttributes defaultDirectoryAttributes;
         public final MavenProjectWrapper project;
 
-        public CreateOperationContext( FileObject basedir, FileAttributes defaultFileAttributes,
-                                       FileAttributes defaultDirectoryAttributes, MavenProjectWrapper project )
+        public CreateOperationContext( LocalFs basedir,
+                                       FileAttributes defaultFileAttributes, FileAttributes defaultDirectoryAttributes,
+                                       MavenProjectWrapper project )
         {
             this.basedir = basedir;
             this.defaultFileAttributes = defaultFileAttributes;
@@ -76,12 +76,6 @@ public abstract class AssemblyOp
     // -----------------------------------------------------------------------
     // Utilities
     // -----------------------------------------------------------------------
-
-    protected FileObject resolve( FileSystem basedir, File file )
-        throws FileSystemException
-    {
-        return basedir.resolveFile( file.getAbsolutePath() );
-    }
 
     protected static String nullIfEmpty(String artifact)
     {
