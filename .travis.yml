@@ -7,7 +7,7 @@ env:
 
 install: "mvn install -DskipTests -U -B"
 
-test: "mvn install -U -B -Pintegration-tests -Dinvoker.test=test-zip-*/pom4test.xml,test-deb-*/pom4test.xml"
+script: "mvn install -U -B -Pintegration-tests -Dinvoker.test=test-zip-*/pom4test.xml,test-deb-*/pom4test.xml"
 
 after_success:
   - python .travis-addServer.py
