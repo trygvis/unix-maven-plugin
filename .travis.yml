@@ -8,8 +8,7 @@ env:
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install -qq rpm
-# Doesn't work as the build depend on the plugin itself, failing the initial resolution.
-# - mvn dependency:go-offline -B
+ - mvn dependency:go-offline -B
 
 install: "mvn install -DskipTests -U -B"
 
@@ -18,4 +17,4 @@ script: "mvn install -U -B -Pintegration-tests -Dinvoker.test=test-zip-*/pom4tes
 after_success:
   - python .travis-addServer.py
   # No need to run clean or run tests when simply deploying.
-  - mvn -DskipTests -B --settings ~/.m2/mySettings.xml deploy
+  - mvn -DskipTests -B -Phandbook --settings ~/.m2/mySettings.xml deploy
