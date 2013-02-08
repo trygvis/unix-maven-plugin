@@ -19,15 +19,15 @@ assertFormat "deb", "dpkg-deb", true, {
   FileAttributes hudsonWarAttributes = new FileAttributes(none(), none(), some(fromString("rw-r--r--")));
 
   success &= assertDebEntries(deb, (List<UnixFsObject>)[
-          directory(r("."), none(), dirAttributes),
-          directory(r("usr"), none(), dirAttributes),
-          directory(r("usr/share"), none(), dirAttributes),
-          directory(r("usr/share/hudson"), none(), dirAttributes),
-          directory(r("usr/share/hudson/lib"), none(), dirAttributes),
-          regularFile(r("usr/share/hudson/lib/slave.jar"), START_OF_TIME, 158615, some(hudsonWarAttributes)),
-          directory(r("usr/share/hudson/license"), none(), dirAttributes),
-          regularFile(r("usr/share/hudson/license/atom-license.txt"), START_OF_TIME, 49, some(hudsonWarAttributes)),
-          regularFile(r("usr/share/hudson/license/dc-license.txt"), START_OF_TIME, 1544, some(hudsonWarAttributes)),
+          directory(r("."), START_OF_TIME, dirAttributes),
+          directory(r("usr"), START_OF_TIME, dirAttributes),
+          directory(r("usr/share"), START_OF_TIME, dirAttributes),
+          directory(r("usr/share/hudson"), START_OF_TIME, dirAttributes),
+          directory(r("usr/share/hudson/lib"), START_OF_TIME, dirAttributes),
+          regularFile(r("usr/share/hudson/lib/slave.jar"), START_OF_TIME, 158615, hudsonWarAttributes),
+          directory(r("usr/share/hudson/license"), START_OF_TIME, dirAttributes),
+          regularFile(r("usr/share/hudson/license/atom-license.txt"), START_OF_TIME, 49, hudsonWarAttributes),
+          regularFile(r("usr/share/hudson/license/dc-license.txt"), START_OF_TIME, 1544, hudsonWarAttributes),
   ])
 }
 

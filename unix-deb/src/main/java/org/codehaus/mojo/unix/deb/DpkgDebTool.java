@@ -26,7 +26,7 @@ package org.codehaus.mojo.unix.deb;
 
 import fj.data.*;
 import static fj.data.Option.*;
-import org.apache.commons.compress.tar.*;
+import org.apache.commons.compress.archivers.tar.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.ar.*;
@@ -86,24 +86,46 @@ public class DpkgDebTool
     private static List<UnixFsObject> process( InputStream is )
         throws IOException
     {
-        TarInputStream tarInputStream = new TarInputStream( is );
-
-        TarEntry entry = tarInputStream.getNextEntry();
+        TarArchiveInputStream tarInputStream = new TarArchiveInputStream( is );
 
         List<UnixFsObject> objects = new ArrayList<UnixFsObject>();
+
+        TarArchiveEntry entry = (TarArchiveEntry) tarInputStream.getNextEntry();
 
         while ( entry != null )
         {
             Option<UnixFileMode> mode = some( UnixFileMode.fromInt( entry.getMode() ) );
-            FileAttributes attributes = new FileAttributes( some( entry.getUserName() ), some( entry.getGroupName() ), mode );
+            FileAttributes attributes =
+                new FileAttributes( some( entry.getUserName() ), some( entry.getGroupName() ), mode );
             RelativePath path = relativePath( entry.getName() );
             LocalDateTime lastModified = LocalDateTime.fromDateFields( entry.getModTime() );
 
-            objects.add( entry.isDirectory() ?
-                directory( path, lastModified, attributes ) :
-                regularFile( path, lastModified, entry.getSize(), attributes ) );
+            UnixFsObject object;
 
-            entry = tarInputStream.getNextEntry();
+            if ( entry.isDirectory() )
+            {
+                System.out.println( "Directory: " + entry.getName() );
+                object = directory( path, lastModified, attributes );
+            }
+            else if ( entry.isSymbolicLink() )
+            {
+                System.out.println( "Symlink: " + entry.getName() );
+                object = symlink( path, lastModified, some( entry.getUserName() ), some( entry.getGroupName() ),
+                                  entry.getName() );
+            }
+            else if ( entry.isFile() )
+            {
+                System.out.println( "File: " + entry.getName() );
+                object = regularFile( path, lastModified, entry.getSize(), attributes );
+            }
+            else
+            {
+                throw new IOException( "Unsupported link type: name=" + entry.getName() );
+            }
+
+            objects.add( object );
+
+            entry = (TarArchiveEntry) tarInputStream.getNextEntry();
         }
 
         return objects;

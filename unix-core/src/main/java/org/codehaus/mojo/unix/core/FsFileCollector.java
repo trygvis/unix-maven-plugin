@@ -34,9 +34,6 @@ import org.codehaus.mojo.unix.util.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.*;
-
-import static fj.Unit.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -119,6 +116,9 @@ public class FsFileCollector
                 throws Exception
             {
                 mkdirs( root.resolve( symlink.path ).file.getParentFile() );
+
+                System.out.println( "symlink = " + symlink );
+                System.out.println( "ln -s " + symlink.value + " " + symlink.path.string );
 
                 UnixUtil.symlink( root.file, symlink.value, symlink.path );
             }

@@ -30,6 +30,8 @@ import static fj.P.*;
 import fj.data.*;
 import org.codehaus.mojo.unix.io.*;
 import org.codehaus.mojo.unix.util.*;
+
+import static fj.data.Option.some;
 import static org.codehaus.mojo.unix.util.Validate.*;
 import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.plexus.util.*;
@@ -74,7 +76,7 @@ public abstract class UnixFsObject<A extends UnixFsObject>
      */
     public static final F<LocalDateTime, String> formatter = curry( UnixUtil.formatLocalDateTime, FORMAT );
 
-    private char prefixChar;
+    private final char prefixChar;
 
     protected UnixFsObject( char prefixChar, RelativePath path, LocalDateTime lastModified, long size,
                             FileAttributes attributes, List<Replacer> filters, LineEnding lineEnding )
@@ -140,10 +142,10 @@ public abstract class UnixFsObject<A extends UnixFsObject>
         return new Directory( path, lastModified, attributes );
     }
 
-    public static Symlink symlink( RelativePath path, LocalDateTime lastModified, FileAttributes attributes,
-                                   String target )
+    public static Symlink symlink( RelativePath path, LocalDateTime lastModified, Option<String> user,
+                                   Option<String> group, String target )
     {
-        return new Symlink( path, lastModified, attributes, target );
+        return new Symlink( path, lastModified, user, group, target );
     }
 
     // -----------------------------------------------------------------------
@@ -237,26 +239,18 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     {
         public final String value;
 
-        private Symlink( RelativePath path, LocalDateTime lastModified, FileAttributes attributes, String value )
+        private Symlink( RelativePath path, LocalDateTime lastModified, Option<String> user, Option<String> group, String value )
         {
-            super( 'l', path, lastModified, sizeOfSymlink( value ), attributes, List.<Replacer>nil(), LineEnding.keep );
+            super( 'l', path, lastModified, value.length(), new FileAttributes( user, group, some( UnixFileMode._SYMLINK ) ), List.<Replacer>nil(), LineEnding.keep );
             validateNotNull( value );
 
             this.value = value;
         }
 
-        private static long sizeOfSymlink( String s )
-        {
-            // This might not be good enough validation
-            int i = s.lastIndexOf( '/' );
-
-            return (i == -1) ? s.length() : s.length() - i - 1;
-        }
-
         protected Symlink copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes,
                                 List<Replacer> filters, LineEnding lineEnding )
         {
-            return new Symlink( path, lastModified, attributes, value );
+            return new Symlink( path, lastModified, attributes.user, attributes.group, value );
         }
     }
 

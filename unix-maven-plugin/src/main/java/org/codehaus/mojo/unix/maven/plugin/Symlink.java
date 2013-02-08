@@ -24,10 +24,12 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
+import fj.data.*;
 import org.apache.maven.plugin.*;
-import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.util.*;
+
+import static fj.data.Option.fromNull;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 
 /**
@@ -39,7 +41,7 @@ public class Symlink
 {
     private RelativePath path;
 
-    private String value;
+    private Option<String> value;
 
     public Symlink()
     {
@@ -53,15 +55,17 @@ public class Symlink
 
     public void setValue( String value )
     {
-        this.value = value;
+        this.value = fromNull( value );
     }
 
     public AssemblyOperation createOperation( CreateOperationContext context )
         throws MojoFailureException
     {
-        FileAttributes attributes = context.defaultFileAttributes.useAsDefaultsFor(
-            new MojoFileAttributes( null, null, UnixFileMode._0777 ).create() );
+        if ( value.isNone() )
+        {
+            throw new MojoFailureException( "<value> has to be set on <symlink>." );
+        }
 
-        return new SymlinkOperation( path, value, attributes );
+        return new SymlinkOperation( path, value.some(), Option.<String>none(), Option.<String>none() );
     }
 }

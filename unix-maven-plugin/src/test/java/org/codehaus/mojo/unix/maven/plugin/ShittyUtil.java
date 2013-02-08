@@ -32,6 +32,7 @@ import groovy.lang.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
+import org.codehaus.mojo.unix.UnixFsObject.Symlink;
 import org.codehaus.mojo.unix.deb.*;
 import org.codehaus.mojo.unix.rpm.*;
 import org.codehaus.mojo.unix.sysvpkg.*;
@@ -345,10 +346,45 @@ public class ShittyUtil
     {
         public Boolean f( UnixFsObject expected, UnixFsObject actual )
         {
-            return expected.path.equals( actual.path ) &&
-                ( expected.size == 0 || expected.size == actual.size ) &&
-                ( expected.lastModified == null || expected.lastModified.equals( START_OF_TIME )
-                    || expected.lastModified.equals( actual.lastModified ) );
+            boolean type = expected.getClass().equals( actual.getClass() );
+            boolean path = expected.path.equals( actual.path );
+            boolean size = expected.size == 0 || expected.size == actual.size;
+            boolean lastModified = expected.lastModified == null ||
+                expected.lastModified.equals( START_OF_TIME ) ||
+                expected.lastModified.equals( actual.lastModified );
+
+            System.out.println( "--------------------" );
+            System.out.println( "expected.class = " + expected.getClass() );
+            System.out.println( "expected.path = " + expected.path );
+            System.out.println( "type = " + type );
+            System.out.println( "path = " + path );
+            System.out.println( "size = " + size );
+            System.out.println( "lastModified = " + lastModified );
+
+            if ( actual.getClass() == Directory.class )
+            {
+                return type && path && lastModified;
+            }
+            else if ( actual.getClass() == RegularFile.class )
+            {
+                return type && path && size && lastModified;
+            }
+            else if ( actual.getClass() == Symlink.class )
+            {
+                if ( !type )
+                {
+                    return false;
+                }
+
+                Symlink e = (Symlink) expected;
+                Symlink a = (Symlink) actual;
+                boolean value = e.value.equals( a.value );
+                System.out.println( "value = " + value );
+
+                return path && size && lastModified && value;
+            }
+
+            throw new RuntimeException( "Unknown object type: " + actual.getClass() );
         }
     }
 

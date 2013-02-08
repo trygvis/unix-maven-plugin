@@ -33,9 +33,9 @@
   <name>Maven Deb Support</name>
   <dependencies>
     <dependency>
-      <groupId>commons-compress</groupId>
+      <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-      <version>20050911</version>
+      <version>1.4.1</version>
     </dependency>
     <dependency>
       <groupId>joda-time</groupId>
