@@ -50,7 +50,7 @@ public class RpmUnixPackageTest
     public void testBasic()
         throws Exception
     {
-        if ( !Rpmbuild.available() )
+        if ( !new Rpmbuild().available() )
         {
             return;
         }
@@ -59,8 +59,8 @@ public class RpmUnixPackageTest
 
         LocalFs pomXml = new LocalFs( getTestFile( "pom.xml" ) );
         Fs archive = FsUtil.resolve( archiveFile );
-        Fs fooLicense = archive.resolve( relativePath( "foo-license.txt" ) );
-        Fs barLicense = archive.resolve( relativePath( "mydir/bar-license.txt" ) );
+        Fs<?> fooLicense = archive.resolve( relativePath( "foo-license.txt" ) );
+        Fs<?> barLicense = archive.resolve( relativePath( "mydir/bar-license.txt" ) );
 
         RpmPackagingFormat packagingFormat = (RpmPackagingFormat) lookup( PackagingFormat.ROLE, "rpm" );
 
@@ -78,11 +78,11 @@ public class RpmUnixPackageTest
 
         UnixPackage unixPackage = RpmPackagingFormat.cast( packagingFormat.start().
             parameters( parameters ) ).
-            group( "Fun" );
+            rpmParameters( "Fun", Option.<String>none() );
 
         LocalDateTime now = new LocalDateTime();
 
-        unixPackage.addFile( (Fs) pomXml, regularFile( relativePath( "/pom.xml" ), now, 0, EMPTY ) );
+        unixPackage.addFile( pomXml, regularFile( relativePath( "/pom.xml" ), now, 0, EMPTY ) );
         unixPackage.addFile( fooLicense, regularFile( relativePath( "/foo-license.txt" ), now, 0, EMPTY ) );
         unixPackage.addFile( barLicense, regularFile( relativePath( "/bar-license.txt" ), now, 0, EMPTY ) );
 

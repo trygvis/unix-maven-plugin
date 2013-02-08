@@ -71,7 +71,7 @@ public class ZipUnixPackage
         fileSystem = fileSystem.addDirectory( directory( directory ) );
     }
 
-    public void addFile( Fs<Fs> fromFile, RegularFile file )
+    public void addFile( Fs<?> fromFile, RegularFile file )
         throws IOException
     {
         fileSystem = fileSystem.addFile( file( fromFile, file ) );
@@ -165,7 +165,7 @@ public class ZipUnixPackage
         return basicPackageFSO( directory, f );
     }
 
-    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> file( final Fs<Fs> fromFile,
+    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> file( final Fs<?> fromFile,
                                                                                             UnixFsObject file )
     {
         F2<UnixFsObject, ZipOutputStream, IoEffect> f = new F2<UnixFsObject, ZipOutputStream, IoEffect>()

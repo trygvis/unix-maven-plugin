@@ -53,6 +53,8 @@ public class DebUnixPackage
 
     private boolean useFakeroot;
 
+    private Option<String> dpkgDeb;
+
     private boolean debug;
 
     private final static ScriptUtil scriptUtil = new ScriptUtil( "preinst", "postinst", "prerm", "postrm" );
@@ -73,10 +75,10 @@ public class DebUnixPackage
         return this;
     }
 
-    // TODO: Add paths to dpkg-deb and fakeroot
     public DebUnixPackage debParameters( Option<String> priority,
                                          Option<String> section,
                                          boolean useFakeroot,
+                                         Option<String> dpkgDeb,
                                          List<String> depends,
                                          List<String> recommends,
                                          List<String> suggests,
@@ -85,6 +87,8 @@ public class DebUnixPackage
                                          List<String> replaces )
     {
         this.useFakeroot = useFakeroot;
+        this.dpkgDeb = dpkgDeb;
+
         controlFile = controlFile.
             priority( priority ).
             section( section ).
@@ -115,7 +119,7 @@ public class DebUnixPackage
         fileCollector.addDirectory( directory );
     }
 
-    public void addFile( Fs<Fs> fromFile, RegularFile file )
+    public void addFile( Fs<?> fromFile, RegularFile file )
         throws IOException
     {
         fileCollector.addFile( fromFile, file );
@@ -157,11 +161,12 @@ public class DebUnixPackage
         UnixUtil.chmodIf( result.preRemove, "0755" );
         UnixUtil.chmodIf( result.postRemove, "0755" );
 
-        new Dpkg().
+        new DpkgDeb().
             setDebug( debug ).
             setPackageRoot( fsRoot.file ).
             setDebFile( packageFile ).
             setUseFakeroot( useFakeroot ).
+            setDpkgDeb( dpkgDeb ).
             execute();
     }
 

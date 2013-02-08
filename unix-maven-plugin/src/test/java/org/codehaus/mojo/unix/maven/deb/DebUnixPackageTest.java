@@ -47,7 +47,7 @@ public class DebUnixPackageTest
     public void testBasic()
         throws Exception
     {
-        if ( !Dpkg.available() )
+        if ( !new DpkgDeb().available() )
         {
             return;
         }
@@ -67,7 +67,8 @@ public class DebUnixPackageTest
         List<String> nil = List.nil();
         packagingFormat.start().
             parameters( parameters ).
-            debParameters( Option.<String>none(), some( "devel" ), false, nil, nil, nil, nil, nil, nil ).
+            debParameters( Option.<String>none(), some( "devel" ), false, Option.<String>none(), nil, nil, nil, nil,
+                           nil, nil ).
             debug( true ).
             workingDirectory( packageRoot ).
             packageToFile( packageFile, ScriptUtil.Strategy.SINGLE );

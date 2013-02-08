@@ -166,7 +166,7 @@ public class SystemCommand
 
     private List<String> arguments;
 
-    private List<String> environment;
+    private List<String> environment = new ArrayList<String>(  );
 
     private boolean debug;
 
@@ -398,6 +398,17 @@ public class SystemCommand
                 System.err.println( argument );
             }
             System.err.println( "Executing command in directory: " + basedir );
+
+            for ( String e : environment )
+            {
+                System.err.println( "Environment: " + e );
+            }
+
+            System.out.println( "env" );
+            for ( Map.Entry<String, String> entry : new TreeMap<String, String>( System.getenv() ).entrySet() )
+            {
+                System.out.println( entry.getKey() + " = " + entry.getValue() );
+            }
         }
 
         if ( !basedir.isDirectory() )
@@ -407,9 +418,15 @@ public class SystemCommand
 
         arguments.add( 0, command );
 
-        return new Execution( command, arguments, environment, basedir, debug,
-            stderrHandler != null ? stderrHandler : DEFAULT_STDERR_OUTPUT_HANDLER,
-            stdoutHandler != null ? stdoutHandler : DEFAULT_STDOUT_OUTPUT_HANDLER ).run();
+        String[] env = null;
+        if ( environment.size() > 0 )
+        {
+            env = environment.toArray( new String[environment.size()] );
+        }
+
+        return new Execution( command, arguments.toArray( new String[arguments.size()] ), env, basedir, debug,
+                              stderrHandler != null ? stderrHandler : DEFAULT_STDERR_OUTPUT_HANDLER,
+                              stdoutHandler != null ? stdoutHandler : DEFAULT_STDOUT_OUTPUT_HANDLER ).run();
     }
 
     // -----------------------------------------------------------------------
@@ -453,8 +470,8 @@ public class SystemCommand
     private static class Execution
     {
         private final String command;
-        private final List<String> arguments;
-        private final List<String> environment;
+        private final String[] arguments;
+        private final String[] environment;
         private final File basedir;
         private final boolean debug;
         private final CommandOutputHandler stderrHandler;
@@ -462,7 +479,7 @@ public class SystemCommand
 
         public Process process;
 
-        private Execution( String command, List<String> arguments, List<String> environment, File basedir,
+        private Execution( String command, String[] arguments, String[] environment, File basedir,
                            boolean debug, CommandOutputHandler stderrHandler, CommandOutputHandler stdoutHandler )
         {
             this.command = command;
@@ -477,15 +494,7 @@ public class SystemCommand
         public ExecutionResult run()
             throws IOException
         {
-            String[] args = arguments.toArray( new String[arguments.size()] );
-            String[] env = null;
-
-            if ( environment != null )
-            {
-                env = environment.toArray( new String[environment.size()] );
-            }
-
-            process = Runtime.getRuntime().exec( args, env, basedir );
+            process = Runtime.getRuntime().exec( arguments, environment, basedir );
 
             process.getOutputStream().close(); // Close stdin
 

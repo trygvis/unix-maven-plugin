@@ -1,9 +1,11 @@
+import org.codehaus.mojo.unix.deb.DpkgDeb
+
 import static fj.data.Option.none;
 import org.codehaus.mojo.unix.FileAttributes
 import org.codehaus.mojo.unix.UnixFileMode
 import static org.codehaus.mojo.unix.UnixFsObject.directory
 import static org.codehaus.mojo.unix.UnixFsObject.regularFile
-import org.codehaus.mojo.unix.deb.Dpkg
+import org.codehaus.mojo.unix.deb.DpkgDeb
 import org.codehaus.mojo.unix.deb.DpkgDebUtil
 import org.codehaus.mojo.unix.deb.DpkgDebUtil.ControlFile
 import static org.codehaus.mojo.unix.maven.ShittyUtil.assertDebEntries
@@ -25,7 +27,7 @@ boolean success = true
 // Deb
 // -----------------------------------------------------------------------
 
-assertFormat "deb", "dpkg", Dpkg.available(), {
+assertFormat "deb", "dpkg", new DpkgDeb().available(), {
   File deb = new File((File) basedir, "target/jetty-1.1-2.deb")
 
   ControlFile controlFile = new ControlFile("devel", "standard", "Trygve Laugstol", "jetty", "1.1-2", "all",

@@ -227,7 +227,7 @@ public class PkgUnixPackage
         prototypeFile.addDirectory( directory );
     }
 
-    public void addFile( Fs<Fs> fromFile, RegularFile file )
+    public void addFile( Fs<?> fromFile, RegularFile file )
         throws IOException
     {
         prototypeFile.addFile( fromFile( fromFile, file ), file );

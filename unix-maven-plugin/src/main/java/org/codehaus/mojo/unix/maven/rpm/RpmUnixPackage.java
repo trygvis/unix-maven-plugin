@@ -50,7 +50,7 @@ public class RpmUnixPackage
 
     private FsFileCollector fileCollector;
 
-    private String rpmbuildPath;
+    private Option<String> rpmbuild;
 
     private boolean debug;
 
@@ -82,9 +82,10 @@ public class RpmUnixPackage
         return this;
     }
 
-    public UnixPackage group( String group )
+    public UnixPackage rpmParameters( String group, Option<String> rpmbuild )
     {
         specFile.group = group;
+        this.rpmbuild = rpmbuild;
         return this;
     }
 
@@ -102,13 +103,6 @@ public class RpmUnixPackage
         fileCollector = new FsFileCollector( workingDirectory.resolve( relativePath( "assembly" ) ) );
     }
 
-    // TODO: This is not used
-    public UnixPackage rpmbuildPath( String rpmbuildPath )
-    {
-        this.rpmbuildPath = rpmbuildPath;
-        return this;
-    }
-
     public void addDirectory( UnixFsObject.Directory directory )
         throws IOException
     {
@@ -116,7 +110,7 @@ public class RpmUnixPackage
         fileCollector.addDirectory( directory );
     }
 
-    public void addFile( Fs<Fs> fromFile, RegularFile file )
+    public void addFile( Fs<?> fromFile, RegularFile file )
         throws IOException
     {
         specFile.addFile( file );
@@ -173,7 +167,7 @@ public class RpmUnixPackage
             define( "_rpmdir " + packageFile.getParentFile().getAbsolutePath() ).
             define( "_rpmfilename " + packageFile.getName() ).
             setSpecFile( specFilePath ).
-            setRpmbuildPath( rpmbuildPath ).
+            setRpmbuild( rpmbuild ).
             buildBinary();
     }
 

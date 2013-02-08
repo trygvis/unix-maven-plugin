@@ -40,7 +40,7 @@ public interface FileCollector<FsType extends Fs>
     void addDirectory( Directory directory )
         throws IOException;
 
-    void addFile( Fs<FsType> fromFile, RegularFile file )
+    void addFile( Fs<?> fromFile, RegularFile file )
         throws IOException;
 
     void addSymlink( Symlink symlink )

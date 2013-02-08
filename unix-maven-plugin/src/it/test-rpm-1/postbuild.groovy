@@ -17,7 +17,7 @@ success &= assertRpmEntries(rpm, [
         new RpmUtil.FileInfo("/usr", "root", "root", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/usr/share", "root", "root", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/usr/share/hudson", "root", "root", "drwxr-xr-x", 0, null),
-        new RpmUtil.FileInfo("/usr/share/hudson/README.txt", "root", "root", "-rw-r--r--", 38, null),
+        new RpmUtil.FileInfo("/usr/share/hudson/README.txt", "root", "root", "-rw-r--r--", 41, null),
         new RpmUtil.FileInfo("/var", "root", "root", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/var/log", "root", "root", "drwxr-xr-x", 0, null),
         // TODO: This should assert the target
