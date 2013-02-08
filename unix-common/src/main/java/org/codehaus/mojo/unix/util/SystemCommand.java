@@ -399,15 +399,24 @@ public class SystemCommand
             }
             System.err.println( "Executing command in directory: " + basedir );
 
-            for ( String e : environment )
+            if ( environment.size() == 0 )
             {
-                System.err.println( "Environment: " + e );
+                System.err.println( "Using custom environment with " + environment.size() + " entries." );
+                for ( String e : environment )
+                {
+                    System.err.println( "Environment: " + e );
+                }
             }
-
-            System.out.println( "env" );
-            for ( Map.Entry<String, String> entry : new TreeMap<String, String>( System.getenv() ).entrySet() )
+            else
             {
-                System.out.println( entry.getKey() + " = " + entry.getValue() );
+                TreeMap<String, String> env = new TreeMap<String, String>( System.getenv() );
+
+                System.err.println( "Inheriting the environment with " + env.size() + " entries" );
+
+                for ( Map.Entry<String, String> entry : env.entrySet() )
+                {
+                    System.out.println( entry.getKey() + " = " + entry.getValue() );
+                }
             }
         }
 

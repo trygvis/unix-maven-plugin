@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix;
 import junit.framework.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import static org.codehaus.mojo.unix.PackageFileSystemTest.*;
+import org.codehaus.mojo.unix.util.line.*;
 
 public class PackageFileSystemFormatterTest
     extends TestCase
@@ -35,25 +36,42 @@ public class PackageFileSystemFormatterTest
     {
         PackageFileSystemFormatter<Object> formatter = PackageFileSystemFormatter.flatFormatter();
 
-        System.out.print( formatter.print( create( root, root ).
+        LineFile fs1 = formatter.print( create( root, root ).
             addDirectory( a ).
-            addDirectory( b )
-        ) );
+            addDirectory( b ) );
 
-        System.out.print( formatter.print( create( root, root ).
+        assertEquals( new LineFile().add( "." ).add( "    a" ).add( "    b" ), fs1 );
+
+        LineFile fs2 = formatter.print( create( root, root ).
             addDirectory( a ).
             addDirectory( b ).
-            addFile( a_x )
-        ) );
+            addFile( a_x ) );
 
-        PackageFileSystem<Object> fs = create( root, root ).
+        assertEquals( new LineFile().
+            add( "." ).
+            add( "    a" ).
+            add( "        a-x" ).
+            add( "    b" ), fs2 );
+
+        LineFile fs3 = formatter.print( create( root, root ).
             addDirectory( b ).
             addDirectory( a ).
             addFile( a_x ).
             addFile( b_x ).
             addFile( a_y ).
-            addFile( c_x_u );
+            addFile( c_x_u ) );
 
-        System.out.print( formatter.print( fs ) );
+//        System.out.print( formatter.print( fs3 ) );
+
+        assertEquals( new LineFile().
+            add(".").
+            add("    a").
+            add("        a-x").
+            add("        a-y").
+            add("    b").
+            add("        b-x").
+            add("    c").
+            add("        c-x").
+            add("            c-x-u"), fs3 );
     }
 }

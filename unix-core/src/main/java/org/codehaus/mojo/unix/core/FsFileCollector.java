@@ -117,9 +117,6 @@ public class FsFileCollector
             {
                 mkdirs( root.resolve( symlink.path ).file.getParentFile() );
 
-                System.out.println( "symlink = " + symlink );
-                System.out.println( "ln -s " + symlink.value + " " + symlink.path.string );
-
                 UnixUtil.symlink( root.file, symlink.value, symlink.path );
             }
         };

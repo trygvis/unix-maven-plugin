@@ -104,18 +104,15 @@ public class DpkgDebTool
 
             if ( entry.isDirectory() )
             {
-                System.out.println( "Directory: " + entry.getName() );
                 object = directory( path, lastModified, attributes );
             }
             else if ( entry.isSymbolicLink() )
             {
-                System.out.println( "Symlink: " + entry.getName() );
                 object = symlink( path, lastModified, some( entry.getUserName() ), some( entry.getGroupName() ),
-                                  entry.getName() );
+                                  entry.getLinkName() );
             }
             else if ( entry.isFile() )
             {
-                System.out.println( "File: " + entry.getName() );
                 object = regularFile( path, lastModified, entry.getSize(), attributes );
             }
             else

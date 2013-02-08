@@ -252,6 +252,10 @@ public abstract class UnixFsObject<A extends UnixFsObject>
         {
             return new Symlink( path, lastModified, attributes.user, attributes.group, value );
         }
+
+        public String toString() {
+            return super.toString() + " -> " + value;
+        }
     }
 
     private static final F2<Integer, String, String> leftPad = new F2<Integer, String, String>()

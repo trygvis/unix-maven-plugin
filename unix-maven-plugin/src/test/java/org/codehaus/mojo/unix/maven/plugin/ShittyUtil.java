@@ -353,6 +353,7 @@ public class ShittyUtil
                 expected.lastModified.equals( START_OF_TIME ) ||
                 expected.lastModified.equals( actual.lastModified );
 
+            /*
             System.out.println( "--------------------" );
             System.out.println( "expected.class = " + expected.getClass() );
             System.out.println( "expected.path = " + expected.path );
@@ -360,6 +361,7 @@ public class ShittyUtil
             System.out.println( "path = " + path );
             System.out.println( "size = " + size );
             System.out.println( "lastModified = " + lastModified );
+            */
 
             if ( actual.getClass() == Directory.class )
             {
@@ -379,7 +381,9 @@ public class ShittyUtil
                 Symlink e = (Symlink) expected;
                 Symlink a = (Symlink) actual;
                 boolean value = e.value.equals( a.value );
+                /*
                 System.out.println( "value = " + value );
+                */
 
                 return path && size && lastModified && value;
             }

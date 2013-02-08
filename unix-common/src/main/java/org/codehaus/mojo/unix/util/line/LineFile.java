@@ -31,8 +31,6 @@ import java.io.*;
 import java.util.*;
 
 /**
- * TODO: Implement equals and hashCode.
- *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class LineFile
@@ -86,6 +84,55 @@ public class LineFile
             buffer.append( line ).append( eol );
         }
         return buffer.toString();
+    }
+
+    public boolean equals( Object o )
+    {
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( !( o instanceof LineFile ) )
+        {
+            return false;
+        }
+
+        LineFile strings = (LineFile) o;
+
+        if ( !eol.equals( strings.eol ) )
+        {
+            return false;
+        }
+
+        if ( lines.size() != strings.lines.size() )
+        {
+            return false;
+        }
+
+        if ( !lines.equals( strings.lines ) )
+        {
+            return false;
+        }
+
+        for ( int i = 0, linesSize = lines.size(); i < linesSize; i++ )
+        {
+            if ( !lines.get( i ).equals( strings.lines.get( i ) ) )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public int hashCode()
+    {
+        int result = eol.hashCode();
+        for ( String line : lines )
+        {
+            result = 31 * result + line.hashCode();
+        }
+        return result;
     }
 
     // -----------------------------------------------------------------------

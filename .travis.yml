@@ -5,7 +5,9 @@ env:
     - SONATYPE_USERNAME=80ymBYBJ
     - secure: "GY8Fd8wbtl7trlSymM3af0BTTj9lzdU/+2sKqD8/RdZBLlSv4BK+yG+u6YfQ\ndlqWdgMaed52QaJ9Q+z2Zl8d4wAUrOgplE+MSpAVOYmkeuY2hPdGeyOu691B\neKo3DocrR4OA7Rx60PcyyqrpDUBiJWtcpHQpQuSpCNQn+T07H6w="
 
-install: "mvn -DskipTests -U -B install -Dinvoker.test=test-zip-*/pom4test.xml,test-deb-*/pom4test.xml"
+install: "mvn install -DskipTests -U -B"
+
+test: "mvn install -U -B -Pintegration-tests -Dinvoker.test=test-zip-*/pom4test.xml,test-deb-*/pom4test.xml"
 
 after_success:
   - python .travis-addServer.py
