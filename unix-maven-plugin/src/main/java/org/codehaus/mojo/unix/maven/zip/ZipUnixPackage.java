@@ -28,6 +28,7 @@ import fj.*;
 import static fj.Function.*;
 import fj.data.*;
 import fj.data.List;
+import org.apache.commons.compress.archivers.zip.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.BasicPackageFileSystemObject.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
@@ -40,6 +41,7 @@ import org.codehaus.mojo.unix.util.*;
 
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.plexus.util.*;
+import static org.codehaus.plexus.util.IOUtil.copy;
 import org.joda.time.*;
 
 import java.io.*;
@@ -49,7 +51,7 @@ import java.util.zip.*;
 public class ZipUnixPackage
     extends UnixPackage
 {
-    private PackageFileSystem<F2<UnixFsObject, ZipOutputStream, IoEffect>> fileSystem;
+    private PackageFileSystem<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>> fileSystem;
 
     public ZipUnixPackage()
     {
@@ -102,24 +104,22 @@ public class ZipUnixPackage
     public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception
     {
-        F2<RelativePath, PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>>, Boolean> pathFilter =
+        F2<RelativePath, PackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>>, Boolean> pathFilter =
             pathFilter();
-
-        PackageFileSystemFormatter<F2<UnixFsObject, ZipOutputStream, IoEffect>> formatter =
-            PackageFileSystemFormatter.flatFormatter();
 
         fileSystem = fileSystem.prettify();
 
-        Stream<PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>>> items = fileSystem.
+        Stream<PackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>>> items = fileSystem.
             toList().
             filter( compose( BooleanF.invert, curry( pathFilter, BASE ) ) );
 
-        ZipOutputStream zos = null;
+        ZipArchiveOutputStream zos = null;
         try
         {
-            zos = new ZipOutputStream( new FileOutputStream( packageFile ) );
+            zos = new ZipArchiveOutputStream( packageFile );
+            zos.setLevel( Deflater.BEST_COMPRESSION );
 
-            for ( PackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> fileSystemObject : items )
+            for ( PackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>> fileSystemObject : items )
             {
                 fileSystemObject.getExtension().f( fileSystemObject.getUnixFsObject(), zos ).run();
             }
@@ -141,22 +141,28 @@ public class ZipUnixPackage
         };
     }
 
-    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> directory( Directory directory )
+    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>> directory( Directory directory )
     {
-        F2<UnixFsObject, ZipOutputStream, IoEffect> f = new F2<UnixFsObject, ZipOutputStream, IoEffect>()
+        F2<UnixFsObject, ZipArchiveOutputStream, IoEffect> f = new F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>()
         {
-            public IoEffect f( final UnixFsObject object, final ZipOutputStream zipOutputStream )
+            public IoEffect f( final UnixFsObject file, final ZipArchiveOutputStream zos )
             {
                 return new IoEffect()
                 {
                     public void run()
                         throws Exception
                     {
-                        String path = object.path.isBase() ? "." : object.path.asAbsolutePath( "./" ) + "/";
+                        String path = file.path.isBase() ? "." : file.path.asAbsolutePath( "./" ) + "/";
 
-                        ZipEntry entry = new ZipEntry( path );
-                        entry.setTime( object.lastModified.toDateTime().getMillis() );
-                        zipOutputStream.putNextEntry( entry );
+                        ZipArchiveEntry entry = new ZipArchiveEntry( path );
+                        entry.setSize( file.size );
+                        entry.setTime( file.lastModified.toDateTime().getMillis() );
+                        if ( file.attributes.mode.isSome() )
+                        {
+                            entry.setUnixMode( file.attributes.mode.some().toInt() );
+                        }
+                        zos.putArchiveEntry( entry );
+                        zos.closeArchiveEntry();
                     }
                 };
             }
@@ -165,12 +171,12 @@ public class ZipUnixPackage
         return basicPackageFSO( directory, f );
     }
 
-    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipOutputStream, IoEffect>> file( final Fs<?> fromFile,
+    private BasicPackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>> file( final Fs<?> fromFile,
                                                                                             UnixFsObject file )
     {
-        F2<UnixFsObject, ZipOutputStream, IoEffect> f = new F2<UnixFsObject, ZipOutputStream, IoEffect>()
+        F2<UnixFsObject, ZipArchiveOutputStream, IoEffect> f = new F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>()
         {
-            public IoEffect f( final UnixFsObject file, final ZipOutputStream zipOutputStream )
+            public IoEffect f( final UnixFsObject file, final ZipArchiveOutputStream zos )
             {
                 return new IoEffect()
                 {
@@ -241,11 +247,17 @@ public class ZipUnixPackage
                                 size = output.size();
                             }
 
-                            ZipEntry zipEntry = new ZipEntry( file.path.asAbsolutePath( "./" ) );
-                            zipEntry.setSize( size );
-                            zipEntry.setTime( file.lastModified.toDateTime().getMillis() );
-                            zipOutputStream.putNextEntry( zipEntry );
-                            IOUtil.copy( inputStream, zipOutputStream, 1024 * 128 );
+                            ZipArchiveEntry entry = new ZipArchiveEntry( file.path.asAbsolutePath( "./" ) );
+                            entry.setSize( size );
+                            entry.setTime( file.lastModified.toDateTime().getMillis() );
+                            if ( file.attributes.mode.isSome() )
+                            {
+                                entry.setUnixMode( file.attributes.mode.some().toInt() );
+                            }
+
+                            zos.putArchiveEntry( entry );
+                            copy( inputStream, zos, 1024 * 128 );
+                            zos.closeArchiveEntry();
                         }
                         finally
                         {

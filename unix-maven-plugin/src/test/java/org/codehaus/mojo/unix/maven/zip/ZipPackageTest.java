@@ -26,23 +26,25 @@ package org.codehaus.mojo.unix.maven.zip;
 
 import fj.*;
 import fj.data.*;
+import fj.data.List;
 import static fj.data.List.*;
+import static fj.data.Option.*;
 import static java.util.regex.Pattern.*;
 import junit.framework.*;
+import org.apache.commons.compress.archivers.zip.*;
+import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
-import static org.codehaus.mojo.unix.util.RelativePath.*;
-import static org.codehaus.mojo.unix.util.line.LineStreamWriter.EOL;
-
-import org.codehaus.mojo.unix.io.*;
+import org.codehaus.mojo.unix.io.LineEnding;
 import org.codehaus.mojo.unix.io.fs.*;
+import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
 import org.joda.time.*;
 
 import java.io.*;
 import java.nio.charset.*;
-import java.util.zip.*;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -55,13 +57,17 @@ public class ZipPackageTest
     private final Charset charset = Charset.forName( "utf-8" );
 
     LocalDateTime dirsTimestamp = new LocalDateTime( 2012, 8, 19, 10, 34, 10 );
+
     LocalDateTime dirsBarTxtTimestamp = new LocalDateTime( 2012, 8, 19, 10, 34, 10 );
+
     LocalDateTime fileTimestamp = new LocalDateTime( 2012, 8, 19, 10, 34, 48 );
+
     LocalDateTime fileFooTxtTimestamp = new LocalDateTime( 2012, 8, 19, 10, 34, 10 );
 
     // Zip has a resolution of two seconds
     LocalDateTime timestamp = new LocalDateTime( 2012, 1, 2, 3, 4, 6 );
 
+    @SuppressWarnings( "OctalInteger" )
     public void testBasic()
         throws Exception
     {
@@ -76,15 +82,15 @@ public class ZipPackageTest
 
         ZipUnixPackage zipPackage = new ZipUnixPackage();
 
-        zipPackage.beforeAssembly( EMPTY, timestamp );
+        zipPackage.beforeAssembly( EMPTY.mode( UnixFileMode._0755 ), timestamp );
 
         assertTrue( basedir.isDirectory() );
 
         // Git set the timestamp of file objects
-        assertTrue(new File(zip1, "dirs").setLastModified(dirsTimestamp.toDateTime().getMillis()));
-        assertTrue(new File(zip1, "dirs/bar.txt").setLastModified(dirsBarTxtTimestamp.toDateTime().getMillis()));
-        assertTrue(new File(zip1, "file").setLastModified(fileTimestamp.toDateTime().getMillis()));
-        assertTrue(new File(zip1, "file/foo.txt").setLastModified(fileFooTxtTimestamp.toDateTime().getMillis()));
+        assertTrue( new File( zip1, "dirs" ).setLastModified( dirsTimestamp.toDateTime().getMillis() ) );
+        assertTrue( new File( zip1, "dirs/bar.txt" ).setLastModified( dirsBarTxtTimestamp.toDateTime().getMillis() ) );
+        assertTrue( new File( zip1, "file" ).setLastModified( fileTimestamp.toDateTime().getMillis() ) );
+        assertTrue( new File( zip1, "file/foo.txt" ).setLastModified( fileFooTxtTimestamp.toDateTime().getMillis() ) );
 
         Replacer replacer = new Replacer( compile( "@bar@" ), "awesome" );
 
@@ -101,39 +107,46 @@ public class ZipPackageTest
         new FilterFilesOperation( single( "dirs/**" ), List.<String>nil(), single( replacer ), LineEnding.unix ).
             perform( zipPackage );
 
+        UnixFileMode fileMode = UnixFileMode.fromInt( 0600 );
+        UnixFileMode dirMode = UnixFileMode.fromInt( 0777 );
+
+        FileAttributes fileAttributes = new FileAttributes( "root", "root", fileMode );
+        FileAttributes directoryAttributes = new FileAttributes( "root", "root", dirMode );
+        new SetAttributesOperation( BASE, single( "**/*" ), List.<String>nil(), some( fileAttributes ),
+                                    some( directoryAttributes ) ).
+            perform( zipPackage );
+
         zipPackage.
             packageToFile( zip, ScriptUtil.Strategy.SINGLE );
 
-        FileInputStream fis = new FileInputStream( zip );
-        ZipInputStream in = new ZipInputStream( fis );
-        assertDirectory( in, "./dirs/", dirsTimestamp );
+        ZipFile file = new ZipFile( zip );
+        Enumeration<ZipArchiveEntry> enumeration = file.getEntriesInPhysicalOrder();
+        assertDirectory( enumeration.nextElement(), "./dirs/", dirsTimestamp );
         // Is it really correct that filtered files should retain the old timestamp?
-        assertFile( in, "./dirs/bar.txt", 8, dirsBarTxtTimestamp, "awesome\n" );
-        assertDirectory( in, "./file/", fileTimestamp );
-        assertFile( in, "./file/foo.txt", 6, fileFooTxtTimestamp, "@foo@\n" );
-        assertDirectory( in, "./opt/", timestamp );
-        assertDirectory( in, "./opt/hudson/", timestamp );
-        assertNull( in.getNextEntry() );
-        in.close();
-        fis.close();
+        assertFile( file, enumeration.nextElement(), "./dirs/bar.txt", 8, dirsBarTxtTimestamp, "awesome\n", fileMode );
+        assertDirectory( enumeration.nextElement(), "./file/", fileTimestamp );
+        assertFile( file, enumeration.nextElement(), "./file/foo.txt", 6, fileFooTxtTimestamp, "@foo@\n", fileMode );
+        assertDirectory( enumeration.nextElement(), "./opt/", timestamp );
+        assertDirectory( enumeration.nextElement(), "./opt/hudson/", timestamp );
+        assertFalse( enumeration.hasMoreElements() );
+        file.close();
     }
 
-    private void assertDirectory( ZipInputStream in, String name, LocalDateTime time )
+    private void assertDirectory( ZipArchiveEntry entry, String name, LocalDateTime time )
         throws IOException
     {
-        ZipEntry entry = in.getNextEntry();
         assertNotNull( name, entry );
         assertTrue( name + " should be file", entry.isDirectory() );
         assertEquals( name + ", name", name, entry.getName() );
         assertEquals( name + ", timestamp", time, new LocalDateTime( entry.getTime() ) );
-        in.closeEntry();
     }
 
-    private void assertFile( ZipInputStream in, String name, int size, LocalDateTime time, String content )
+    private void assertFile( ZipFile file, ZipArchiveEntry entry, String name, int size, LocalDateTime time,
+                             String content, UnixFileMode mode )
         throws IOException
     {
-        ZipEntry entry = in.getNextEntry();
-        assertNotNull( entry );
+        InputStream in = file.getInputStream( entry );
+
         assertFalse( name + " should be file", entry.isDirectory() );
         assertEquals( name + ", name", name, entry.getName() );
         assertEquals( name + ", timestamp", time, new LocalDateTime( entry.getTime() ) );
@@ -143,6 +156,8 @@ public class ZipPackageTest
         byte[] bytes = new byte[1000];
         assertEquals( size, in.read( bytes, 0, bytes.length ) );
         assertEquals( content, new String( bytes, 0, size, charset ) );
-        in.closeEntry();
+
+        assertEquals( ZipArchiveEntry.PLATFORM_UNIX, entry.getPlatform() );
+        assertEquals( name + ", mode", mode.toString(), UnixFileMode.fromInt( entry.getUnixMode() ).toString() );
     }
 }

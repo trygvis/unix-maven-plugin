@@ -431,7 +431,11 @@ public abstract class MojoHelper
 
         // Create the complete list of assembly operations.
         // Order: defaults -> mojo -> pakke
-        List<AssemblyOp> assemblyOps = join( list( defaultAssemblyOp.reverse(), mojoAssembly, packageAssembly ) );
+        List<List<AssemblyOp>> list = single( defaultAssemblyOp.reverse() ).
+            conss( mojoAssembly ).
+            conss( packageAssembly );
+
+        List<AssemblyOp> assemblyOps = join( list.reverse() );
 
         List<AssemblyOperation> operations = nil();
 

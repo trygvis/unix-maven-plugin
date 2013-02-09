@@ -42,8 +42,8 @@ import static org.codehaus.mojo.unix.util.RelativePath.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public class CopyDirectoryOperation<FsType extends Fs>
-    implements AssemblyOperation<FsType>
+public class CopyDirectoryOperation
+    implements AssemblyOperation
 {
     private final Fs<?> from;
 
@@ -72,7 +72,7 @@ public class CopyDirectoryOperation<FsType extends Fs>
         this.directoryAttributes = directoryAttributes;
     }
 
-    public void perform( FileCollector<FsType> fileCollector )
+    public void perform( FileCollector fileCollector )
         throws IOException
     {
         Pattern pattern = this.pattern.isSome() ? Pattern.compile( this.pattern.some()._1() ) : null;
@@ -83,7 +83,7 @@ public class CopyDirectoryOperation<FsType extends Fs>
                 addStringExcludes( excludes ).
                 create() );
 
-        for ( Fs<FsType> f : files )
+        for ( Fs f : files )
         {
 //            if ( f.getName().getBaseName().equals( "" ) )
 //            {

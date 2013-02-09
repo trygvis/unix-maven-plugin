@@ -36,9 +36,9 @@ import java.io.*;
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public interface AssemblyOperation<FsType extends Fs>
+public interface AssemblyOperation
     extends LineProducer
 {
-    void perform(FileCollector<FsType> fileCollector)
+    void perform(FileCollector fileCollector)
         throws IOException;
 }

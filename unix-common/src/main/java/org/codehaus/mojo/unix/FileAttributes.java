@@ -53,6 +53,11 @@ public class FileAttributes
     public final static FileAttributes EMPTY = new FileAttributes( Option.<String>none(), Option.<String>none(),
         Option.<UnixFileMode>none(), List.<String>nil() );
 
+    public FileAttributes( String user, String group, UnixFileMode mode )
+    {
+        this( some( user ), some( group ), some( mode ), List.<String>nil() );
+    }
+
     public FileAttributes( Option<String> user, Option<String> group, Option<UnixFileMode> mode )
     {
         this( user, group, mode, List.<String>nil() );

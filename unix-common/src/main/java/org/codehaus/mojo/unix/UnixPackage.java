@@ -38,7 +38,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public abstract class UnixPackage
-    implements FileCollector<Fs>
+    implements FileCollector
 {
     private final String packageFileExtension;
 

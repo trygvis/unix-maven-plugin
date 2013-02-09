@@ -39,7 +39,7 @@ import java.util.List;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class FsFileCollector
-    implements FileCollector<LocalFs>
+    implements FileCollector
 {
     private final List<IoEffect> operations = new ArrayList<IoEffect>();
 

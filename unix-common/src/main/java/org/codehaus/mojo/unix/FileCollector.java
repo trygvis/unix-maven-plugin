@@ -35,7 +35,7 @@ import static org.codehaus.mojo.unix.UnixFsObject.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public interface FileCollector<FsType extends Fs>
+public interface FileCollector
 {
     void addDirectory( Directory directory )
         throws IOException;

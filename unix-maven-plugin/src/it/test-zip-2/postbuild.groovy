@@ -1,7 +1,6 @@
 import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.*
 import static org.codehaus.mojo.unix.FileAttributes.*
 import static org.codehaus.mojo.unix.UnixFsObject.*
-import static fj.data.Option.*;
 import org.joda.time.*;
 
 boolean success = true

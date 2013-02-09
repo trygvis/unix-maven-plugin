@@ -96,7 +96,7 @@ public class OperationTest
     {
         assertTrue( files.files.isDirectory() );
         MockControl control = MockControl.createControl( FileCollector.class );
-        FileCollector<LocalFs> fileCollector = (FileCollector) control.getMock();
+        FileCollector fileCollector = (FileCollector) control.getMock();
 
         fileCollector.addFile( files.optJettyBinExtraApp, objects.optJettyBinExtraApp );
         control.setMatcher( new FsMatcher() );
