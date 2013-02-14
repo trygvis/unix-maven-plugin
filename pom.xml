@@ -31,7 +31,7 @@
   </parent>
   <groupId>no.arktekk.unix</groupId>
   <artifactId>unix</artifactId>
-  <version>feature-no-commons-vfs-SNAPSHOT</version>
+  <version>1.0-alpha-7-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Maven Unix Support</name>
   <inceptionYear>2008</inceptionYear>
@@ -42,9 +42,10 @@
     <version.maven-compiler-plugin>2.3.1</version.maven-compiler-plugin>
     <version.maven-dependency-plugin>2.5</version.maven-dependency-plugin>
     <version.maven-deploy-plugin>2.5</version.maven-deploy-plugin>
-    <version.maven-javadoc-plugin>2.8</version.maven-javadoc-plugin>
+    <version.maven-javadoc-plugin>2.9</version.maven-javadoc-plugin>
     <version.maven-jxr-plugin>2.3</version.maven-jxr-plugin>
     <version.maven-pmd-plugin>2.5</version.maven-pmd-plugin>
+    <version.maven-project-info-reports-plugin>2.6</version.maven-project-info-reports-plugin>
     <version.maven-resources-plugin>2.5</version.maven-resources-plugin>
   </properties>
   <dependencyManagement>
@@ -59,32 +60,11 @@
         <artifactId>maven-core</artifactId>
         <version>${version.maven-apis}</version>
       </dependency>
-<!--
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-artifact</artifactId>
-        <version>${version.maven-apis}</version>
-      </dependency>
--->
-<!--
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-project</artifactId>
-        <version>${version.maven-apis}</version>
-      </dependency>
--->
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
         <version>${version.maven-apis}</version>
       </dependency>
-      <!--
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-model</artifactId>
-        <version>${version.maven-apis}</version>
-      </dependency>
-      -->
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-container-default</artifactId>
@@ -128,6 +108,7 @@
   <issueManagement>
     <url>https://github.com/trygvis/unix-maven-plugin/issues</url>
   </issueManagement>
+  <url>http://mojo.codehaus.org/unix</url>
   <licenses>
     <license>
       <name>Apache License 2</name>
@@ -233,6 +214,11 @@
           </links>
           <source>1.5</source>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>${version.maven-project-info-reports-plugin}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

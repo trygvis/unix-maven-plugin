@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.maven.rpm;
  * SOFTWARE.
  */
 
-import fj.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 
@@ -33,23 +32,15 @@ import org.codehaus.mojo.unix.maven.plugin.*;
  */
 public class RpmMojoUtil
 {
-    public static final F2<RpmSpecificSettings, UnixPackage, UnixPackage> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage = new F2<RpmSpecificSettings, UnixPackage, UnixPackage>()
-    {
-        public UnixPackage f( RpmSpecificSettings rpmSpecificSettings, UnixPackage unixPackage )
-        {
-            return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( rpmSpecificSettings, unixPackage );
-        }
-    };
-
-    public static UnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( RpmSpecificSettings rpm,
-                                                                                           UnixPackage unixPackage )
+    public static RpmUnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( RpmSpecificSettings rpm,
+                                                                                              RpmUnixPackage unixPackage )
     {
         if ( rpm.group.isNone() )
         {
             throw new MissingSettingException( "group" );
         }
 
-        return RpmUnixPackage.cast( unixPackage ).
+        return unixPackage.
             rpmParameters( rpm.group.some(), rpm.rpmbuild );
     }
 }

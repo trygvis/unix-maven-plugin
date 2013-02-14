@@ -71,21 +71,21 @@ public abstract class MojoHelper
     public static final String DUPLICATE_CLASSIFIER = "Duplicate package classifier: '%s'.";
     public static final String DUPLICATE_UNCLASSIFIED = "There can only be one package without an classifier.";
 
-    public static Execution create( Map platforms,
+    public static <UP extends UnixPackage<UP>> Execution create( Map platforms,
                                     String platformType,
                                     Map formats,
                                     String formatType,
                                     MavenProjectWrapper project,
                                     boolean debug,
                                     boolean attachedMode,
-                                    F<UnixPackage, UnixPackage> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage,
+                                    F<UP, UP> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage,
                                     PackagingMojoParameters mojoParameters,
                                     final Log log )
         throws MojoFailureException, MojoExecutionException
     {
         MavenCommonLoggingLogFactory.setMavenLogger( log );
 
-        PackagingFormat format = (PackagingFormat) formats.get( formatType );
+        @SuppressWarnings( "unchecked" ) PackagingFormat<UP> format = (PackagingFormat<UP>) formats.get( formatType );
 
         if ( format == null )
         {
@@ -115,7 +115,7 @@ public abstract class MojoHelper
         PackageVersion version = PackageVersion.packageVersion( project.version, timestamp,
                                                                 project.artifact.isSnapshot(), mojoParameters.revision );
 
-        List<P3<UnixPackage, Package, List<AssemblyOperation>>> packages = nil();
+        List<P3<UP, Package, List<AssemblyOperation>>> packages = nil();
 
         for ( Package pakke : validatePackages( mojoParameters.packages, attachedMode ) )
         {
@@ -132,7 +132,7 @@ public abstract class MojoHelper
                                                                            mojoParameters,
                                                                            pakke );
 
-                UnixPackage unixPackage = format.start().
+                UP unixPackage = format.start().
                     parameters( parameters ).
                     setVersion( version ).                      // TODO: This should go away
                     workingDirectory( packageRoot ).
@@ -215,12 +215,12 @@ public abstract class MojoHelper
             }
         }
 
-        return new Execution( packages, project, formatType, attachedMode );
+        return new Execution<UP>( packages, project, formatType, attachedMode );
     }
 
-    public static class Execution
+    public static class Execution<UP extends UnixPackage>
     {
-        private final List<P3<UnixPackage, Package, List<AssemblyOperation>>> packages;
+        private final List<P3<UP, Package, List<AssemblyOperation>>> packages;
 
         private final MavenProjectWrapper project;
 
@@ -228,7 +228,7 @@ public abstract class MojoHelper
 
         private final boolean attachedMode;
 
-        public Execution( List<P3<UnixPackage, Package, List<AssemblyOperation>>> packages, MavenProjectWrapper project,
+        public Execution( List<P3<UP, Package, List<AssemblyOperation>>> packages, MavenProjectWrapper project,
                           String formatType, boolean attachedMode )
         {
             this.packages = packages;
@@ -263,7 +263,7 @@ public abstract class MojoHelper
         private void execute_( String artifactType, MavenProject mavenProject, MavenProjectHelper mavenProjectHelper, ScriptUtil.Strategy strategy )
             throws MojoExecutionException, MojoFailureException
         {
-            for ( P3<UnixPackage, Package, List<AssemblyOperation>> p : packages )
+            for ( P3<UP, Package, List<AssemblyOperation>> p : packages )
             {
                 UnixPackage unixPackage = p._1();
                 Package pakke = p._2();

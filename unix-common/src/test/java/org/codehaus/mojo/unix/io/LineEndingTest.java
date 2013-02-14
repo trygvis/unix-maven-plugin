@@ -1,10 +1,10 @@
 package org.codehaus.mojo.unix.io;
 
+import fj.*;
 import junit.framework.*;
 import org.codehaus.plexus.util.*;
 
 import java.io.*;
-import java.util.*;
 
 public class LineEndingTest
     extends TestCase
@@ -20,10 +20,10 @@ public class LineEndingTest
     private void assertResult( byte[] bytes, LineEnding lineEnding )
         throws IOException
     {
-        Map.Entry<InputStream, LineEnding> x = LineEnding.detect( new ByteArrayInputStream( bytes ) );
+        P2<InputStream, LineEnding> x = LineEnding.detect( new ByteArrayInputStream( bytes ) );
 
-        assertEquals( lineEnding, x.getValue() );
-        byte[] actualBytes = IOUtil.toByteArray( x.getKey() );
+        assertEquals( lineEnding, x._2() );
+        byte[] actualBytes = IOUtil.toByteArray( x._1() );
         assertEquals( bytes.length, actualBytes.length );
         for ( int i = 0; i < actualBytes.length; i++ )
         {

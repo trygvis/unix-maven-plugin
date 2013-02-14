@@ -52,7 +52,7 @@ import java.util.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class PkgUnixPackage
-    extends UnixPackage
+    extends UnixPackage<PkgUnixPackage>
 {
     private LocalFs prototype;
     private LocalFs pkginfo;
@@ -79,7 +79,7 @@ public class PkgUnixPackage
         super( "pkg" );
     }
 
-    public UnixPackage parameters( PackageParameters parameters )
+    public PkgUnixPackage parameters( PackageParameters parameters )
     {
         this.classifier = parameters.classifier;
         pkginfoFile = new PkginfoFile( parameters.architecture.orSome( "all" ),
@@ -99,7 +99,7 @@ public class PkgUnixPackage
     // Common Settings
     // -----------------------------------------------------------------------
 
-    public UnixPackage debug( boolean debug )
+    public PkgUnixPackage debug( boolean debug )
     {
         this.debug = debug;
         return this;
@@ -267,7 +267,7 @@ public class PkgUnixPackage
         operations = operations.cons( new IoEffect()
         {
             public void run()
-                throws Exception
+                throws IOException
             {
                 OutputStream outputStream = null;
                 try

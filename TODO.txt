@@ -108,6 +108,8 @@ o Explain possible workflow and where the different Mojos fit in
 
 o Need *lots* of includes/excludes examples, with regexp rewriting
 
+o Document how to create both Solaris and rpm packages with profiles.
+
 == Integration Test ==
 
 o Make sure that all the validate scripts are using the latest Deb/Pkg/Rpm tools to verify all the contents of the

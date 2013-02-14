@@ -35,7 +35,7 @@ import org.codehaus.mojo.unix.rpm.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
-import org.codehaus.plexus.util.*;
+import static org.codehaus.plexus.util.FileUtils.forceMkdir;
 import org.joda.time.*;
 
 import java.io.*;
@@ -44,7 +44,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class RpmUnixPackage
-    extends UnixPackage
+    extends UnixPackage<RpmUnixPackage>
 {
     private SpecFile specFile;
 
@@ -82,14 +82,14 @@ public class RpmUnixPackage
         return this;
     }
 
-    public UnixPackage rpmParameters( String group, Option<String> rpmbuild )
+    public RpmUnixPackage rpmParameters( String group, Option<String> rpmbuild )
     {
         specFile.group = group;
         this.rpmbuild = rpmbuild;
         return this;
     }
 
-    public UnixPackage debug( boolean debug )
+    public RpmUnixPackage debug( boolean debug )
     {
         this.specFile.dump = debug;
         this.debug = debug;
@@ -129,7 +129,7 @@ public class RpmUnixPackage
         specFile.apply( f );
     }
 
-    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
+    public P2<File, File> prepare( ScriptUtil.Strategy strategy )
         throws Exception
     {
         File rpms = new File( workingDirectory.file, "RPMS" );
@@ -138,12 +138,12 @@ public class RpmUnixPackage
 
         File specFilePath = new File( specsDir, specFile.name + ".spec" );
 
-        FileUtils.forceMkdir( new File( workingDirectory.file, "BUILD" ) );
-        FileUtils.forceMkdir( rpms );
-        FileUtils.forceMkdir( new File( workingDirectory.file, "SOURCES" ) );
-        FileUtils.forceMkdir( specsDir );
-        FileUtils.forceMkdir( new File( workingDirectory.file, "SRPMS" ) );
-        FileUtils.forceMkdir( tmp );
+        forceMkdir( new File( workingDirectory.file, "BUILD" ) );
+        forceMkdir( rpms );
+        forceMkdir( new File( workingDirectory.file, "SOURCES" ) );
+        forceMkdir( specsDir );
+        forceMkdir( new File( workingDirectory.file, "SRPMS" ) );
+        forceMkdir( tmp );
 
         fileCollector.collect();
 
@@ -158,6 +158,17 @@ public class RpmUnixPackage
         specFile.buildRoot = fileCollector.root.file;
 
         LineStreamUtil.toFile( specFile, specFilePath );
+
+        return p( tmp, specFilePath );
+    }
+
+    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
+        throws Exception
+    {
+        P2<File, File> p =  prepare( strategy );
+
+        File tmp = p._1();
+        File specFilePath = p._2();
 
         new Rpmbuild().
             setDebug( debug ).

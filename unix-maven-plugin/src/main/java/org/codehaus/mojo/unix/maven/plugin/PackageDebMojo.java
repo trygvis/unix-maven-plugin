@@ -25,8 +25,7 @@ package org.codehaus.mojo.unix.maven.plugin;
  */
 
 import fj.*;
-import static fj.Function.*;
-import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.maven.deb.DebMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage;
 import org.codehaus.mojo.unix.maven.deb.*;
 
 /**
@@ -35,8 +34,9 @@ import org.codehaus.mojo.unix.maven.deb.*;
  * @phase package
  * @requiresDependencyResolution runtime
  */
+@SuppressWarnings( "UnusedDeclaration" )
 public class PackageDebMojo
-    extends AbstractPackageMojo
+    extends AbstractPackageMojo<DebUnixPackage>
 {
     /**
      * @parameter
@@ -48,8 +48,16 @@ public class PackageDebMojo
         super( "linux", "deb", "deb" );
     }
 
-    protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
+    @Override
+    protected F<DebUnixPackage, DebUnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
     {
-        return curry( DebMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, deb );
+        return new F<DebUnixPackage, DebUnixPackage>()
+        {
+            @Override
+            public DebUnixPackage f( DebUnixPackage unixPackage )
+            {
+                return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( deb, unixPackage );
+            }
+        };
     }
 }

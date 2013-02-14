@@ -70,7 +70,6 @@ public class PrototypeFileTest
 
         PrototypeFile prototypeFile = new PrototypeFile( defaultEntry );
 
-        System.out.println("getTestPath( \"src/test/non-existing/bash_profile\" ) = " + getTestPath("src/test/non-existing/bash_profile"));
         LocalFs bashProfileObject = root.resolve( "src/test/non-existing/bash_profile" );
         LocalFs extractJarObject = root.resolve( "src/test/non-existing/extract.jar" );
         UnixFsObject.RegularFile extractJar = regularFile( extractJarPath, dateTime, 0, fileAttributes );

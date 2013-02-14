@@ -93,17 +93,12 @@ public class FileScanner
 
                     if ( next.isDirectory() )
                     {
-//                    long start = System.currentTimeMillis();
                         File[] files = next.listFiles();
-//                    long duration = System.currentTimeMillis() - start;
-//                    System.out.println( "duration = " + duration );
                         for ( File file : files )
                         {
                             state.stack = state.stack.cons( file );
                         }
                     }
-
-//                    s = next.getAbsolutePath().substring( absolutePath.length() );
 
                     if ( selector.matches( relativePathFromFiles( file, next ) ) )
                     {

@@ -6,6 +6,9 @@ import org.joda.time.*;
 
 import java.io.*;
 
+/**
+ * Move the write methods into WrFs&lt;F extends Fs> extends Fs&lt;F>
+ */
 public interface Fs<F extends Fs>
     extends Closeable
 {
@@ -47,5 +50,8 @@ public interface Fs<F extends Fs>
         throws IOException;
 
     void copyFrom( Fs<?> from )
+        throws IOException;
+
+    void copyFrom( Fs from, InputStream is )
         throws IOException;
 }

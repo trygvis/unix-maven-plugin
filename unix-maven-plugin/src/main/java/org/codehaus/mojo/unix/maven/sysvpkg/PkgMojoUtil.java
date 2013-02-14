@@ -24,8 +24,6 @@ package org.codehaus.mojo.unix.maven.sysvpkg;
  * SOFTWARE.
  */
 
-import fj.*;
-import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
@@ -33,17 +31,8 @@ import org.codehaus.mojo.unix.maven.plugin.*;
  */
 public class PkgMojoUtil
 {
-    public static final F2<PkgSpecificSettings, UnixPackage, UnixPackage>
-        validateMojoSettingsAndApplyFormatSpecificSettingsToPackage = new F2<PkgSpecificSettings, UnixPackage, UnixPackage>()
-    {
-        public UnixPackage f( PkgSpecificSettings pkgSpecificSettings, UnixPackage unixPackage )
-        {
-            return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( pkgSpecificSettings, unixPackage );
-        }
-    };
-
-    public static UnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( PkgSpecificSettings pkg,
-                                                                                           UnixPackage unixPackage )
+    public static PkgUnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( PkgSpecificSettings pkg,
+                                                                                              PkgUnixPackage unixPackage )
     {
         if ( pkg == null )
         {
@@ -58,7 +47,7 @@ public class PkgMojoUtil
 //            extraPrototype[i] = PrototypeEntry.fromLine( pkg.getExtraPrototype()[i] );
 //        }
 
-        return PkgUnixPackage.cast( unixPackage ).
+        return unixPackage.
             pkgParameters( pkg.classes, pkg.category );
     }
 }

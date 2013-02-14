@@ -108,15 +108,10 @@ public class CopyDirectoryOperation
 
             if ( f.isFile() )
             {
-//                fileCollector.addFile( f, AssemblyOperationUtil.fromFileObject( targetName, f, fileAttributes ) );
-
                 fileCollector.addFile( f, regularFile( targetName, f.lastModified(), f.size(), fileAttributes ) );
             }
             else if ( f.isDirectory() )
             {
-//                fileCollector.addDirectory(
-//                    AssemblyOperationUtil.dirFromFileObject( targetName, f, directoryAttributes ) );
-
                 fileCollector.addDirectory( directory( targetName, f.lastModified(), directoryAttributes ));
             }
         }

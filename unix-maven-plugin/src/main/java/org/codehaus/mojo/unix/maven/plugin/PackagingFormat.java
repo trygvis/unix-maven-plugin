@@ -29,7 +29,7 @@ import org.codehaus.mojo.unix.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public interface PackagingFormat
+public interface PackagingFormat<UnixPackage>
 {
     String ROLE = PackagingFormat.class.getName();
 

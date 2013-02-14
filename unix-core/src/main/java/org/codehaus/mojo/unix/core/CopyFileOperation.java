@@ -59,9 +59,9 @@ public class CopyFileOperation
     public void perform( FileCollector fileCollector )
         throws IOException
     {
-        fileCollector.addFile( fromFile,
-                               regularFile( toFile, new LocalDateTime( fromFile.lastModified() ), fromFile.size(),
-                                            attributes ) );
+        LocalDateTime lastModified = new LocalDateTime( fromFile.lastModified() );
+        UnixFsObject.RegularFile file = regularFile( toFile, lastModified, fromFile.size(), attributes );
+        fileCollector.addFile( fromFile, file );
     }
 
     public void streamTo( LineStreamWriter streamWriter )

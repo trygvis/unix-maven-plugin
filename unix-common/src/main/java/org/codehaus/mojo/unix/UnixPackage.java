@@ -37,7 +37,7 @@ import java.io.*;
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public abstract class UnixPackage
+public abstract class UnixPackage<UP extends UnixPackage<UP>>
     implements FileCollector
 {
     private final String packageFileExtension;
@@ -53,22 +53,24 @@ public abstract class UnixPackage
         this.packageFileExtension = packageFileExtension;
     }
 
-    public abstract UnixPackage parameters( PackageParameters parameters );
+    public abstract UP parameters( PackageParameters parameters );
 
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    public final UnixPackage workingDirectory( LocalFs workingDirectory )
+    @SuppressWarnings( "unchecked" )
+    public UP workingDirectory( LocalFs workingDirectory )
     {
         this.workingDirectory = workingDirectory;
-        return this;
+        return (UP)this;
     }
 
-    public UnixPackage basedir( File basedir )
+    @SuppressWarnings( "unchecked" )
+    public UP basedir( File basedir )
     {
         this.basedir = basedir;
-        return this;
+        return (UP)this;
     }
 
     public File getScripts()
@@ -76,9 +78,16 @@ public abstract class UnixPackage
         return new File( basedir, "src/main/unix/scripts" );
     }
 
-    public UnixPackage debug( boolean debug )
+    @SuppressWarnings( "unchecked" )
+    public UP debug( boolean debug )
     {
-        return this;
+        return (UP)this;
+    }
+    @SuppressWarnings( "unchecked" )
+    public UP setVersion( PackageVersion version )
+    {
+        this.version = version;
+        return (UP)this;
     }
 
     public abstract void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
@@ -86,12 +95,6 @@ public abstract class UnixPackage
 
     public abstract void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
         throws Exception;
-
-    public UnixPackage setVersion( PackageVersion version )
-    {
-        this.version = version;
-        return this;
-    }
 
     public final PackageVersion getVersion()
     {

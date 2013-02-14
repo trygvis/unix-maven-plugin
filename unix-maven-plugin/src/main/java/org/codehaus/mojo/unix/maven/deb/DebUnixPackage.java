@@ -45,7 +45,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class DebUnixPackage
-    extends UnixPackage
+    extends UnixPackage<DebUnixPackage>
 {
     private ControlFile controlFile;
 
@@ -140,10 +140,9 @@ public class DebUnixPackage
     //
     // -----------------------------------------------------------------------
 
-    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
+    public ScriptUtil.Result prepare( LocalFs fsRoot, ScriptUtil.Strategy strategy )
         throws Exception
     {
-        LocalFs fsRoot = fileCollector.root;
         LocalFs debian = fsRoot.resolve( relativePath( "DEBIAN" ) );
         LocalFs controlFilePath = debian.resolve( relativePath( "control" ) );
 
@@ -152,9 +151,17 @@ public class DebUnixPackage
 
         fileCollector.collect();
 
-        ScriptUtil.Result result = scriptUtil.
+        return scriptUtil.
             createExecution( controlFile.packageName, "deb", getScripts(), debian.file, strategy ).
             execute();
+    }
+
+    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
+        throws Exception
+    {
+        LocalFs fsRoot = fileCollector.root;
+
+        ScriptUtil.Result result = prepare( fsRoot, strategy );
 
         UnixUtil.chmodIf( result.preInstall, "0755" );
         UnixUtil.chmodIf( result.postInstall, "0755" );

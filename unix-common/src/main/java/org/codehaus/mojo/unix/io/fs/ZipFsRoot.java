@@ -139,6 +139,12 @@ public class ZipFsRoot
         throw new RuntimeException( "Not supported" );
     }
 
+    public void copyFrom( Fs from, InputStream is )
+        throws IOException
+    {
+        throw new RuntimeException( "Not supported" );
+    }
+
     public String absolutePath( RelativePath relativePath )
     {
         return file + "!/" + relativePath.string;

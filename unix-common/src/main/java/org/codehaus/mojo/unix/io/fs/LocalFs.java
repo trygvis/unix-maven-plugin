@@ -130,24 +130,30 @@ public class LocalFs
     public void copyFrom( Fs from )
         throws IOException
     {
+        copyFrom( from, from.inputStream() );
+    }
+
+    public void copyFrom( Fs from, InputStream is )
+        throws IOException
+    {
         parent().mkdir();
 
         FileOutputStream os = null;
         try
         {
             os = new FileOutputStream( file );
-            IOUtil.copy( from.inputStream(), os );
+            IOUtil.copy( is, os );
         }
         finally
         {
             IOUtil.close( os );
+            IOUtil.close( is );
         }
 
         if ( !file.setLastModified( from.lastModified().toDateTime().toDate().getTime() ) )
         {
             throw new IOException( "Unable to set last modified on " + file.getAbsolutePath() );
         }
-
     }
 
     private void find( File directory, List<LocalFs> list, IncludeExcludeFilter filter, boolean filesOnly )

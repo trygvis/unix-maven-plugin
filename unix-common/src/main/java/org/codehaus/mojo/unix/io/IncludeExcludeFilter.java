@@ -109,11 +109,6 @@ public class IncludeExcludeFilter
             include = matchesAny( include, false, s, excludes );
         }
 
-//        if ( !include )
-//        {
-//            System.out.println( "No match: " + relativePath );
-//        }
-
         return include;
     }
 
@@ -197,18 +192,6 @@ public class IncludeExcludeFilter
             {
                 excludes.addAll( Arrays.asList( DEFAULT_EXCLUDES ) );
             }
-
-//            System.out.println( "Includes:" );
-//            for (PathExpression pathExpression : includes)
-//            {
-//                System.out.println(pathExpression.getExpression() + "=" + pathExpression.getPattern().pattern());
-//            }
-//
-//            System.out.println( "Excludes:" );
-//            for ( PathExpression pathExpression : excludes )
-//            {
-//                System.out.println(pathExpression.getExpression() + "=" + pathExpression.getPattern().pattern());
-//            }
 
             return new IncludeExcludeFilter( includes, excludes );
         }

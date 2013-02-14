@@ -243,8 +243,6 @@ public class PackageFileSystem<A>
      */
     public TreeZipper<PackageFileSystemObject<A>> addChild( TreeZipper<PackageFileSystemObject<A>> parent, Tree<PackageFileSystemObject<A>> node )
     {
-//        System.out.println( "Adding to " + parent.getLabel().object.path + ": " + node.root().object.path + " which is a " + node.root().object.getClass() );
-
         if ( parent.getLabel().getUnixFsObject() instanceof Directory )
         {
             return parent.insertDownFirst( node );

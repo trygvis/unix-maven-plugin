@@ -27,29 +27,27 @@ package org.codehaus.mojo.unix.maven.zip;
 import fj.*;
 import static fj.Function.*;
 import fj.data.*;
-import fj.data.List;
 import org.apache.commons.compress.archivers.zip.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.BasicPackageFileSystemObject.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageFileSystem.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
+import static org.codehaus.mojo.unix.core.FsFileCollector.*;
 import org.codehaus.mojo.unix.io.*;
-import org.codehaus.mojo.unix.io.fs.*;
+import org.codehaus.mojo.unix.io.fs.Fs;
 import org.codehaus.mojo.unix.java.*;
 import org.codehaus.mojo.unix.util.*;
-
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.plexus.util.*;
-import static org.codehaus.plexus.util.IOUtil.copy;
+import static org.codehaus.plexus.util.IOUtil.*;
 import org.joda.time.*;
 
 import java.io.*;
-import java.util.*;
 import java.util.zip.*;
 
 public class ZipUnixPackage
-    extends UnixPackage
+    extends UnixPackage<ZipUnixPackage>
 {
     private PackageFileSystem<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>> fileSystem;
 
@@ -58,7 +56,7 @@ public class ZipUnixPackage
         super( "zip" );
     }
 
-    public UnixPackage parameters( PackageParameters parameters )
+    public ZipUnixPackage parameters( PackageParameters parameters )
     {
         return this;
     }
@@ -150,7 +148,7 @@ public class ZipUnixPackage
                 return new IoEffect()
                 {
                     public void run()
-                        throws Exception
+                        throws IOException
                     {
                         String path = file.path.isBase() ? "." : file.path.asAbsolutePath( "./" ) + "/";
 
@@ -181,71 +179,18 @@ public class ZipUnixPackage
                 return new IoEffect()
                 {
                     public void run()
-                        throws Exception
+                        throws IOException
                     {
                         InputStream inputStream = null;
                         BufferedReader reader = null;
                         try
                         {
-                            @SuppressWarnings( "unchecked" ) List<Replacer> filters = file.filters;
+                            P2<InputStream, Option<Long>> p =
+                                filtersAndLineEndingHandingInputStream( file, fromFile.inputStream() );
 
-                            long size;
+                            inputStream = p._1();
 
-                            inputStream = fromFile.inputStream();
-
-                            // With no filters *and* we're keeping the line endings we can stream the file directly. Like a BOSS!
-                            if ( filters.isEmpty() && file.lineEnding.isKeep() )
-                            {
-                                size = file.size;
-                            }
-                            else
-                            {
-                                // We have to buffer the file in memory. It might be a good idea to check if the file
-                                // is big (> 10MB) and copy it to disk. It might be smart to print a warning if that
-                                // happens as the user probably has a weird configuration.
-
-                                byte[] eol;
-                                if ( file.lineEnding.isKeep() )
-                                {
-                                    Map.Entry<InputStream, LineEnding> x = LineEnding.detect( inputStream );
-                                    inputStream = x.getKey();
-                                    eol = x.getValue().eol();
-                                }
-                                else
-                                {
-                                    eol = file.lineEnding.eol();
-                                }
-
-                                // TODO: Ideally create an output stream that doesn't create a new array on
-                                // toByteArray, but instead can be used as an InputStream directly.
-                                // TODO: This is going to add additional EOL at the end of the file. Fuck it.
-                                ByteArrayOutputStream output = new ByteArrayOutputStream( (int) file.size );
-
-                                // This implicitly uses the platform encoding. This will probably bite someone.
-                                reader = new BufferedReader( new InputStreamReader( inputStream ), 1024 * 128 );
-
-                                String line = reader.readLine();
-
-                                while ( line != null )
-                                {
-                                    if ( filters.isNotEmpty() )
-                                    {
-                                        for ( Replacer filter : filters )
-                                        {
-                                            line = filter.replace( line );
-                                        }
-                                    }
-
-                                    output.write( line.getBytes() );
-                                    output.write( eol );
-
-                                    line = reader.readLine();
-                                }
-                                inputStream.close();
-
-                                inputStream = new ByteArrayInputStream( output.toByteArray() );
-                                size = output.size();
-                            }
+                            long size = p._2().orSome( file.size );
 
                             ZipArchiveEntry entry = new ZipArchiveEntry( file.path.asAbsolutePath( "./" ) );
                             entry.setSize( size );

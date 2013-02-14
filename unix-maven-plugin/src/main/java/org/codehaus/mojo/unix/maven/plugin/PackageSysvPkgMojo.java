@@ -25,8 +25,7 @@ package org.codehaus.mojo.unix.maven.plugin;
  */
 
 import fj.*;
-import static fj.Function.*;
-import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.maven.sysvpkg.PkgMojoUtil.*;
 import org.codehaus.mojo.unix.maven.sysvpkg.*;
 
 /**
@@ -35,6 +34,7 @@ import org.codehaus.mojo.unix.maven.sysvpkg.*;
  * @phase package
  * @requiresDependencyResolution runtime
  */
+@SuppressWarnings( "UnusedDeclaration" )
 public class PackageSysvPkgMojo
     extends AbstractPackageMojo
 {
@@ -48,8 +48,15 @@ public class PackageSysvPkgMojo
         super( "solaris", "sysvpkg", "pkg" );
     }
 
-    protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
+    protected F<PkgUnixPackage, PkgUnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
     {
-        return curry( PkgMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, pkg );
+        return new F<PkgUnixPackage, PkgUnixPackage>()
+        {
+            @Override
+            public PkgUnixPackage f( PkgUnixPackage unixPackage )
+            {
+                return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( pkg, unixPackage );
+            }
+        };
     }
 }

@@ -52,6 +52,15 @@ public class Timestamps
         }
     }
 
+    class Deb1
+        extends Common
+    {
+        public final FileTimestamp configProperties =
+            ft( "src/main/unix/files/opt/hudson/etc/config.properties", 2012, 2, 3, 4, 5, 6 );
+    }
+
+    public final Deb1 deb1;
+
     class Zip1
         extends Common
     {
@@ -80,6 +89,7 @@ public class Timestamps
     {
         this.basedir = basedir;
         // These constructors depend on basedir being set.
+        deb1 = new Deb1();
         zip1 = new Zip1();
         zip3 = new Zip3();
     }

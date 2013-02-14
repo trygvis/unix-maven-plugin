@@ -34,7 +34,7 @@ import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public abstract class AbstractPackageMojo
+public abstract class AbstractPackageMojo<UP extends UnixPackage<UP>>
     extends AbstractUnixMojo
 {
     /**
@@ -58,7 +58,7 @@ public abstract class AbstractPackageMojo
         this.artifactType = artifactType;
     }
 
-    protected abstract F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF();
+    protected abstract F<UP, UP> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF();
 
     public final void execute()
         throws MojoExecutionException, MojoFailureException

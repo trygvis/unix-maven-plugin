@@ -33,7 +33,7 @@ import org.codehaus.mojo.unix.maven.plugin.*;
 public class RpmPackagingFormat
     implements PackagingFormat
 {
-    public UnixPackage start()
+    public RpmUnixPackage start()
     {
         return new RpmUnixPackage();
     }

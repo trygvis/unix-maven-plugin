@@ -24,7 +24,6 @@ package org.codehaus.mojo.unix.maven.deb;
  * SOFTWARE.
  */
 
-import fj.*;
 import static fj.Function.*;
 import fj.data.*;
 import static fj.data.Option.*;
@@ -37,21 +36,13 @@ import org.codehaus.mojo.unix.maven.plugin.*;
  */
 public class DebMojoUtil
 {
-    public static final F2<DebSpecificSettings, UnixPackage, UnixPackage> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage =
-        new F2<DebSpecificSettings, UnixPackage, UnixPackage>()
-        {
-            public UnixPackage f( DebSpecificSettings debSpecificSettings, UnixPackage unixPackage )
-            {
-                return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( debSpecificSettings, unixPackage );
-            }
-        };
-
-    public static UnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( DebSpecificSettings deb,
-                                                                                           UnixPackage unixPackage )
+    public static DebUnixPackage validateMojoSettingsAndApplyFormatSpecificSettingsToPackage(DebSpecificSettings deb,
+                                                                                             DebUnixPackage unixPackage )
     {
         if ( deb == null )
         {
-            throw new MissingSettingException( "You need to specify the required properties when building deb packages." );
+            throw new MissingSettingException(
+                "You need to specify the required properties when building deb packages." );
         }
 
         if ( deb.section.isNone() )
@@ -59,11 +50,9 @@ public class DebMojoUtil
             throw new MissingSettingException( "Section has to be specified." );
         }
 
-        return DebUnixPackage.cast( unixPackage ).
-            debParameters( fromNull( deb.priority.orSome( "standard" ) ),
-                           fromNull( deb.section.some() ),
-                           deb.useFakeroot,
-                           deb.dpkgDeb,
+        return unixPackage.
+            debParameters( fromNull( deb.priority.orSome( "standard" ) ), fromNull( deb.section.some() ),
+                           deb.useFakeroot, deb.dpkgDeb,
                            deb.depends.map( flip( StringF.split ).f( "," ) ).orSome( List.<String>nil() ),
                            deb.recommends.map( flip( StringF.split ).f( "," ) ).orSome( List.<String>nil() ),
                            deb.suggests.map( flip( StringF.split ).f( "," ) ).orSome( List.<String>nil() ),

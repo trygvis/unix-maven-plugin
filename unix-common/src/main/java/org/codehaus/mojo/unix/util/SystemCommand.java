@@ -460,11 +460,9 @@ public class SystemCommand
                 execute().
                 assertSuccess();
 
-//            System.out.println( "stdout = " + stdout );
-//            System.out.println( "new File( stdout.toString() ).canRead() = " + new File( stdout.toString() ).canRead() );
-//            System.out.println( "new File( stdout.toString() ).getCanonicalFile().canRead() = " + new File( stdout.toString() ).getCanonicalFile().canRead() );
+            String out = StringUtils.trim( stdout.toString() );
 
-            return new File( stdout.toString() ).getCanonicalFile().canRead();
+            return new File( out ).getCanonicalFile().canRead();
         }
         catch ( IOException e )
         {

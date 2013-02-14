@@ -34,6 +34,8 @@ import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 import org.codehaus.mojo.unix.rpm.*;
+
+import static org.codehaus.mojo.unix.io.fs.FsUtil.resolve;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.plexus.*;
@@ -47,40 +49,35 @@ import java.io.*;
 public class RpmUnixPackageTest
     extends PlexusTestCase
 {
+    private final LocalDateTime now = new LocalDateTime();
+
     public void testBasic()
         throws Exception
     {
-        if ( !new Rpmbuild().available() )
-        {
-            return;
-        }
-
-        File archiveFile = getTestFile( "src/test/resources/operation/extract.jar" );
-
         LocalFs pomXml = new LocalFs( getTestFile( "pom.xml" ) );
-        Fs archive = FsUtil.resolve( archiveFile );
+        Fs archive = resolve( getTestFile( "../unix-core/src/test/resources/operation/extract.jar" ) );
         Fs<?> fooLicense = archive.resolve( relativePath( "foo-license.txt" ) );
         Fs<?> barLicense = archive.resolve( relativePath( "mydir/bar-license.txt" ) );
 
         RpmPackagingFormat packagingFormat = (RpmPackagingFormat) lookup( PackagingFormat.ROLE, "rpm" );
 
-        LocalFs rpmTest = new LocalFs( getTestFile( "target/rpm-test" ) );
-        LocalFs packageRoot = rpmTest.resolve( "root" );
-        File packageFile = getTestFile( "target/rpm-test/file.rpm" );
+        LocalFs root = new LocalFs( getTestFile( "target/rpm-test" ) );
+        File packageFile = root.resolve( "file.rpm" ).file;
 
         PackageVersion version = packageVersion( "1.0-1", "123", false, Option.<String>none() );
         PackageParameters parameters = packageParameters( "mygroup", "myartifact", version, "id", "default-name",
                                                           Option.<String>none(), EMPTY, EMPTY ).
             contact( "Kurt Cobain" ).
-            architecture( "all" ).
+            architecture( "noarch" ).
             name( "Yo!" ).
             license( "BSD" );
 
-        UnixPackage unixPackage = RpmPackagingFormat.cast( packagingFormat.start().
-            parameters( parameters ) ).
-            rpmParameters( "Fun", Option.<String>none() );
+        RpmUnixPackage unixPackage = packagingFormat.start().
+            parameters( parameters ).
+            rpmParameters( "Fun", Option.<String>none() ).
+            workingDirectory( root.resolve( "working-directory" ) );
 
-        LocalDateTime now = new LocalDateTime();
+        unixPackage.beforeAssembly( EMPTY, now );
 
         unixPackage.addFile( pomXml, regularFile( relativePath( "/pom.xml" ), now, 0, EMPTY ) );
         unixPackage.addFile( fooLicense, regularFile( relativePath( "/foo-license.txt" ), now, 0, EMPTY ) );
@@ -88,6 +85,15 @@ public class RpmUnixPackageTest
 
         unixPackage.
             debug( true ).
+            prepare( ScriptUtil.Strategy.SINGLE );
+
+        if ( !new Rpmbuild().available() )
+        {
+            System.err.println( "Skipping test: " + super.getName() );
+            return;
+        }
+
+        unixPackage.
             packageToFile( packageFile, ScriptUtil.Strategy.SINGLE );
 
         assertTrue( packageFile.canRead() );

@@ -71,7 +71,7 @@ public class ZipFs
 
     public String absolutePath()
     {
-        return root.absolutePath(relativePath);
+        return root.absolutePath( relativePath );
     }
 
     public InputStream inputStream()
@@ -96,5 +96,11 @@ public class ZipFs
         throws IOException
     {
         throw new IOException( "Not supported" );
+    }
+
+    public void copyFrom( Fs from, InputStream is )
+        throws IOException
+    {
+        throw new RuntimeException( "Not supported" );
     }
 }

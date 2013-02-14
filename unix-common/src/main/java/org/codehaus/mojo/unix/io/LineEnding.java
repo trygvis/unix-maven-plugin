@@ -1,7 +1,10 @@
 package org.codehaus.mojo.unix.io;
 
+import fj.*;
+
 import java.io.*;
-import java.util.*;
+
+import static fj.P.p;
 
 /**
  * TODO: This should support "keep" too.
@@ -36,7 +39,7 @@ public enum LineEnding
         return this == keep;
     }
 
-    public static Map.Entry<InputStream, LineEnding> detect( InputStream is )
+    public static P2<InputStream, LineEnding> detect( InputStream is )
         throws IOException
     {
         byte[] buffer = new byte[1000];
@@ -88,22 +91,6 @@ public enum LineEnding
         inputStream.unread( buffer, 0, i );
 
         final LineEnding finalLineEnding = lineEnding;
-        return new Map.Entry<InputStream, LineEnding>()
-        {
-            public InputStream getKey()
-            {
-                return inputStream;
-            }
-
-            public LineEnding getValue()
-            {
-                return finalLineEnding;
-            }
-
-            public LineEnding setValue( LineEnding value )
-            {
-                return null;
-            }
-        };
+        return p( (InputStream) inputStream, finalLineEnding );
     }
 }

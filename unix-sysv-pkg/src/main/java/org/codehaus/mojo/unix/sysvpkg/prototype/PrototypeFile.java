@@ -119,8 +119,6 @@ public class PrototypeFile
 
     public void streamTo( final LineStreamWriter stream )
     {
-        System.out.println( PackageFileSystemFormatter.<PrototypeEntry>flatFormatter().print( fileSystem ) );
-
         stream.
             addAllLines( iFiles.reverse() );
 

@@ -25,8 +25,7 @@ package org.codehaus.mojo.unix.maven.plugin;
  */
 
 import fj.*;
-import static fj.Function.*;
-import org.codehaus.mojo.unix.*;
+import static org.codehaus.mojo.unix.maven.rpm.RpmMojoUtil.*;
 import org.codehaus.mojo.unix.maven.rpm.*;
 
 /**
@@ -35,8 +34,9 @@ import org.codehaus.mojo.unix.maven.rpm.*;
  * @phase package
  * @requiresDependencyResolution runtime
  */
+@SuppressWarnings( "UnusedDeclaration" )
 public class PackageRpmMojo
-    extends AbstractPackageMojo
+    extends AbstractPackageMojo<RpmUnixPackage>
 {
     /**
      * @parameter
@@ -48,8 +48,14 @@ public class PackageRpmMojo
         super( "linux", "rpm", "rpm" );
     }
 
-    protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
+    protected F<RpmUnixPackage, RpmUnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
     {
-        return curry( RpmMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage, rpm );
+        return new F<RpmUnixPackage, RpmUnixPackage>()
+        {
+            public RpmUnixPackage f( RpmUnixPackage unixPackage )
+            {
+                return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( rpm, unixPackage );
+            }
+        };
     }
 }

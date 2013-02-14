@@ -26,7 +26,7 @@ package org.codehaus.mojo.unix.maven.plugin;
 
 import fj.*;
 import static fj.Function.*;
-import org.codehaus.mojo.unix.*;
+import org.codehaus.mojo.unix.maven.zip.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -34,15 +34,16 @@ import org.codehaus.mojo.unix.*;
  * @phase package
  * @requiresDependencyResolution runtime
  */
+@SuppressWarnings( "UnusedDeclaration" )
 public class PackageZipMojo
-    extends AbstractPackageMojo
+    extends AbstractPackageMojo<ZipUnixPackage>
 {
     public PackageZipMojo()
     {
         super( "generic", "zip", "unix-zip" );
     }
 
-    protected F<UnixPackage, UnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
+    protected F<ZipUnixPackage, ZipUnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
     {
         return identity();
     }

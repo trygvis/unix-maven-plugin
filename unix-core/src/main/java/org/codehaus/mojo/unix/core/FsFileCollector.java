@@ -35,6 +35,10 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
+import static fj.P.p;
+import static fj.data.Option.some;
+import static org.codehaus.mojo.unix.UnixFsObject.Replacer;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
@@ -57,7 +61,7 @@ public class FsFileCollector
 
     public void addFile( Fs fromFile, UnixFsObject.RegularFile file )
     {
-        operations.add( packageFile( fromFile, file ) );
+        operations.add( new CopyFileIoEffect( fromFile, file ) );
     }
 
     public void addSymlink( UnixFsObject.Symlink symlink )
@@ -72,7 +76,7 @@ public class FsFileCollector
     }
 
     public void collect()
-        throws Exception
+        throws IOException
     {
         for ( IoEffect operation : operations )
         {
@@ -84,24 +88,12 @@ public class FsFileCollector
     //
     // -----------------------------------------------------------------------
 
-    private IoEffect packageFile( final Fs from, final UnixFsObject.RegularFile to )
-    {
-        return new IoEffect()
-        {
-            public void run()
-                throws Exception
-            {
-                root.resolve( to.path ).copyFrom( from );
-            }
-        };
-    }
-
     private IoEffect packageDirectory( final RelativePath path )
     {
         return new IoEffect()
         {
             public void run()
-                throws Exception
+                throws IOException
             {
                 mkdirs( root.resolve( path ).file );
             }
@@ -113,7 +105,7 @@ public class FsFileCollector
         return new IoEffect()
         {
             public void run()
-                throws Exception
+                throws IOException
             {
                 mkdirs( root.resolve( symlink.path ).file.getParentFile() );
 
@@ -134,5 +126,98 @@ public class FsFileCollector
         {
             throw new IOException( "Unable to create root directory: " + root.file.getAbsolutePath() );
         }
+    }
+
+    private class CopyFileIoEffect
+        implements IoEffect
+    {
+        private final Fs from;
+        private final UnixFsObject.RegularFile to;
+
+        public CopyFileIoEffect( Fs from, UnixFsObject.RegularFile to )
+        {
+            this.from = from;
+            this.to = to;
+        }
+
+        public void run()
+            throws IOException
+        {
+            P2<InputStream, Option<Long>> p2 =
+                filtersAndLineEndingHandingInputStream( to, from.inputStream() );
+
+            root.resolve( to.path ).copyFrom( from, p2._1() );
+        }
+    }
+
+    /**
+     * Returns a pair with the new size and an InputStream that will contain the properly filtered data.
+     * <p/>
+     * Technically this could be streaming, but *should* only be applied to smaller files. The main problem is only
+     * heap usage so a 100MB file should be easily process in-memory. But not many of them.
+     */
+    public static P2<InputStream, Option<Long>> filtersAndLineEndingHandingInputStream( UnixFsObject file,
+                                                                                        InputStream inputStream )
+        throws IOException
+    {
+        // With no filters *and* keeping the line endings we can stream the file directly. Like a BOSS!
+        if ( file.filters.isEmpty() && file.lineEnding.isKeep() )
+        {
+            return p( inputStream, Option.<Long>none() );
+        }
+
+        // If the file has to be either filtered or have its line endings changed, it has to be read through a Reader.
+        // Detecting the line endings and skipping line ending conversion might fail (because of inconsistent line
+        // endings) so we'll convert those too.
+
+        // We have to buffer the file in memory. It might be a good idea to check if the file
+        // is big (> 10MB) and copy it to disk. It might be smart to print a warning if that
+        // happens as the user probably has a weird configuration. Like trying to filter a 100MB EAR file.
+
+        byte[] eol;
+        if ( file.lineEnding.isKeep() )
+        {
+            P2<InputStream, LineEnding> x = LineEnding.detect( inputStream );
+            inputStream = x._1();
+            eol = x._2().eol();
+        }
+        else
+        {
+            eol = file.lineEnding.eol();
+        }
+
+        // TODO: Ideally create an output stream that doesn't create a new array on
+        // toByteArray, but instead can be used as an InputStream directly.
+        // TODO: This is going to add additional EOL at the end of the file. Fuck it.
+        ByteArrayOutputStream output = new ByteArrayOutputStream( (int) file.size );
+
+        // This implicitly uses the platform encoding. This will probably bite someone.
+        BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ), 1024 * 128 );
+
+        String line = reader.readLine();
+
+        while ( line != null )
+        {
+            fj.data.List<Replacer> filters = file.filters;
+
+            if ( filters.isNotEmpty() )
+            {
+                for ( Replacer filter : filters )
+                {
+                    line = filter.replace( line );
+                }
+            }
+
+            output.write( line.getBytes() );
+            output.write( eol );
+
+            line = reader.readLine();
+        }
+        inputStream.close();
+
+        inputStream = new ByteArrayInputStream( output.toByteArray() );
+        long size = output.size();
+
+        return p( inputStream, some( size ) );
     }
 }
