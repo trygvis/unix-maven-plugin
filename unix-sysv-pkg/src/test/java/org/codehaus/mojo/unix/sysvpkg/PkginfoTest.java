@@ -28,13 +28,13 @@ import fj.data.*;
 import static fj.data.List.*;
 import static fj.data.Option.*;
 import junit.framework.*;
-import static org.codehaus.mojo.unix.sysvpkg.PkginfoFile.*;
+import static org.codehaus.mojo.unix.sysvpkg.Pkginfo.*;
 import org.codehaus.mojo.unix.util.line.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public class PkginfoFileTest
+public class PkginfoTest
     extends TestCase
 {
     public void testParsing()
@@ -52,7 +52,7 @@ public class PkginfoFileTest
             add( "                        2 package information files" ).
             add( "                    40281 blocks used (approx)" ));
 
-        PkginfoFile expected = new PkginfoFile( "all", "application", "Hudson", "project-pkg-1", "1.1-2",
+        Pkginfo expected = new Pkginfo( "all", "application", "Hudson", "project-pkg-1", "1.1-2",
                                                 some( "20090129.134909" ), Option.<String>none(),
                                                 some( "trygvis@inamo.no" ), List.<String>nil() );
 
@@ -61,7 +61,7 @@ public class PkginfoFileTest
 
     public void testClasses()
     {
-        PkginfoFile pkginfoFile = new PkginfoFile( "all", "application", "name", "mypackage", "1.0" );
+        Pkginfo pkginfo = new Pkginfo( "all", "application", "name", "mypackage", "1.0" );
 
         assertEquals( new LineFile().
             add( "ARCH=all" ).
@@ -71,9 +71,9 @@ public class PkginfoFileTest
             add( "VERSION=1.0" ).
 //            add( "CLASSES=none"). I think this is the right behaviou.
 //  If pkgmk always insert *and* warn about the class it should be commented back in
-            toString(), pkginfoFile.toString() );
+            toString(), pkginfo.toString() );
 
-        pkginfoFile = pkginfoFile.
+        pkginfo = pkginfo.
             classes( list( "smf" ) );
 
         assertEquals( new LineFile().
@@ -83,9 +83,9 @@ public class PkginfoFileTest
             add( "PKG=mypackage" ).
             add( "VERSION=1.0" ).
             add( "CLASSES=smf" ).
-            toString(), pkginfoFile.toString() );
+            toString(), pkginfo.toString() );
 
-        pkginfoFile = pkginfoFile.
+        pkginfo = pkginfo.
             classes( list( "none", "smf" ) );
 
         assertEquals( new LineFile().
@@ -95,6 +95,6 @@ public class PkginfoFileTest
             add( "PKG=mypackage" ).
             add( "VERSION=1.0" ).
             add( "CLASSES=none smf" ).
-            toString(), pkginfoFile.toString() );
+            toString(), pkginfo.toString() );
     }
 }

@@ -73,6 +73,10 @@ o Make sure the result of setLastModified is asserted
 
 o Make sure that timestamps are preserved for all assembly operations
 
+o Perform all io operations (IOEffect's) in a thread pool for faster execution.
+  This might not be so easy for ZIP, but will be very useful for the other kinds that require copying of files to an
+  assembly area.
+
 == Refactorings ==
 
 == Functional Java ==

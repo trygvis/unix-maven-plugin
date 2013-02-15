@@ -33,7 +33,7 @@ import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.UnixFsObject.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
-
+import static org.codehaus.mojo.unix.core.FsFileCollector.*;
 import org.codehaus.mojo.unix.io.*;
 import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.sysvpkg.*;
@@ -52,10 +52,10 @@ import java.util.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class PkgUnixPackage
-    extends UnixPackage<PkgUnixPackage>
+    extends UnixPackage<PkgUnixPackage, PkgUnixPackage.PkgPreparedPackage>
 {
     private LocalFs prototype;
-    private LocalFs pkginfo;
+    private LocalFs pkginfoFile;
     private boolean debug;
 
     private static final ScriptUtil scriptUtil = new ScriptUtil( "preinstall", "postinstall", "preremove", "postremove" ).
@@ -68,7 +68,7 @@ public class PkgUnixPackage
 
     private PrototypeFile prototypeFile;
 
-    private PkginfoFile pkginfoFile;
+    private Pkginfo pkginfo;
 
     private List<IoEffect> operations = nil();
 
@@ -82,11 +82,11 @@ public class PkgUnixPackage
     public PkgUnixPackage parameters( PackageParameters parameters )
     {
         this.classifier = parameters.classifier;
-        pkginfoFile = new PkginfoFile( parameters.architecture.orSome( "all" ),
-                                       "application",
-                                       parameters.name,
-                                       parameters.id,
-                                       getPkgVersion( parameters.version ) ).
+        pkginfo = new Pkginfo( parameters.architecture.orSome( "all" ),
+                               "application",
+                               parameters.name,
+                               parameters.id,
+                               getPkgVersion( parameters.version ) ).
             desc( parameters.description ).
             email( parameters.contactEmail ).
             pstamp( some( parameters.version.timestamp ) ).
@@ -109,7 +109,7 @@ public class PkgUnixPackage
         throws IOException
     {
         prototype = workingDirectory.resolve( relativePath( "prototype" ) );
-        pkginfo = workingDirectory.resolve( relativePath( "pkginfo" ) );
+        pkginfoFile = workingDirectory.resolve( relativePath( "pkginfo" ) );
 
         Directory defaultDirectory = directory( BASE, fromDateFields( new Date( 0 ) ), defaultDirectoryAttributes );
         DirectoryEntry directoryEntry = new DirectoryEntry( Option.<String>none(), defaultDirectory );
@@ -123,30 +123,26 @@ public class PkgUnixPackage
 
     public PkgUnixPackage pkgParameters( List<String> classes, Option<String> category )
     {
-        pkginfoFile = pkginfoFile.
-            category( category.orSome( pkginfoFile.category ) ).
+        pkginfo = pkginfo.
+            category( category.orSome( pkginfo.category ) ).
             classes( classes );
 
         return this;
     }
 
-    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
+    public PkgPreparedPackage prepare( ScriptUtil.Strategy strategy )
         throws Exception
     {
+        workingDirectory.mkdir();
+
         // -----------------------------------------------------------------------
         // Validate that the prototype looks sane
         // -----------------------------------------------------------------------
 
         // TODO: This should be more configurable
-        RelativePath[] specialPaths = new RelativePath[]{
-            BASE,
-            relativePath( "/etc" ),
-            relativePath( "/etc/opt" ),
-            relativePath( "/opt" ),
-            relativePath( "/usr" ),
-            relativePath( "/var" ),
-            relativePath( "/var/opt" ),
-        };
+        RelativePath[] specialPaths =
+            new RelativePath[]{ BASE, relativePath( "/etc" ), relativePath( "/etc/opt" ), relativePath( "/opt" ),
+                relativePath( "/usr" ), relativePath( "/var" ), relativePath( "/var/opt" ), };
 
         // TODO: This should use setDirectoryAttributes
         for ( RelativePath specialPath : specialPaths )
@@ -166,11 +162,9 @@ public class PkgUnixPackage
             createExecution( classifier.orSome( "default" ), "pkg", getScripts(), workingDirectory.file, strategy ).
             execute();
 
-        LineStreamUtil.toFile( pkginfoFile.toList(), pkginfo.file );
+        LineStreamUtil.toFile( pkginfo.toList(), pkginfoFile.file );
 
-        String pkg = pkginfoFile.getPkgName( pkginfo.file );
-
-        prototypeFile.addIFileIf( pkginfo.file, "pkginfo" );
+        prototypeFile.addIFileIf( pkginfoFile.file, "pkginfo" );
         prototypeFile.addIFileIf( result.preInstall, "preinstall" );
         prototypeFile.addIFileIf( result.postInstall, "postinstall" );
         prototypeFile.addIFileIf( result.preRemove, "preremove" );
@@ -180,9 +174,6 @@ public class PkgUnixPackage
             prototypeFile.addIFileIf( file );
         }
 
-        workingDirectory.resolve( relativePath( "assembly" ) );
-
-        // TODO: Replace this with an Actor-based execution
         for ( IoEffect operation : operations )
         {
             operation.run();
@@ -190,18 +181,30 @@ public class PkgUnixPackage
 
         LineStreamUtil.toFile( prototypeFile, prototype.file );
 
-        new PkgmkCommand().
-            setDebug( debug ).
-            setOverwrite( true ).
-            setDevice( workingDirectory.file ).
-            setPrototype( prototype.file ).
-            execute();
+        return new PkgPreparedPackage();
+    }
 
-        new PkgtransCommand().
-            setDebug( debug ).
-            setAsDatastream( true ).
-            setOverwrite( true ).
-            execute( workingDirectory.file, packageFile, pkg );
+    public class PkgPreparedPackage
+        extends UnixPackage.PreparedPackage
+    {
+        public void packageToFile( File packageFile )
+            throws Exception
+        {
+            String pkg = pkginfo.getPkgName( pkginfoFile.file );
+
+            new PkgmkCommand().
+                setDebug( debug ).
+                setOverwrite( true ).
+                setDevice( workingDirectory.file ).
+                setPrototype( prototype.file ).
+                execute();
+
+            new PkgtransCommand().
+                setDebug( debug ).
+                setAsDatastream( true ).
+                setOverwrite( true ).
+                execute( workingDirectory.file, packageFile, pkg );
+        }
     }
 
     public static String getPkgVersion( PackageVersion v )
@@ -244,25 +247,20 @@ public class PkgUnixPackage
         prototypeFile.apply( f );
     }
 
-    public static PkgUnixPackage cast( UnixPackage unixPackage )
-    {
-        return PkgUnixPackage.class.cast( unixPackage );
-    }
-
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    public LocalFs fromFile( final Fs<?> fromFile, UnixFsObject.RegularFile file )
+    public LocalFs fromFile( final Fs<?> fromFile, final UnixFsObject.RegularFile file )
     {
         // If it is a file on the local file system, just point the entry in the prototype file to it
-        if ( fromFile instanceof LocalFs )
+        if ( fromFile instanceof LocalFs && !needsFiltering( file ) )
         {
             return (LocalFs) fromFile;
         }
 
         // Creates a file under the working directory that should match the destination path
-        final LocalFs tmpFile = workingDirectory.resolve( file.path );
+        final LocalFs tmpFile = workingDirectory.resolve( relativePath( "assembly" ).add( file.path ) );
 
         operations = operations.cons( new IoEffect()
         {
@@ -272,8 +270,11 @@ public class PkgUnixPackage
                 OutputStream outputStream = null;
                 try
                 {
+                    P2<InputStream, Option<Long>> p2 =
+                        filtersAndLineEndingHandingInputStream( file, fromFile.inputStream() );
+
                     tmpFile.parent().mkdir();
-                    tmpFile.copyFrom( fromFile );
+                    tmpFile.copyFrom( fromFile, p2._1() );
                 }
                 finally
                 {

@@ -50,13 +50,13 @@ public class PkginfoUtil
         return new PkginfoUtil( true );
     }
 
-    public Option<PkginfoFile> getPackageInfoForDevice2( File device )
+    public Option<Pkginfo> getPackageInfoForDevice2( File device )
         throws IOException
     {
         return getPackageInfoForDevice2( device, "all" );
     }
 
-    public Option<PkginfoFile> getPackageInfoForDevice2( File device, String instance )
+    public Option<Pkginfo> getPackageInfoForDevice2( File device, String instance )
         throws IOException
     {
         if ( !device.canRead() )
@@ -78,10 +78,10 @@ public class PkginfoUtil
             execute().
             assertSuccess();
 
-        return PkginfoFile.fromStream( Stream.iterableStream( consumer.strings ) );
+        return Pkginfo.fromStream( Stream.iterableStream( consumer.strings ) );
     }
 
-    public static Option<PkginfoFile> getPackageInfoForDevice( File device )
+    public static Option<Pkginfo> getPackageInfoForDevice( File device )
         throws IOException
     {
         return getPackageInfoForDevice( device, null );
@@ -90,7 +90,7 @@ public class PkginfoUtil
     /**
      * @deprecated
      */
-    public static Option<PkginfoFile> getPackageInfoForDevice( File device, String instance )
+    public static Option<Pkginfo> getPackageInfoForDevice( File device, String instance )
         throws IOException
     {
         return new PkginfoUtil().debug().getPackageInfoForDevice2( device, instance );

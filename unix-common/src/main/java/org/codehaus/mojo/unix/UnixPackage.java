@@ -37,7 +37,7 @@ import java.io.*;
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public abstract class UnixPackage<UP extends UnixPackage<UP>>
+public abstract class UnixPackage<UP extends UnixPackage<UP, PP>, PP extends UnixPackage.PreparedPackage>
     implements FileCollector
 {
     private final String packageFileExtension;
@@ -93,7 +93,7 @@ public abstract class UnixPackage<UP extends UnixPackage<UP>>
     public abstract void beforeAssembly( FileAttributes defaultDirectoryAttributes, LocalDateTime timestamp )
         throws IOException;
 
-    public abstract void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
+    public abstract PP prepare( ScriptUtil.Strategy strategy )
         throws Exception;
 
     public final PackageVersion getVersion()
@@ -104,5 +104,11 @@ public abstract class UnixPackage<UP extends UnixPackage<UP>>
     public String getPackageFileExtension()
     {
         return packageFileExtension;
+    }
+
+    public abstract class PreparedPackage
+    {
+        public abstract void packageToFile( File packageFile )
+            throws Exception;
     }
 }

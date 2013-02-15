@@ -71,16 +71,17 @@ public abstract class MojoHelper
     public static final String DUPLICATE_CLASSIFIER = "Duplicate package classifier: '%s'.";
     public static final String DUPLICATE_UNCLASSIFIED = "There can only be one package without an classifier.";
 
-    public static <UP extends UnixPackage<UP>> Execution create( Map platforms,
-                                    String platformType,
-                                    Map formats,
-                                    String formatType,
-                                    MavenProjectWrapper project,
-                                    boolean debug,
-                                    boolean attachedMode,
-                                    F<UP, UP> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage,
-                                    PackagingMojoParameters mojoParameters,
-                                    final Log log )
+    public static <UP extends UnixPackage<UP, PP>, PP extends UnixPackage.PreparedPackage> Execution create(
+        Map platforms,
+        String platformType,
+        Map formats,
+        String formatType,
+        MavenProjectWrapper project,
+        boolean debug,
+        boolean attachedMode,
+        F<UP, UP> validateMojoSettingsAndApplyFormatSpecificSettingsToPackage,
+        PackagingMojoParameters mojoParameters,
+        final Log log )
         throws MojoFailureException, MojoExecutionException
     {
         MavenCommonLoggingLogFactory.setMavenLogger( log );
@@ -290,8 +291,8 @@ public abstract class MojoHelper
 
                     File packageFile = new File( project.buildDirectory, name );
 
-                    unixPackage.
-                        packageToFile( packageFile, strategy );
+                    unixPackage.prepare( strategy ).
+                        packageToFile( packageFile );
 
                     attach( pakke.classifier, artifactType, packageFile, mavenProject, mavenProjectHelper,
                             attachedMode );

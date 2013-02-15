@@ -25,19 +25,15 @@ package org.codehaus.mojo.unix.maven.deb;
  */
 
 import fj.data.*;
-import static fj.data.List.*;
 import static fj.data.Option.*;
-import static java.util.regex.Pattern.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
 import static org.codehaus.mojo.unix.PackageVersion.*;
-import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.deb.*;
-import static org.codehaus.mojo.unix.io.LineEnding.*;
 import org.codehaus.mojo.unix.io.fs.*;
+import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
-import static org.codehaus.mojo.unix.util.RelativePath.*;
 import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.*;
 import org.codehaus.plexus.*;
 import org.joda.time.*;
@@ -51,27 +47,22 @@ public class DebUnixPackageTest
     extends PlexusTestCase
 {
     private final LocalDateTime now = new LocalDateTime();
+
     private final PackageVersion version = packageVersion( "1.0", "123", false, some( "1" ) );
+
+    final PackageParameters parameters =
+        packageParameters( "mygroup", "myartifact", version, "id", "default-name", Option.<java.lang.String>none(),
+                           EMPTY, EMPTY ).
+            contact( "Kurt Cobain" ).
+            architecture( "all" );
 
     public void testBasic()
         throws Exception
     {
-        if ( !new DpkgDeb().available() )
-        {
-            System.err.println( "Skipping test: " + super.getName() );
-            return;
-        }
-
         DebPackagingFormat packagingFormat = (DebPackagingFormat) lookup( PackagingFormat.ROLE, "deb" );
 
         LocalFs root = new LocalFs( getTestFile( "target/deb-test" ) );
         File packageFile = root.resolve( "file.deb" ).file;
-
-        PackageVersion version = packageVersion( "1.0", "123", false, some( "1" ) );
-        PackageParameters parameters = packageParameters( "mygroup", "myartifact", version, "id", "default-name",
-                                                          Option.<java.lang.String>none(), EMPTY, EMPTY ).
-            contact( "Kurt Cobain" ).
-            architecture( "all" );
 
         List<String> nil = List.nil();
         UnixPackage pkg = packagingFormat.start().
@@ -81,7 +72,15 @@ public class DebUnixPackageTest
             debug( true ).
             workingDirectory( root.resolve( "working-directory" ) );
         pkg.beforeAssembly( EMPTY, now );
-        pkg.packageToFile( packageFile, SINGLE );
+        UnixPackage.PreparedPackage preparedPackage = pkg.prepare( SINGLE );
+
+        if ( !new DpkgDeb().available() )
+        {
+            System.err.println( "Skipping test: " + super.getName() );
+            return;
+        }
+
+        preparedPackage.packageToFile( packageFile );
 
         assertTrue( packageFile.canRead() );
     }
@@ -91,25 +90,6 @@ public class DebUnixPackageTest
     {
         DebPackagingFormat packagingFormat = (DebPackagingFormat) lookup( PackagingFormat.ROLE, "deb" );
 
-        LocalFs resources = new LocalFs( getTestFile( "src/test/resources/deb" ) );
-        LocalFs root = new LocalFs( getTestFile( "target/deb-filtering" ) );
-        LocalFs workingDirectory = root.resolve( "working-directory" );
-
-        PackageParameters parameters = packageParameters( "mygroup", "myartifact", version, "id", "default-name",
-                                                          Option.<java.lang.String>none(), EMPTY, EMPTY );
-
-        UnixPackage pkg = packagingFormat.start().
-            parameters( parameters ).
-            debug( true ).
-            workingDirectory( workingDirectory );
-        pkg.beforeAssembly( EMPTY, now );
-        List<Replacer> replacers = single( new Replacer( compile( quote( "${project.version}" ) ), "1.0" ) );
-        RegularFile file = regularFile( relativePath( "/config.properties" ), now, 0, EMPTY, replacers, unix );
-        pkg.addFile( resources.resolve( "config.properties" ), file );
-        DebUnixPackage.cast( pkg ).prepare( root, SINGLE );
-
-        LocalFs config = workingDirectory.resolve( "assembly" ).resolve( "config.properties" );
-        assertTrue( config.isFile() );
-        assertEquals( 12, config.size() );
+        new UnixPackageTestUtil<DebUnixPackage, DebUnixPackage.DebPreparedPackage>( "deb", packagingFormat ).testFiltering();
     }
 }

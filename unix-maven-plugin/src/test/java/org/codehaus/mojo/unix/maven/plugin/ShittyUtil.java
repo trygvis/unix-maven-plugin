@@ -401,13 +401,13 @@ public class ShittyUtil
             }
         };
 
-    public static final Equal<PkginfoFile> packageInfoEqual = Equal.equal( new F<PkginfoFile, F<PkginfoFile, Boolean>>()
+    public static final Equal<Pkginfo> packageInfoEqual = Equal.equal( new F<Pkginfo, F<Pkginfo, Boolean>>()
     {
-        public F<PkginfoFile, Boolean> f( final PkginfoFile tis )
+        public F<Pkginfo, Boolean> f( final Pkginfo tis )
         {
-            return new F<PkginfoFile, Boolean>()
+            return new F<Pkginfo, Boolean>()
             {
-                public Boolean f( PkginfoFile that )
+                public Boolean f( Pkginfo that )
                 {
                     Equal<Option<String>> optionStringEqual = Equal.equal( Function.curry( new F2<Option<String>, Option<String>, Boolean>()
                     {

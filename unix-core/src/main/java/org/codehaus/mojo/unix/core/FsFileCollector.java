@@ -47,11 +47,13 @@ public class FsFileCollector
 {
     private final List<IoEffect> operations = new ArrayList<IoEffect>();
 
+    private final List<F<UnixFsObject, Option<UnixFsObject>>> applications = new ArrayList<F<UnixFsObject, Option<UnixFsObject>>>();
+
     public final LocalFs root;
 
     public FsFileCollector( LocalFs root) throws IOException {
         this.root = root;
-        mkdirs(root.file);
+        root.mkdir();
     }
 
     public void addDirectory( UnixFsObject.Directory directory )
@@ -72,11 +74,11 @@ public class FsFileCollector
 
     public void apply( F<UnixFsObject, Option<UnixFsObject>> f )
     {
-        // Not implemented
+        applications.add( f );
     }
 
     public void collect()
-        throws IOException
+        throws Exception
     {
         for ( IoEffect operation : operations )
         {
@@ -143,10 +145,17 @@ public class FsFileCollector
         public void run()
             throws IOException
         {
-            P2<InputStream, Option<Long>> p2 =
-                filtersAndLineEndingHandingInputStream( to, from.inputStream() );
+            UnixFsObject adjustedTo = to;
 
-            root.resolve( to.path ).copyFrom( from, p2._1() );
+            for ( F<UnixFsObject, Option<UnixFsObject>> f : applications )
+            {
+                adjustedTo = f.f( adjustedTo ).orSome( adjustedTo );
+            }
+
+            P2<InputStream, Option<Long>> p2 =
+                filtersAndLineEndingHandingInputStream( adjustedTo, from.inputStream() );
+
+            root.resolve( adjustedTo.path ).copyFrom( from, p2._1() );
         }
     }
 
@@ -161,7 +170,7 @@ public class FsFileCollector
         throws IOException
     {
         // With no filters *and* keeping the line endings we can stream the file directly. Like a BOSS!
-        if ( file.filters.isEmpty() && file.lineEnding.isKeep() )
+        if ( !needsFiltering( file ) )
         {
             return p( inputStream, Option.<Long>none() );
         }
@@ -198,14 +207,11 @@ public class FsFileCollector
 
         while ( line != null )
         {
-            fj.data.List<Replacer> filters = file.filters;
+            Iterable<Replacer> filters = file.filters;
 
-            if ( filters.isNotEmpty() )
+            for ( Replacer filter : filters )
             {
-                for ( Replacer filter : filters )
-                {
-                    line = filter.replace( line );
-                }
+                line = filter.replace( line );
             }
 
             output.write( line.getBytes() );
@@ -219,5 +225,10 @@ public class FsFileCollector
         long size = output.size();
 
         return p( inputStream, some( size ) );
+    }
+
+    public static boolean needsFiltering( UnixFsObject file )
+    {
+        return file.filters.isNotEmpty() || !file.lineEnding.isKeep();
     }
 }

@@ -36,7 +36,7 @@ import org.codehaus.mojo.unix.maven.deb.*;
  */
 @SuppressWarnings( "UnusedDeclaration" )
 public class PackageDebMojo
-    extends AbstractPackageMojo<DebUnixPackage>
+    extends AbstractPackageMojo<DebUnixPackage, DebUnixPackage.DebPreparedPackage>
 {
     /**
      * @parameter
@@ -48,12 +48,10 @@ public class PackageDebMojo
         super( "linux", "deb", "deb" );
     }
 
-    @Override
     protected F<DebUnixPackage, DebUnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
     {
         return new F<DebUnixPackage, DebUnixPackage>()
         {
-            @Override
             public DebUnixPackage f( DebUnixPackage unixPackage )
             {
                 return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( deb, unixPackage );

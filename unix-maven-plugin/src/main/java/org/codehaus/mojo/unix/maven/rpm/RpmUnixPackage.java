@@ -44,7 +44,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class RpmUnixPackage
-    extends UnixPackage<RpmUnixPackage>
+    extends UnixPackage<RpmUnixPackage, RpmUnixPackage.RpmPreparedPackage>
 {
     private SpecFile specFile;
 
@@ -127,9 +127,10 @@ public class RpmUnixPackage
     public void apply( F<UnixFsObject, Option<UnixFsObject>> f )
     {
         specFile.apply( f );
+        fileCollector.apply( f );
     }
 
-    public P2<File, File> prepare( ScriptUtil.Strategy strategy )
+    public RpmPreparedPackage prepare( ScriptUtil.Strategy strategy )
         throws Exception
     {
         File rpms = new File( workingDirectory.file, "RPMS" );
@@ -159,37 +160,41 @@ public class RpmUnixPackage
 
         LineStreamUtil.toFile( specFile, specFilePath );
 
-        return p( tmp, specFilePath );
+        return new RpmPreparedPackage( tmp, specFilePath );
     }
 
-    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
-        throws Exception
+    public class RpmPreparedPackage
+        extends UnixPackage.PreparedPackage
     {
-        P2<File, File> p =  prepare( strategy );
+        private final File tmp;
 
-        File tmp = p._1();
-        File specFilePath = p._2();
+        private final File specFilePath;
 
-        new Rpmbuild().
-            setDebug( debug ).
-            setBuildroot( specFile.buildRoot ).
-            define( "_tmppath " + tmp.getAbsolutePath() ).
-            define( "_topdir " + workingDirectory.file.getAbsolutePath() ).
-            define( "_rpmdir " + packageFile.getParentFile().getAbsolutePath() ).
-            define( "_rpmfilename " + packageFile.getName() ).
-            setSpecFile( specFilePath ).
-            setRpmbuild( rpmbuild ).
-            buildBinary();
+        RpmPreparedPackage( File tmp, File specFilePath )
+        {
+            this.tmp = tmp;
+            this.specFilePath = specFilePath;
+        }
+
+        public void packageToFile( File packageFile )
+            throws Exception
+        {
+            new Rpmbuild().
+                setDebug( debug ).
+                setBuildroot( specFile.buildRoot ).
+                define( "_tmppath " + tmp.getAbsolutePath() ).
+                define( "_topdir " + workingDirectory.file.getAbsolutePath() ).
+                define( "_rpmdir " + packageFile.getParentFile().getAbsolutePath() ).
+                define( "_rpmfilename " + packageFile.getName() ).
+                setSpecFile( specFilePath ).
+                setRpmbuild( rpmbuild ).
+                buildBinary();
+        }
     }
 
     // -----------------------------------------------------------------------
     // Static
     // -----------------------------------------------------------------------
-
-    public static RpmUnixPackage cast( UnixPackage unixPackage )
-    {
-        return (RpmUnixPackage) unixPackage;
-    }
 
     public static P2<String, String> getRpmVersion( PackageVersion version )
     {

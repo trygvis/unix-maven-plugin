@@ -30,7 +30,7 @@ import org.codehaus.mojo.unix.maven.plugin.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class DebPackagingFormat
-    implements PackagingFormat
+    implements PackagingFormat<DebUnixPackage>
 {
     public DebUnixPackage start()
     {

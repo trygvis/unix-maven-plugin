@@ -86,7 +86,6 @@ public class UnixFileMode
         return mode;
     }
 
-    @Override
     public boolean equals( Object o )
     {
         if ( this == o )
@@ -105,7 +104,7 @@ public class UnixFileMode
 
     public String toString()
     {
-        StringBuffer buffer = new StringBuffer( "         " );
+        StringBuilder buffer = new StringBuilder( "         " );
         buffer.setCharAt( 0, (mode & 0x100) > 0 ? 'r' : '-' );
         buffer.setCharAt( 1, (mode & 0x080) > 0 ? 'w' : '-' );
         buffer.setCharAt( 2, (mode & 0x040) > 0 ? 'x' : '-' );

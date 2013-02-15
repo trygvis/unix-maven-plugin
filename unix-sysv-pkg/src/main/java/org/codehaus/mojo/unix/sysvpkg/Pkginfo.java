@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public class PkginfoFile
+public class Pkginfo
 {
     public final String arch;
     // TODO: This should be a list according to the man page
@@ -58,8 +58,8 @@ public class PkginfoFile
     public final Option<String> email;
     public final List<String> classes;
 
-    public PkginfoFile( String arch, String category, String name, String pkg, String version, Option<String> pstamp,
-                        Option<String> desc, Option<String> email, List<String> classes )
+    public Pkginfo( String arch, String category, String name, String pkg, String version, Option<String> pstamp,
+                    Option<String> desc, Option<String> email, List<String> classes )
     {
         this.arch = arch;
         this.category = category;
@@ -72,44 +72,44 @@ public class PkginfoFile
         this.classes = classes;
     }
 
-    public PkginfoFile( String arch, String category, String name, String pkg, String version )
+    public Pkginfo( String arch, String category, String name, String pkg, String version )
     {
         this( arch, category, name, pkg, version, Option.<String>none(), Option.<String>none(),
               Option.<String>none(), List.<String>nil() );
     }
 
-    public static final F5<String, String, String, String, String, PkginfoFile> constructor =
-        new F5<String, String, String, String, String, PkginfoFile>()
+    public static final F5<String, String, String, String, String, Pkginfo> constructor =
+        new F5<String, String, String, String, String, Pkginfo>()
         {
-            public PkginfoFile f( String arch, String category, String name, String pkg, String version )
+            public Pkginfo f( String arch, String category, String name, String pkg, String version )
             {
-                return new PkginfoFile( arch, category, name, pkg, version );
+                return new Pkginfo( arch, category, name, pkg, version );
             }
         };
 
-    public PkginfoFile category( String category )
+    public Pkginfo category( String category )
     {
-        return new PkginfoFile( arch, category, name, pkg, version, pstamp, desc, email, classes );
+        return new Pkginfo( arch, category, name, pkg, version, pstamp, desc, email, classes );
     }
 
-    public PkginfoFile pstamp( Option<String> pstamp )
+    public Pkginfo pstamp( Option<String> pstamp )
     {
-        return new PkginfoFile( arch, category, name, pkg, version, pstamp, desc, email, classes );
+        return new Pkginfo( arch, category, name, pkg, version, pstamp, desc, email, classes );
     }
 
-    public PkginfoFile desc( Option<String> desc )
+    public Pkginfo desc( Option<String> desc )
     {
-        return new PkginfoFile( arch, category, name, pkg, version, pstamp, desc, email, classes );
+        return new Pkginfo( arch, category, name, pkg, version, pstamp, desc, email, classes );
     }
 
-    public PkginfoFile email( Option<String> email )
+    public Pkginfo email( Option<String> email )
     {
-        return new PkginfoFile( arch, category, name, pkg, version, pstamp, desc, email, classes );
+        return new Pkginfo( arch, category, name, pkg, version, pstamp, desc, email, classes );
     }
 
-    public PkginfoFile classes( List<String> classes )
+    public Pkginfo classes( List<String> classes )
     {
-        return new PkginfoFile( arch, category, name, pkg, version, pstamp, desc, email, classes );
+        return new Pkginfo( arch, category, name, pkg, version, pstamp, desc, email, classes );
     }
 
     public List<String> toList()
@@ -163,7 +163,7 @@ public class PkginfoFile
         }
     }
 
-    public static Option<PkginfoFile> fromStream( Iterable<String> lines )
+    public static Option<Pkginfo> fromStream( Iterable<String> lines )
     {
         TreeMap<String, String> map = TreeMap.empty( stringOrd );
 
@@ -186,11 +186,11 @@ public class PkginfoFile
 
         return map.get( "ARCH" ).
             bind( map.get( "CATEGORY" ), map.get( "NAME" ), map.get( "PKG" ).orElse( map.get( "PKGINST" ) ), map.get( "VERSION" ),
-                                          curry( PkginfoFile.constructor ) ).map( new F<PkginfoFile, PkginfoFile>()
+                                          curry( Pkginfo.constructor ) ).map( new F<Pkginfo, Pkginfo>()
         {
-            public PkginfoFile f( PkginfoFile pkginfoFile )
+            public Pkginfo f( Pkginfo pkginfo )
             {
-                return pkginfoFile.
+                return pkginfo.
                     pstamp( map2.get( "PSTAMP" ) ).
                     desc( map2.get( "DESC" ) ).
                     email( map2.get( "EMAIL" ) ).

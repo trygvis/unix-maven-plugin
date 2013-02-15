@@ -65,10 +65,10 @@ public class FilterFilesOperation
     {
         streamWriter.add( "Filter Files:" );
         streamIncludesAndExcludes( streamWriter, includes, excludes );
-        streamWriter.add( "Replacers:" );
+        streamWriter.add( " Replacers:" );
         for ( Replacer replacer : replacers )
         {
-            streamWriter.add( " " + replacer.toString() );
+            streamWriter.add( "  " + replacer.toString() );
         }
     }
 }

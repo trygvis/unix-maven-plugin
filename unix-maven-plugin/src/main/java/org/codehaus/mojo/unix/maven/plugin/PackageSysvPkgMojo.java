@@ -52,7 +52,6 @@ public class PackageSysvPkgMojo
     {
         return new F<PkgUnixPackage, PkgUnixPackage>()
         {
-            @Override
             public PkgUnixPackage f( PkgUnixPackage unixPackage )
             {
                 return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( pkg, unixPackage );

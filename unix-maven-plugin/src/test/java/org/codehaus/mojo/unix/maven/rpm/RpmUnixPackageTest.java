@@ -32,12 +32,13 @@ import static org.codehaus.mojo.unix.PackageVersion.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 
 import org.codehaus.mojo.unix.io.fs.*;
+import org.codehaus.mojo.unix.maven.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 import org.codehaus.mojo.unix.rpm.*;
 
 import static org.codehaus.mojo.unix.io.fs.FsUtil.resolve;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
-import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.SINGLE;
 import org.codehaus.plexus.*;
 import org.joda.time.*;
 
@@ -83,9 +84,9 @@ public class RpmUnixPackageTest
         unixPackage.addFile( fooLicense, regularFile( relativePath( "/foo-license.txt" ), now, 0, EMPTY ) );
         unixPackage.addFile( barLicense, regularFile( relativePath( "/bar-license.txt" ), now, 0, EMPTY ) );
 
-        unixPackage.
+        RpmUnixPackage.RpmPreparedPackage preparedPackage = unixPackage.
             debug( true ).
-            prepare( ScriptUtil.Strategy.SINGLE );
+            prepare( SINGLE );
 
         if ( !new Rpmbuild().available() )
         {
@@ -93,9 +94,25 @@ public class RpmUnixPackageTest
             return;
         }
 
-        unixPackage.
-            packageToFile( packageFile, ScriptUtil.Strategy.SINGLE );
+        preparedPackage.
+            packageToFile( packageFile );
 
         assertTrue( packageFile.canRead() );
+    }
+
+    public void testFiltering()
+        throws Exception
+    {
+        RpmPackagingFormat packagingFormat = (RpmPackagingFormat) lookup( PackagingFormat.ROLE, "rpm" );
+
+        UnixPackageTestUtil<RpmUnixPackage, RpmUnixPackage.RpmPreparedPackage> unixPackageTestUtil =
+            new UnixPackageTestUtil<RpmUnixPackage, RpmUnixPackage.RpmPreparedPackage>( "rpm", packagingFormat  )
+            {
+                protected RpmUnixPackage extraStuff( RpmUnixPackage rpmUnixPackage )
+                {
+                    return rpmUnixPackage.rpmParameters( "my-group", Option.<String>none() );
+                }
+            };
+        unixPackageTestUtil.testFiltering();
     }
 }

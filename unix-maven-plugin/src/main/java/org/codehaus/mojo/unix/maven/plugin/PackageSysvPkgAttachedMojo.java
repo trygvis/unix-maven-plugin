@@ -36,7 +36,7 @@ import org.codehaus.mojo.unix.maven.sysvpkg.*;
  */
 @SuppressWarnings( "UnusedDeclaration" )
 public class PackageSysvPkgAttachedMojo
-    extends AbstractPackageAttachedMojo<PkgUnixPackage>
+    extends AbstractPackageAttachedMojo<PkgUnixPackage, PkgUnixPackage.PkgPreparedPackage>
 {
     /**
      * @parameter
@@ -48,12 +48,10 @@ public class PackageSysvPkgAttachedMojo
         super( "solaris", "sysvpkg", "pkg" );
     }
 
-    @Override
     protected F<PkgUnixPackage, PkgUnixPackage> getValidateMojoSettingsAndApplyFormatSpecificSettingsToPackageF()
     {
         return new F<PkgUnixPackage, PkgUnixPackage>()
         {
-            @Override
             public PkgUnixPackage f( PkgUnixPackage unixPackage )
             {
                 return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( pkg, unixPackage );

@@ -36,7 +36,7 @@ import org.codehaus.mojo.unix.maven.deb.*;
  */
 @SuppressWarnings( "UnusedDeclaration" )
 public class PackageDebAttachedMojo
-    extends AbstractPackageAttachedMojo<DebUnixPackage>
+    extends AbstractPackageAttachedMojo<DebUnixPackage, DebUnixPackage.DebPreparedPackage>
 {
     /**
      * @parameter
@@ -52,7 +52,6 @@ public class PackageDebAttachedMojo
     {
         return new F<DebUnixPackage, DebUnixPackage>()
         {
-            @Override
             public DebUnixPackage f( DebUnixPackage debUnixPackage )
             {
                 return validateMojoSettingsAndApplyFormatSpecificSettingsToPackage( deb, debUnixPackage );

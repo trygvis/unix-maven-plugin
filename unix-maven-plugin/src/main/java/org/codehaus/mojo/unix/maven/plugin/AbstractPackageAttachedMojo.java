@@ -34,7 +34,7 @@ import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.*;
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public abstract class AbstractPackageAttachedMojo<UP extends UnixPackage<UP>>
+public abstract class AbstractPackageAttachedMojo<UP extends UnixPackage<UP, PP>, PP extends UnixPackage.PreparedPackage>
     extends AbstractUnixMojo
 {
     private final String platformType;

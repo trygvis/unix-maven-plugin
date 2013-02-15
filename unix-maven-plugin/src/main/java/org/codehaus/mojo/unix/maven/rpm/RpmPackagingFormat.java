@@ -31,7 +31,7 @@ import org.codehaus.mojo.unix.maven.plugin.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class RpmPackagingFormat
-    implements PackagingFormat
+    implements PackagingFormat<RpmUnixPackage>
 {
     public RpmUnixPackage start()
     {
@@ -46,10 +46,5 @@ public class RpmPackagingFormat
     public String defaultArchitecture()
     {
         return "all";
-    }
-
-    public static RpmUnixPackage cast( UnixPackage unixPackage )
-    {
-        return (RpmUnixPackage) unixPackage;
     }
 }

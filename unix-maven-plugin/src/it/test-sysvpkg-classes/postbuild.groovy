@@ -1,10 +1,9 @@
 import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.*
 import static org.codehaus.mojo.unix.sysvpkg.PkgchkUtil.*
 import org.codehaus.mojo.unix.sysvpkg.PkginfoUtil
-import static fj.data.Option.*
 import fj.data.Option
 import org.joda.time.LocalDateTime
-import org.codehaus.mojo.unix.sysvpkg.PkginfoFile;
+import org.codehaus.mojo.unix.sysvpkg.Pkginfo;
 
 Option<LocalDateTime> ldtNone = Option.none()
 
@@ -13,7 +12,7 @@ boolean success = true
 File pkg = new File((File) basedir, "target/project-sysvpkg-classes-1.1.pkg")
 
 success &= assertRelaxed(
-        new PkginfoFile("all", "application", "Hudson", "project-sysvpkg-classes", "1.1"),
+        new Pkginfo("all", "application", "Hudson", "project-sysvpkg-classes", "1.1"),
         PkginfoUtil.getPackageInfoForDevice(pkg).some(), packageInfoEqual);
 
 // Ignore dates for now

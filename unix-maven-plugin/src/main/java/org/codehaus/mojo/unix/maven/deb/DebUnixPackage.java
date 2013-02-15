@@ -45,7 +45,7 @@ import java.io.*;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class DebUnixPackage
-    extends UnixPackage<DebUnixPackage>
+    extends UnixPackage<DebUnixPackage, DebUnixPackage.DebPreparedPackage>
 {
     private ControlFile controlFile;
 
@@ -140,10 +140,10 @@ public class DebUnixPackage
     //
     // -----------------------------------------------------------------------
 
-    public ScriptUtil.Result prepare( LocalFs fsRoot, ScriptUtil.Strategy strategy )
+    public DebPreparedPackage prepare( ScriptUtil.Strategy strategy )
         throws Exception
     {
-        LocalFs debian = fsRoot.resolve( relativePath( "DEBIAN" ) );
+        LocalFs debian = fileCollector.root.resolve( relativePath( "DEBIAN" ) );
         LocalFs controlFilePath = debian.resolve( relativePath( "control" ) );
 
         debian.mkdir();
@@ -151,35 +151,40 @@ public class DebUnixPackage
 
         fileCollector.collect();
 
-        return scriptUtil.
+        ScriptUtil.Result result = scriptUtil.
             createExecution( controlFile.packageName, "deb", getScripts(), debian.file, strategy ).
             execute();
+
+        return new DebPreparedPackage( result );
     }
 
-    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
-        throws Exception
+    public class DebPreparedPackage
+        extends UnixPackage.PreparedPackage
     {
-        LocalFs fsRoot = fileCollector.root;
+        private final ScriptUtil.Result result;
 
-        ScriptUtil.Result result = prepare( fsRoot, strategy );
+        DebPreparedPackage( ScriptUtil.Result result )
+        {
+            this.result = result;
+        }
 
-        UnixUtil.chmodIf( result.preInstall, "0755" );
-        UnixUtil.chmodIf( result.postInstall, "0755" );
-        UnixUtil.chmodIf( result.preRemove, "0755" );
-        UnixUtil.chmodIf( result.postRemove, "0755" );
+        public void packageToFile( File packageFile )
+            throws Exception
+        {
 
-        new DpkgDeb().
-            setDebug( debug ).
-            setPackageRoot( fsRoot.file ).
-            setDebFile( packageFile ).
-            setUseFakeroot( useFakeroot ).
-            setDpkgDeb( dpkgDeb ).
-            execute();
-    }
+            UnixUtil.chmodIf( result.preInstall, "0755" );
+            UnixUtil.chmodIf( result.postInstall, "0755" );
+            UnixUtil.chmodIf( result.preRemove, "0755" );
+            UnixUtil.chmodIf( result.postRemove, "0755" );
 
-    public static DebUnixPackage cast( UnixPackage unixPackage )
-    {
-        return (DebUnixPackage) unixPackage;
+            new DpkgDeb().
+                setDebug( debug ).
+                setPackageRoot( fileCollector.root.file ).
+                setDebFile( packageFile ).
+                setUseFakeroot( useFakeroot ).
+                setDpkgDeb( dpkgDeb ).
+                execute();
+        }
     }
 
     // -----------------------------------------------------------------------

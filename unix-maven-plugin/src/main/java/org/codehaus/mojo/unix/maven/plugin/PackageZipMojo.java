@@ -36,7 +36,7 @@ import org.codehaus.mojo.unix.maven.zip.*;
  */
 @SuppressWarnings( "UnusedDeclaration" )
 public class PackageZipMojo
-    extends AbstractPackageMojo<ZipUnixPackage>
+    extends AbstractPackageMojo<ZipUnixPackage, ZipUnixPackage.ZipPreparedPackage>
 {
     public PackageZipMojo()
     {

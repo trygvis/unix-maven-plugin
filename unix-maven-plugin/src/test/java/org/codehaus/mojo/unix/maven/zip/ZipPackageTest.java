@@ -34,12 +34,14 @@ import junit.framework.*;
 import org.apache.commons.compress.archivers.zip.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
+import static org.codehaus.mojo.unix.UnixFileMode._0777;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.io.LineEnding;
 import org.codehaus.mojo.unix.io.fs.*;
 import static org.codehaus.mojo.unix.util.RelativePath.*;
 import org.codehaus.mojo.unix.util.*;
+import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.SINGLE;
 import org.joda.time.*;
 
 import java.io.*;
@@ -108,7 +110,7 @@ public class ZipPackageTest
             perform( zipPackage );
 
         UnixFileMode fileMode = UnixFileMode.fromInt( 0600 );
-        UnixFileMode dirMode = UnixFileMode.fromInt( 0777 );
+        UnixFileMode dirMode = _0777;
 
         FileAttributes fileAttributes = new FileAttributes( "root", "root", fileMode );
         FileAttributes directoryAttributes = new FileAttributes( "root", "root", dirMode );
@@ -117,7 +119,8 @@ public class ZipPackageTest
             perform( zipPackage );
 
         zipPackage.
-            packageToFile( zip, ScriptUtil.Strategy.SINGLE );
+            prepare( SINGLE ).
+            packageToFile( zip );
 
         ZipFile file = new ZipFile( zip );
         Enumeration<ZipArchiveEntry> enumeration = file.getEntriesInPhysicalOrder();

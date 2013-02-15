@@ -24,16 +24,15 @@ package org.codehaus.mojo.unix.maven.zip;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class ZipPackagingFormat
-    implements PackagingFormat
+    implements PackagingFormat<ZipUnixPackage>
 {
-    public UnixPackage start()
+    public ZipUnixPackage start()
     {
         return new ZipUnixPackage();
     }
@@ -41,15 +40,5 @@ public class ZipPackagingFormat
     public boolean licenseRequired()
     {
         return false;
-    }
-
-    public String defaultArchitecture()
-    {
-        return "all";
-    }
-
-    public static ZipUnixPackage cast( UnixPackage unixPackage )
-    {
-        return (ZipUnixPackage) unixPackage;
     }
 }

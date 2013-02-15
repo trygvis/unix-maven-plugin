@@ -24,16 +24,15 @@ package org.codehaus.mojo.unix.maven.sysvpkg;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class SysvPkgPackagingFormat
-    implements PackagingFormat
+    implements PackagingFormat<PkgUnixPackage>
 {
-    public UnixPackage start()
+    public PkgUnixPackage start()
     {
         return new PkgUnixPackage();
     }
@@ -46,10 +45,5 @@ public class SysvPkgPackagingFormat
     public String defaultArchitecture()
     {
         return "all";
-    }
-
-    public static PkgUnixPackage cast( UnixPackage unixPackage )
-    {
-        return (PkgUnixPackage) unixPackage;
     }
 }

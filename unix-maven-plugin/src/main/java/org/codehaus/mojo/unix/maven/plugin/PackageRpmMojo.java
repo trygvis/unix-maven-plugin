@@ -36,7 +36,7 @@ import org.codehaus.mojo.unix.maven.rpm.*;
  */
 @SuppressWarnings( "UnusedDeclaration" )
 public class PackageRpmMojo
-    extends AbstractPackageMojo<RpmUnixPackage>
+    extends AbstractPackageMojo<RpmUnixPackage, RpmUnixPackage.RpmPreparedPackage>
 {
     /**
      * @parameter

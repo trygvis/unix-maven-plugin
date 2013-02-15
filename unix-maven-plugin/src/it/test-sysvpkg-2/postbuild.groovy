@@ -1,6 +1,6 @@
 import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.*
 import static org.codehaus.mojo.unix.sysvpkg.PkgchkUtil.*
-import org.codehaus.mojo.unix.sysvpkg.PkginfoFile
+import org.codehaus.mojo.unix.sysvpkg.Pkginfo
 import org.codehaus.mojo.unix.sysvpkg.PkginfoUtil
 import fj.data.Option
 import org.joda.time.LocalDateTime
@@ -12,7 +12,7 @@ boolean success = true
 File pkg = new File((File) basedir, "target/project-sysvpkg-2-1.1-2.pkg")
 
 success &= assertRelaxed(
-        new PkginfoFile( "all", "application", "Hudson Slave", "project-sysvpkg-2", "1.1-2"),
+        new Pkginfo( "all", "application", "Hudson Slave", "project-sysvpkg-2", "1.1-2"),
         PkginfoUtil.getPackageInfoForDevice(pkg).some(), packageInfoEqual);
 
 success &= assertSysvPkgEntries(pkg, [

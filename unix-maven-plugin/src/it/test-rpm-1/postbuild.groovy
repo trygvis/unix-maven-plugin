@@ -14,6 +14,8 @@ success &= assertRpmEntries(rpm, [
         new RpmUtil.FileInfo("/opt", "root", "root", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/opt/hudson", "root", "root", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/opt/hudson/hudson.war", "hudson", "hudson", "-rw-r--r--", 20623413, null),
+        new RpmUtil.FileInfo("/opt/hudson/etc", "root", "root", "drwxr-xr-x", 0, null),
+        new RpmUtil.FileInfo("/opt/hudson/etc/config.properties", "root", "root", "-rw-r--r--", 14, null),
         new RpmUtil.FileInfo("/usr", "root", "root", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/usr/share", "root", "root", "drwxr-xr-x", 0, null),
         new RpmUtil.FileInfo("/usr/share/hudson", "root", "root", "drwxr-xr-x", 0, null),

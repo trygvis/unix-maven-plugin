@@ -1,6 +1,6 @@
 import static org.codehaus.mojo.unix.maven.plugin.ShittyUtil.*
 import static org.codehaus.mojo.unix.sysvpkg.PkgchkUtil.*
-import org.codehaus.mojo.unix.sysvpkg.PkginfoFile
+import org.codehaus.mojo.unix.sysvpkg.Pkginfo
 import org.codehaus.mojo.unix.sysvpkg.PkginfoUtil
 import static fj.data.Option.*
 import fj.data.Option
@@ -19,7 +19,7 @@ println "Hudson Master"
 // No <description> inside <project>, no <description> inside <package> => null
 
 success &= assertRelaxed(
-        new PkginfoFile( "all", "application", "Hudson Master", "project-sysvpkg-3", "1.1-2"),
+        new Pkginfo( "all", "application", "Hudson Master", "project-sysvpkg-3", "1.1-2"),
         PkginfoUtil.getPackageInfoForDevice(main).some(), packageInfoEqual);
 
 success &= assertSysvPkgEntries(main, [
@@ -45,7 +45,7 @@ println "Hudson Slave"
 // This has the <description> set on <package> too
 File slave = new File((File) basedir, "target/project-sysvpkg-3-slave-1.1-2.pkg")
 success &= assertRelaxed(
-        new PkginfoFile( "all", "application", "Hudson Slave", "project-sysvpkg-3-slave", "1.1-2").desc(some("Hudson slave node")),
+        new Pkginfo( "all", "application", "Hudson Slave", "project-sysvpkg-3-slave", "1.1-2").desc(some("Hudson slave node")),
         PkginfoUtil.getPackageInfoForDevice(slave).some(),
         packageInfoEqual);
 

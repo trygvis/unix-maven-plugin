@@ -47,7 +47,7 @@ import java.io.*;
 import java.util.zip.*;
 
 public class ZipUnixPackage
-    extends UnixPackage<ZipUnixPackage>
+    extends UnixPackage<ZipUnixPackage, ZipUnixPackage.ZipPreparedPackage>
 {
     private PackageFileSystem<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>> fileSystem;
 
@@ -99,32 +99,42 @@ public class ZipUnixPackage
         fileSystem = create( directory( rootDirectory ), directory( rootDirectory ) );
     }
 
-    public void packageToFile( File packageFile, ScriptUtil.Strategy strategy )
+    public ZipPreparedPackage prepare( ScriptUtil.Strategy strategy )
         throws Exception
     {
-        F2<RelativePath, PackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>>, Boolean> pathFilter =
-            pathFilter();
+        return new ZipPreparedPackage();
+    }
 
-        fileSystem = fileSystem.prettify();
-
-        Stream<PackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>>> items = fileSystem.
-            toList().
-            filter( compose( BooleanF.invert, curry( pathFilter, BASE ) ) );
-
-        ZipArchiveOutputStream zos = null;
-        try
+    public class ZipPreparedPackage
+        extends UnixPackage.PreparedPackage
+    {
+        public void packageToFile( File packageFile )
+            throws Exception
         {
-            zos = new ZipArchiveOutputStream( packageFile );
-            zos.setLevel( Deflater.BEST_COMPRESSION );
+            F2<RelativePath, PackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>>, Boolean>
+                pathFilter = pathFilter();
 
-            for ( PackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>> fileSystemObject : items )
+            fileSystem = fileSystem.prettify();
+
+            Stream<PackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>>> items = fileSystem.
+                toList().
+                filter( compose( BooleanF.invert, curry( pathFilter, BASE ) ) );
+
+            ZipArchiveOutputStream zos = null;
+            try
             {
-                fileSystemObject.getExtension().f( fileSystemObject.getUnixFsObject(), zos ).run();
+                zos = new ZipArchiveOutputStream( packageFile );
+                zos.setLevel( Deflater.BEST_COMPRESSION );
+
+                for ( PackageFileSystemObject<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>> fileSystemObject : items )
+                {
+                    fileSystemObject.getExtension().f( fileSystemObject.getUnixFsObject(), zos ).run();
+                }
             }
-        }
-        finally
-        {
-            IOUtil.close( zos );
+            finally
+            {
+                IOUtil.close( zos );
+            }
         }
     }
 

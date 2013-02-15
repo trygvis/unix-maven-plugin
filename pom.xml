@@ -39,6 +39,7 @@
   <properties>
     <version.functionaljava>3.0</version.functionaljava>
     <version.maven-apis>3.0</version.maven-apis>
+    <version.maven-clean-plugin>2.5</version.maven-clean-plugin>
     <version.maven-compiler-plugin>2.3.1</version.maven-compiler-plugin>
     <version.maven-dependency-plugin>2.5</version.maven-dependency-plugin>
     <version.maven-deploy-plugin>2.5</version.maven-deploy-plugin>
@@ -128,6 +129,10 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${version.maven-clean-plugin}</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${version.maven-compiler-plugin}</version>
         </plugin>
@@ -169,8 +174,6 @@
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <encoding>utf-8</encoding>
-          <source>1.5</source>
-          <target>1.5</target>
         </configuration>
       </plugin>
       <!--

@@ -72,7 +72,6 @@ public class FilterFiles
         this.lineEnding = lineEnding;
     }
 
-    @Override
     public AssemblyOperation createOperation( CreateOperationContext context )
         throws MojoFailureException, UnknownArtifactException
     {
