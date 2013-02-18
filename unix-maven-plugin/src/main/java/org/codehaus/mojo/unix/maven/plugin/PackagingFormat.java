@@ -24,18 +24,34 @@ package org.codehaus.mojo.unix.maven.plugin;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.*;
+import org.apache.maven.plugin.logging.*;
+import org.codehaus.mojo.unix.maven.deb.*;
+import org.codehaus.mojo.unix.maven.rpm.*;
+import org.codehaus.mojo.unix.maven.sysvpkg.*;
+import org.codehaus.mojo.unix.maven.zip.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public interface PackagingFormat<UnixPackage>
+public abstract class PackagingFormat<UP>
 {
-    String ROLE = PackagingFormat.class.getName();
+    public abstract UP start( Log log );
 
-    UnixPackage start();
+    @SuppressWarnings( "unchecked" )
+    public static <UP> PackagingFormat<UP> lookup( String key ) {
+        if(key.equals( "deb" ) ) {
+            return (PackagingFormat<UP>) new DebPackagingFormat();
+        }
+        if(key.equals( "sysvpkg" ) ) {
+            return (PackagingFormat<UP>) new SysvPkgPackagingFormat();
+        }
+        if(key.equals( "rpm" ) ) {
+            return (PackagingFormat<UP>) new RpmPackagingFormat();
+        }
+        if(key.equals( "zip" ) ) {
+            return (PackagingFormat<UP>) new ZipPackagingFormat();
+        }
 
-    boolean licenseRequired();
-
-//    String defaultArchitecture();
+        throw new RuntimeException( "Unknown packaging format: " + key );
+    }
 }

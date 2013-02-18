@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.maven.deb;
 
 import fj.data.*;
 import static fj.data.Option.*;
+import org.apache.maven.plugin.logging.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
@@ -33,7 +34,6 @@ import static org.codehaus.mojo.unix.PackageVersion.*;
 import org.codehaus.mojo.unix.deb.*;
 import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.maven.*;
-import org.codehaus.mojo.unix.maven.plugin.*;
 import static org.codehaus.mojo.unix.util.ScriptUtil.Strategy.*;
 import org.codehaus.plexus.*;
 import org.joda.time.*;
@@ -59,13 +59,13 @@ public class DebUnixPackageTest
     public void testBasic()
         throws Exception
     {
-        DebPackagingFormat packagingFormat = (DebPackagingFormat) lookup( PackagingFormat.ROLE, "deb" );
+        DebPackagingFormat packagingFormat = new DebPackagingFormat();
 
         LocalFs root = new LocalFs( getTestFile( "target/deb-test" ) );
         File packageFile = root.resolve( "file.deb" ).file;
 
         List<String> nil = List.nil();
-        UnixPackage pkg = packagingFormat.start().
+        UnixPackage pkg = packagingFormat.start( new SystemStreamLog() ).
             parameters( parameters ).
             debParameters( Option.<String>none(), some( "devel" ), false, Option.<String>none(), nil, nil, nil, nil,
                            nil, nil ).
@@ -88,7 +88,7 @@ public class DebUnixPackageTest
     public void testFiltering()
         throws Exception
     {
-        DebPackagingFormat packagingFormat = (DebPackagingFormat) lookup( PackagingFormat.ROLE, "deb" );
+        DebPackagingFormat packagingFormat = new DebPackagingFormat();
 
         new UnixPackageTestUtil<DebUnixPackage, DebUnixPackage.DebPreparedPackage>( "deb", packagingFormat ).testFiltering();
     }

@@ -37,7 +37,6 @@ import static fj.data.Option.*;
 import fj.data.Set;
 import static fj.data.Set.*;
 import static java.lang.String.*;
-import org.apache.commons.logging.*;
 import org.apache.maven.artifact.*;
 import org.apache.maven.plugin.*;
 import org.apache.maven.plugin.logging.Log;
@@ -48,7 +47,6 @@ import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.java.*;
 import static org.codehaus.mojo.unix.java.StringF.*;
-import org.codehaus.mojo.unix.maven.logging.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 import org.codehaus.mojo.unix.maven.plugin.Package;
 import static org.codehaus.mojo.unix.util.FileModulator.*;
@@ -74,7 +72,6 @@ public abstract class MojoHelper
     public static <UP extends UnixPackage<UP, PP>, PP extends UnixPackage.PreparedPackage> Execution create(
         Map platforms,
         String platformType,
-        Map formats,
         String formatType,
         MavenProjectWrapper project,
         boolean debug,
@@ -84,9 +81,7 @@ public abstract class MojoHelper
         final Log log )
         throws MojoFailureException, MojoExecutionException
     {
-        MavenCommonLoggingLogFactory.setMavenLogger( log );
-
-        @SuppressWarnings( "unchecked" ) PackagingFormat<UP> format = (PackagingFormat<UP>) formats.get( formatType );
+        PackagingFormat<UP> format = PackagingFormat.lookup( formatType );
 
         if ( format == null )
         {
@@ -133,7 +128,7 @@ public abstract class MojoHelper
                                                                            mojoParameters,
                                                                            pakke );
 
-                UP unixPackage = format.start().
+                UP unixPackage = format.start( log ).
                     parameters( parameters ).
                     setVersion( version ).                      // TODO: This should go away
                     workingDirectory( packageRoot ).
@@ -239,29 +234,6 @@ public abstract class MojoHelper
         }
 
         public void execute( String artifactType, MavenProject mavenProject, MavenProjectHelper mavenProjectHelper, ScriptUtil.Strategy strategy )
-            throws MojoExecutionException, MojoFailureException
-        {
-            // Save and restore the system property for commons logging.
-            String key = LogFactory.class.getName();
-            String value = System.getProperty( key );
-
-            System.setProperty( key, MavenCommonLoggingLogFactory.class.getName() );
-
-            try
-            {
-                execute_( artifactType, mavenProject, mavenProjectHelper, strategy );
-            }
-            finally {
-                if(value == null) {
-                    System.getProperties().remove( key );
-                }
-                else {
-                    System.setProperty( key, value );
-                }
-            }
-        }
-
-        private void execute_( String artifactType, MavenProject mavenProject, MavenProjectHelper mavenProjectHelper, ScriptUtil.Strategy strategy )
             throws MojoExecutionException, MojoFailureException
         {
             for ( P3<UP, Package, List<AssemblyOperation>> p : packages )

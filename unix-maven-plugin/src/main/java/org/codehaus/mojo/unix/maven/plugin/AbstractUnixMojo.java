@@ -110,11 +110,6 @@ public abstract class AbstractUnixMojo
     protected Map platforms;
 
     /**
-     * @component role="org.codehaus.mojo.unix.maven.plugin.PackagingFormat"
-     */
-    protected Map formats;
-
-    /**
      * @component
      */
     protected MavenProjectHelper mavenProjectHelper;

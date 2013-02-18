@@ -24,21 +24,17 @@ package org.codehaus.mojo.unix.maven.zip;
  * SOFTWARE.
  */
 
+import org.apache.maven.plugin.logging.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class ZipPackagingFormat
-    implements PackagingFormat<ZipUnixPackage>
+    extends PackagingFormat<ZipUnixPackage>
 {
-    public ZipUnixPackage start()
+    public ZipUnixPackage start( Log log )
     {
-        return new ZipUnixPackage();
-    }
-
-    public boolean licenseRequired()
-    {
-        return false;
+        return new ZipUnixPackage( log );
     }
 }

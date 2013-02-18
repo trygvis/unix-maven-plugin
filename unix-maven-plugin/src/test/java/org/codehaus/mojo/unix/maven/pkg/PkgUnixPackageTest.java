@@ -1,7 +1,6 @@
 package org.codehaus.mojo.unix.maven.pkg;
 
 import org.codehaus.mojo.unix.maven.*;
-import org.codehaus.mojo.unix.maven.plugin.*;
 import org.codehaus.mojo.unix.maven.sysvpkg.*;
 import org.codehaus.plexus.*;
 
@@ -14,7 +13,7 @@ public class PkgUnixPackageTest
     public void testFiltering()
         throws Exception
     {
-        SysvPkgPackagingFormat packagingFormat = (SysvPkgPackagingFormat) lookup( PackagingFormat.ROLE, "sysvpkg" );
+        SysvPkgPackagingFormat packagingFormat = new SysvPkgPackagingFormat();
 
         new UnixPackageTestUtil<PkgUnixPackage, PkgUnixPackage.PkgPreparedPackage>( "pkg", packagingFormat ).testFiltering();
     }

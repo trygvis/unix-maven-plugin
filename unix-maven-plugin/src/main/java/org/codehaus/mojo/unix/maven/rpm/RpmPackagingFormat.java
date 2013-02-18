@@ -24,27 +24,17 @@ package org.codehaus.mojo.unix.maven.rpm;
  * SOFTWARE.
  */
 
-import org.codehaus.mojo.unix.*;
+import org.apache.maven.plugin.logging.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class RpmPackagingFormat
-    implements PackagingFormat<RpmUnixPackage>
+    extends PackagingFormat<RpmUnixPackage>
 {
-    public RpmUnixPackage start()
+    public RpmUnixPackage start( Log log )
     {
         return new RpmUnixPackage();
-    }
-
-    public boolean licenseRequired()
-    {
-        return true;
-    }
-
-    public String defaultArchitecture()
-    {
-        return "all";
     }
 }

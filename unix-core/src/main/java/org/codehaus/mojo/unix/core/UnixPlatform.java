@@ -26,8 +26,6 @@ package org.codehaus.mojo.unix.core;
 
 import org.codehaus.mojo.unix.*;
 
-/**
- */
 public interface UnixPlatform
 {
     FileAttributes getDefaultFileAttributes();

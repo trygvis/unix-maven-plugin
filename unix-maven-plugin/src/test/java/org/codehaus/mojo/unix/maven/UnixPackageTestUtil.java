@@ -6,6 +6,7 @@ import static fj.data.Option.*;
 import static java.util.regex.Pattern.*;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import org.apache.maven.plugin.logging.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
@@ -60,7 +61,7 @@ public class UnixPackageTestUtil<UP extends UnixPackage<UP, PP>, PP extends Unix
         root.mkdir();
         LocalFs workingDirectory = root.resolve( "working-directory" );
 
-        UP pkg = packagingFormat.start().
+        UP pkg = packagingFormat.start( new SystemStreamLog() ).
             parameters( parameters ).
             debug( true ).
             workingDirectory( workingDirectory );

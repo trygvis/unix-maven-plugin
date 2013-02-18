@@ -68,6 +68,10 @@
                 <mode>0666</mode>
               </attributes>
             </copyArtifact>
+            <symlink>
+              <path>/var/log/hudson</path>
+              <value>/var/opt/hudson/log</value>
+            </symlink>
             <filterFiles>
               <includes>
                 <include>/opt/hudson/etc/*</include>

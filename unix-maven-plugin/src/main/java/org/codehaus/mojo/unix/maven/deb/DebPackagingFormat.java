@@ -24,21 +24,17 @@ package org.codehaus.mojo.unix.maven.deb;
  * SOFTWARE.
  */
 
+import org.apache.maven.plugin.logging.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class DebPackagingFormat
-    implements PackagingFormat<DebUnixPackage>
+    extends PackagingFormat<DebUnixPackage>
 {
-    public DebUnixPackage start()
+    public DebUnixPackage start(Log log)
     {
         return new DebUnixPackage();
-    }
-
-    public boolean licenseRequired()
-    {
-        return false;
     }
 }

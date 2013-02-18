@@ -25,6 +25,7 @@ package org.codehaus.mojo.unix.maven.rpm;
  */
 
 import fj.data.*;
+import org.apache.maven.plugin.logging.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.PackageParameters.*;
@@ -33,7 +34,6 @@ import static org.codehaus.mojo.unix.UnixFsObject.*;
 
 import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.maven.*;
-import org.codehaus.mojo.unix.maven.plugin.*;
 import org.codehaus.mojo.unix.rpm.*;
 
 import static org.codehaus.mojo.unix.io.fs.FsUtil.resolve;
@@ -60,7 +60,7 @@ public class RpmUnixPackageTest
         Fs<?> fooLicense = archive.resolve( relativePath( "foo-license.txt" ) );
         Fs<?> barLicense = archive.resolve( relativePath( "mydir/bar-license.txt" ) );
 
-        RpmPackagingFormat packagingFormat = (RpmPackagingFormat) lookup( PackagingFormat.ROLE, "rpm" );
+        RpmPackagingFormat packagingFormat = new RpmPackagingFormat();
 
         LocalFs root = new LocalFs( getTestFile( "target/rpm-test" ) );
         File packageFile = root.resolve( "file.rpm" ).file;
@@ -73,7 +73,7 @@ public class RpmUnixPackageTest
             name( "Yo!" ).
             license( "BSD" );
 
-        RpmUnixPackage unixPackage = packagingFormat.start().
+        RpmUnixPackage unixPackage = packagingFormat.start( new SystemStreamLog() ).
             parameters( parameters ).
             rpmParameters( "Fun", Option.<String>none() ).
             workingDirectory( root.resolve( "working-directory" ) );
@@ -103,7 +103,7 @@ public class RpmUnixPackageTest
     public void testFiltering()
         throws Exception
     {
-        RpmPackagingFormat packagingFormat = (RpmPackagingFormat) lookup( PackagingFormat.ROLE, "rpm" );
+        RpmPackagingFormat packagingFormat = new RpmPackagingFormat();
 
         UnixPackageTestUtil<RpmUnixPackage, RpmUnixPackage.RpmPreparedPackage> unixPackageTestUtil =
             new UnixPackageTestUtil<RpmUnixPackage, RpmUnixPackage.RpmPreparedPackage>( "rpm", packagingFormat  )

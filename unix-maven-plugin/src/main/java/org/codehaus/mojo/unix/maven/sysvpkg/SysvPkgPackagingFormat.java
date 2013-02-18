@@ -24,26 +24,17 @@ package org.codehaus.mojo.unix.maven.sysvpkg;
  * SOFTWARE.
  */
 
+import org.apache.maven.plugin.logging.*;
 import org.codehaus.mojo.unix.maven.plugin.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
 public class SysvPkgPackagingFormat
-    implements PackagingFormat<PkgUnixPackage>
+    extends PackagingFormat<PkgUnixPackage>
 {
-    public PkgUnixPackage start()
+    public PkgUnixPackage start( Log log )
     {
         return new PkgUnixPackage();
-    }
-
-    public boolean licenseRequired()
-    {
-        return false;
-    }
-
-    public String defaultArchitecture()
-    {
-        return "all";
     }
 }

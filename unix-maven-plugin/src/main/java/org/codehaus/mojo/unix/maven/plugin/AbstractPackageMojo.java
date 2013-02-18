@@ -65,7 +65,6 @@ public abstract class AbstractPackageMojo<UP extends UnixPackage<UP, PP>, PP ext
     {
         MojoHelper.create( platforms,
                            platformType,
-                           formats,
                            formatType,
                            mavenProjectWrapper( project, session.get() ),
                            debug,

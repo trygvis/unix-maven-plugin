@@ -28,6 +28,7 @@ import fj.*;
 import static fj.Function.*;
 import fj.data.*;
 import org.apache.commons.compress.archivers.zip.*;
+import org.apache.maven.plugin.logging.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.BasicPackageFileSystemObject.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
@@ -51,9 +52,12 @@ public class ZipUnixPackage
 {
     private PackageFileSystem<F2<UnixFsObject, ZipArchiveOutputStream, IoEffect>> fileSystem;
 
-    public ZipUnixPackage()
+    private final Log log;
+
+    public ZipUnixPackage(Log log)
     {
         super( "zip" );
+        this.log = log;
     }
 
     public ZipUnixPackage parameters( PackageParameters parameters )
@@ -80,6 +84,7 @@ public class ZipUnixPackage
     public void addSymlink( Symlink symlink )
         throws IOException
     {
+        log.warn( "Symlinks are not supported in ZIP files." );
     }
 
     public void apply( F<UnixFsObject, Option<UnixFsObject>> f )

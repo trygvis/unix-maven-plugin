@@ -32,6 +32,7 @@ import static fj.data.Option.*;
 import static java.util.regex.Pattern.*;
 import junit.framework.*;
 import org.apache.commons.compress.archivers.zip.*;
+import org.apache.maven.plugin.logging.*;
 import org.codehaus.mojo.unix.*;
 import static org.codehaus.mojo.unix.FileAttributes.*;
 import static org.codehaus.mojo.unix.UnixFileMode._0777;
@@ -82,7 +83,7 @@ public class ZipPackageTest
 
         LocalFs basedir = new LocalFs( zip1 );
 
-        ZipUnixPackage zipPackage = new ZipUnixPackage();
+        ZipUnixPackage zipPackage = new ZipUnixPackage( new SystemStreamLog() );
 
         zipPackage.beforeAssembly( EMPTY.mode( UnixFileMode._0755 ), timestamp );
 
@@ -104,6 +105,9 @@ public class ZipPackageTest
             perform( zipPackage );
 
         new CopyFileOperation( EMPTY, basedir.resolve( "file/foo.txt" ), relativePath( "/file/foo.txt" ) ).
+            perform( zipPackage );
+
+        new SymlinkOperation( relativePath( "/var/log/hudson" ), "/var/opt/hudson/log", Option.<String>none(), Option.<String>none() ).
             perform( zipPackage );
 
         new FilterFilesOperation( single( "dirs/**" ), List.<String>nil(), single( replacer ), LineEnding.unix ).
