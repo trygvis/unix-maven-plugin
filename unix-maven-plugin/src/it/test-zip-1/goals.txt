@@ -1,1 +1,1 @@
--e -Dmaven.unix.debug=true clean install
+-e -Dmaven.unix.debug=true clean install -Dmy-user-property=user-property

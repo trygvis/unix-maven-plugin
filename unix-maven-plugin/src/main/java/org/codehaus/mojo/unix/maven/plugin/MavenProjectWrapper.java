@@ -131,7 +131,7 @@ public class MavenProjectWrapper
         Map<String, String> map = new HashMap<String, String>();
         for ( Entry<Object, Object> entry : properties.entrySet() )
         {
-            properties.put( entry.getKey().toString(), entry.getValue().toString() );
+            map.put( entry.getKey().toString(), entry.getValue().toString() );
         }
         return map;
     }

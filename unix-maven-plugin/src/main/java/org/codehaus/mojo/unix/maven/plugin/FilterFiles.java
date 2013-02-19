@@ -33,7 +33,6 @@ import java.util.*;
 import java.util.regex.*;
 
 import static fj.data.List.*;
-import static java.util.regex.Pattern.*;
 import static org.codehaus.mojo.unix.UnixFsObject.*;
 import static org.codehaus.mojo.unix.io.LineEnding.*;
 
@@ -50,18 +49,18 @@ public class FilterFiles
 
     private String lineEnding = keep.name();
 
+    private Regex[] regexes = new Regex[0];
+
     public FilterFiles()
     {
         super( "filter-files" );
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public void setIncludes( String[] includes )
     {
         this.includes = list( includes );
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public void setExcludes( String[] excludes )
     {
         this.excludes = list( excludes );
@@ -72,6 +71,11 @@ public class FilterFiles
         this.lineEnding = lineEnding;
     }
 
+    public void setRegexes( Regex[] regexes )
+    {
+        this.regexes = regexes;
+    }
+
     public AssemblyOperation createOperation( CreateOperationContext context )
         throws MojoFailureException, UnknownArtifactException
     {
@@ -79,8 +83,7 @@ public class FilterFiles
         {
             LineEnding lineEnding = LineEnding.valueOf( this.lineEnding );
 
-            return new FilterFilesOperation( includes, excludes, toDescriptor( context.project.properties ),
-                                             lineEnding );
+            return new FilterFilesOperation( includes, excludes, replacers( context.project.properties ), lineEnding );
         }
         catch ( IllegalArgumentException e )
         {
@@ -93,7 +96,7 @@ public class FilterFiles
      *
      * @see MavenProjectWrapper#mavenProjectWrapper
      */
-    public static List<Replacer> toDescriptor( Map<String, String> properties )
+    private List<Replacer> replacers( Map<String, String> properties )
         throws MojoFailureException
     {
         List<Replacer> replacers = nil();
@@ -105,7 +108,7 @@ public class FilterFiles
             try
             {
                 // This needs to be quoted, patterns like "${project.version}" are not very useful regular expressions.
-                Pattern pattern = compile( Pattern.quote( key ) );
+                String pattern = Pattern.quote( key );
 
                 replacers = replacers.cons( new Replacer( pattern, entry.getValue() ) );
             }
@@ -115,6 +118,12 @@ public class FilterFiles
             }
         }
 
-        return replacers;
+        Replacer[] rs = new Replacer[regexes.length];
+        for ( int i = regexes.length - 1; i >= 0; i-- )
+        {
+            replacers = replacers.cons( regexes[i].toReplacer() );
+        }
+
+        return replacers.reverse();
     }
 }

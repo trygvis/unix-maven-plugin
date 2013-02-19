@@ -207,11 +207,11 @@ public class FsFileCollector
 
         while ( line != null )
         {
-            Iterable<Replacer> filters = file.filters;
+            Iterable<Replacer> replacers = file.replacers;
 
-            for ( Replacer filter : filters )
+            for ( Replacer replacer : replacers )
             {
-                line = filter.replace( line );
+                line = replacer.replace( line );
             }
 
             output.write( line.getBytes() );
@@ -229,6 +229,6 @@ public class FsFileCollector
 
     public static boolean needsFiltering( UnixFsObject file )
     {
-        return file.filters.isNotEmpty() || !file.lineEnding.isKeep();
+        return file.replacers.isNotEmpty() || !file.lineEnding.isKeep();
     }
 }

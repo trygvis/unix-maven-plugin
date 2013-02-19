@@ -43,6 +43,14 @@
       <type>war</type>
     </dependency>
   </dependencies>
+  <properties>
+    <my-property>awesome</my-property>
+    <!--
+     This property will be expanded twice, once through this "user property" and once through the replacement regex
+     later
+    -->
+    <double-test>/my/path</double-test>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -76,6 +84,21 @@
               <includes>
                 <include>/opt/hudson/etc/*</include>
               </includes>
+              <excludes>
+                <exclude>/opt/hudson/etc/unfiltered.properties</exclude>
+              </excludes>
+              <regexes>
+                <regex>
+                  <!-- A simple regex -->
+                  <pattern>MY_PLACEHOLDER</pattern>
+                  <replacement>MY_VALUE</replacement>
+                </regex>
+                <regex>
+                  <!-- A regex using replacements -->
+                  <pattern>^([-a-z]*)=(/.*)</pattern>
+                  <replacement>$1=/foo$2</replacement>
+                </regex>
+              </regexes>
             </filterFiles>
           </assembly>
         </configuration>

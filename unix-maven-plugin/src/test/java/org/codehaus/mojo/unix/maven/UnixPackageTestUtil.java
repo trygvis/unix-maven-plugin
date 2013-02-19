@@ -70,7 +70,7 @@ public class UnixPackageTestUtil<UP extends UnixPackage<UP, PP>, PP extends Unix
 
         pkg.beforeAssembly( EMPTY, now );
         List<UnixFsObject.Replacer> replacers =
-            single( new UnixFsObject.Replacer( compile( quote( "${project.version}" ) ), "1.0" ) );
+            single( new UnixFsObject.Replacer( quote( "${project.version}" ), "1.0" ) );
         UnixFsObject.RegularFile file =
             regularFile( relativePath( "/config.properties" ), now, 0, EMPTY, replacers, unix );
         pkg.addFile( resources.resolve( "config.properties" ), file );

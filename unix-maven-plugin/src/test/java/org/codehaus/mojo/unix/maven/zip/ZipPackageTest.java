@@ -95,7 +95,7 @@ public class ZipPackageTest
         assertTrue( new File( zip1, "file" ).setLastModified( fileTimestamp.toDateTime().getMillis() ) );
         assertTrue( new File( zip1, "file/foo.txt" ).setLastModified( fileFooTxtTimestamp.toDateTime().getMillis() ) );
 
-        Replacer replacer = new Replacer( compile( "@bar@" ), "awesome" );
+        Replacer replacer = new Replacer( "@bar@", "awesome" );
 
         new CreateDirectoriesOperation( timestamp, new String[]{ "/opt/hudson" }, EMPTY ).
             perform( zipPackage );

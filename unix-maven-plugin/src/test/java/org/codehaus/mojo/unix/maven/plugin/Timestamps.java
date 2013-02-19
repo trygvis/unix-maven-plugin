@@ -64,6 +64,8 @@ public class Timestamps
     class Zip1
         extends Common
     {
+        public final FileTimestamp appConf =
+            ft( "src/main/unix/files/opt/hudson/etc/app.conf", 2012, 2, 19, 10, 25, 2 );
         public final FileTimestamp configProperties =
             ft( "src/main/unix/files/opt/hudson/etc/config.properties", 2012, 1, 2, 3, 4, 6 );
     }

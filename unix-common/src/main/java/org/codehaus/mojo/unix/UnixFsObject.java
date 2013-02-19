@@ -50,7 +50,7 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     public final LocalDateTime lastModified;
     public final long size;
     public final FileAttributes attributes;
-    public final List<Replacer> filters;
+    public final List<Replacer> replacers;
     public final LineEnding lineEnding;
 
     private static final DateTimeFormatter FORMAT = new DateTimeFormatterBuilder().
@@ -79,27 +79,27 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     private final char prefixChar;
 
     protected UnixFsObject( char prefixChar, RelativePath path, LocalDateTime lastModified, long size,
-                            FileAttributes attributes, List<Replacer> filters, LineEnding lineEnding )
+                            FileAttributes attributes, List<Replacer> replacers, LineEnding lineEnding )
     {
-        validateNotNull( path, lastModified, attributes, filters );
+        validateNotNull( path, lastModified, attributes, replacers );
 
         this.prefixChar = prefixChar;
         this.path = path;
         this.lastModified = lastModified;
         this.size = size;
         this.attributes = attributes;
-        this.filters = filters;
+        this.replacers = replacers;
         this.lineEnding = lineEnding;
     }
 
     public final A setPath( RelativePath path )
     {
-        return copy( path, lastModified, size, attributes, filters, lineEnding );
+        return copy( path, lastModified, size, attributes, replacers, lineEnding );
     }
 
     public final A setLastModified( LocalDateTime lastModified )
     {
-        return copy( path, lastModified, size, attributes, filters, lineEnding );
+        return copy( path, lastModified, size, attributes, replacers, lineEnding );
     }
 
     public FileAttributes getFileAttributes()
@@ -110,12 +110,12 @@ public abstract class UnixFsObject<A extends UnixFsObject>
     public final A setFileAttributes( FileAttributes attributes )
     {
         Validate.validateNotNull( attributes );
-        return copy( path, lastModified, size, attributes, filters, lineEnding );
+        return copy( path, lastModified, size, attributes, replacers, lineEnding );
     }
 
     public final A addReplacers( List<Replacer> replacers, LineEnding lineEnding )
     {
-        return copy( path, lastModified, size, attributes, replacers.append( replacers ), lineEnding );
+        return copy( path, lastModified, size, attributes, this.replacers.append( replacers ), lineEnding );
     }
 
     protected abstract A copy( RelativePath path, LocalDateTime lastModified, long size, FileAttributes attributes,
@@ -280,17 +280,15 @@ public abstract class UnixFsObject<A extends UnixFsObject>
 
         public final String replacement;
 
-        public static Show<Replacer> filterShow = Show.anyShow();
-
-        public Replacer( Pattern pattern, String replacement )
+        public Replacer( String pattern, String replacement )
         {
-            this.pattern = pattern;
+            this.pattern = Pattern.compile( pattern );
             this.replacement = replacement;
         }
 
         public String toString()
         {
-            return "s/" + pattern.pattern() + "/" + replacement + "/";
+            return "pattern=" + pattern.pattern() + ", replacement=" + replacement;
         }
 
         public String replace( String line )
