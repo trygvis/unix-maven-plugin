@@ -82,10 +82,11 @@ public class RpmUnixPackage
         return this;
     }
 
-    public RpmUnixPackage rpmParameters( String group, Option<String> rpmbuild )
+    public RpmUnixPackage rpmParameters( String group, Option<String> rpmbuild, List<String> defineStatements )
     {
         specFile.group = group;
         this.rpmbuild = rpmbuild;
+        specFile.defineStatements = defineStatements;
         return this;
     }
 
