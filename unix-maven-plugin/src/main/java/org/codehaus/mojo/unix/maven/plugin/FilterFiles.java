@@ -26,6 +26,7 @@ package org.codehaus.mojo.unix.maven.plugin;
 
 import fj.data.List;
 import org.apache.maven.plugin.*;
+import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
 import org.codehaus.mojo.unix.io.*;
 
@@ -79,11 +80,27 @@ public class FilterFiles
     public AssemblyOperation createOperation( CreateOperationContext context )
         throws MojoFailureException, UnknownArtifactException
     {
+        LineEnding lineEnding1 = valueOf();
+
+        List<Replacer> replacers;
+        if ( regexes.length > 0 )
+        {
+            replacers = regexReplacers();
+        }
+        else
+        {
+            replacers = propertyReplacers( context.project.properties );
+        }
+
+        return new FilterFilesOperation( includes, excludes, replacers, lineEnding1 );
+    }
+
+    private LineEnding valueOf()
+        throws MojoFailureException
+    {
         try
         {
-            LineEnding lineEnding = LineEnding.valueOf( this.lineEnding );
-
-            return new FilterFilesOperation( includes, excludes, replacers( context.project.properties ), lineEnding );
+            return LineEnding.valueOf( lineEnding );
         }
         catch ( IllegalArgumentException e )
         {
@@ -96,7 +113,7 @@ public class FilterFiles
      *
      * @see MavenProjectWrapper#mavenProjectWrapper
      */
-    private List<Replacer> replacers( Map<String, String> properties )
+    private List<Replacer> propertyReplacers( Map<String, String> properties )
         throws MojoFailureException
     {
         List<Replacer> replacers = nil();
@@ -117,6 +134,13 @@ public class FilterFiles
                 throw new MojoFailureException( "Illegal pattern: " + key );
             }
         }
+
+        return replacers;
+    }
+
+    private List<Replacer> regexReplacers()
+    {
+        List<Replacer> replacers = nil();
 
         Replacer[] rs = new Replacer[regexes.length];
         for ( int i = regexes.length - 1; i >= 0; i-- )

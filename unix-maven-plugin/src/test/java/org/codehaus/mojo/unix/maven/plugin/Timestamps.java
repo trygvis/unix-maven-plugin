@@ -64,10 +64,14 @@ public class Timestamps
     class Zip1
         extends Common
     {
-        public final FileTimestamp appConf =
-            ft( "src/main/unix/files/opt/hudson/etc/app.conf", 2012, 2, 19, 10, 25, 2 );
-        public final FileTimestamp configProperties =
-            ft( "src/main/unix/files/opt/hudson/etc/config.properties", 2012, 1, 2, 3, 4, 6 );
+        public final FileTimestamp filter1 =
+            ft( "src/main/unix/files/opt/hudson/etc/filter-1.conf", 2013, 2, 19, 10, 25, 2 );
+        public final FileTimestamp filter2 =
+            ft( "src/main/unix/files/opt/hudson/etc/filter-2.conf", 2013, 1, 2, 3, 4, 6 );
+        public final FileTimestamp filterAll =
+            ft( "src/main/unix/files/opt/hudson/etc/filter-all.conf", 2013, 2, 20, 10, 37, 36 );
+        public final FileTimestamp unfiltered =
+            ft( "src/main/unix/files/opt/hudson/etc/unfiltered.properties", 2013, 2, 20, 10, 45, 20 );
     }
 
     public final Zip1 zip1;

@@ -76,6 +76,7 @@
                 <mode>0666</mode>
               </attributes>
             </copyArtifact>
+            <!-- Will result in a warning -->
             <symlink>
               <path>/var/log/hudson</path>
               <value>/var/opt/hudson/log</value>
@@ -85,8 +86,20 @@
                 <include>/opt/hudson/etc/*</include>
               </includes>
               <excludes>
+                <exclude>/opt/hudson/etc/filter-2.conf</exclude>
                 <exclude>/opt/hudson/etc/unfiltered.properties</exclude>
               </excludes>
+              <lineEnding>unix</lineEnding>
+            </filterFiles>
+            <filterFiles>
+              <includes>
+                <include>/opt/hudson/etc/*</include>
+              </includes>
+              <excludes>
+                <exclude>/opt/hudson/etc/filter-1.conf</exclude>
+                <exclude>/opt/hudson/etc/unfiltered.properties</exclude>
+              </excludes>
+              <lineEnding>unix</lineEnding>
               <regexes>
                 <regex>
                   <!-- A simple regex -->
