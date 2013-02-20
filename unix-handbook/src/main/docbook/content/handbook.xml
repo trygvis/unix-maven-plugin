@@ -35,14 +35,12 @@
     <author>
       <personname>Trygve Laugstøl</personname>
 
-      <affiliation>
-        <orgname>Arktekk AS</orgname>
-      </affiliation>
+      <affiliation/>
 
-      <email>trygve.laugstol@arktekk.no</email>
+      <email>trygvis@inamo.no</email>
     </author>
 
-    <pubdate>$Id: handbook.xml 14315 2011-07-08 16:08:05Z trygvis $</pubdate>
+    <pubdate/>
   </info>
 
   <acknowledgements>
@@ -105,7 +103,7 @@
 
     <para>The book is under continous development and is written in parallel
     with the plugin. It will only document the current version until a stable
-    release is done. See <xref linkend="version-history-and-upgrading" /> on
+    release is done. See <xref linkend="version-history-and-upgrading"/> on
     how to upgrade from one version to the next version.</para>
 
     <para>Currently there are chapters and sections that serve as placeholders
@@ -134,8 +132,8 @@
         <para>The Unix Maven Plugin is meant to fill in the gap between
         creating platform independent applications and reality. It makes it
         possible to create Java application with your standard Java
-        development stack, and still install the applications using
-        the native tools that your system administrators already know.</para>
+        development stack, and still install the applications using the native
+        tools that your system administrators already know.</para>
 
         <para>As it automates yet another step in the development
         chain<footnote>
@@ -165,9 +163,9 @@
           <listitem>
             <para>Metadata generation: Each package format contain some form
             of metadata that it uses when the package is being installed or
-            removed. The plugin will pick up as much metadata from the Maven POM
-            as possible, but there are certain options that might have to be
-            filled in, depending on the package format.</para>
+            removed. The plugin will pick up as much metadata from the Maven
+            POM as possible, but there are certain options that might have to
+            be filled in, depending on the package format.</para>
           </listitem>
 
           <listitem>
@@ -224,8 +222,7 @@
           <para>After all the assembly operations has been executed, the
           physical package file will be created.</para>
 
-          <para>See also <xref
-          linkend="concept-package-file-system" />.</para>
+          <para>See also <xref linkend="concept-package-file-system"/>.</para>
         </section>
       </section>
 
@@ -442,7 +439,7 @@
           <title><code>pom.xml</code> for the deb version</title>
 
           <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pom-deb.xml" parse="text" /></programlisting>
+              href="../examples/basic/pom-deb.xml" parse="text"/></programlisting>
         </section>
 
         <section>
@@ -455,12 +452,12 @@
           <para>The package will contain these files:</para>
 
           <screen><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/dpkg-deb-c.txt" parse="text" /></screen>
+              href="../examples/basic/dpkg-deb-c.txt" parse="text"/></screen>
 
           <para>The generated control file:</para>
 
           <screen><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/dpkg-deb-f.txt" parse="text" /></screen>
+              href="../examples/basic/dpkg-deb-f.txt" parse="text"/></screen>
         </section>
       </section>
 
@@ -471,7 +468,7 @@
           <title><code>pom.xml</code> for the pkg version</title>
 
           <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pom-pkg.xml" parse="text" /></programlisting>
+              href="../examples/basic/pom-pkg.xml" parse="text"/></programlisting>
         </section>
 
         <section>
@@ -484,7 +481,7 @@
           <para>The generated metadata will look like this:</para>
 
           <screen><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pkginfo.txt" parse="text" /></screen>
+              href="../examples/basic/pkginfo.txt" parse="text"/></screen>
 
           <para>Notice that the SNAPSHOT part of the version string has been
           replaced with the a timestamp.</para>
@@ -492,7 +489,7 @@
           <para>To see verify the paths and their attributes, run this:</para>
 
           <screen><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pkgchk.txt" parse="text" /></screen>
+              href="../examples/basic/pkgchk.txt" parse="text"/></screen>
         </section>
       </section>
 
@@ -503,7 +500,7 @@
           <title><code>pom.xml</code> for RPM version</title>
 
           <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pom-rpm.xml" parse="text" /></programlisting>
+              href="../examples/basic/pom-rpm.xml" parse="text"/></programlisting>
         </section>
 
         <section>
@@ -516,7 +513,7 @@
           <para>The package will contain these files:</para>
 
           <screen><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/rpm-qlp.txt" parse="text" /></screen>
+              href="../examples/basic/rpm-qlp.txt" parse="text"/></screen>
         </section>
       </section>
 
@@ -527,7 +524,7 @@
           <title><code>pom.xml</code> for the zip version</title>
 
           <programlisting language="xml"><?dbfo-font-size 75% ?><xi:include
-              href="../examples/basic/pom-zip.xml" parse="text" /></programlisting>
+              href="../examples/basic/pom-zip.xml" parse="text"/></programlisting>
         </section>
 
         <section>
@@ -539,7 +536,7 @@
 
           <para>The zip will contain these files:</para>
 
-          <screen><xi:include href="../examples/unzip-l.txt" parse="text" /></screen>
+          <screen><xi:include href="../examples/unzip-l.txt" parse="text"/></screen>
         </section>
       </section>
     </chapter>
@@ -591,8 +588,8 @@
       <para>When the plugin is collecting all relevant data for a package it
       collects all the information in a generic object called "package
       parameters". This object is used as the basis when the package is
-      created. See <xref linkend="mapping" /> on how the package parameters
-      map to the format specific fields.</para>
+      created. See <xref linkend="mapping"/> on how the package parameters map
+      to the format specific fields.</para>
 
       <note>
         <itemizedlist>
@@ -611,9 +608,9 @@
 
       <informaltable>
         <tgroup cols="4">
-          <colspec colwidth="0.60*" />
+          <colspec colwidth="0.60*"/>
 
-          <colspec align="center" colwidth="0.30*" />
+          <colspec align="center" colwidth="0.30*"/>
 
           <thead>
             <row>
@@ -635,7 +632,7 @@
 
               <entry><code>project.groupId</code></entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
@@ -645,7 +642,7 @@
 
               <entry><code>project.artifactId</code></entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
@@ -656,7 +653,7 @@
               <entry>Calculated</entry>
 
               <entry>This field is calculated from different sources. See
-              <xref linkend="version-calculation" /> for details.</entry>
+              <xref linkend="version-calculation"/> for details.</entry>
             </row>
 
             <row>
@@ -667,7 +664,7 @@
               <entry><code>mojo.revision</code></entry>
 
               <entry>This field is calculated from different sources unless
-              specified. See <xref linkend="version-calculation" /> for
+              specified. See <xref linkend="version-calculation"/> for
               details.</entry>
             </row>
 
@@ -724,7 +721,7 @@
                   </listitem>
                 </orderedlist></entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
@@ -734,7 +731,7 @@
 
               <entry><code>mojo.contact</code></entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
@@ -744,7 +741,7 @@
 
               <entry><code>mojo.contactEmail</code></entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
@@ -796,9 +793,9 @@
 
         <informaltable>
           <tgroup cols="4">
-            <colspec colwidth="0.60*" />
+            <colspec colwidth="0.60*"/>
 
-            <colspec align="center" arch="" colwidth="0.30*" />
+            <colspec align="center" arch="" colwidth="0.30*"/>
 
             <thead>
               <row>
@@ -820,7 +817,7 @@
 
                 <entry><code>deb.priority</code></entry>
 
-                <entry></entry>
+                <entry/>
               </row>
 
               <row>
@@ -830,7 +827,7 @@
 
                 <entry><code>deb.section</code></entry>
 
-                <entry></entry>
+                <entry/>
               </row>
             </tbody>
           </tgroup>
@@ -863,9 +860,9 @@
 
         <informaltable>
           <tgroup cols="4">
-            <colspec colwidth="0.60*" />
+            <colspec colwidth="0.60*"/>
 
-            <colspec align="center" colwidth="0.30*" />
+            <colspec align="center" colwidth="0.30*"/>
 
             <thead>
               <row>
@@ -887,7 +884,7 @@
 
                 <entry><code>rpm.group</code></entry>
 
-                <entry></entry>
+                <entry/>
               </row>
             </tbody>
           </tgroup>
@@ -946,11 +943,11 @@
 
           <informaltable>
             <tgroup cols="4">
-              <colspec align="center" colwidth="0.50*" />
+              <colspec align="center" colwidth="0.50*"/>
 
-              <colspec align="center" colwidth="0.30*" />
+              <colspec align="center" colwidth="0.30*"/>
 
-              <colspec align="center" colwidth="0.30*" />
+              <colspec align="center" colwidth="0.30*"/>
 
               <thead>
                 <row>
@@ -1065,11 +1062,11 @@
 
           <informaltable>
             <tgroup cols="4">
-              <colspec align="center" colwidth="0.50*" />
+              <colspec align="center" colwidth="0.50*"/>
 
-              <colspec align="center" colwidth="0.30*" />
+              <colspec align="center" colwidth="0.30*"/>
 
-              <colspec align="center" colwidth="0.30*" />
+              <colspec align="center" colwidth="0.30*"/>
 
               <thead>
                 <row>
@@ -1194,7 +1191,7 @@
           format</title>
 
           <tgroup cols="4">
-            <colspec align="center" />
+            <colspec align="center"/>
 
             <thead>
               <row>
@@ -1261,27 +1258,27 @@
 
                 <entry valign="middle"><literal>Maintainer</literal></entry>
 
-                <entry></entry>
+                <entry/>
 
-                <entry></entry>
+                <entry/>
               </row>
 
               <row>
                 <entry><literal>contactEmail</literal></entry>
 
-                <entry valign="middle"></entry>
+                <entry valign="middle"/>
 
                 <entry><literal>EMAIL</literal></entry>
 
-                <entry></entry>
+                <entry/>
               </row>
 
               <row>
                 <entry><literal>license</literal></entry>
 
-                <entry></entry>
+                <entry/>
 
-                <entry></entry>
+                <entry/>
 
                 <entry><literal>License</literal></entry>
               </row>
@@ -1293,7 +1290,7 @@
 
                 <entry><literal>ARCH</literal></entry>
 
-                <entry></entry>
+                <entry/>
               </row>
             </tbody>
           </tgroup>
@@ -1317,7 +1314,7 @@
         <section>
           <title>Rpm Specific Mappings</title>
 
-          <para></para>
+          <para/>
         </section>
       </section>
     </chapter>
@@ -1346,7 +1343,7 @@
           <title>Naming convention for action scripts per format</title>
 
           <tgroup cols="4">
-            <colspec colwidth="2*" />
+            <colspec colwidth="2*"/>
 
             <thead>
               <row>
@@ -1433,9 +1430,9 @@
           <title>Naming convention for generic action scripts</title>
 
           <tgroup cols="2">
-            <colspec colwidth="2*" />
+            <colspec colwidth="2*"/>
 
-            <colspec colwidth="5*" />
+            <colspec colwidth="5*"/>
 
             <thead>
               <row>
@@ -1512,7 +1509,7 @@
         <title>Summary of assembly operations</title>
 
         <tgroup cols="2">
-          <colspec colnum="2" colwidth="4*" />
+          <colspec colnum="2" colwidth="4*"/>
 
           <tbody>
             <row>
@@ -1543,6 +1540,12 @@
               <entry>Extract artifact</entry>
 
               <entry>Extracts an artifact from the repository</entry>
+            </row>
+
+            <row>
+              <entry>Fitler file</entry>
+
+              <entry>Filters a file</entry>
             </row>
 
             <row>
@@ -1732,15 +1735,16 @@
           <note>
             <para>Some assembly operations support both per-directory and
             per-file attributes. If so the outer tag will be named
-            <tag>&lt;fileAttributes&gt;</tag> and &lt;directoryAttributes&gt;,
-            but they contain exactly the same set of elements.</para>
+            <tag>&lt;fileAttributes&gt;</tag> and
+            <tag>&lt;directoryAttributes&gt;</tag>, but they contain exactly
+            the same set of elements.</para>
           </note>
 
           <table>
             <title>Available attributes</title>
 
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="2*" />
+              <colspec colnum="2" colwidth="2*"/>
 
               <tbody>
                 <row>
@@ -1778,7 +1782,7 @@
               </listitem>
             </itemizedlist></para>
 
-          <para>See <xref linkend="concept-package-file-system" /> for more
+          <para>See <xref linkend="concept-package-file-system"/> for more
           details.</para>
 
           <example>
@@ -1803,7 +1807,7 @@
           <title>Supported parameters for <tag>&lt;copyFile&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="2*" />
+            <colspec colnum="2" colwidth="2*"/>
 
             <tbody>
               <row>
@@ -1826,7 +1830,7 @@
                 <entry><literal>attributes</literal></entry>
 
                 <entry>The attributes to set on the copied file. See <xref
-                linkend="file-attributes" />.</entry>
+                linkend="file-attributes"/>.</entry>
               </row>
             </tbody>
           </tgroup>
@@ -1859,14 +1863,14 @@
           <tag>&lt;copyArtifact&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="2*" />
+            <colspec colnum="2" colwidth="2*"/>
 
             <tbody>
               <row>
                 <entry><literal>artifact</literal></entry>
 
                 <entry>The artifact to copy. See <xref
-                linkend="artifact-naming-and-identification" /> on how to
+                linkend="artifact-naming-and-identification"/> on how to
                 identify the artifact to copy.</entry>
               </row>
 
@@ -1884,7 +1888,7 @@
                 <entry><literal>attributes</literal></entry>
 
                 <entry>The attributes to set on the copied file. See <xref
-                linkend="file-attributes" />.</entry>
+                linkend="file-attributes"/>.</entry>
               </row>
             </tbody>
           </tgroup>
@@ -1905,16 +1909,177 @@
         </example>
       </section>
 
+      <section>
+        <title>Filter Files</title>
+
+        <para>Purpose: runs regular expressions and control line ending of the
+        matched files.</para>
+
+        <table>
+          <title>Supported parameters for
+          <tag>&lt;filterFiles&gt;</tag></title>
+
+          <tgroup cols="2">
+            <colspec colnum="2" colwidth="2*"/>
+
+            <tbody>
+              <row>
+                <entry><literal>includes</literal> and
+                <literal>excludes</literal></entry>
+
+                <entry>Selects which files to include into the package. See
+                <xref linkend="includes-and-excludes"/>.</entry>
+              </row>
+
+              <row>
+                <entry><literal>lineEnding</literal></entry>
+
+                <entry>Controls the line ending of the filtered file. Legal
+                values are: <literal>keep</literal>, <literal>unix</literal>,
+                <literal>windows</literal>.</entry>
+              </row>
+
+              <row>
+                <entry><literal>regexes</literal></entry>
+
+                <entry>A optional list of regular expression patterns and
+                replacement texts. If empty, a list is generated from the
+                available properties. See <xref
+                linkend="filter-files_property-interpolation"/>.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <example>
+          <title>Example usage of <tag>&lt;filterFiles&gt;</tag></title>
+
+          <programlisting>&lt;filterFiles&gt;
+  &lt;includes&gt;
+    &lt;include&gt;/opt/hudson/etc/*&lt;/include&gt;
+  &lt;/includes&gt;
+  &lt;excludes&gt;
+    &lt;exclude&gt;/opt/hudson/etc/unfiltered.properties&lt;/exclude&gt;
+  &lt;/excludes&gt;
+  &lt;regexes&gt;
+    &lt;regex&gt;
+      &lt;!-- A simple regex --&gt;
+      &lt;pattern&gt;MY_PLACEHOLDER&lt;/pattern&gt;
+      &lt;replacement&gt;MY_VALUE&lt;/replacement&gt;
+    &lt;/regex&gt;
+    &lt;regex&gt;
+      &lt;!-- A regex using replacements --&gt;
+      &lt;pattern&gt;^([-a-z]*)=(/.*)&lt;/pattern&gt;
+      &lt;replacement&gt;$1=/foo$2&lt;/replacement&gt;
+    &lt;/regex&gt;
+  &lt;/regexes&gt;
+&lt;/filterFiles&gt;</programlisting>
+        </example>
+
+        <para>This operation will add the regular expressions to all the files
+        matched. The regular expressions will be executed in the order
+        specified. </para>
+
+        <note>
+          <para>Note that the second regular expression will be executed on
+          the output of the first expression so that the changes accumulate
+          through all the expressions.</para>
+        </note>
+
+        <section>
+          <title xml:id="filter-files_property-interpolation">Property
+          Interpolation</title>
+
+          <para>If no regular expressions are given, a list of regular
+          expressions will be generated based on the available properties from
+          Maven. There are three kinds of properties:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>System properties</term>
+
+              <listitem>
+                <para>The properties available from <link
+                linkend="???"><literal
+                xlink:href="http://docs.oracle.com/javase/7/docs/api/java/lang/System.html#getProperties()">System.getProperties()</literal></link>
+                and <link linkend="???"><literal
+                xlink:href="http://docs.oracle.com/javase/7/docs/api/java/lang/System.html#getenv()">System.getenv()</literal></link>.
+                The environment properties will be available under the
+                <literal>env.</literal> prefix.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>User properties</term>
+
+              <listitem>
+                <para>Properties specified with -D on the command line.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Project properties</term>
+
+              <listitem>
+                <para>Properties specified with the
+                <tag>&lt;properties&gt;</tag> tag.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <para>In addition to these properties, three extra properties are
+          added for convenience:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><literal>project.groupId</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><literal>project.artifactId</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><literal>project.version</literal></para>
+            </listitem>
+          </itemizedlist>
+
+          <para>The generated expression will be similar to
+          <literal>${proper.properties}</literal> so that it will look like
+          normal interpolation. However, there is a difference in the keys
+          available as the plugin doesn't use reflection to inspect the Maven
+          Project Model.This means that expressions like
+          <literal>${project.target.direcetory}</literal> will not
+          work.</para>
+
+          <para>To get that kind of expressions to work you have to create a
+          project property and use the new property
+          (<literal>targetDirectory</literal>) as a key:</para>
+
+          <example>
+            <title/>
+
+            <literallayout>&lt;project&gt;
+  ..
+  &lt;properties&gt;
+    &lt;targetDirectory&gt;${project.output.directory}&lt;/targetDirectory&gt;
+  &lt;/properties&gt;
+&lt;/project&gt;</literallayout>
+          </example>
+        </section>
+      </section>
+
       <section xml:id="make-directory">
         <title>Make Directory</title>
 
-        <para>Purpose: to create one or more directories</para>
+        <para>Purpose: to create one or more directories.</para>
 
         <table>
-          <title>Supported parameters <tag>&lt;makeDirectory&gt;</tag></title>
+          <title>Supported parameters for
+          <tag>&lt;makeDirectory&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="2*" />
+            <colspec colnum="2" colwidth="2*"/>
 
             <tbody>
               <row>
@@ -1929,7 +2094,7 @@
                 <entry><literal>attributes</literal></entry>
 
                 <entry>The attributes to set on the copied file. See <xref
-                linkend="file-attributes" />.</entry>
+                linkend="file-attributes"/>.</entry>
               </row>
             </tbody>
           </tgroup>
@@ -1962,7 +2127,7 @@
           <title>Supported parameters <tag>&lt;setAttributes&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="2*" />
+            <colspec colnum="2" colwidth="2*"/>
 
             <tbody>
               <row>
@@ -1977,7 +2142,7 @@
 
                 <entry>The attributes to set on the matched
                 <emphasis>files</emphasis>. See <xref
-                linkend="file-attributes" />.</entry>
+                linkend="file-attributes"/>.</entry>
               </row>
 
               <row>
@@ -1985,7 +2150,7 @@
 
                 <entry>The attributes to set on the matched
                 <emphasis>directories</emphasis>. See <xref
-                linkend="file-attributes" />.</entry>
+                linkend="file-attributes"/>.</entry>
               </row>
 
               <row>
@@ -1993,7 +2158,7 @@
                 <literal>excludes</literal></entry>
 
                 <entry>Selects which files to include into the package. See
-                <xref linkend="includes-and-excludes" />.</entry>
+                <xref linkend="includes-and-excludes"/>.</entry>
               </row>
             </tbody>
           </tgroup>
@@ -2022,7 +2187,7 @@
           <title>Supported parameters <tag>&lt;symlink&gt;</tag></title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="2*" />
+            <colspec colnum="2" colwidth="2*"/>
 
             <tbody>
               <row>
@@ -2065,7 +2230,7 @@
           and extract file operations</title>
 
           <tgroup cols="2">
-            <colspec colnum="2" colwidth="2*" />
+            <colspec colnum="2" colwidth="2*"/>
 
             <tbody>
               <row>
@@ -2079,7 +2244,7 @@
                 <literal>excludes</literal></entry>
 
                 <entry>Selects which files to include into the package. See
-                <xref linkend="includes-and-excludes" />.</entry>
+                <xref linkend="includes-and-excludes"/>.</entry>
               </row>
 
               <row>
@@ -2087,7 +2252,7 @@
                 <literal>replacement</literal></entry>
 
                 <entry>Controls renaming of the files. See <xref
-                linkend="file-renaming" />.</entry>
+                linkend="file-renaming"/>.</entry>
               </row>
 
               <row>
@@ -2095,7 +2260,7 @@
 
                 <entry>The attributes to set on the matched
                 <emphasis>files</emphasis>. See <xref
-                linkend="file-attributes" />.</entry>
+                linkend="file-attributes"/>.</entry>
               </row>
 
               <row>
@@ -2103,7 +2268,7 @@
 
                 <entry>The attributes to set on the matched
                 <emphasis>directories</emphasis>. See <xref
-                linkend="file-attributes" />.</entry>
+                linkend="file-attributes"/>.</entry>
               </row>
             </tbody>
           </tgroup>
@@ -2119,7 +2284,7 @@
             <tag>&lt;copyDirectory&gt;</tag></title>
 
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="2*" />
+              <colspec colnum="2" colwidth="2*"/>
 
               <tbody>
                 <row>
@@ -2152,14 +2317,14 @@
             <tag>&lt;extractArtifacrt&gt;</tag></title>
 
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="2*" />
+              <colspec colnum="2" colwidth="2*"/>
 
               <tbody>
                 <row>
                   <entry><literal>artifact</literal></entry>
 
                   <entry>The artifact to copy. See <xref
-                  linkend="artifact-naming-and-identification" /> on how to
+                  linkend="artifact-naming-and-identification"/> on how to
                   identify the artifact to copy.</entry>
                 </row>
               </tbody>
@@ -2197,14 +2362,14 @@
             <tag>&lt;extractFile&gt;</tag></title>
 
             <tgroup cols="2">
-              <colspec colnum="2" colwidth="2*" />
+              <colspec colnum="2" colwidth="2*"/>
 
               <tbody>
                 <row>
                   <entry><literal>archive</literal></entry>
 
                   <entry>The path to an archive to extract. See <xref
-                  linkend="artifact-naming-and-identification" /> on how to
+                  linkend="artifact-naming-and-identification"/> on how to
                   identify the artifact to copy.</entry>
                 </row>
               </tbody>
@@ -2226,24 +2391,24 @@
     <chapter>
       <title>Creating Native Package Repositories</title>
 
-      <para></para>
+      <para/>
 
       <section>
         <title>Creating Debian/APT Repositories</title>
 
-        <para></para>
+        <para/>
       </section>
 
       <section>
         <title>Creating RPM/Yum Repositories</title>
 
-        <para></para>
+        <para/>
       </section>
 
       <section>
         <title>Creating pkg-get/pkgutil Repositories</title>
 
-        <para></para>
+        <para/>
       </section>
     </chapter>
 
@@ -2309,7 +2474,7 @@
             <title>Output of <code>rpm -q -l -p</code></title>
 
             <screen><?dbfo-font-size 75%?><xi:include
-                href="command-reference/rpm-qlp.txt" parse="text" /></screen>
+                href="command-reference/rpm-qlp.txt" parse="text"/></screen>
           </example>
         </section>
       </section>
@@ -2324,7 +2489,7 @@
             <title>Output of <code>rpm -q -l -p</code></title>
 
             <screen><?dbfo-font-size 75%?><xi:include
-                href="command-reference/rpm-qlp.txt" parse="text" /></screen>
+                href="command-reference/rpm-qlp.txt" parse="text"/></screen>
           </example>
         </section>
 
@@ -2335,7 +2500,7 @@
             <title>Output of <code>rpm -q -l -p -v</code></title>
 
             <screen><?dbfo-font-size 75%?><xi:include
-                href="command-reference/rpm-qvlp.txt" parse="text" /></screen>
+                href="command-reference/rpm-qvlp.txt" parse="text"/></screen>
           </example>
         </section>
 
@@ -2349,7 +2514,7 @@
             <title>Listing all available software groups</title>
 
             <screen><?dbfo-font-size 75%?><xi:include
-                href="command-reference/cat-GROUPS.txt" parse="text" /></screen>
+                href="command-reference/cat-GROUPS.txt" parse="text"/></screen>
           </example>
         </section>
       </section>
@@ -2364,7 +2529,7 @@
           <title>Listing all files in a ZIP file</title>
 
           <screen><?dbfo-font-size 75%?><xi:include
-              href="command-reference/unzip-l.txt" parse="text" /></screen>
+              href="command-reference/unzip-l.txt" parse="text"/></screen>
         </example>
       </section>
     </chapter>
@@ -2510,10 +2675,10 @@
         <tag>&lt;classifier&gt;</tag> to be closer to the existing Maven
         nomenclature.</para>
 
-        <para>All examples use hyphenated elements instead of camel casing to be
-        more consistent with how Maven POMs normally are written. This will
-        not break any builds as Maven interpret both versions the same way. For
-        example <tag>&lt;fileAttributes&gt;</tag> is now used instead of
+        <para>All examples use hyphenated elements instead of camel casing to
+        be more consistent with how Maven POMs normally are written. This will
+        not break any builds as Maven interpret both versions the same way.
+        For example <tag>&lt;fileAttributes&gt;</tag> is now used instead of
         <tag>&lt;file-attribues&gt;</tag>.</para>
       </section>
     </chapter>
