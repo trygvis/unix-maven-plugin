@@ -75,7 +75,7 @@ public class RpmUnixPackageTest
 
         RpmUnixPackage unixPackage = packagingFormat.start( new SystemStreamLog() ).
             parameters( parameters ).
-            rpmParameters( "Fun", Option.<String>none() ).
+            rpmParameters( "Fun", Option.<String>none(), List.<String>nil() ).
             workingDirectory( root.resolve( "working-directory" ) );
 
         unixPackage.beforeAssembly( EMPTY, now );
@@ -110,7 +110,7 @@ public class RpmUnixPackageTest
             {
                 protected RpmUnixPackage extraStuff( RpmUnixPackage rpmUnixPackage )
                 {
-                    return rpmUnixPackage.rpmParameters( "my-group", Option.<String>none() );
+                    return rpmUnixPackage.rpmParameters( "my-group", Option.<String>none(), List.<String>nil() );
                 }
             };
         unixPackageTestUtil.testFiltering();

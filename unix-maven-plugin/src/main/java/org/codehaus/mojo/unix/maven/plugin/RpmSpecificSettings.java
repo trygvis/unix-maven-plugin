@@ -38,6 +38,8 @@ public class RpmSpecificSettings
 
     public Option<String> rpmbuild = none();
 
+    public List<String> defineStatements = List.nil();
+
     public void setGroup( String group )
     {
         this.group = fromNull( group );
@@ -46,6 +48,17 @@ public class RpmSpecificSettings
     public void setRpmbuild( String rpmbuild )
     {
         this.rpmbuild = fromNull( rpmbuild );
+    }
+
+    public void setDefineStatements(java.util.List<String> statements)
+    {
+        if (statements == null)
+            return;
+        for (String s : statements)
+        {
+            defineStatements = defineStatements.snoc(s);
+        }
+        defineStatements = defineStatements.nub();
     }
 
     public String toString()
