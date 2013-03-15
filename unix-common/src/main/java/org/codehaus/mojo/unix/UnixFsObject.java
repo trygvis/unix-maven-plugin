@@ -29,12 +29,12 @@ import static fj.Function.*;
 import static fj.P.*;
 import fj.data.*;
 import org.codehaus.mojo.unix.io.*;
+import static org.codehaus.mojo.unix.java.StringF.*;
 import org.codehaus.mojo.unix.util.*;
 
 import static fj.data.Option.some;
 import static org.codehaus.mojo.unix.util.Validate.*;
 import org.codehaus.mojo.unix.util.line.*;
-import org.codehaus.plexus.util.*;
 import org.joda.time.*;
 import org.joda.time.format.*;
 
@@ -188,8 +188,8 @@ public abstract class UnixFsObject<A extends UnixFsObject>
 
     public String toString()
     {
-        F<String, String> leftPad10 = curry( UnixFsObject.leftPad, 10 );
-        F<String, String> rightPad10 = curry( UnixFsObject.rightPad, 10 );
+        F<String, String> leftPad10 = curry( leftPad, 10 );
+        F<String, String> rightPad10 = curry( rightPad, 10 );
 
         return prefixChar + attributes.mode.map( UnixFileMode.showLong ).orSome( "<unknown>" ) +
             " " + attributes.user.map( leftPad10 ).orSome( " <unknown>" ) +
@@ -257,22 +257,6 @@ public abstract class UnixFsObject<A extends UnixFsObject>
             return super.toString() + " -> " + value;
         }
     }
-
-    private static final F2<Integer, String, String> leftPad = new F2<Integer, String, String>()
-    {
-        public String f( Integer size, String s )
-        {
-            return StringUtils.leftPad( s, size );
-        }
-    };
-
-    private static final F2<Integer, String, String> rightPad = new F2<Integer, String, String>()
-    {
-        public String f( Integer size, String s )
-        {
-            return StringUtils.leftPad( s, size );
-        }
-    };
 
     public static class Replacer
     {

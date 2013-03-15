@@ -27,6 +27,7 @@ package org.codehaus.mojo.unix.java;
 import fj.*;
 import fj.data.*;
 import static fj.data.List.*;
+import org.codehaus.plexus.util.*;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -124,6 +125,22 @@ public class StringF
                     };
                 }
             };
+        }
+    };
+
+    public static final F2<Integer, String, String> leftPad = new F2<Integer, String, String>()
+    {
+        public String f( Integer size, String s )
+        {
+            return StringUtils.leftPad( s, size );
+        }
+    };
+
+    public static final F2<Integer, String, String> rightPad = new F2<Integer, String, String>()
+    {
+        public String f( Integer size, String s )
+        {
+            return StringUtils.leftPad( s, size );
         }
     };
 }

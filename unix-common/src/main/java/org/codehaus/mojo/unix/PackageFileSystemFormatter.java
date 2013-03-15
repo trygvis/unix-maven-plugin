@@ -24,11 +24,16 @@ package org.codehaus.mojo.unix;
  * SOFTWARE.
  */
 
+import fj.*;
+import static fj.Function.curry;
+import static fj.P.p;
 import fj.data.*;
+import static org.codehaus.mojo.unix.java.StringF.leftPad;
+import static org.codehaus.mojo.unix.java.StringF.rightPad;
 import org.codehaus.mojo.unix.util.line.*;
 import org.codehaus.plexus.util.*;
 
-public class PackageFileSystemFormatter<A>
+public abstract class PackageFileSystemFormatter<A>
 {
     /*
     TODO: Create strategies for printing in "flat", "flat with details" and "tree" modes
@@ -62,11 +67,6 @@ public class PackageFileSystemFormatter<A>
     {
     }
 
-    public static <A> PackageFileSystemFormatter<A> flatFormatter()
-    {
-        return new PackageFileSystemFormatter<A>();
-    }
-
     // TODO: This should be streaming instead of creating an entire collection
     public LineFile print( PackageFileSystem<A> fs )
     {
@@ -81,17 +81,56 @@ public class PackageFileSystemFormatter<A>
         return lines;
     }
 
-    private void print( int i, LineFile lines, Stream<Tree<PackageFileSystemObject<A>>> children )
-    {
-        String indent = StringUtils.repeat( "    ", i );
-        i++;
+    protected abstract void print( int i, LineFile lines, Stream<Tree<PackageFileSystemObject<A>>> children );
 
-        for ( Tree<PackageFileSystemObject<A>> child : children )
+    public static <A> PackageFileSystemFormatter<A> flatFormatter()
+    {
+        return new PackageFileSystemFormatter<A>()
         {
-//            UnixFsObject unixFsObject = child.root().getUnixFsObject();
-//            lines.add( indent + unixFsObject.path.name() + ", filters=" + unixFsObject.filters );
-            lines.add( indent + child.root().getUnixFsObject().path.name() );
-            print( i, lines, child.subForest()._1() );
-        }
+            protected void print( int i, LineFile lines, Stream<Tree<PackageFileSystemObject<A>>> children )
+            {
+                String indent = StringUtils.repeat( "    ", i );
+                i++;
+
+                for ( Tree<PackageFileSystemObject<A>> child : children )
+                {
+//                    UnixFsObject unixFsObject = child.root().getUnixFsObject();
+//                    lines.add( indent + unixFsObject.path.name() + ", filters=" + unixFsObject.filters );
+                    lines.add( indent + child.root().getUnixFsObject().path.name() );
+                    print( i, lines, child.subForest()._1() );
+                }
+            }
+        };
+    }
+
+    public static <A> PackageFileSystemFormatter<A> detailedFormatter()
+    {
+        return new PackageFileSystemFormatter<A>()
+        {
+            protected void print( int i, LineFile lines, Stream<Tree<PackageFileSystemObject<A>>> children )
+            {
+                String indent = StringUtils.repeat( "    ", i );
+                i++;
+
+                for ( Tree<PackageFileSystemObject<A>> child : children )
+                {
+                    UnixFsObject o = child.root().getUnixFsObject();
+                    FileAttributes attributes = o.getFileAttributes();
+
+                    F<String, String> leftPad10 = curry( leftPad, 10 );
+                    F<String, String> rightPad10 = curry( rightPad, 10 );
+
+                    String line = '-' + attributes.mode.map( UnixFileMode.showLong ).orSome( "<unknown>" ) +
+                        " " + attributes.user.map( leftPad10 ).orSome( " <unknown>" ) +
+                        " " + attributes.group.map( leftPad10 ).orSome( " <unknown>" ) +
+                        " " + p( String.valueOf( o.size ) ).map( rightPad10 )._1() +
+                        " " + p( o.lastModified ).map( UnixFsObject.formatter )._1() +
+                        " " + attributes.toString() + indent + o.path.name();
+
+                    lines.add( line );
+                    print( i, lines, child.subForest()._1() );
+                }
+            }
+        };
     }
 }

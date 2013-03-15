@@ -169,9 +169,11 @@
             <configuration>
               <addTestClassPath>true</addTestClassPath>
               <!--
-              Use -Dinvoker.test=test-zip-1/pom4test.xml to run single tests.
+              Use
 
-              The ones listed here are platform independent and should always pass.
+                -Dinvoker.test=test-zip-1/pom4test.xml
+
+              to run single tests. The ones listed here are platform independent and should always pass.
               -->
               <!-- This doesn't seem to be useful.
               <parallelThreads>4</parallelThreads>

@@ -70,8 +70,6 @@ public class SpecFile
 
     public String distribution;
 
-    public File icon;
-
     public String vendor;
 
     public String url;
@@ -251,7 +249,19 @@ public class SpecFile
     {
         public Boolean f( PackageFileSystemObject object )
         {
-            return !object.getUnixFsObject().path.isBase();
+            if ( !object.getUnixFsObject().path.isBase() )
+            {
+                return true;
+            }
+
+            FileAttributes fileAttributes = object.getUnixFsObject().getFileAttributes();
+
+            if ( fileAttributes.user.isNone() && fileAttributes.group.isNone() && fileAttributes.mode.isNone() )
+            {
+                return false;
+            }
+
+            return false;
         }
     };
 

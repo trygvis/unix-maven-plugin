@@ -55,7 +55,7 @@ public class PackageFileSystem<A>
     public static <A> PackageFileSystem<A> create( PackageFileSystemObject<A> root,
                                                    PackageFileSystemObject<A> defaultDirectory )
     {
-        return new UglyPackageFileSystem<A>( fromTree( leaf( root ) ), defaultDirectory );
+        return new PackageFileSystem<A>( fromTree( leaf( root ) ), defaultDirectory );
     }
 
     private PackageFileSystem( TreeZipper<PackageFileSystemObject<A>> root, PackageFileSystemObject<A> defaultDirectory )
@@ -63,15 +63,6 @@ public class PackageFileSystem<A>
         Validate.validateNotNull( root, defaultDirectory );
         this.root = root;
         this.defaultDirectory = defaultDirectory;
-    }
-
-    private static class UglyPackageFileSystem<A>
-        extends PackageFileSystem<A>
-    {
-        public UglyPackageFileSystem( TreeZipper<PackageFileSystemObject<A>> root, PackageFileSystemObject<A> defaultDirectory )
-        {
-            super( root, defaultDirectory );
-        }
     }
 
     private class PrettyPackageFileSystem
@@ -179,7 +170,7 @@ public class PackageFileSystem<A>
             }
         } );
 
-        return new UglyPackageFileSystem<A>( root, defaultDirectory );
+        return new PackageFileSystem<A>( root, defaultDirectory );
     }
 
     // -----------------------------------------------------------------------
@@ -309,7 +300,7 @@ public class PackageFileSystem<A>
 
     public PackageFileSystem<A> navigateToRootAndCreatePackageFileSystem( TreeZipper<PackageFileSystemObject<A>> zipper )
     {
-        return new UglyPackageFileSystem<A>( zipper.root(), defaultDirectory );
+        return new PackageFileSystem<A>( zipper.root(), defaultDirectory );
     }
 
     private static <A> Ord<Tree<PackageFileSystemObject<A>>> treeOrd()
