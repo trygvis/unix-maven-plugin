@@ -781,8 +781,7 @@
       </warning>
 
       <tip>
-        <para>For more information see the class
-        no.arktekk.unix.PackageParameters.</para>
+        <para>For more information see the class org.codehaus.mojo.unix.PackageParameters.</para>
       </tip>
 
       <para>In addition to the generic object, additional information is

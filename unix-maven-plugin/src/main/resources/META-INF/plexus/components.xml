@@ -110,7 +110,7 @@
           <pre-integration-test/>
           <integration-test/>
           <post-integration-test/>
-          <package>no.arktekk.unix:unix-maven-plugin:package-deb</package>
+          <package>org.codehaus.mojo.unix:unix-maven-plugin:package-deb</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
           <verify/>
@@ -143,7 +143,7 @@
           <pre-integration-test/>
           <integration-test/>
           <post-integration-test/>
-          <package>no.arktekk.unix:unix-maven-plugin:package-sysvpkg</package>
+          <package>org.codehaus.mojo.unix:unix-maven-plugin:package-sysvpkg</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
           <verify/>
@@ -176,7 +176,7 @@
           <pre-integration-test/>
           <integration-test/>
           <post-integration-test/>
-          <package>no.arktekk.unix:unix-maven-plugin:package-rpm</package>
+          <package>org.codehaus.mojo.unix:unix-maven-plugin:package-rpm</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
           <verify/>
@@ -209,7 +209,7 @@
           <pre-integration-test/>
           <integration-test/>
           <post-integration-test/>
-          <package>no.arktekk.unix:unix-maven-plugin:package-zip</package>
+          <package>org.codehaus.mojo.unix:unix-maven-plugin:package-zip</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
           <verify/>
@@ -242,7 +242,7 @@
           <pre-integration-test/>
           <integration-test/>
           <post-integration-test/>
-          <package>no.arktekk.unix:unix-maven-plugin:package-zip</package>
+          <package>org.codehaus.mojo.unix:unix-maven-plugin:package-zip</package>
           <install>org.apache.maven.plugins:maven-install-plugin:install</install>
           <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
           <verify/>

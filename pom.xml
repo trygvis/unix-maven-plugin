@@ -25,11 +25,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>mojo-parent</artifactId>
+    <version>31</version>
   </parent>
-  <groupId>no.arktekk.unix</groupId>
+  <groupId>org.codehaus.mojo.unix</groupId>
   <artifactId>unix</artifactId>
   <version>1.0-alpha-7-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -107,7 +107,8 @@
     </contributor>
   </contributors>
   <issueManagement>
-    <url>https://github.com/trygvis/unix-maven-plugin/issues</url>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MUNIX</url>
   </issueManagement>
   <url>http://mojo.codehaus.org/unix</url>
   <licenses>
@@ -198,9 +199,9 @@
     <module>unix-rpm</module>
   </modules>
   <scm>
-    <connection>scm:git:https://github.com/trygvis/unix-maven-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:trygvis/unix-maven-plugin.git</developerConnection>
-    <url>https://github.com/trygvis/unix-maven-plugin</url>
+    <url>http://git.codehaus.org/gitweb.cgi?p=mojo-unix.git</url>
+    <connection>scm:git:git://git.codehaus.org/mojo-unix.git</connection>
+    <developerConnection>scm:git:ssh://git@git.codehaus.org/mojo-unix.git</developerConnection>
   </scm>
   <reporting>
     <plugins>
@@ -270,22 +271,6 @@
           </plugin>
         </plugins>
       </reporting>
-    </profile>
-    <profile>
-      <id>repositories</id>
-      <repositories>
-        <repository>
-          <id>java.net</id>
-          <url>http://download.java.net/maven/2</url>
-        </repository>
-        <repository>
-          <id>functionaljava</id>
-          <url>http://functionaljava.googlecode.com/svn/maven/</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository>
-      </repositories>
     </profile>
   </profiles>
 </project>

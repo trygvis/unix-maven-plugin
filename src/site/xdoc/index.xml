@@ -39,17 +39,17 @@
         </p>
         <ul>
           <li>
-            <code>deb</code>
-            - Debian and Debian-based platforms like Ubuntu
+            <code>deb</code> - Debian and Debian-based platforms like Ubuntu
           </li>
           <li>
-            <code>pkg</code>
-            - Platforms with System V packaging tools like Solaris and HP-UX. Only Solaris is tested.
+            <code>pkg</code> - Platforms with System V packaging tools like Solaris and HP-UX. Only Solaris is tested.
           </li>
           <li>
-            <code>rpm</code>
-            - RedHat, Fedora and other platforms using RPM. Many platforms have RPM even if they use
+            <code>rpm</code> - RedHat, Fedora and other platforms using RPM. Many platforms have RPM even if they use
             another format as their primary format.
+          </li>
+          <li>
+            <code>zip</code> - Generic zip files. A better assembly plugin that the assembly plugin.
           </li>
         </ul>
         <p>
@@ -64,6 +64,9 @@
             <b>Repository index generation</b>: Goals for running dpkg-scanpackages
           </li>
         </ul>
+        <p>
+          Make sure you read the <a href="usage.html">Handbook</a>. This contains all the information you need.
+        </p>
       </subsection>
     </section>
   </body>

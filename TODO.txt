@@ -160,6 +160,12 @@ o Filtering support. Note that this uses a hard-coded list of properties, not Ma
   It is possible to improve the situation, but it a bit of work.
 o Switching to Maven 3 APIs.
 
+Project:
+o Moved back to Codehaus and to Git
+  - Web browsing: http://git.codehaus.org/gitweb.cgi?p=mojo-unix.git
+  - Code checkout: git://git.codehaus.org/mojo-unix.git
+  - The group id is org.codehaus.mojo again.
+
 == For 1.0-alpha-6 ==
 
 o New group id: no.arktekk.unix
