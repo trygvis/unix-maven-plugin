@@ -63,7 +63,7 @@ public abstract class AbstractUnixMojo
     protected String revision;
 
     /**
-     * @parameter expression="${project.description}"
+     * @parameter property="project.description"
      */
     protected String description;
 
@@ -84,7 +84,7 @@ public abstract class AbstractUnixMojo
     protected String architecture;
 
     /**
-     * @parameter expression="${maven.unix.debug}"
+     * @parameter property="maven.unix.debug"
      */
     protected boolean debug;
 
@@ -93,13 +93,13 @@ public abstract class AbstractUnixMojo
     // -----------------------------------------------------------------------
 
     /**
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @readonly
      */
     protected MavenProject project;
 
     /**
-     * @parameter expression="${session}"
+     * @parameter property="session"
      * @readonly
      */
     protected ThreadLocal<MavenSession> session = new ThreadLocal<MavenSession>();

@@ -46,45 +46,45 @@ public class DpkgScanPackagesMojo
     /**
      * The base of where to scan. If not set, it will default to the entire local repository.
      *
-     * @parameter expression="${maven.unix.dpkg-scanpackages.root}"
+     * @parameter property="maven.unix.dpkg-scanpackages.root"
      */
     private File root;
 
     /**
-     * @parameter expression="${maven.unix.dpkg-scanpackages.prefix}"
+     * @parameter property="maven.unix.dpkg-scanpackages.prefix"
      */
     private String pathPrefix;
 
     /**
-     * @parameter expression="${maven.unix.dpkg-scanpackages.override}" default-value="/dev/null"
+     * @parameter property="maven.unix.dpkg-scanpackages.override" default-value="/dev/null"
      */
     private String overrideFile;
 
     /**
-     * @parameter expression="${maven.unix.dpkg-scanpackages.multiversion}" default-value="true"
+     * @parameter property="maven.unix.dpkg-scanpackages.multiversion" default-value="true"
      */
     private boolean multiversion;
 
     /**
-     * @parameter expression="${maven.unix.debug}" default-value="false"
+     * @parameter property="maven.unix.debug" default-value="false"
      */
     protected boolean debug;
 
     /**
      * The name of the output file. If the filename ends with ".gz" it will be gzipped automatically.
      *
-     * @parameter expression="${maven.unix.dpkg-scanpackages.output}" default-value="target/Packages"
+     * @parameter property="maven.unix.dpkg-scanpackages.output" default-value="target/Packages"
      */
     protected File outputFile;
 
     /**
-     * @parameter expression="${settings.localRepository}"
+     * @parameter property="settings.localRepository"
      * @readonly
      */
     private String localRepository;
 
     /**
-     * @parameter expression="${basedir}"
+     * @parameter property="basedir"
      * @readonly
      */
     private File basedir;
