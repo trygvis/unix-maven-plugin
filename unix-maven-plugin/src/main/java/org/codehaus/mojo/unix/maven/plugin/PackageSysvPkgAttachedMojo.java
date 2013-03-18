@@ -29,16 +29,20 @@ import static org.codehaus.mojo.unix.maven.sysvpkg.PkgMojoUtil.*;
 import org.codehaus.mojo.unix.maven.sysvpkg.*;
 
 /**
+ * Creates a sysv pkg file, attached to the build.
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @goal package-sysvpkg-attached
  * @phase package
  * @requiresDependencyResolution runtime
  */
-@SuppressWarnings( "UnusedDeclaration" )
+@SuppressWarnings("UnusedDeclaration")
 public class PackageSysvPkgAttachedMojo
     extends AbstractPackageAttachedMojo<PkgUnixPackage, PkgUnixPackage.PkgPreparedPackage>
 {
     /**
+     * Sysv pkg format specific settings.
+     *
      * @parameter
      */
     private PkgSpecificSettings pkg;

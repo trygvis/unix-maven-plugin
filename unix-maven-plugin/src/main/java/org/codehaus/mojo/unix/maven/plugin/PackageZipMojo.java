@@ -29,12 +29,14 @@ import static fj.Function.*;
 import org.codehaus.mojo.unix.maven.zip.*;
 
 /**
+ * Creates a zip file as the primary artifact.
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @goal package-zip
  * @phase package
  * @requiresDependencyResolution runtime
  */
-@SuppressWarnings( "UnusedDeclaration" )
+@SuppressWarnings("UnusedDeclaration")
 public class PackageZipMojo
     extends AbstractPackageMojo<ZipUnixPackage, ZipUnixPackage.ZipPreparedPackage>
 {

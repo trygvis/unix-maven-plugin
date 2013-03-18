@@ -29,16 +29,20 @@ import static org.codehaus.mojo.unix.maven.rpm.RpmMojoUtil.*;
 import org.codehaus.mojo.unix.maven.rpm.*;
 
 /**
+ * Creates an RPM file as the primary artifact.
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @goal package-rpm
  * @phase package
  * @requiresDependencyResolution runtime
  */
-@SuppressWarnings( "UnusedDeclaration" )
+@SuppressWarnings("UnusedDeclaration")
 public class PackageRpmMojo
     extends AbstractPackageMojo<RpmUnixPackage, RpmUnixPackage.RpmPreparedPackage>
 {
     /**
+     * RPM format specific settings.
+     *
      * @parameter
      */
     protected RpmSpecificSettings rpm = new RpmSpecificSettings();

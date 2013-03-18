@@ -25,20 +25,24 @@ package org.codehaus.mojo.unix.maven.plugin;
  */
 
 import fj.*;
-import static org.codehaus.mojo.unix.maven.rpm.RpmMojoUtil.validateMojoSettingsAndApplyFormatSpecificSettingsToPackage;
+import static org.codehaus.mojo.unix.maven.rpm.RpmMojoUtil.*;
 import org.codehaus.mojo.unix.maven.rpm.*;
 
 /**
+ * Creates an RPM file, attached to the build.
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @goal package-rpm-attached
  * @phase package
  * @requiresDependencyResolution runtime
  */
-@SuppressWarnings( "UnusedDeclaration" )
+@SuppressWarnings("UnusedDeclaration")
 public class PackageRpmAttachedMojo
     extends AbstractPackageAttachedMojo<RpmUnixPackage, RpmUnixPackage.RpmPreparedPackage>
 {
     /**
+     * RPM format specific settings.
+     *
      * @parameter
      */
     protected RpmSpecificSettings rpm = new RpmSpecificSettings();

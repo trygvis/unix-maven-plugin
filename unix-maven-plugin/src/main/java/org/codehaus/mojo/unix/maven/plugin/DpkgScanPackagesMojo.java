@@ -51,21 +51,29 @@ public class DpkgScanPackagesMojo
     private File root;
 
     /**
+     * Passed to dpkg-scanpackages.
+     *
      * @parameter property="maven.unix.dpkg-scanpackages.prefix"
      */
     private String pathPrefix;
 
     /**
+     * Passed to dpkg-scanpackages.
+     *
      * @parameter property="maven.unix.dpkg-scanpackages.override" default-value="/dev/null"
      */
     private String overrideFile;
 
     /**
+     * Passes '-m' to dpkg-scanpackages if true.
+     *
      * @parameter property="maven.unix.dpkg-scanpackages.multiversion" default-value="true"
      */
     private boolean multiversion;
 
     /**
+     * Enabled more debugging information.
+     *
      * @parameter property="maven.unix.debug" default-value="false"
      */
     protected boolean debug;

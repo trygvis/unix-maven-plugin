@@ -29,11 +29,14 @@ import static fj.Function.*;
 import org.codehaus.mojo.unix.*;
 
 /**
+ * Creates a zip file, attached to the build.
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @goal package-zip-attached
  * @phase package
  * @requiresDependencyResolution runtime
  */
+@SuppressWarnings("UnusedDeclaration")
 public class PackageZipAttachedMojo
     extends AbstractPackageAttachedMojo
 {

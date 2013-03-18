@@ -38,6 +38,8 @@ public abstract class AbstractPackageMojo<UP extends UnixPackage<UP, PP>, PP ext
     extends AbstractUnixMojo
 {
     /**
+     * The set of packages to build.
+     *
      * @parameter
      */
     @SuppressWarnings( {"UnusedDeclaration"} )

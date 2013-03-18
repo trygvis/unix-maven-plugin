@@ -29,6 +29,8 @@ import static org.codehaus.mojo.unix.maven.deb.DebMojoUtil.validateMojoSettingsA
 import org.codehaus.mojo.unix.maven.deb.*;
 
 /**
+ * Creates a deb file as the primary artifact.
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @goal package-deb
  * @phase package
@@ -39,6 +41,8 @@ public class PackageDebMojo
     extends AbstractPackageMojo<DebUnixPackage, DebUnixPackage.DebPreparedPackage>
 {
     /**
+     * Deb format specific settings.
+     *
      * @parameter
      */
     private DebSpecificSettings deb;

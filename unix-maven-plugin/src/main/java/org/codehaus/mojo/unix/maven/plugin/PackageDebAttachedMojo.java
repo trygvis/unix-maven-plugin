@@ -29,6 +29,8 @@ import static org.codehaus.mojo.unix.maven.deb.DebMojoUtil.*;
 import org.codehaus.mojo.unix.maven.deb.*;
 
 /**
+ * Creates a deb file, attached to the build.
+ *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @goal package-deb-attached
  * @phase package
@@ -39,6 +41,8 @@ public class PackageDebAttachedMojo
     extends AbstractPackageAttachedMojo<DebUnixPackage, DebUnixPackage.DebPreparedPackage>
 {
     /**
+     * Deb format specific settings.
+     *
      * @parameter
      */
     private DebSpecificSettings deb;

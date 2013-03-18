@@ -37,11 +37,15 @@ public abstract class AbstractUnixMojo
     extends AbstractMojo
 {
     /**
+     * The assembly operations shared between all packages.
+     *
      * @parameter
      */
     protected AssemblyOp[] assembly;
 
     /**
+     * Default values for files and directories.
+     *
      * @parameter
      */
     protected Defaults defaults = new Defaults();
@@ -63,28 +67,38 @@ public abstract class AbstractUnixMojo
     protected String revision;
 
     /**
+     * One-line description of the package.
+     *
      * @parameter property="project.description"
      */
     protected String description;
 
     /**
+     * The name of the contact person for the package.
+     *
      * @parameter
      */
     protected String contact;
 
     /**
+     * The email address of the contact person for the package.
+     *
      * @parameter
      */
     protected String contactEmail;
 
     // TODO: Is this really common? Or just common enough?
     /**
+     * The architecture the package is valid for.
+     *
      * @parameter
      */
     protected String architecture;
 
     /**
-     * @parameter property="maven.unix.debug"
+     * Enabled extra debugging informasjon.
+     *
+     * @parameter property="maven.unix.debug" default="false"
      */
     protected boolean debug;
 
