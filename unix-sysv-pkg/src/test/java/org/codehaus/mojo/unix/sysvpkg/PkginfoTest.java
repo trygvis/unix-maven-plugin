@@ -54,7 +54,8 @@ public class PkginfoTest
 
         Pkginfo expected = new Pkginfo( "all", "application", "Hudson", "project-pkg-1", "1.1-2",
                                                 some( "20090129.134909" ), Option.<String>none(),
-                                                some( "trygvis@inamo.no" ), List.<String>nil() );
+                                                some( "trygvis@inamo.no" ),some( "1024" ),
+                                                List.<String>nil() );
 
         assertEquals( expected.toString(), fromStream( pkginfoStrings ).some().toString() );
     }

@@ -3,6 +3,8 @@ Package: basic
 Section: devel
 Priority: standard
 Maintainer: Acme
+Installed-Size: 1024
 Version: 1.0-20110708.151032
 Architecture: all
 Description: Hudson Solaris Package
+Installed-Size: 1024

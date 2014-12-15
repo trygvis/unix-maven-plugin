@@ -104,6 +104,7 @@ public class DebControlParserTest
         ControlFile expectedControlFile = new ControlFile( "ant" ).
             version( some( "1.7.0-3" ) ).
             maintainer( some( "Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>" ) ).
+            installedSize( some( "1024" ) ).
             architecture( some( "all" ) ).
             priority( some( "optional" ) ).
             section( some( "devel" ) ).
@@ -126,6 +127,7 @@ public class DebControlParserTest
         ControlFile expectedControlFile = new ControlFile( "bash" ).
             version( some( "3.2-0ubuntu16" ) ).
             maintainer( some( "Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>" ) ).
+            installedSize( some( "1024" ) ).
             architecture( some( "amd64" ) ).
             priority( some( "required" ) ).
             section( some( "base" ) ).
@@ -153,6 +155,7 @@ public class DebControlParserTest
         ControlFile expectedControlFile = new ControlFile( "libc6" ).
             version( some( "2.7-10ubuntu3" ) ).
             maintainer( some( "Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>" ) ).
+            installedSize( some( "1024" ) ).
             architecture( some( "amd64" ) ).
             priority( some( "required" ) ).
             section( some( "base" ) ).
@@ -204,6 +207,7 @@ public class DebControlParserTest
             assertEquals( "version", expectedControlFile.version, actualControlFile.version ).
             assertEquals( "description", expectedControlFile.description, actualControlFile.description ).
             assertEquals( "maintainer", expectedControlFile.maintainer, actualControlFile.maintainer ).
+            assertEquals( "installedSize", expectedControlFile.installedSize, actualControlFile.installedSize).
             assertEquals( "package", expectedControlFile.packageName, actualControlFile.packageName ).
             assertEquals( "architecture", expectedControlFile.architecture, actualControlFile.architecture ).
             assertEquals( "priority", expectedControlFile.priority, actualControlFile.priority ).

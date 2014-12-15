@@ -52,6 +52,7 @@
         <configuration>
           <contact>Trygve Laugstol</contact>
           <contactEmail>trygvis@inamo.no</contactEmail>
+          <size>1024</size>
           <deb>
             <section>devel</section>
           </deb>

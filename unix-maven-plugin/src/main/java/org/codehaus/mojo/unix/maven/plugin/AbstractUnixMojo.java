@@ -81,6 +81,13 @@ public abstract class AbstractUnixMojo
     protected String contact;
 
     /**
+     * The size of the package.
+     *
+     * @parameter
+     */
+    protected String size;
+
+    /**
      * The email address of the contact person for the package.
      *
      * @parameter

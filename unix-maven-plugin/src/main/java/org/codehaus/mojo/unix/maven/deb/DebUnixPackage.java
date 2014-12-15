@@ -70,6 +70,7 @@ public class DebUnixPackage
             version( some( getDebianVersion( parameters.version ) ) ).
             description( getDescription( parameters ) ).
             maintainer( parameters.contact ).
+            installedSize( parameters.size).
             architecture( parameters.architecture.orElse( some( "all" ) ) );
 
         return this;
