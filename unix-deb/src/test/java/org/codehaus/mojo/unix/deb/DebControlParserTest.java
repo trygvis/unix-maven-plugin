@@ -104,7 +104,7 @@ public class DebControlParserTest
         ControlFile expectedControlFile = new ControlFile( "ant" ).
             version( some( "1.7.0-3" ) ).
             maintainer( some( "Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>" ) ).
-            installedSize( some( "1024" ) ).
+            installedSize( some( "1025" ) ).
             architecture( some( "all" ) ).
             priority( some( "optional" ) ).
             section( some( "devel" ) ).
@@ -127,7 +127,7 @@ public class DebControlParserTest
         ControlFile expectedControlFile = new ControlFile( "bash" ).
             version( some( "3.2-0ubuntu16" ) ).
             maintainer( some( "Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>" ) ).
-            installedSize( some( "1024" ) ).
+            installedSize( some( "1316" ) ).
             architecture( some( "amd64" ) ).
             priority( some( "required" ) ).
             section( some( "base" ) ).
@@ -155,7 +155,7 @@ public class DebControlParserTest
         ControlFile expectedControlFile = new ControlFile( "libc6" ).
             version( some( "2.7-10ubuntu3" ) ).
             maintainer( some( "Ubuntu Core developers <ubuntu-devel-discuss@lists.ubuntu.com>" ) ).
-            installedSize( some( "1024" ) ).
+            installedSize( some( "11348" ) ).
             architecture( some( "amd64" ) ).
             priority( some( "required" ) ).
             section( some( "base" ) ).

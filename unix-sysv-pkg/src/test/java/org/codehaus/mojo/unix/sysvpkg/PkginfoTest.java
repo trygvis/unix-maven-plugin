@@ -44,6 +44,7 @@ public class PkginfoTest
             add( "           NAME:  Hudson" ).
             add( "       CATEGORY:  application" ).
             add( "           ARCH:  all" ).
+            add( "           SIZE:  1024" ).
             add( "        VERSION:  1.1-2" ).
             add( "         PSTAMP:  20090129.134909" ).
             add( "          EMAIL:  trygvis@inamo.no" ).

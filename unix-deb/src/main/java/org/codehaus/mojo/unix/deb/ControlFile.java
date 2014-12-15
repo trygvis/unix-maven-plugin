@@ -312,7 +312,7 @@ public class ControlFile
         controlFile = controlFile.maintainer( map.get( "Maintainer" ) );
         map = map.delete( "Maintainer" );
 
-        controlFile = controlFile.maintainer( map.get( "Installed-Size" ) );
+        controlFile = controlFile.installedSize( map.get( "Installed-Size" ) );
         map = map.delete( "Installed-Size" );
 
         controlFile = controlFile.architecture( map.get( "Architecture" ) );

@@ -66,6 +66,7 @@
         </executions>
         <configuration>
           <contact>Trygve Laugstol</contact>
+	  <size>1024</size>
           <contactEmail>trygvis@inamo.no</contactEmail>
           <defaults>
             <fileAttributes>

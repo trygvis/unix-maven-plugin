@@ -52,6 +52,7 @@
         <extensions>true</extensions>
         <configuration>
           <contact>Trygve Laugstol</contact>
+	  <size>1024</size>
           <contactEmail>trygvis@inamo.no</contactEmail>
           <assembly>
             <extractArtifact>
