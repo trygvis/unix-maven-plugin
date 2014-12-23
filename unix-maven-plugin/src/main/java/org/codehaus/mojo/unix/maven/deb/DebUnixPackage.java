@@ -152,7 +152,6 @@ public class DebUnixPackage
     {
         LocalFs debian = fileCollector.root.resolve( relativePath( "DEBIAN" ) );
         LocalFs controlFilePath = debian.resolve( relativePath( "control" ) );
-        LocalFs conffilesFilePath = debian.resolve( relativePath( "conffiles" ) );
 
         debian.mkdir();
         LineStreamUtil.toFile(controlFile.toList(), controlFilePath.file);
@@ -164,10 +163,15 @@ public class DebUnixPackage
             execute();
 
 
-        conffilesFilePath.file.setExecutable(false,false);
-        conffilesFilePath.file.setReadable(true,false);
-        conffilesFilePath.file.setWritable(false,false);
-        conffilesFilePath.file.setWritable(true,true);
+        try {
+            LocalFs conffilesFilePath = debian.resolve(relativePath("conffiles"));
+            conffilesFilePath.file.setExecutable(false, false);
+            conffilesFilePath.file.setReadable(true, false);
+            conffilesFilePath.file.setWritable(false, false);
+            conffilesFilePath.file.setWritable(true, true);
+        }catch(Exception e) {
+            System.out.println("conffiles is not accessible");
+        }
 
         return new DebPreparedPackage( result );
     }
