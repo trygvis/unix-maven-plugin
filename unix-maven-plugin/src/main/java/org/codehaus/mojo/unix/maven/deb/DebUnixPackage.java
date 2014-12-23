@@ -26,6 +26,8 @@ package org.codehaus.mojo.unix.maven.deb;
 
 import fj.*;
 import fj.data.*;
+import fj.data.List;
+
 import static fj.data.Option.*;
 import org.codehaus.mojo.unix.*;
 import org.codehaus.mojo.unix.core.*;
@@ -34,12 +36,16 @@ import org.codehaus.mojo.unix.io.fs.*;
 import org.codehaus.mojo.unix.util.*;
 import org.codehaus.mojo.unix.util.line.*;
 
+import static java.nio.file.Files.setPosixFilePermissions;
 import static org.codehaus.mojo.unix.UnixFsObject.RegularFile;
 import static org.codehaus.mojo.unix.util.RelativePath.relativePath;
 import static org.codehaus.mojo.unix.util.line.LineStreamWriter.*;
 import org.joda.time.*;
 
 import java.io.*;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.*;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -70,6 +76,7 @@ public class DebUnixPackage
             version( some( getDebianVersion( parameters.version ) ) ).
             description( getDescription( parameters ) ).
             maintainer( parameters.contact ).
+            installedSize( parameters.size).
             architecture( parameters.architecture.orElse( some( "all" ) ) );
 
         return this;
@@ -147,13 +154,24 @@ public class DebUnixPackage
         LocalFs controlFilePath = debian.resolve( relativePath( "control" ) );
 
         debian.mkdir();
-        LineStreamUtil.toFile( controlFile.toList(), controlFilePath.file );
+        LineStreamUtil.toFile(controlFile.toList(), controlFilePath.file);
 
         fileCollector.collect();
 
         ScriptUtil.Result result = scriptUtil.
             createExecution( controlFile.packageName, "deb", getScripts(), debian.file, strategy ).
             execute();
+
+
+        try {
+            LocalFs conffilesFilePath = debian.resolve(relativePath("conffiles"));
+            conffilesFilePath.file.setExecutable(false, false);
+            conffilesFilePath.file.setReadable(true, false);
+            conffilesFilePath.file.setWritable(false, false);
+            conffilesFilePath.file.setWritable(true, true);
+        }catch(Exception e) {
+            System.out.println("conffiles is not accessible");
+        }
 
         return new DebPreparedPackage( result );
     }
@@ -171,7 +189,6 @@ public class DebUnixPackage
         public void packageToFile( File packageFile )
             throws Exception
         {
-
             UnixUtil.chmodIf( result.preInstall, "0755" );
             UnixUtil.chmodIf( result.postInstall, "0755" );
             UnixUtil.chmodIf( result.preRemove, "0755" );

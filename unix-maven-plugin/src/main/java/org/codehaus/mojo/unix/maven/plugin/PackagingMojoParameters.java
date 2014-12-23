@@ -40,6 +40,7 @@ public class PackagingMojoParameters
     public final Option<String> revision;
     public final Option<String> description;
     public final Option<String> contact;
+    public final Option<String> size;
     public final Option<String> contactEmail;
     public final Option<String> architecture;
     public final Defaults defaults;
@@ -49,7 +50,8 @@ public class PackagingMojoParameters
     public PackagingMojoParameters( String name,
                                     String revision,
                                     String description,
-                                    String contact,
+            						String contact,
+            						String size,
                                     String contactEmail,
                                     String architecture,
                                     Defaults defaults,
@@ -61,6 +63,7 @@ public class PackagingMojoParameters
         this.revision = fromNull( revision );
         this.description = fromNull( description );
         this.contact = fromNull( contact );
+        this.size= fromNull( size );
         this.contactEmail = fromNull( contactEmail );
         this.architecture = fromNull( architecture );
         this.defaults = defaults;

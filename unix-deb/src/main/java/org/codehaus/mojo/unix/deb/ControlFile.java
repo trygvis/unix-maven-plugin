@@ -50,6 +50,8 @@ public class ControlFile
 
     public final Option<String> maintainer;
 
+    public final Option<String> installedSize;
+
     public final Option<String> architecture;
 
     public final Option<String> priority;
@@ -74,14 +76,17 @@ public class ControlFile
 
     public ControlFile( String packageName )
     {
-        this( packageName, Option.<String>none(), Option.<String>none(), Option.<String>none(), Option.<String>none(),
+        this( packageName, Option.<String>none(), Option.<String>none(), Option.<String>none(),
+                Option.<String>none(), Option.<String>none(),
             Option.<String>none(), Option.<String>none(), List.<String>nil(), List.<String>nil(), List.<String>nil(),
             List.<String>nil(), List.<String>nil(), List.<String>nil(), List.<String>nil(),
             TreeMap.<String, String>empty( stringOrd ) );
     }
 
     public ControlFile( String packageName, Option<String> version, Option<String> description,
-                        Option<String> maintainer, Option<String> architecture, Option<String> priority,
+                        Option<String> maintainer,
+                        Option<String> installedSize,
+                        Option<String> architecture, Option<String> priority,
                         Option<String> section, List<String> depends, List<String> recommends, List<String> suggests,
                         List<String> preDepends, List<String> provides, List<String> replaces, List<String> conflicts,
                         TreeMap<String, String> extraFields )
@@ -90,6 +95,7 @@ public class ControlFile
         this.version = version;
         this.description = description;
         this.maintainer = maintainer;
+        this.installedSize= installedSize;
         this.architecture = architecture;
         this.priority = priority;
         this.section = section;
@@ -105,85 +111,101 @@ public class ControlFile
 
     public ControlFile version( Option<String> version )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer, installedSize,architecture, priority,
+                section, depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile description( Option<String> description )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer, installedSize, architecture, priority,
+                section, depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile maintainer( Option<String> maintainer )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
-                                recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
+        return new ControlFile( packageName, version, description, maintainer, installedSize, architecture, priority,
+                section, depends, recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
+    }
+
+    public ControlFile installedSize(Option<String> size) {
+        return new ControlFile( packageName, version, description, maintainer, size, architecture, priority,
+                section, depends, recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile architecture( Option<String> architecture )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer,installedSize, architecture, priority,
+                section, depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile priority( Option<String> priority )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer, installedSize,architecture, priority,
+                section,
+                depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile section( Option<String> section )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer, installedSize, architecture, priority,
+                section, depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile depends( List<String> depends )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer,installedSize, architecture, priority,
+                section, depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile recommends( List<String> recommends )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer,installedSize, architecture, priority,
+                section, depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile suggests( List<String> suggests )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer,installedSize,  architecture, priority, section, depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile preDepends( List<String> preDepends )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer,installedSize,  architecture, priority, section, depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile provides( List<String> provides )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer,installedSize,  architecture, priority, section, depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile replaces( List<String> replaces )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer, installedSize,  architecture, priority, section,
+                depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile conflicts( List<String> conflicts )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer, installedSize,  architecture, priority, section,
+                depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
     public ControlFile extraFields( TreeMap<String, String> extraFields )
     {
-        return new ControlFile( packageName, version, description, maintainer, architecture, priority, section, depends,
+        return new ControlFile( packageName, version, description, maintainer, installedSize,  architecture, priority, section,
+                depends,
                                 recommends, suggests, preDepends, provides, replaces, conflicts, extraFields );
     }
 
@@ -191,11 +213,12 @@ public class ControlFile
     {
         List<Option<String>> optionList = single( some( "Package: " + packageName ) ).
             cons( section.map( curry( concat, "Section: " ) ) ).
-            cons( priority.map( curry( concat, "Priority: " ) ) ).
-            cons( maintainer.map( curry( concat, "Maintainer: " ) ) ).
+            cons(priority.map(curry(concat, "Priority: "))).
+            cons(maintainer.map(curry(concat, "Maintainer: "))).
+            cons(installedSize.map(curry(concat, "Installed-Size: "))).
             cons( version.map( curry( concat, "Version: " ) ) ).
             cons( architecture.map( curry( concat, "Architecture: " ) ) ).
-            cons( description.map( curry( concat, "Description: " ) ) );
+            cons(description.map(curry(concat, "Description: ")));
 
         F<String, F<List<String>, List<String>>> f = listToHeader.f( 80 );
 
@@ -289,6 +312,9 @@ public class ControlFile
         controlFile = controlFile.maintainer( map.get( "Maintainer" ) );
         map = map.delete( "Maintainer" );
 
+        controlFile = controlFile.installedSize( map.get( "Installed-Size" ) );
+        map = map.delete( "Installed-Size" );
+
         controlFile = controlFile.architecture( map.get( "Architecture" ) );
         map = map.delete( "Architecture" );
 
@@ -324,4 +350,5 @@ public class ControlFile
 
         return controlFile;
     }
+
 }

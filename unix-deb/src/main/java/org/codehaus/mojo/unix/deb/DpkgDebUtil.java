@@ -49,6 +49,7 @@ public class DpkgDebUtil
             addArgument( "section" ).
             addArgument( "priority" ).
             addArgument( "maintainer" ).
+            addArgument( "installedSize" ).
             addArgument( "package" ).
             addArgument( "version" ).
             addArgument( "architecture" ).

@@ -89,6 +89,7 @@ public class PkgUnixPackage
                                getPkgVersion( parameters.version ) ).
             desc( parameters.description ).
             email( parameters.contactEmail ).
+            size(parameters.size).
             pstamp( some( parameters.version.timestamp ) ).
             email( parameters.contactEmail );
 

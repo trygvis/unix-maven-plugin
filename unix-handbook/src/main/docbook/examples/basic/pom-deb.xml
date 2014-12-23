@@ -28,6 +28,7 @@
         <extensions>true</extensions>
         <configuration>
           <contact>Acme</contact>
+	  <size>1024</size>
           <contactEmail>support@acme.org</contactEmail>
           <deb>
             <section>devel</section>

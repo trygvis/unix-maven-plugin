@@ -68,6 +68,7 @@ public abstract class AbstractPackageAttachedMojo<UP extends UnixPackage<UP, PP>
                                                         revision,
                                                         description,
                                                         contact,
+                                                        size,
                                                         contactEmail,
                                                         architecture,
                                                         defaults,

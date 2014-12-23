@@ -339,6 +339,7 @@ public abstract class MojoHelper
         return packageParameters( project.groupId, project.artifactId, version, id, name, pakke.classifier, defaultFileAttributes._1(), defaultFileAttributes._2() ).
             description( pakke.description.orElse( mojoParameters.description ).orElse( project.description ) ).
             contact( mojoParameters.contact ).
+            size( mojoParameters.size).
             contactEmail( mojoParameters.contactEmail ).
             license( getLicense( project ) ).
             architecture( pakke.architecture.orElse( mojoParameters.architecture ) );

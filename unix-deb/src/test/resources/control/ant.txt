@@ -1,7 +1,7 @@
 Package: ant
 Priority: optional
 Section: devel
-Installed-Size: 1460
+Installed-Size: 1025
 Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Original-Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
 Architecture: all
